@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("HealhApp")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7a9c6164a66df44be217278dcf8284c4d44f2905")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0b3359862f4ef47bcaee3b2b12171f5071dc9644")]
 [assembly: System.Reflection.AssemblyProductAttribute("HealhApp")]
 [assembly: System.Reflection.AssemblyTitleAttribute("HealhApp")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
