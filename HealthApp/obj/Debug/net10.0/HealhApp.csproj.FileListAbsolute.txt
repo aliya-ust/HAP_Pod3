@@ -1,0 +1,15 @@
+C:\Users\310055\Desktop\Health Axis\HealthApp\obj\Debug\net10.0\HealhApp.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\310055\Desktop\Health Axis\HealthApp\obj\Debug\net10.0\HealhApp.AssemblyInfoInputs.cache
+C:\Users\310055\Desktop\Health Axis\HealthApp\obj\Debug\net10.0\HealhApp.AssemblyInfo.cs
+C:\Users\310055\Desktop\Health Axis\HealthApp\obj\Debug\net10.0\HealhApp.csproj.CoreCompileInputs.cache
+C:\Users\310055\Desktop\Health Axis\HealthApp\obj\Debug\net10.0\HealhApp.sourcelink.json
+C:\Users\310055\Desktop\Health Axis\HealthApp\bin\Debug\net10.0\HealhApp.exe
+C:\Users\310055\Desktop\Health Axis\HealthApp\bin\Debug\net10.0\HealhApp.deps.json
+C:\Users\310055\Desktop\Health Axis\HealthApp\bin\Debug\net10.0\HealhApp.runtimeconfig.json
+C:\Users\310055\Desktop\Health Axis\HealthApp\bin\Debug\net10.0\HealhApp.dll
+C:\Users\310055\Desktop\Health Axis\HealthApp\bin\Debug\net10.0\HealhApp.pdb
+C:\Users\310055\Desktop\Health Axis\HealthApp\obj\Debug\net10.0\HealhApp.dll
+C:\Users\310055\Desktop\Health Axis\HealthApp\obj\Debug\net10.0\refint\HealhApp.dll
+C:\Users\310055\Desktop\Health Axis\HealthApp\obj\Debug\net10.0\HealhApp.pdb
+C:\Users\310055\Desktop\Health Axis\HealthApp\obj\Debug\net10.0\HealhApp.genruntimeconfig.cache
+C:\Users\310055\Desktop\Health Axis\HealthApp\obj\Debug\net10.0\ref\HealhApp.dll
