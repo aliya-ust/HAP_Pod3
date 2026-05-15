@@ -1,12 +1,10 @@
-.vs/Health Axis.slnx/FileContentIndex/0e31c60e-2849-4b6b-a58a-a2cd9eef611a.vsidx
-C:\Users\310055\Desktop\Health Axis\.vs
+# Ignore Visual Studio workspace files and build artifacts
+.vs/
+**/bin/
+**/obj/
 
-HealthApp/obj/Debug/net10.0/HealhApp.GeneratedMSBuildEditorConfig.editorconfig
-HealthApp/obj/Debug/net10.0/HealhApp.assets.cache
-HealthApp/obj/HealhApp.csproj.nuget.dgspec.json
-HealthApp/obj/HealhApp.csproj.nuget.g.props
-HealthApp/obj/project.assets.json
-HealthApp/obj/project.nuget.cache
-C:\Users\310055\Desktop\Health Axis\HealthApp\obj
-C:\Users\310055\Desktop\Health Axis\HealthApp\bin
-C:\Users\310055\Desktop\Health Axis\.vs
+# Optional project-specific ignores
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
