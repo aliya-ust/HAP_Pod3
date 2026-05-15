@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("HealhApp")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0b3359862f4ef47bcaee3b2b12171f5071dc9644")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2c17e440f4214f1f57e20d02241ae0f29f122d80")]
 [assembly: System.Reflection.AssemblyProductAttribute("HealhApp")]
 [assembly: System.Reflection.AssemblyTitleAttribute("HealhApp")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
