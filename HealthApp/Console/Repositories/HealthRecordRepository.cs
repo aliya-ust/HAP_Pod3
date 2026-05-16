@@ -1,86 +1,87 @@
 ﻿using System;
 using System.Collections.Generic;
-using HealthcareApp.Models;
+using HealthApp.Console.Models;
 using HealthcareApp.Data;
 
 namespace HealthcareApp.Repository
 {
     public class HealthRecordRepository : IHealthRecordRepository
     {
-        public void Add()
+        public string Add(HealthRecord record)
         {
-            HealthRecord record = new HealthRecord();
-
-            Console.Write("Enter Patient Name: ");
-            record.Patient = Console.ReadLine();
-
-            Console.Write("Enter Doctor Name: ");
-            record.Doctor = Console.ReadLine();
-
-            Console.Write("Enter Visit Date (yyyy-mm-dd): ");
-            record.VisitDate = DateTime.Parse(Console.ReadLine());
-
-            Console.Write("Enter Diagnosis: ");
-            record.Diagnosis = Console.ReadLine();
-
-            Console.Write("Enter Prescription: ");
-            record.Prescription = Console.ReadLine();
-
-            Console.Write("Enter Doctor Notes: ");
-            record.DoctorNotes = Console.ReadLine();
-
+            HealthRecord recordToAdd = GetByRecordId(record.RecordId);
+            if (recordToAdd is not null)
+            {
+                throw new HealthRecordExistsException("Health Record already exist");
+            }
             Database.Records.Add(record);
 
-            Console.WriteLine("Record added successfully!");
+            return "Record added successfully!";
         }
 
-        public void Delete(int index)
+        public string Delete(int recordId)
         {
-            if (index >= 0 && index < Database.Records.Count)
+            HealthRecord record= GetByRecordId(recordId);
+            if (record is null)
             {
-                Database.Records.RemoveAt(index);
-                Console.WriteLine("Record deleted");
+                throw new HealthRecordNotFoundException("Health Record doesn't Exist");
             }
-            else
-            {
-                Console.WriteLine("Invalid index");
-            }
+            Database.Records.Remove(record);
+
+            return "Record have deleted Successfully";
         }
-        public void Update(int index)
+        public string Update(HealthRecord record)
         {
-            if (index >= 0 && index < Database.Records.Count)
+
+            HealthRecord recordToUpdate = GetByRecordId(record.RecordId);
+            if (recordToUpdate is null)
             {
-                HealthRecord record = Database.Records[index];
-
-                Console.Write("Update Patient Name: ");
-                record.Patient = Console.ReadLine();
-
-                Console.Write("Update Doctor Name: ");
-                record.Doctor = Console.ReadLine();
-
-                Console.Write("Update Visit Date (yyyy-mm-dd): ");
-                record.VisitDate = DateTime.Parse(Console.ReadLine());
-
-                Console.Write("Update Diagnosis: ");
-                record.Diagnosis = Console.ReadLine();
-
-                Console.Write("Update Prescription: ");
-                record.Prescription = Console.ReadLine();
-
-                Console.Write("Update Doctor Notes: ");
-                record.DoctorNotes = Console.ReadLine();
-
-                Console.WriteLine(" Record updated successfully!");
+                throw new HealthRecordNotFoundException("Health Record doesn't Exist");
             }
-            else
-            {
-                Console.WriteLine("Invalid index");
-            }
+            recordToUpdate.VisitDate = record.VisitDate;
+            recordToUpdate.Diagnosis = record.Diagnosis;
+            recordToUpdate.Prescription = record.Prescription;
+            recordToUpdate.DoctorNotes = record.DoctorNotes;
+
+            return "Record have been updated";
         }
 
         public List<HealthRecord> GetAll()
         {
-            return Database.Records;
+            if (!Database.Records.Any())
+            {
+                throw new HealthRecordNotFoundException("There is no Health Records Available");
+            }
+            return Database.Records.ToList();
+        }
+
+        public HealthRecord GetByPatientIdOrderByVisitDateDesc(int patientId)
+        {
+            HealthRecord record = GetByRecordId(id);
+            if (record is null)
+            {
+                throw default;
+            }
+            return record;
+        }
+
+        public HealthRecord GetByDoctorIdOrderByVisitDateDesc(int doctorId)
+        {
+            HealthRecord record = GetByRecordId(id);
+            if (record is null)
+            {
+                throw default;
+            }
+            return record;
+        }
+        public HealthRecord GetByRecordId(int recordId)
+        {
+            HealthRecord record = Database.Records.Find(r => r.recordId == recordId);
+            if (record is null)
+            {
+                throw new HealthRecordNotFoundException("There is no Health Records Available");
+            }
+            return record;
         }
     }
 }

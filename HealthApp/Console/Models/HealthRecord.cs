@@ -1,11 +1,12 @@
 using System;
 
-namespace HealthcareApp
+namespace HealthApp.Console.Models
 {
     public class HealthRecord
     {
-        public string Patient { get; set; }
-        public string Doctor { get; set; }
+        public int RecordId { get; set; }
+        public Patient Patient { get; set; }
+        public Doctor Doctor { get; set; }
         public DateTime VisitDate { get; set; }
         public string Diagnosis { get; set; }
         public string Prescription { get; set; }
