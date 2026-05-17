@@ -1,7 +1,8 @@
-﻿using HealthApp.Console.Services;
+﻿using HealthApp.ConsoleApp.Models;
+using HealthApp.ConsoleApp.Services;
 using System;
 
-namespace HealthApp.Console.Menus
+namespace HealthApp.ConsoleApp.Menus
 {
     public class HealthRecordMenu
     {
@@ -78,6 +79,8 @@ namespace HealthApp.Console.Menus
                     int doctorId = Convert.ToInt32(Console.ReadLine());
 
                     return _healthRecordService.GetByDoctorIdOrderByVisitDateDesc(doctorId);
+                default: 
+                    return [];
             }
         }
 
@@ -86,7 +89,7 @@ namespace HealthApp.Console.Menus
             Console.WriteLine("Enter Record Id: ");
             int recordId = Convert.ToInt32(Console.ReadLine());
 
-            return _healthRecordService.DeleteById(recordId);
+            return _healthRecordService.Delete(recordId);
         }
 
         public string Update()
@@ -97,7 +100,7 @@ namespace HealthApp.Console.Menus
             Console.WriteLine("Enter Id of record to be updated: ");
             dto.RecordId = Console.ReadLine();
 
-            HealthRecord record = _healthRecordService.GetById(dto.RecordId);
+            HealthRecord record = _healthRecordService.GetByRecordId(dto.RecordId);
             Console.WriteLine(record);
 
             Console.WriteLine("Enter updated patient Id (Press enter if there's no change): ");

@@ -28,9 +28,8 @@ public class DoctorMenu
                 case 2:
                     SearchDoctor();
                     break;
-
                 case 3:
-                    Console.WriteLine("Exiting...");
+                    Console.WriteLine("Exiting...");`
                     break;
 
                 default:
