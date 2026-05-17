@@ -1,5 +1,5 @@
 using System;
-namespace HealthApp.Console.Models
+namespace HealthApp.ConsoleApp.Models
 {
     public class Patient
     {
@@ -12,11 +12,13 @@ namespace HealthApp.Console.Models
         public int InsuranceId { get; set; }
         public DateTime CreatedAt { get; set; }
 
+        // Constructor to initialize CreatedAt
         public Patient()
         {
             CreatedAt = DateTime.Now;
         }
 
+        // Method to calculate age based on Dob
         public int GetAge()
         {
             var today = DateTime.Today;
@@ -28,6 +30,7 @@ namespace HealthApp.Console.Models
             return age;
         }
 
+        // Method to get a summary of the patient's profile
         public string GetProfileSummary()
         {
             return $"ID: {Id} | Name: {Name} | Age: {GetAge()} | Gender: {Gender} | Email: {Email} | Phone: {PhoneNumber}";

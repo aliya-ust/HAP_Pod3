@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\291494\\.vscode\\HealthApp\\HealthApp\\HealhApp.csproj": {}
+    "C:\\Users\\310521\\source\\repos\\HealthAxis\\HealthApp\\HealhApp.csproj": {}
   },
   "projects": {
-    "C:\\Users\\291494\\.vscode\\HealthApp\\HealthApp\\HealhApp.csproj": {
+    "C:\\Users\\310521\\source\\repos\\HealthAxis\\HealthApp\\HealhApp.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\291494\\.vscode\\HealthApp\\HealthApp\\HealhApp.csproj",
+        "projectUniqueName": "C:\\Users\\310521\\source\\repos\\HealthAxis\\HealthApp\\HealhApp.csproj",
         "projectName": "HealhApp",
-        "projectPath": "C:\\Users\\291494\\.vscode\\HealthApp\\HealthApp\\HealhApp.csproj",
-        "packagesPath": "C:\\Users\\291494\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\291494\\.vscode\\HealthApp\\HealthApp\\obj\\",
+        "projectPath": "C:\\Users\\310521\\source\\repos\\HealthAxis\\HealthApp\\HealhApp.csproj",
+        "packagesPath": "C:\\Users\\310521\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\310521\\source\\repos\\HealthAxis\\HealthApp\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\291494\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\310521\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -30,7 +30,6 @@
         },
         "frameworks": {
           "net10.0": {
-            "framework": "net10.0",
             "targetAlias": "net10.0",
             "projectReferences": {}
           }
@@ -45,11 +44,10 @@
           "auditLevel": "low",
           "auditMode": "all"
         },
-        "SdkAnalysisLevel": "10.0.300"
+        "SdkAnalysisLevel": "10.0.200"
       },
       "frameworks": {
         "net10.0": {
-          "framework": "net10.0",
           "targetAlias": "net10.0",
           "imports": [
             "net461",
@@ -67,7 +65,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.300-preview.0.26177.108/PortableRuntimeIdentifierGraph.json",
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.203/PortableRuntimeIdentifierGraph.json",
           "packagesToPrune": {
             "Microsoft.CSharp": "(,4.7.32767]",
             "Microsoft.VisualBasic": "(,10.4.32767]",

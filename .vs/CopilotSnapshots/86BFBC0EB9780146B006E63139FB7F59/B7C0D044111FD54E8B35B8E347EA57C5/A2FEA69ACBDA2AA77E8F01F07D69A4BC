@@ -1,0 +1,15 @@
+﻿using System;
+using System.Collections.Generic;
+using HealthApp.Console.Models;
+
+namespace HealthApp.Console.Interfaces
+{
+    public interface IPatientService
+    {
+        bool Register(Patient patient);
+        bool Update(Patient patient);
+        bool Delete(int id);
+        Patient GetPatientById(int id);
+      
+    }
+}
