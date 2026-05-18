@@ -14,5 +14,10 @@ namespace HealthApp.ConsoleApp.Models
         {
             return $"Patient: {Patient} | Doctor: {Doctor} | Date: {VisitDate.ToShortDateString()} | Diagnosis: {Diagnosis} | Prescription: {Prescription} | Notes: {DoctorNotes}";
         }
+
+        public override string ToString()
+        {
+            return $"Record Id: {RecordId} | Patient: {Patient} | Doctor: {Doctor} | Visit Date: {VisitDate.ToShortDateString()} | Diagnosis: {Diagnosis} | Prescription: {Prescription} | Doctor Notes: {DoctorNotes}";
+        }
     }
 }
