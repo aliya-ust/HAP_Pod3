@@ -1,9 +1,8 @@
-﻿
-using System;
+﻿using System;
 using HealthApp.ConsoleApp.Interfaces;
 using HealthApp.ConsoleApp.Models;
 
-namespace HealthApp.ConsoleApp.Menu
+namespace HealthApp.ConsoleApp.Menus
 {
     public class PatientMenu
     {
@@ -12,6 +11,7 @@ namespace HealthApp.ConsoleApp.Menu
         public PatientMenu(IPatientService service)
         {
             _service = service;
+
         }
 
         public void Show()
@@ -69,7 +69,7 @@ namespace HealthApp.ConsoleApp.Menu
 
             Console.Write("Enter your DOB(dd-MM-yyyy): ");
             string s = Console.ReadLine();
-            DateTime dob=DateTime.ParseExact(s,"dd-MM-yyyy",null);
+            DateTime dob = DateTime.ParseExact(s, "dd-MM-yyyy", null);
             p.Dob = dob;
 
             Console.Write("Enter your Gender: ");
@@ -98,7 +98,7 @@ namespace HealthApp.ConsoleApp.Menu
             foreach (var p in patients)
             {
                 Console.WriteLine($" {c}.{p.Name}");
-                c++;   
+                c++;
             }
         }
 
@@ -117,7 +117,7 @@ namespace HealthApp.ConsoleApp.Menu
             {
                 Console.WriteLine("Patient not found.");
             }
-        
+
         }
 
 
