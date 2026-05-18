@@ -1,5 +1,4 @@
-using System;
-namespace HealthApp.Console.Models
+namespace HealthApp.ConsoleApp.Models
 {
     public class Patient
     {

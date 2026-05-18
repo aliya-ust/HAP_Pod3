@@ -1,7 +1,8 @@
-﻿using HealthApp.Console.Services;
+﻿using HealthApp.ConsoleApp.Models;
+using HealthApp.ConsoleApp.Services;
 using System;
 
-namespace HealthApp.Console.Menus
+namespace HealthApp.ConsoleApp.Menus
 {
     public class HealthRecordMenu
     {
@@ -11,31 +12,31 @@ namespace HealthApp.Console.Menus
         {
             _healthRecordService = healthRecordService;
         }
-            
+
         public string AddRecord()
         {
-            CreateHealthRecordRequest dto = new CreateHealthRecordRequest();
+            HealthRecord record = new HealthRecord();
             
             System.Console.Write("Enter Record Id: ");
-            dto.RecordId = Convert.ToInt32(System.Console.ReadLine());
+            record.RecordId = Convert.ToInt32(System.Console.ReadLine());
 
             System.Console.Write("Enter Patient Id: ");
-            dto.PatientId = Convert.ToInt32(System.Console.ReadLine());
+            record.Patient.Id = Convert.ToInt32(System.Console.ReadLine());
 
             System.Console.Write("Enter Doctor Id: ");
-            dto.DoctorId = Convert.ToInt32(System.Console.ReadLine());
+            record.Doctor.DoctorId = Convert.ToInt32(System.Console.ReadLine());
 
             System.Console.Write("Enter Visit Date (dd/mm/yyyy): ");
             string visitDate = System.Console.ReadLine();
 
             System.Console.Write("Enter Diagnosis: ");
-            dto.Diagnosis = System.Console.ReadLine();
+            record.Diagnosis = System.Console.ReadLine();
 
             System.Console.Write("Enter Prescription: ");
-            dto.Prescription = System.Console.ReadLine();
+            record.Prescription = System.Console.ReadLine();
 
             System.Console.Write("Enter Doctor Notes: ");
-            dto.Notes = System.Console.ReadLine();
+            record.DoctorNotes = System.Console.ReadLine();
 
             if (!DateTime.TryParseExact(
                 visitDate,
@@ -53,9 +54,9 @@ namespace HealthApp.Console.Menus
                 return "Visit Date can't be in the future";
             }
 
-            dto.VisitDate = visitDateParsed;
+            record.VisitDate = visitDateParsed;
 
-            return _healthRecordService.AddRecord(dto);
+            return _healthRecordService.AddRecord(record);
         }
 
         public List<HealthRecord> ViewRecord()
@@ -78,6 +79,8 @@ namespace HealthApp.Console.Menus
                     int doctorId = Convert.ToInt32(System.Console.ReadLine());
 
                     return _healthRecordService.GetByDoctorIdOrderByVisitDateDesc(doctorId);
+                default: 
+                    return [];
             }
         }
 
@@ -86,36 +89,36 @@ namespace HealthApp.Console.Menus
             System.Console.WriteLine("Enter Record Id: ");
             int recordId = Convert.ToInt32(System.Console.ReadLine());
 
-            return _healthRecordService.DeleteById(recordId);
+            return _healthRecordService.Delete(recordId);
         }
 
         public string Update()
         {
-            CreateHealthRecordRequest dto = new CreateHealthRecordRequest();
+            HealthRecord record = new HealthRecord();
             string input;
 
             System.Console.WriteLine("Enter Id of record to be updated: ");
-            dto.RecordId = System.Console.ReadLine();
+            record.RecordId = Convert.ToInt32(System.Console.ReadLine());
 
-            HealthRecord record = _healthRecordService.GetById(dto.RecordId);
-            System.Console.WriteLine(record);
+            HealthRecord recordToView = _healthRecordService.GetByRecordId(record.RecordId);
+            System.Console.WriteLine(recordToView);
 
             System.Console.WriteLine("Enter updated patient Id (Press enter if there's no change): ");
-            dto.PatientId = int.TryParse(System.Console.ReadLine(), out int pval) ? pval : record.Patient.Id;
+            record.Patient.Id = int.TryParse(System.Console.ReadLine(), out int pval) ? pval : recordToView.Patient.Id;
 
             System.Console.WriteLine("Enter updated doctor Id (Press enter if there's no change): ");
-            dto.DoctorId = int.TryParse(System.Console.ReadLine(), out int dval) ? dval : record.Doctor.Id;
+            record.Doctor.DoctorId = int.TryParse(System.Console.ReadLine(), out int dval) ? dval : recordToView.Doctor.DoctorId;
 
             System.Console.WriteLine("Enter updated diagnosis (Press enter if there's no change): ");
-            dto.Diagnosis = string.IsNullOrWhiteSpace(input = System.Console.ReadLine()) ? record.Diagnosis : input;
+            record.Diagnosis = string.IsNullOrWhiteSpace(input = System.Console.ReadLine()) ? recordToView.Diagnosis : input;
 
             System.Console.WriteLine("Enter updated prescription (Press enter if there's no change): ");
-            dto.Prescription = string.IsNullOrWhiteSpace(input = System.Console.ReadLine()) ? record.Prescription : input;
+            record.Prescription = string.IsNullOrWhiteSpace(input = System.Console.ReadLine()) ? recordToView.Prescription : input;
 
             System.Console.WriteLine("Enter updated prescription (Press enter if there's no change): ");
-            dto.Notes = string.IsNullOrWhiteSpace(input = System.Console.ReadLine()) ? record.DoctorNotes : input;
+            record.DoctorNotes = string.IsNullOrWhiteSpace(input = System.Console.ReadLine()) ? recordToView.DoctorNotes : input;
 
-            return _healthRecordService.Update(dto, record);
+            return _healthRecordService.Update(record);
         }
     }
 }
