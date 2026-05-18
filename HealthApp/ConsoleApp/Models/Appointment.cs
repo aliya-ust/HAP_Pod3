@@ -60,7 +60,7 @@ public class Appointment
         StringBuilder details = new StringBuilder();
 
         details.AppendLine($"Appointment ID: {AppointmentId}");
-        details.AppendLine($"Patient: {Patient?.FullName}");
+        details.AppendLine($"Patient: {Patient?.Name}");
         details.AppendLine($"Doctor: {Doctor?.FullName} ({Doctor?.Specialisation})");
         details.AppendLine($"Date: {ScheduledDate.ToShortDateString()}");
         details.AppendLine($"Time Slot: {TimeSlot}");
