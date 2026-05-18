@@ -78,10 +78,19 @@ namespace HealthApp.ConsoleApp.Menus
                     System.Console.Write("Enter Doctor Id: ");
                     int doctorId = Convert.ToInt32(System.Console.ReadLine());
 
-                    return _healthRecordService.GetByDoctorIdOrderByVisitDateDesc(doctorId);
+                    return _healthRecordService.GetByDoctorIdOrderByVisitDateDesc(doctorId);     
+
                 default: 
                     return [];
             }
+        }
+
+        public string GetSummary()
+        {
+            Console.WriteLine("Enter your Record Id");
+            int recordId = Convert.ToInt32(System.Console.ReadLine());
+
+            return _healthRecordService.GetByRecordId(recordId).GetSummary();
         }
 
         public string Delete()
