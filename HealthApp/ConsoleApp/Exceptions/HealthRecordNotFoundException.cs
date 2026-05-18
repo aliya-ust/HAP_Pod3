@@ -1,4 +1,4 @@
-namespace Console.Exceptions
+namespace HealthApp.ConsoleApp.Exceptions
 {
     public class HealthRecordNotFoundException : Exception
     {

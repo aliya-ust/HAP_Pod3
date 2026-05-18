@@ -36,5 +36,5 @@ namespace HealthApp.ConsoleApp.Models
                 "\nActive: " + (IsActive ? "Yes" : "No");
         }
     }
-
+    
 }
