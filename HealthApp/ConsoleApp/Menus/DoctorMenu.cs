@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using HealthApp.ConsoleApp.Models;
 
 public class DoctorMenu
 {
@@ -28,8 +29,9 @@ public class DoctorMenu
                 case 2:
                     SearchDoctor();
                     break;
+
                 case 3:
-                    System.Console.WriteLine("Exiting...");`
+                    System.Console.WriteLine("Exiting...");
                     break;
 
                 default:

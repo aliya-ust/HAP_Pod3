@@ -14,7 +14,7 @@ class Program
         var services = new ServiceCollection();
 
         // 2. Register dependencies
-        services.AddScoped<IPatientRepo, PatientRepo>();
+        services.AddScoped<IPatientRepository, PatientRepository>();
         services.AddScoped<IPatientService, PatientService>();
 
         services.AddScoped<PatientMenu>();
@@ -25,7 +25,8 @@ class Program
 
         // 4. Resolve menus
         var patientMenu = provider.GetRequiredService<PatientMenu>();
-        
+        var doctorMenu = new DoctorMenu();
+
 
         Console.WriteLine("=====================");
         Console.WriteLine("HEALTH CARE MANAGEMENT");

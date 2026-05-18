@@ -9,7 +9,7 @@ namespace HealthApp.ConsoleApp.Menus
     {
         private readonly IHealthRecordService _healthRecordService;
 
-        public HealthRecordMenu (IHealthRecordService healthRecordService)
+        public HealthRecordMenu(IHealthRecordService healthRecordService)
         {
             _healthRecordService = healthRecordService;
         }
@@ -19,7 +19,7 @@ namespace HealthApp.ConsoleApp.Menus
             HealthRecord record = new HealthRecord();
 
             System.Console.Clear();
-            
+
             System.Console.Write("Enter Record Id: ");
             record.RecordId = Convert.ToInt32(System.Console.ReadLine());
 
@@ -40,7 +40,7 @@ namespace HealthApp.ConsoleApp.Menus
 
             System.Console.Write("\nEnter Doctor Notes: ");
             record.DoctorNotes = System.Console.ReadLine();
-            
+
             if (TryParseVisitDate(visitDate, out DateTime visitDateParsed, out string error))
             {
                 record.VisitDate = visitDateParsed;
@@ -74,7 +74,7 @@ namespace HealthApp.ConsoleApp.Menus
                         int patientId = Convert.ToInt32(System.Console.ReadLine());
 
                         List<HealthRecord> records = _healthRecordService.GetByPatientIdOrderByVisitDateDesc(patientId);
-                        foreach(HealthRecord r in records)
+                        foreach (HealthRecord r in records)
                         {
                             System.Console.WriteLine(r);
                         }
@@ -85,9 +85,9 @@ namespace HealthApp.ConsoleApp.Menus
                         System.Console.Write("\nEnter Doctor Id: ");
                         int doctorId = Convert.ToInt32(System.Console.ReadLine());
 
-<<<<<<< HEAD
+
                         List<HealthRecord> records = _healthRecordService.GetByDoctorIdOrderByVisitDateDesc(doctorId);
-                        foreach(HealthRecord r in records)
+                        foreach (HealthRecord r in records)
                         {
                             System.Console.WriteLine(r);
                         }
@@ -95,12 +95,12 @@ namespace HealthApp.ConsoleApp.Menus
                     }
                 case "3":
                     break;
-=======
-                    return _healthRecordService.GetByDoctorIdOrderByVisitDateDesc(doctorId);     
 
-                default: 
+                    return _healthRecordService.GetByDoctorIdOrderByVisitDateDesc(doctorId);
+
+                default:
                     return [];
->>>>>>> 5663d838d7dba704b169f6aa2f0c5e2b7e8abfc7
+
             }
         }
 
@@ -147,7 +147,7 @@ namespace HealthApp.ConsoleApp.Menus
             if (string.IsNullOrWhiteSpace(input))
             {
                 record.VisitDate = recordToView.VisitDate;
-            } 
+            }
             else
             {
                 if (TryParseVisitDate(input, out DateTime parsedDate, out string error))
