@@ -1,5 +1,5 @@
 using System;
-namespace HealthApp.Console.Models
+namespace HealthApp.ConsoleApp.Models
 {
     public class Patient
     {
@@ -12,10 +12,10 @@ namespace HealthApp.Console.Models
         public int InsuranceId { get; set; }
         public DateTime CreatedAt { get; set; }
 
-        public Patient()
-        {
-            CreatedAt = DateTime.Now;
-        }
+        // public Patient()
+        // {
+        //     CreatedAt = DateTime.Now;
+        // }
 
         public int GetAge()
         {
