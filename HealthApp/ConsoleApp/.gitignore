@@ -1,0 +1,7 @@
+dist/obj
+dist/bin
+
+.vs
+.project.nuget.cache
+.nuget/packages
+

@@ -1,0 +1,100 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using HealthApp.Console.Interfaces;
+using HealthApp.Console.Models;
+
+namespace HealthApp.Console.Services
+{
+    public class PatientService : IPatientService
+    {
+        private List<Patient> patients = new List<Patient>();
+
+        public bool Register(Patient patient)
+        {
+            try
+            {
+                if (patient == null)
+                    return false;
+
+                // Assign an ID based on the current count
+                patient.id = patients.Count > 0 ? patients.Max(p => p.id) + 1 : 1;
+                patient.created_at = DateTime.Now;
+
+                patients.Add(patient);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public bool Update(Patient patient)
+        {
+            try
+            {
+                if (patient == null)
+                    return false;
+
+                var existingPatient = patients.FirstOrDefault(p => p.id == patient.id);
+                if (existingPatient == null)
+                    return false;
+
+                existingPatient.name = patient.name;
+                existingPatient.dob = patient.dob;
+                existingPatient.gender = patient.gender;
+                existingPatient.ph_no = patient.ph_no;
+                existingPatient.email = patient.email;
+                existingPatient.insurance_id = patient.insurance_id;
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public bool Delete(int id)
+        {
+            try
+            {
+                var patient = patients.FirstOrDefault(p => p.id == id);
+                if (patient == null)
+                    return false;
+
+                patients.Remove(patient);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public Patient GetPatientById(int id)
+        {
+            try
+            {
+                return patients.FirstOrDefault(p => p.id == id);
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public List<Patient> GetAllPatients()
+        {
+            try
+            {
+                return patients;
+            }
+            catch
+            {
+                return new List<Patient>();
+            }
+        }
+    }
+}

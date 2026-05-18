@@ -12,11 +12,13 @@ namespace HealthApp.ConsoleApp.Models
         public int InsuranceId { get; set; }
         public DateTime CreatedAt { get; set; }
 
-        // public Patient()
-        // {
-        //     CreatedAt = DateTime.Now;
-        // }
+        // Constructor to initialize CreatedAt
+        public Patient()
+        {
+            CreatedAt = DateTime.Now;
+        }
 
+        // Method to calculate age based on Dob
         public int GetAge()
         {
             var today = DateTime.Today;
@@ -28,6 +30,7 @@ namespace HealthApp.ConsoleApp.Models
             return age;
         }
 
+        // Method to get a summary of the patient's profile
         public string GetProfileSummary()
         {
             return $"ID: {Id} | Name: {Name} | Age: {GetAge()} | Gender: {Gender} | Email: {Email} | Phone: {PhoneNumber}";

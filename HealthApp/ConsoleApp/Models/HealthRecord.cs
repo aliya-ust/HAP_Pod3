@@ -1,11 +1,10 @@
-using System;
-
-namespace HealthcareApp
+namespace HealthApp.ConsoleApp.Models
 {
     public class HealthRecord
     {
-        public string Patient { get; set; }
-        public string Doctor { get; set; }
+        public int RecordId { get; set; }
+        public Patient Patient { get; set; }
+        public Doctor Doctor { get; set; }
         public DateTime VisitDate { get; set; }
         public string Diagnosis { get; set; }
         public string Prescription { get; set; }
@@ -13,7 +12,12 @@ namespace HealthcareApp
 
         public string GetSummary()
         {
-            return $"Patient: {Patient} | Doctor: {Doctor} | Date: {VisitDate.ToShortDateString()} | Diagnosis: {Diagnosis} | Prescription: {Prescription} | Notes: {DoctorNotes}";
+            return $"Record Id: {RecordId} | Patient: {Patient.Name} | Doctor: {Doctor.FullName} | Date: {VisitDate.ToShortDateString()} | Diagnosis: {Diagnosis} | Prescription: {Prescription} | Notes: {DoctorNotes}";
+        }
+
+        public override string ToString()
+        {
+            return $"Record Id: {RecordId} | Patient: {Patient} | Doctor: {Doctor} | Visit Date: {VisitDate.ToShortDateString()} | Diagnosis: {Diagnosis} | Prescription: {Prescription} | Doctor Notes: {DoctorNotes}";
         }
     }
 }

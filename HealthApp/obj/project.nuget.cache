@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "gLbq0m5/i8M=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\310521\\source\\repos\\HealthAxis\\HealthApp\\HealthApp.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\310521\\.nuget\\packages\\microsoft.extensions.dependencyinjection\\10.0.8\\microsoft.extensions.dependencyinjection.10.0.8.nupkg.sha512",
+    "C:\\Users\\310521\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\10.0.8\\microsoft.extensions.dependencyinjection.abstractions.10.0.8.nupkg.sha512"
+  ],
+  "logs": []
+}
