@@ -1,5 +1,6 @@
 ﻿using HealthApp.ConsoleApp.Models;
 using HealthApp.ConsoleApp.Services;
+using HealthApp.ConsoleApp.Interfaces;
 using System;
 
 namespace HealthApp.ConsoleApp.Menus
