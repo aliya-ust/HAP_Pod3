@@ -15,26 +15,49 @@ namespace HealthApp.ConsoleApp.Models
 
         public List<DateTime> Appointments { get; set; } = new List<DateTime>();
 
-        public bool IsAvailable(DateTime date)
+        //Availability method
+        public string IsAvailable(DateTime date)
         {
-            return Appointments.Any(a => a.Date == date.Date);
+            if (!IsActive)
+            {
+                return "Doctor is not available";
+            }
+
+            int count = Appointments.Count(a => a.Date == date.Date);
+
+            if (count >= 5)
+            {
+                return "Appointment limit reached, doctor is not available";
+            }
+
+            return "Doctor is available today";
         }
 
+        //Upcoming count
         public string GetScheduleSummary()
         {
             int count = Appointments.Count(a => a.Date >= DateTime.Today);
-            return "Upcoming appointments count: " + count;
+
+            if (count == 0)
+            {
+                return "No upcoming appointments";
+            }
+
+            return $"Upcoming appointments count: {count}";
+        }
+
+        //Upcoming list
+        public List<DateTime> GetUpcomingAppointments()
+        {
+            return Appointments
+                .Where(a => a.Date >= DateTime.Today)
+                .OrderBy(a => a)
+                .ToList();
         }
 
         public string GetDoctorDetails()
         {
-            return "Doctor ID: " + DoctorId +
-                "\nFull Name: " + FullName +
-                "\nSpecialisation: " + Specialisation +
-                "\nYears Of Experience: " + YearsOfExperience +
-                "\nConsultation Fee: Rs. " + ConsultationFee +
-                "\nActive: " + (IsActive ? "Yes" : "No");
+            return $"Doctor ID: {DoctorId}, Full Name: {FullName}, Specialisation: {Specialisation}, Experience: {YearsOfExperience} years, Consultation Fee: Rs. {ConsultationFee}, Active: {(IsActive ? "Yes" : "No")}";
         }
     }
-    
 }
