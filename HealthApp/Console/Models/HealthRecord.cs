@@ -1,4 +1,6 @@
-namespace HealthApp.ConsoleApp.Models
+using System;
+
+namespace HealthApp.Console.Models
 {
     public class HealthRecord
     {
