@@ -14,7 +14,7 @@ namespace HealthcareApp
                 Console.WriteLine("\n--- Healthcare Record Menu ---");
                 Console.WriteLine("1. Add Health Record");
                 Console.WriteLine("2. View All Records");
-                Console.WriteLine("3. Exit");
+                Console.WriteLine("4. Exit");
                 Console.Write("Choose an option: ");
 
                 string choice = Console.ReadLine();
@@ -22,7 +22,24 @@ namespace HealthcareApp
                 switch (choice)
                 {
                     case "1":
-                        AddRecord();
+                        Console.Write("Enter Patient Name: ");
+                        record.Patient = Console.ReadLine();
+
+                        Console.Write("Enter Doctor Name: ");
+                        record.Doctor = Console.ReadLine();
+
+                        Console.Write("Enter Visit Date (yyyy-mm-dd): ");
+                        record.VisitDate = DateTime.Parse(Console.ReadLine());
+
+                        Console.Write("Enter Diagnosis: ");
+                        record.Diagnosis = Console.ReadLine();
+
+                        Console.Write("Enter Prescription: ");
+                        record.Prescription = Console.ReadLine();
+
+                        Console.Write("Enter Doctor Notes: ");
+                        record.DoctorNotes = Console.ReadLine();
+
                         break;
 
                     case "2":
@@ -43,23 +60,7 @@ namespace HealthcareApp
         {
             HealthRecord record = new HealthRecord();
 
-            Console.Write("Enter Patient Name: ");
-            record.Patient = Console.ReadLine();
-
-            Console.Write("Enter Doctor Name: ");
-            record.Doctor = Console.ReadLine();
-
-            Console.Write("Enter Visit Date (yyyy-mm-dd): ");
-            record.VisitDate = DateTime.Parse(Console.ReadLine());
-
-            Console.Write("Enter Diagnosis: ");
-            record.Diagnosis = Console.ReadLine();
-
-            Console.Write("Enter Prescription: ");
-            record.Prescription = Console.ReadLine();
-
-            Console.Write("Enter Doctor Notes: ");
-            record.DoctorNotes = Console.ReadLine();
+            
 
             records.Add(record);
 

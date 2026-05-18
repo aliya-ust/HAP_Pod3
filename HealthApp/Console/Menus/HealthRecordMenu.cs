@@ -22,7 +22,26 @@ namespace HealthcareApp
                 switch (choice)
                 {
                     case "1":
-                        AddRecord();
+                        Console.Write("Enter Patient ID: ");
+                        record.Patient = Console.ReadLine();
+
+                        Console.Write("Enter Doctor ID: ");
+                        record.Doctor = Console.ReadLine();
+
+                        Console.Write("Enter Record ID: ");
+                        record.RecordID = Console.ReadLine();
+
+                        Console.Write("Enter Visit Date (yyyy-mm-dd): ");
+                        record.VisitDate = DateTime.Parse(Console.ReadLine());
+
+                        Console.Write("Enter Diagnosis: ");
+                        record.Diagnosis = Console.ReadLine();
+
+                        Console.Write("Enter Prescription: ");
+                        record.Prescription = Console.ReadLine();
+
+                        Console.Write("Enter Doctor Notes: ");
+                        record.DoctorNotes = Console.ReadLine();
                         break;
 
                     case "2":
@@ -43,27 +62,11 @@ namespace HealthcareApp
         {
             HealthRecord record = new HealthRecord();
 
-            Console.Write("Enter Patient Name: ");
-            record.Patient = Console.ReadLine();
-
-            Console.Write("Enter Doctor Name: ");
-            record.Doctor = Console.ReadLine();
-
-            Console.Write("Enter Visit Date (yyyy-mm-dd): ");
-            record.VisitDate = DateTime.Parse(Console.ReadLine());
-
-            Console.Write("Enter Diagnosis: ");
-            record.Diagnosis = Console.ReadLine();
-
-            Console.Write("Enter Prescription: ");
-            record.Prescription = Console.ReadLine();
-
-            Console.Write("Enter Doctor Notes: ");
-            record.DoctorNotes = Console.ReadLine();
+            
 
             records.Add(record);
 
-            Console.WriteLine("✅ Record added successfully!");
+            Console.WriteLine("Record added successfully!");
         }
 
         private void ViewRecords()
