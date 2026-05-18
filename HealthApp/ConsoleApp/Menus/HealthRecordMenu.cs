@@ -10,7 +10,7 @@ namespace HealthApp.ConsoleApp.Menus
     {
         private readonly IHealthRecordService _healthRecordService;
 
-        public HealthRecordMenu (IHealthRecordService healthRecordService)
+        public HealthRecordMenu(IHealthRecordService healthRecordService)
         {
             _healthRecordService = healthRecordService;
         }
