@@ -22,7 +22,7 @@ namespace HealthApp
             Console.WriteLine("3. Exit");
 
             Console.Write("Enter your choice: ");
-            choice = Convert.ToInt32(Console.ReadLine());
+            int choice = Convert.ToInt32(Console.ReadLine());
             this.doctorService = doctorService;
         }
 
