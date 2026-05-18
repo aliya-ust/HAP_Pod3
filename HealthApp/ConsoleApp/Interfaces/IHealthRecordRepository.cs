@@ -1,6 +1,6 @@
 ﻿using HealthApp.ConsoleApp.Models;
 
-namespace HealthApp.ConsoleApp.Repositories
+namespace HealthApp.ConsoleApp.Interfaces
 {
     public interface IHealthRecordRepository
     {
