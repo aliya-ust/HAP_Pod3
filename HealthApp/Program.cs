@@ -18,14 +18,14 @@ class Program
         services.AddScoped<IPatientService, PatientService>();
 
         services.AddScoped<PatientMenu>();
-        services.AddScoped<DoctorMenu>();
+        
 
         // 3. Build provider
         var provider = services.BuildServiceProvider();
 
         // 4. Resolve menus
         var patientMenu = provider.GetRequiredService<PatientMenu>();
-        var doctorMenu = provider.GetRequiredService<DoctorMenu>();
+        
 
         Console.WriteLine("=====================");
         Console.WriteLine("HEALTH CARE MANAGEMENT");
