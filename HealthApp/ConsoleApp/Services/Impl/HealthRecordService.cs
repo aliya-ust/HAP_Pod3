@@ -21,21 +21,13 @@ namespace HealthApp.ConsoleApp.Services.Impl
         }
 
         //Add new record
-        public string AddRecord(CreateHealthRecordRequest request)
+        public string AddRecord(HealthRecord record)
         {
-            Patient patient = _patientRepository.GetById(request.PatientId);
-            Doctor doctor = _doctorRepository.GetById(request.DoctorId);
+            Patient patient = _patientRepository.GetById(record.Patient.Id);
+            Doctor doctor = _doctorRepository.GetById(record.Doctor.DoctorId);
 
-            HealthRecord record = new HealthRecord
-            {
-                RecordId = request.RecordId,
-                Patient = patient,
-                Doctor = doctor,
-                VisitDate = request.VisitDate,
-                Diagnosis = request.Diagnosis,
-                Prescription = request.Prescription,
-                DoctorNotes = request.Notes,
-            };
+            record.Patient = patient;
+            record.Doctor = doctor;
 
             return _healthRecordRepository.Add(record);
         }
@@ -55,17 +47,10 @@ namespace HealthApp.ConsoleApp.Services.Impl
         }
 
         //Update records by record Id if not same
-        public string Update(CreateHealthRecordRequest dto, HealthRecord record)
+        public string Update(HealthRecord updatedRecord)
         {
-            HealthRecord updatedRecord = new HealthRecord
-            {
-                Patient = (dto.PatientId == record.Patient.Id) ? record.Patient.Id : _patientRepository.GetById(dto.PatientId),
-                Doctor = (dto.DoctorId == record.Doctor.DoctorId) ? record.Doctor.DoctorId : _doctorRepository.GetById(dto.DoctorId),
-
-                Diagnosis = dto.Diagnosis,
-                Prescription = dto.Prescription,
-                DoctorNotes = dto.Notes
-            };
+            updatedRecord.Patient = _patientRepository.GetById(updatedRecord.Patient.Id);
+            updatedRecord.Doctor = _doctorRepository.GetById(updatedRecord.Doctor.DoctorId);
 
             return _healthRecordRepository.Update(updatedRecord);
         }

@@ -3,8 +3,8 @@ using HealthApp.ConsoleApp.Models;
 
 namespace HealthApp.ConsoleApp.Databases
 {
-    public class Database
+    public class HealthRecordDB
     {
-        public static List<HealthRecord> Records = new List<HealthRecord>();
+        public List<HealthRecord> Records = new List<HealthRecord>();
     }
 }

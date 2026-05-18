@@ -11,13 +11,13 @@ public class DoctorMenu
 
         do
         {
-            Console.WriteLine("\n===== DOCTOR MENU =====");
-            Console.WriteLine("1. Add New Doctor");
-            Console.WriteLine("2. Search Doctors by Specialisation");
-            Console.WriteLine("3. Exit");
+            System.Console.WriteLine("\n===== DOCTOR MENU =====");
+            System.Console.WriteLine("1. Add New Doctor");
+            System.Console.WriteLine("2. Search Doctors by Specialisation");
+            System.Console.WriteLine("3. Exit");
 
-            Console.Write("Enter your choice: ");
-            choice = Convert.ToInt32(Console.ReadLine());
+            System.Console.Write("Enter your choice: ");
+            choice = Convert.ToInt32(System.Console.ReadLine());
 
             switch (choice)
             {
@@ -29,11 +29,11 @@ public class DoctorMenu
                     SearchDoctor();
                     break;
                 case 3:
-                    Console.WriteLine("Exiting...");`
+                    System.Console.WriteLine("Exiting...");`
                     break;
 
                 default:
-                    Console.WriteLine("Invalid choice");
+                    System.Console.WriteLine("Invalid choice");
                     break;
             }
 
@@ -44,20 +44,20 @@ public class DoctorMenu
     {
         Doctor doctor = new Doctor();
 
-        Console.Write("Enter Doctor ID: ");
-        doctor.DoctorId = Convert.ToInt32(Console.ReadLine());
+        System.Console.Write("Enter Doctor ID: ");
+        doctor.DoctorId = Convert.ToInt32(System.Console.ReadLine());
 
-        Console.Write("Enter Full Name: ");
-        doctor.FullName = Console.ReadLine() ?? "";
+        System.Console.Write("Enter Full Name: ");
+        doctor.FullName = System.Console.ReadLine() ?? "";
 
-        Console.Write("Enter Specialisation: ");
-        doctor.Specialisation = Console.ReadLine() ?? "";
+        System.Console.Write("Enter Specialisation: ");
+        doctor.Specialisation = System.Console.ReadLine() ?? "";
 
-        Console.Write("Enter Years Of Experience: ");
-        doctor.YearsOfExperience = Convert.ToInt32(Console.ReadLine());
+        System.Console.Write("Enter Years Of Experience: ");
+        doctor.YearsOfExperience = Convert.ToInt32(System.Console.ReadLine());
 
-        Console.Write("Enter Consultation Fee: ");
-        doctor.ConsultationFee = Convert.ToDecimal(Console.ReadLine());
+        System.Console.Write("Enter Consultation Fee: ");
+        doctor.ConsultationFee = Convert.ToDecimal(System.Console.ReadLine());
 
         doctor.IsActive = true;
 
@@ -68,13 +68,13 @@ public class DoctorMenu
 
         doctors.Add(doctor);
 
-        Console.WriteLine("Doctor added successfully!");
+        System.Console.WriteLine("Doctor added successfully!");
     }
 
     private void SearchDoctor()
     {
-        Console.Write("Enter specialisation to search: ");
-        string search = Console.ReadLine() ?? "";
+        System.Console.Write("Enter specialisation to search: ");
+        string search = System.Console.ReadLine() ?? "";
 
         bool found = false;
 
@@ -82,11 +82,11 @@ public class DoctorMenu
         {
             if (doctor.Specialisation.Equals(search, StringComparison.OrdinalIgnoreCase))
             {
-                Console.WriteLine("\nDoctor Found:");
-                Console.WriteLine(doctor.GetDoctorDetails());
-                Console.WriteLine(doctor.GetScheduleSummary());
+                System.Console.WriteLine("\nDoctor Found:");
+                System.Console.WriteLine(doctor.GetDoctorDetails());
+                System.Console.WriteLine(doctor.GetScheduleSummary());
 
-                Console.WriteLine("Available Today: " +
+                System.Console.WriteLine("Available Today: " +
                     (doctor.IsAvailable(DateTime.Today) ? "Yes" : "No"));
 
                 found = true;
@@ -95,7 +95,7 @@ public class DoctorMenu
 
         if (!found)
         {
-            Console.WriteLine("No doctor found with that specialisation.");
+            System.Console.WriteLine("No doctor found with that specialisation.");
         }
     }
 }

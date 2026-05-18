@@ -4,18 +4,26 @@ using HealthApp.ConsoleApp.Databases;
 
 namespace HealthApp.ConsoleApp.Repositories.Impl
 {
+
     public class HealthRecordRepository : IHealthRecordRepository
     {
-        public string Add(HealthRecord recordToAdd)
+        private readonly HealthRecordDB _healthRecordDb;
+
+        public HealthRecordRepository(HealthRecordDB healthRecordDB)
         {
-            HealthRecord record = GetByRecordId(recordToAdd.RecordId);
-            if (recordToAdd is not null)
+            _healthRecordDb = healthRecordDB;
+        }
+
+        public string Add(HealthRecord record)
+        {
+            HealthRecord recordToCheck = GetByRecordId(record.RecordId);
+            if (recordToCheck is not null)
             {
                 throw new HealthRecordExistsException("Health Record already exist");
             }
-            Database.Records.Add(record);
+            _healthRecordDb.Records.Add(record);
 
-            return $"Record ID {recordToAdd.RecordId} added successfully!";
+            return $"Record ID {record.RecordId} added successfully!";
         }
 
         public string Delete(int recordId)
@@ -25,7 +33,7 @@ namespace HealthApp.ConsoleApp.Repositories.Impl
             {
                 throw new HealthRecordNotFoundException("Health Record doesn't Exist");
             }
-            Database.Records.Remove(record);
+            _healthRecordDb.Records.Remove(record);
 
             return $"Record ID {recordId} has been deleted successfully";
         }
@@ -38,21 +46,28 @@ namespace HealthApp.ConsoleApp.Repositories.Impl
                 throw new HealthRecordNotFoundException("Health Record doesn't Exist");
             }
 
+            recordToUpdate.RecordId = record.RecordId;
+            recordToUpdate.Patient = record.Patient;
+            recordToUpdate.Doctor = record.Doctor;
+            recordToUpdate.Diagnosis = record.Diagnosis;
+            recordToUpdate.Prescription = record.Prescription;
+            recordToUpdate.DoctorNotes = record.DoctorNotes;
+
             return $"Record {record.RecordId} has been updated";
         }
 
         public List<HealthRecord> GetAll()
         {
-            if (!Database.Records.Any())
+            if (!_healthRecordDb.Records.Any())
             {
                 throw new HealthRecordNotFoundException("There is no Health Records Available");
             }
-            return Database.Records.ToList();
+            return _healthRecordDb.Records.ToList();
         }
 
         public List<HealthRecord> GetByPatientIdOrderByVisitDateDesc(int patientId)
         {
-            return Database.Records
+            return _healthRecordDb.Records
                     .Where(r => r.Patient != null && r.Patient.Id == patientId)
                     .OrderByDescending(r => r.VisitDate)
                     .ToList();
@@ -60,7 +75,7 @@ namespace HealthApp.ConsoleApp.Repositories.Impl
 
         public List<HealthRecord> GetByDoctorIdOrderByVisitDateDesc(int doctorId)
         {
-            return Database.Records
+            return _healthRecordDb.Records
                     .Where(r => r.Doctor != null && r.Doctor.DoctorId == doctorId)
                     .OrderByDescending(r => r.VisitDate)
                     .ToList();
@@ -68,7 +83,7 @@ namespace HealthApp.ConsoleApp.Repositories.Impl
 
         public HealthRecord GetByRecordId(int recordId)
         {
-            HealthRecord record = Database.Records.Find(r => r.RecordId == recordId);
+            HealthRecord record = _healthRecordDb.Records.Find(r => r.RecordId == recordId);
             if (record is null)
             {
                 throw new HealthRecordNotFoundException("There is no Health Records Available");
