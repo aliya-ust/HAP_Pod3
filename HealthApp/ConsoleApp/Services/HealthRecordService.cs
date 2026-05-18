@@ -2,7 +2,6 @@ using HealthApp.ConsoleApp.Services;
 using HealthApp.ConsoleApp.Repositories;
 using HealthApp.ConsoleApp.Models;
 using HealthApp.ConsoleApp.Interfaces;
-
 namespace HealthApp.ConsoleApp.Services
 {
     public class HealthRecordService : IHealthRecordService
