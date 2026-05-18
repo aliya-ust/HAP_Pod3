@@ -1,8 +1,9 @@
 ﻿using HealthApp.ConsoleApp.Models;
 using HealthApp.ConsoleApp.Exceptions;
 using HealthApp.ConsoleApp.Databases;
+using HealthApp.ConsoleApp.Interfaces;
 
-namespace HealthApp.ConsoleApp.Repositories.Impl
+namespace HealthApp.ConsoleApp.Repositories
 {
 
     public class HealthRecordRepository : IHealthRecordRepository

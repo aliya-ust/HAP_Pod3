@@ -19,7 +19,7 @@ namespace HealthApp.ConsoleApp.Services
         {
             List<Doctor> doctors = doctorRepository.GetAllDoctors();
 
-            // ✅ Check duplicate ID
+            // Check duplicate ID
             foreach (var d in doctors)
             {
                 if (d.DoctorId == doctor.DoctorId)
@@ -28,7 +28,7 @@ namespace HealthApp.ConsoleApp.Services
                 }
             }
 
-            // ✅ Add if no duplicate
+            //Add if no duplicate
             doctorRepository.AddDoctor(doctor);
         }
 
@@ -41,7 +41,7 @@ namespace HealthApp.ConsoleApp.Services
         {
             var doctors = doctorRepository.GetDoctorsBySpecialisation(specialisation);
 
-            // ✅ Throw exception if not found
+            //Throw exception if not found
             if (doctors == null || doctors.Count == 0)
             {
                 throw new SpecialisationNotFoundException("No doctors found for this specialisation!");

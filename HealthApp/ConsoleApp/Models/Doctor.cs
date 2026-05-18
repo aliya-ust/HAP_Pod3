@@ -15,7 +15,7 @@ namespace HealthApp.ConsoleApp.Models
 
         public List<DateTime> Appointments { get; set; } = new List<DateTime>();
 
-        // ✅ Availability method
+        //Availability method
         public string IsAvailable(DateTime date)
         {
             if (!IsActive)
@@ -33,7 +33,7 @@ namespace HealthApp.ConsoleApp.Models
             return "Doctor is available today";
         }
 
-        // ✅ Upcoming count
+        //Upcoming count
         public string GetScheduleSummary()
         {
             int count = Appointments.Count(a => a.Date >= DateTime.Today);
@@ -46,7 +46,7 @@ namespace HealthApp.ConsoleApp.Models
             return $"Upcoming appointments count: {count}";
         }
 
-        // ✅ Upcoming list
+        //Upcoming list
         public List<DateTime> GetUpcomingAppointments()
         {
             return Appointments
