@@ -84,6 +84,7 @@ namespace HealthApp.ConsoleApp.Menus
                         System.Console.Write("\nEnter Doctor Id: ");
                         int doctorId = Convert.ToInt32(System.Console.ReadLine());
 
+<<<<<<< HEAD
                         List<HealthRecord> records = _healthRecordService.GetByDoctorIdOrderByVisitDateDesc(doctorId);
                         foreach(HealthRecord r in records)
                         {
@@ -93,7 +94,21 @@ namespace HealthApp.ConsoleApp.Menus
                     }
                 case "3":
                     break;
+=======
+                    return _healthRecordService.GetByDoctorIdOrderByVisitDateDesc(doctorId);     
+
+                default: 
+                    return [];
+>>>>>>> 5663d838d7dba704b169f6aa2f0c5e2b7e8abfc7
             }
+        }
+
+        public string GetSummary()
+        {
+            Console.WriteLine("Enter your Record Id");
+            int recordId = Convert.ToInt32(System.Console.ReadLine());
+
+            return _healthRecordService.GetByRecordId(recordId).GetSummary();
         }
 
         public string Delete()

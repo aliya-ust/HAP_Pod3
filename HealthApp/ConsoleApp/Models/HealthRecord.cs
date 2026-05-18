@@ -12,7 +12,7 @@ namespace HealthApp.ConsoleApp.Models
 
         public string GetSummary()
         {
-            return $"Patient: {Patient} | Doctor: {Doctor} | Date: {VisitDate.ToShortDateString()} | Diagnosis: {Diagnosis} | Prescription: {Prescription} | Notes: {DoctorNotes}";
+            return $"Record Id: {RecordId} | Patient: {Patient.Name} | Doctor: {Doctor.FullName} | Date: {VisitDate.ToShortDateString()} | Diagnosis: {Diagnosis} | Prescription: {Prescription} | Notes: {DoctorNotes}";
         }
 
         public override string ToString()
