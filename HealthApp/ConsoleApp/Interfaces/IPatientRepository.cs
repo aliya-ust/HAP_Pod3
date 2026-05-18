@@ -2,7 +2,7 @@
 
 namespace HealthApp.ConsoleApp.Interfaces
 {
-    public interface IPatientRepo
+    public interface IPatientRepository
     {
         bool Add(Patient patient);
         bool Update(Patient patient);

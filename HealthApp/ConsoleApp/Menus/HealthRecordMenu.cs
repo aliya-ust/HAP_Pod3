@@ -9,7 +9,7 @@ namespace HealthApp.ConsoleApp.Menus
     {
         private readonly IHealthRecordService _healthRecordService;
 
-        public HealthRecordMenu (IHealthRecordService healthRecordService)
+        public HealthRecordMenu(IHealthRecordService healthRecordService)
         {
             _healthRecordService = healthRecordService;
         }
@@ -74,7 +74,7 @@ namespace HealthApp.ConsoleApp.Menus
                         int patientId = Convert.ToInt32(Console.ReadLine());
 
                         List<HealthRecord> records = _healthRecordService.GetByPatientIdOrderByVisitDateDesc(patientId);
-                        foreach(HealthRecord r in records)
+                        foreach (HealthRecord r in records)
                         {
                             Console.WriteLine(r);
                         }
@@ -86,7 +86,7 @@ namespace HealthApp.ConsoleApp.Menus
                         int doctorId = Convert.ToInt32(Console.ReadLine());
 
                         List<HealthRecord> records = _healthRecordService.GetByDoctorIdOrderByVisitDateDesc(doctorId);
-                        foreach(HealthRecord r in records)
+                        foreach (HealthRecord r in records)
                         {
                             Console.WriteLine(r);
                         }
@@ -140,7 +140,7 @@ namespace HealthApp.ConsoleApp.Menus
             if (string.IsNullOrWhiteSpace(input))
             {
                 record.VisitDate = recordToView.VisitDate;
-            } 
+            }
             else
             {
                 if (TryParseVisitDate(input, out DateTime parsedDate, out string error))

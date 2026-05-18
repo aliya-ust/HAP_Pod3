@@ -1,20 +1,19 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using HealthApp.ConsoleApp.Interfaces;
 using HealthApp.ConsoleApp.Models;
-using HealthApp.ConsoleApp.Database;
+using HealthApp.ConsoleApp.Databases;
 
 namespace HealthApp.ConsoleApp.Repositories
 {
-    public class PatientRepo : IPatientRepo
+    public class PatientRepository : IPatientRepository
     {
         private readonly List<Patient> _patients;
 
-        public PatientRepo()
+        public PatientRepository()
         {
-            _patients = PatientsDb.Patients;
+            _patients = PatientDb.Patients;
         }
 
         public bool Add(Patient patient)
