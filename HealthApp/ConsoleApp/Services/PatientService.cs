@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using HealthApp.ConsoleApp.Exceptions;
 using HealthApp.ConsoleApp.Interfaces;
 using HealthApp.ConsoleApp.Models;
 using HealthApp.ConsoleApp.Repositories;
@@ -9,54 +10,58 @@ namespace HealthApp.ConsoleApp.Services
 {
     public class PatientService : IPatientService
     {
-        private readonly IPatientRepository patientRepo;
+        private readonly IPatientRepository _patientRepo;
 
         public PatientService(IPatientRepository patientRepo)
         {
-            this.patientRepo = patientRepo;
+            _patientRepo = patientRepo;
         }
 
-        public bool Register(Patient patient)
+        public string RegisterPatient(Patient patient)
         {
-            if (patient == null)
-                return false;
+            var existingPatient = GetPatientById(patient.PatientId);
 
-            return patientRepo.Add(patient);
+            if (existingPatient != null)
+            {
+                throw new PatientAlreadyExistsException("Patient already exists.");
+            }
+
+            return _patientRepo.RegisterPatient(patient);
         }
 
-        public bool Update(Patient patient)
+        // public bool Update(Patient patient)
+        // {
+        //     if (patient == null)
+        //         return false;
+
+        //     return patientRepo.Update(patient);
+        // }
+
+        // public bool Delete(int id)
+        // {
+        //     return patientRepo.Delete(id);
+        // }
+
+        public Patient? GetPatientById(int id)
         {
-            if (patient == null)
-                return false;
-
-            return patientRepo.Update(patient);
+            return _patientRepo.GetPatientById(id);
         }
 
-        public bool Delete(int id)
-        {
-            return patientRepo.Delete(id);
-        }
+        // public List<Patient> GetAllPatients()
+        // {
+        //     return patientRepo.GetAll();
+        // }
 
-        public Patient GetPatientById(int id)
-        {
-            return patientRepo.GetById(id);
-        }
+        // public int GetPatientAge(int patientId)
+        // {
+        //     var patient = GetPatientById(patientId);
+        //     return patient?.GetAge() ?? -1;
+        // }
 
-        public List<Patient> GetAllPatients()
-        {
-            return patientRepo.GetAll();
-        }
-
-        public int GetPatientAge(int patientId)
-        {
-            var patient = GetPatientById(patientId);
-            return patient?.GetAge() ?? -1;
-        }
-
-        public string GetPatientProfileSummary(int patientId)
-        {
-            var patient = GetPatientById(patientId);
-            return patient?.GetProfileSummary() ?? string.Empty;
-        }
+        // public string GetPatientProfileSummary(int patientId)
+        // {
+        //     var patient = GetPatientById(patientId);
+        //     return patient?.GetProfileSummary() ?? string.Empty;
+        // }
     }
 }

@@ -5,6 +5,7 @@ using HealthApp.ConsoleApp.Interfaces;
 using HealthApp.ConsoleApp.Services;
 using HealthApp.ConsoleApp.Menus;
 using HealthApp.ConsoleApp.Repositories;
+using HealthApp.ConsoleApp.Models;
 
 // 1. Create service collection
 var services = new ServiceCollection();
@@ -51,13 +52,17 @@ while (!exit)
     switch (choice)
     {
         case 1:
-            // Register a new patient
+            Console.WriteLine(patientMenu.RegisterPatient());
             break;
         case 2:
-            // Add a new doctor
+            Console.WriteLine(doctorMenu.AddDoctor());
             break;
         case 3:
-            // Search doctors by specialisation
+            List<Doctor> doctors = doctorMenu.SearchDoctorBySpecialisation();
+            foreach (Doctor d in doctors)
+            {
+                Console.WriteLine(d);
+            }
             break;
         case 4:
             // Book an appointment for a patient

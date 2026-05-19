@@ -8,46 +8,58 @@ namespace HealthApp.ConsoleApp.Services
 {
     public class DoctorService : IDoctorService
     {
-        private readonly IDoctorRepository doctorRepository;
+        private readonly IDoctorRepository _doctorRepo;
 
         public DoctorService(IDoctorRepository doctorRepository)
         {
-            this.doctorRepository = doctorRepository;
+            _doctorRepo = doctorRepository;
         }
 
-        public void AddDoctor(Doctor doctor)
+        public string AddDoctor(Doctor doctor)
         {
-            List<Doctor> doctors = doctorRepository.GetAllDoctors();
+            var existingDoctor = GetDoctorById(doctor.DoctorId);
 
-            // Check duplicate ID
-            foreach (var d in doctors)
+            if (existingDoctor != null)
             {
-                if (d.DoctorId == doctor.DoctorId)
-                {
-                    throw new DoctorAlreadyExistsException("Doctor ID already exists!");
-                }
+                throw new DoctorAlreadyExistsException("Doctor already exists.");
             }
 
-            //Add if no duplicate
-            doctorRepository.AddDoctor(doctor);
+            return _doctorRepo.AddDoctor(doctor);
         }
 
-        public List<Doctor> GetAllDoctors()
+        public Doctor? GetDoctorById(int doctorId)
         {
-            return doctorRepository.GetAllDoctors();
+            return _doctorRepo.GetDoctorById(doctorId);
         }
 
-        public List<Doctor> SearchBySpecialisation(string specialisation)
+        public List<Doctor> GetDoctorsBySpecialisation(string specialisation)
         {
-            var doctors = doctorRepository.GetDoctorsBySpecialisation(specialisation);
+            var result = _doctorRepo.GetDoctorsBySpecialisation(specialisation);
 
-            //Throw exception if not found
-            if (doctors == null || doctors.Count == 0)
+            if (result == null || result.Count == 0)
             {
-                throw new SpecialisationNotFoundException("No doctors found for this specialisation!");
+                throw new SpecialisationNotFoundException($"Doctor with specialisation in {specialisation} does not exist");
             }
 
-            return doctors;
+            return result;
         }
+
+        // public List<Doctor> GetAllDoctors()
+        // {
+        //     return doctorRepository.GetAllDoctors();
+        // }
+
+        // public List<Doctor> SearchBySpecialisation(string specialisation)
+        // {
+        //     var doctors = doctorRepository.GetDoctorsBySpecialisation(specialisation);
+
+        //     //Throw exception if not found
+        //     if (doctors == null || doctors.Count == 0)
+        //     {
+        //         throw new SpecialisationNotFoundException("No doctors found for this specialisation!");
+        //     }
+
+        //     return doctors;
+        // }
     }
 }

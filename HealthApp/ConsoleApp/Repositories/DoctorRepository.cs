@@ -9,28 +9,41 @@ namespace HealthApp.ConsoleApp.Repositories.impl
 {
     public class DoctorRepository : IDoctorRepository
     {
-        private readonly DoctorDb doctorDb;
+        private readonly DoctorDb _doctorDb;
 
         public DoctorRepository(DoctorDb doctorDb)
         {
-            this.doctorDb = doctorDb;
+            _doctorDb = doctorDb;
         }
 
-        public void AddDoctor(Doctor doctor)
+        public string AddDoctor(Doctor doctor)
         {
-            doctorDb.Doctors.Add(doctor);
+            _doctorDb.Doctors.Add(doctor);
+            return $"Doctor ID {doctor.DoctorId} added successfully!";
         }
 
-        public List<Doctor> GetAllDoctors()
+        public Doctor? GetDoctorById(int id)
         {
-            return doctorDb.Doctors;
+            return _doctorDb.Doctors.FirstOrDefault(d => d.DoctorId == id);
         }
 
         public List<Doctor> GetDoctorsBySpecialisation(string specialisation)
         {
-            return doctorDb.Doctors
+            return _doctorDb.Doctors
                 .Where(d => d.Specialisation.Equals(specialisation, StringComparison.OrdinalIgnoreCase))
                 .ToList();
         }
+
+        // public List<Doctor> GetAllDoctors()
+        // {
+        //     return doctorDb.Doctors;
+        // }
+
+        // public List<Doctor> GetDoctorsBySpecialisation(string specialisation)
+        // {
+        //     return doctorDb.Doctors
+        //         .Where(d => d.Specialisation.Equals(specialisation, StringComparison.OrdinalIgnoreCase))
+        //         .ToList();
+        // }
     }
 }
