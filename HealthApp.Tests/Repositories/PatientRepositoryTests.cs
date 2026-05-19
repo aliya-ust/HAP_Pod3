@@ -53,6 +53,8 @@ namespace HealthApp_Testing
                 Gender = "Other",
                 InsuranceId = 1
             };
+            var initialCount = _repository.GetAll().Count;
+            Assert.True("Patient added successfully", _repository.Add(newPatient));
         }
         [Fact]
         public void Update_ExistingPatient_ShouldUpdatePatient()

@@ -31,7 +31,7 @@ namespace HealthApp.ConsoleApp.Menus
             input = Console.ReadLine();
             if (string.IsNullOrWhiteSpace(input)) return "Invalid input";
             if (!int.TryParse(input, out int patientId)) return "Invalid number";
-            record.Patient.Id = patientId;
+            record.Patient.PatientId = patientId;
 
             Console.Write("\nEnter Doctor Id: ");
             input = Console.ReadLine();
@@ -210,7 +210,7 @@ namespace HealthApp.ConsoleApp.Menus
 
             if (string.IsNullOrWhiteSpace(input))
             {
-                record.Patient.Id = recordToView.Patient.Id;
+                record.Patient.PatientId = recordToView.Patient.PatientId;
             }
             else if (!int.TryParse(input, out int pval))
             {
@@ -218,7 +218,7 @@ namespace HealthApp.ConsoleApp.Menus
             }
             else
             {
-                record.Patient.Id = pval;
+                record.Patient.PatientId = pval;
             }
 
             Console.Write("\nEnter updated doctor Id (Press enter if no change): ");
