@@ -3,56 +3,56 @@
   "WorkspaceRootPath": "C:\\Users\\310521\\source\\repos\\HealthAxis\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{57F2CF24-96E2-A7C2-542B-267FB682F20F}|HealthApp\\HealhApp.csproj|c:\\users\\310521\\source\\repos\\healthaxis\\healthapp\\consoleapp\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{57F2CF24-96E2-A7C2-542B-267FB682F20F}|HealthApp\\HealhApp.csproj|solutionrelative:healthapp\\consoleapp\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\310521\\source\\repos\\HealthAxis\\HealthApp\\ConsoleApp\\Menu\\PatientMenu.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:HealthApp\\ConsoleApp\\Menu\\PatientMenu.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{57F2CF24-96E2-A7C2-542B-267FB682F20F}|HealthApp\\HealhApp.csproj|c:\\users\\310521\\source\\repos\\healthaxis\\healthapp\\consoleapp\\repositories\\patientrepo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{57F2CF24-96E2-A7C2-542B-267FB682F20F}|HealthApp\\HealhApp.csproj|solutionrelative:healthapp\\consoleapp\\repositories\\patientrepo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\310521\\source\\repos\\HealthAxis\\HealthApp\\ConsoleApp\\Services\\PatientService.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:HealthApp\\ConsoleApp\\Services\\PatientService.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{57F2CF24-96E2-A7C2-542B-267FB682F20F}|HealthApp\\HealhApp.csproj|c:\\users\\310521\\source\\repos\\healthaxis\\healthapp\\consoleapp\\services\\patientservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{57F2CF24-96E2-A7C2-542B-267FB682F20F}|HealthApp\\HealhApp.csproj|solutionrelative:healthapp\\consoleapp\\services\\patientservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\310521\\source\\repos\\HealthAxis\\HealthApp\\ConsoleApp\\Repositories\\PatientRepo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:HealthApp\\ConsoleApp\\Repositories\\PatientRepo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{57F2CF24-96E2-A7C2-542B-267FB682F20F}|HealthApp\\HealhApp.csproj|c:\\users\\310521\\source\\repos\\healthaxis\\healthapp\\consoleapp\\menu\\patientmenu.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{57F2CF24-96E2-A7C2-542B-267FB682F20F}|HealthApp\\HealhApp.csproj|solutionrelative:healthapp\\consoleapp\\menu\\patientmenu.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\310521\\source\\repos\\HealthAxis\\HealthApp\\ConsoleApp\\Program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:HealthApp\\ConsoleApp\\Program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{57F2CF24-96E2-A7C2-542B-267FB682F20F}|HealthApp\\HealhApp.csproj|c:\\users\\310521\\source\\repos\\healthaxis\\healthapp\\consoleapp\\models\\patient.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{57F2CF24-96E2-A7C2-542B-267FB682F20F}|HealthApp\\HealhApp.csproj|solutionrelative:healthapp\\consoleapp\\models\\patient.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\310521\\source\\repos\\HealthAxis\\HealthApp\\ConsoleApp\\Models\\Patient.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:HealthApp\\ConsoleApp\\Models\\Patient.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{57F2CF24-96E2-A7C2-542B-267FB682F20F}|HealthApp\\HealhApp.csproj|c:\\users\\310521\\source\\repos\\healthaxis\\healthapp\\consoleapp\\database\\patientsdb.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{57F2CF24-96E2-A7C2-542B-267FB682F20F}|HealthApp\\HealhApp.csproj|solutionrelative:healthapp\\consoleapp\\database\\patientsdb.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\310521\\source\\repos\\HealthAxis\\HealthApp\\ConsoleApp\\Database\\PatientsDb.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:HealthApp\\ConsoleApp\\Database\\PatientsDb.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{57F2CF24-96E2-A7C2-542B-267FB682F20F}|HealthApp\\HealhApp.csproj|c:\\users\\310521\\source\\repos\\healthaxis\\healthapp\\consoleapp\\interfaces\\ipatientservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{57F2CF24-96E2-A7C2-542B-267FB682F20F}|HealthApp\\HealhApp.csproj|solutionrelative:healthapp\\consoleapp\\interfaces\\ipatientservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\310521\\source\\repos\\HealthAxis\\HealthApp\\ConsoleApp\\Interfaces\\IPatientsRepo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:HealthApp\\ConsoleApp\\Interfaces\\IPatientsRepo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{57F2CF24-96E2-A7C2-542B-267FB682F20F}|HealthApp\\HealhApp.csproj|c:\\users\\310521\\source\\repos\\healthaxis\\healthapp\\consoleapp\\interfaces\\ipatientsrepo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{57F2CF24-96E2-A7C2-542B-267FB682F20F}|HealthApp\\HealhApp.csproj|solutionrelative:healthapp\\consoleapp\\interfaces\\ipatientsrepo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\310521\\source\\repos\\HealthAxis\\HealthApp\\ConsoleApp\\Interfaces\\IPatientService.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:HealthApp\\ConsoleApp\\Interfaces\\IPatientService.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{57F2CF24-96E2-A7C2-542B-267FB682F20F}|HealthApp\\HealhApp.csproj|c:\\users\\310521\\source\\repos\\healthaxis\\healthapp\\consoleapp\\models\\appointment.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{57F2CF24-96E2-A7C2-542B-267FB682F20F}|HealthApp\\HealhApp.csproj|solutionrelative:healthapp\\consoleapp\\models\\appointment.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\310521\\source\\repos\\HealthAxis\\HealthApp\\ConsoleApp\\Models\\HealthRecord.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:HealthApp\\ConsoleApp\\Models\\HealthRecord.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{57F2CF24-96E2-A7C2-542B-267FB682F20F}|HealthApp\\HealhApp.csproj|c:\\users\\310521\\source\\repos\\healthaxis\\healthapp\\consoleapp\\models\\appointmentstatus.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{57F2CF24-96E2-A7C2-542B-267FB682F20F}|HealthApp\\HealhApp.csproj|solutionrelative:healthapp\\consoleapp\\models\\appointmentstatus.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\310521\\source\\repos\\HealthAxis\\HealthApp\\ConsoleApp\\Models\\Appointment.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:HealthApp\\ConsoleApp\\Models\\Appointment.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{57F2CF24-96E2-A7C2-542B-267FB682F20F}|HealthApp\\HealhApp.csproj|c:\\users\\310521\\source\\repos\\healthaxis\\healthapp\\consoleapp\\models\\healthrecord.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{57F2CF24-96E2-A7C2-542B-267FB682F20F}|HealthApp\\HealhApp.csproj|solutionrelative:healthapp\\consoleapp\\models\\healthrecord.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\310521\\source\\repos\\HealthAxis\\HealthApp\\ConsoleApp\\Models\\AppointmentStatus.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:HealthApp\\ConsoleApp\\Models\\AppointmentStatus.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{57F2CF24-96E2-A7C2-542B-267FB682F20F}|HealthApp\\HealhApp.csproj|c:\\users\\310521\\source\\repos\\healthaxis\\healthapp\\consoleapp\\models\\doctor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{57F2CF24-96E2-A7C2-542B-267FB682F20F}|HealthApp\\HealhApp.csproj|solutionrelative:healthapp\\consoleapp\\models\\doctor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\310521\\source\\repos\\HealthAxis\\HealthApp\\ConsoleApp\\Models\\Doctor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:HealthApp\\ConsoleApp\\Models\\Doctor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{57F2CF24-96E2-A7C2-542B-267FB682F20F}|HealthApp\\HealhApp.csproj|c:\\users\\310521\\source\\repos\\healthaxis\\healthapp\\consoleapp\\interfaces\\iappointmentservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{57F2CF24-96E2-A7C2-542B-267FB682F20F}|HealthApp\\HealhApp.csproj|solutionrelative:healthapp\\consoleapp\\interfaces\\iappointmentservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\310521\\source\\repos\\HealthAxis\\HealthApp\\ConsoleApp\\Interfaces\\IAppointmentService.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:HealthApp\\ConsoleApp\\Interfaces\\IAppointmentService.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -62,7 +62,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 5,
+          "SelectedChildIndex": 6,
           "Children": [
             {
               "$type": "Bookmark",
@@ -78,7 +78,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 1,
               "Title": "PatientService.cs",
               "DocumentMoniker": "C:\\Users\\310521\\source\\repos\\HealthAxis\\HealthApp\\ConsoleApp\\Services\\PatientService.cs",
               "RelativeDocumentMoniker": "HealthApp\\ConsoleApp\\Services\\PatientService.cs",
@@ -86,12 +86,11 @@
               "RelativeToolTip": "HealthApp\\ConsoleApp\\Services\\PatientService.cs",
               "ViewState": "AgIAAAMAAAAAAAAAAAAuwBcAAAAsAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-14T03:42:20.005Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-14T03:42:20.005Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "PatientRepo.cs",
               "DocumentMoniker": "C:\\Users\\310521\\source\\repos\\HealthAxis\\HealthApp\\ConsoleApp\\Repositories\\PatientRepo.cs",
               "RelativeDocumentMoniker": "HealthApp\\ConsoleApp\\Repositories\\PatientRepo.cs",
@@ -99,12 +98,11 @@
               "RelativeToolTip": "HealthApp\\ConsoleApp\\Repositories\\PatientRepo.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAcAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-15T14:36:32.976Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-15T14:36:32.976Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 3,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\310521\\source\\repos\\HealthAxis\\HealthApp\\ConsoleApp\\Program.cs",
               "RelativeDocumentMoniker": "HealthApp\\ConsoleApp\\Program.cs",
@@ -112,21 +110,18 @@
               "RelativeToolTip": "HealthApp\\ConsoleApp\\Program.cs",
               "ViewState": "AgIAABYAAAAAAAAAAAAAACQAAABCAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-13T11:42:10.137Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-13T11:42:10.137Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 0,
               "Title": "PatientMenu.cs",
               "DocumentMoniker": "C:\\Users\\310521\\source\\repos\\HealthAxis\\HealthApp\\ConsoleApp\\Menu\\PatientMenu.cs",
               "RelativeDocumentMoniker": "HealthApp\\ConsoleApp\\Menu\\PatientMenu.cs",
-              "ToolTip": "C:\\Users\\310521\\source\\repos\\HealthAxis\\HealthApp\\ConsoleApp\\Menu\\PatientMenu.cs*",
-              "RelativeToolTip": "HealthApp\\ConsoleApp\\Menu\\PatientMenu.cs*",
-              "ViewState": "AgIAAF4AAAAAAAAAAAAkwEUAAAAuAAAAAAAAAA==",
+              "ToolTip": "C:\\Users\\310521\\source\\repos\\HealthAxis\\HealthApp\\ConsoleApp\\Menu\\PatientMenu.cs",
+              "RelativeToolTip": "HealthApp\\ConsoleApp\\Menu\\PatientMenu.cs",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-15T10:25:22.162Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-15T10:25:22.162Z"
             },
             {
               "$type": "Document",
@@ -138,20 +133,7 @@
               "RelativeToolTip": "HealthApp\\ConsoleApp\\Models\\Patient.cs",
               "ViewState": "AgIAAAYAAAAAAAAAAAA1wAwAAAAvAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-13T14:38:03.594Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "IPatientsRepo.cs",
-              "DocumentMoniker": "C:\\Users\\310521\\source\\repos\\HealthAxis\\HealthApp\\ConsoleApp\\Interfaces\\IPatientsRepo.cs",
-              "RelativeDocumentMoniker": "HealthApp\\ConsoleApp\\Interfaces\\IPatientsRepo.cs",
-              "ToolTip": "C:\\Users\\310521\\source\\repos\\HealthAxis\\HealthApp\\ConsoleApp\\Interfaces\\IPatientsRepo.cs",
-              "RelativeToolTip": "HealthApp\\ConsoleApp\\Interfaces\\IPatientsRepo.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-15T14:35:21.791Z"
+              "WhenOpened": "2026-05-13T14:38:03.594Z"
             },
             {
               "$type": "Document",
@@ -163,12 +145,23 @@
               "RelativeToolTip": "HealthApp\\ConsoleApp\\Database\\PatientsDb.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAABJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-15T14:52:50.273Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-15T14:52:50.273Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 6,
+              "Title": "IPatientsRepo.cs",
+              "DocumentMoniker": "C:\\Users\\310521\\source\\repos\\HealthAxis\\HealthApp\\ConsoleApp\\Interfaces\\IPatientsRepo.cs",
+              "RelativeDocumentMoniker": "HealthApp\\ConsoleApp\\Interfaces\\IPatientsRepo.cs",
+              "ToolTip": "C:\\Users\\310521\\source\\repos\\HealthAxis\\HealthApp\\ConsoleApp\\Interfaces\\IPatientsRepo.cs",
+              "RelativeToolTip": "HealthApp\\ConsoleApp\\Interfaces\\IPatientsRepo.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-15T14:35:21.791Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
               "Title": "IPatientService.cs",
               "DocumentMoniker": "C:\\Users\\310521\\source\\repos\\HealthAxis\\HealthApp\\ConsoleApp\\Interfaces\\IPatientService.cs",
               "RelativeDocumentMoniker": "HealthApp\\ConsoleApp\\Interfaces\\IPatientService.cs",
@@ -180,7 +173,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 8,
               "Title": "HealthRecord.cs",
               "DocumentMoniker": "C:\\Users\\310521\\source\\repos\\HealthAxis\\HealthApp\\ConsoleApp\\Models\\HealthRecord.cs",
               "RelativeDocumentMoniker": "HealthApp\\ConsoleApp\\Models\\HealthRecord.cs",
@@ -192,7 +185,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 9,
               "Title": "Appointment.cs",
               "DocumentMoniker": "C:\\Users\\310521\\source\\repos\\HealthAxis\\HealthApp\\ConsoleApp\\Models\\Appointment.cs",
               "RelativeDocumentMoniker": "HealthApp\\ConsoleApp\\Models\\Appointment.cs",
@@ -204,7 +197,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 10,
               "Title": "AppointmentStatus.cs",
               "DocumentMoniker": "C:\\Users\\310521\\source\\repos\\HealthAxis\\HealthApp\\ConsoleApp\\Models\\AppointmentStatus.cs",
               "RelativeDocumentMoniker": "HealthApp\\ConsoleApp\\Models\\AppointmentStatus.cs",
