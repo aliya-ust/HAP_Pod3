@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using HealthApp.ConsoleApp.Interfaces;
 using HealthApp.ConsoleApp.Models;
 using HealthApp.ConsoleApp.Repositories;
+using HealthApp.ConsoleApp.Exceptions;
 
 
 namespace HealthApp.ConsoleApp.Services
@@ -16,24 +17,26 @@ namespace HealthApp.ConsoleApp.Services
             this.patientRepo = patientRepo;
         }
 
-        public bool Register(Patient patient)
+        public void Register(Patient patient)
         {
             if (patient == null)
-                return false;
+                throw new PatientInvalidException();
 
-            return patientRepo.Add(patient);
+            patientRepo.Add(patient);
         }
 
-        public bool Update(Patient patient)
+        public void Update(Patient patient)
         {
             if (patient == null)
-                return false;
+                throw new PatientInvalidException();
 
-            return patientRepo.Update(patient);
+             patientRepo.Update(patient);
         }
 
-        public bool Delete(int id)
+        public void Delete(int id)
         {
+            if(id<0)
+              throw new PatientInvalidException();
             return patientRepo.Delete(id);
         }
 
@@ -50,13 +53,12 @@ namespace HealthApp.ConsoleApp.Services
         public int GetPatientAge(int patientId)
         {
             var patient = GetPatientById(patientId);
-            return patient?.GetAge() ?? -1;
+            return patient.GetAge();
         }
-
         public string GetPatientProfileSummary(int patientId)
         {
             var patient = GetPatientById(patientId);
-            return patient?.GetProfileSummary() ?? string.Empty;
+            return patient.GetProfileSummary();
         }
     }
 }

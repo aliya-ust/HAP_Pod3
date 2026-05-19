@@ -1,6 +1,7 @@
 ﻿using System;
 using HealthApp.ConsoleApp.Interfaces;
 using HealthApp.ConsoleApp.Models;
+using HealthApp.ConsoleApp.Exceptions;
 
 namespace HealthApp.ConsoleApp.Menus
 {
@@ -22,7 +23,8 @@ namespace HealthApp.ConsoleApp.Menus
                 Console.WriteLine("1. Register Patient");
                 Console.WriteLine("2. View Patients");
                 Console.WriteLine("3. View Patient Profile Summary");
-                Console.WriteLine("4. Exit");
+                Console.WriteLine("4. Get Patient By Id");
+                Console.WriteLine("5. Exit");
                 Console.WriteLine("------------------");
 
                 Console.Write("Enter your choice: ");
@@ -46,9 +48,12 @@ namespace HealthApp.ConsoleApp.Menus
                         GetPatientProfileSummary();
                         break;
 
+                     case 4:
+                        Console.WriteLine("------------------");    
+                        GetPatientById();
+                        break;
 
-
-                    case 4:
+                    case 5:
                         Console.WriteLine("------------------");
                         Exit();
                         break;
@@ -119,8 +124,23 @@ namespace HealthApp.ConsoleApp.Menus
             }
 
         }
+        public void GetPatientById()
+        {
+            try 
+            {
+                Console.WriteLine("Enter Patient Id: ");
+                int id = Convert.ToInt32(Console.ReadLine());
 
-
+                var patient = _service.GetPatientById(id);
+                Console.WriteLine("Patient Details:");
+                Console.WriteLine(patient.GetProfileSummary());
+            }
+                
+            catch (PatientNotFoundException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
 
         private void Exit()
         {
