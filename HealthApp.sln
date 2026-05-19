@@ -4,24 +4,13 @@ VisualStudioVersion = 17.5.2.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "HealthApp", "HealthApp", "{C22E3AB3-7628-BA42-9C23-D7758CA9B1B9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HealhApp", "HealthApp\HealhApp.csproj", "{57F2CF24-96E2-A7C2-542B-267FB682F20F}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
-	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{57F2CF24-96E2-A7C2-542B-267FB682F20F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{57F2CF24-96E2-A7C2-542B-267FB682F20F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{57F2CF24-96E2-A7C2-542B-267FB682F20F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{57F2CF24-96E2-A7C2-542B-267FB682F20F}.Release|Any CPU.Build.0 = Release|Any CPU
-	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{57F2CF24-96E2-A7C2-542B-267FB682F20F} = {C22E3AB3-7628-BA42-9C23-D7758CA9B1B9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1F39170A-C56A-4803-B4D6-1A84E4A085F6}

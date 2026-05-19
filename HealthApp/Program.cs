@@ -1,37 +1,28 @@
-﻿
 using System;
 using Microsoft.Extensions.DependencyInjection;
 using HealthApp;
 using HealthApp.ConsoleApp.Interfaces;
 using HealthApp.ConsoleApp.Services;
-using HealthApp.ConsoleApp.Repositories.impl;
-using HealthApp.ConsoleApp.Database;
-using HealthApp.ConsoleApp.Interfaces;
 using HealthApp.ConsoleApp.Menus;
 using HealthApp.ConsoleApp.Repositories;
-using HealthApp.ConsoleApp.Services;
-using Microsoft.Extensions.DependencyInjection;
 
-class Program
-{
-    static void Main(string[] args)
-    {
         // 1. Create service collection
         var services = new ServiceCollection();
 
         // 2. Register dependencies
-        services.AddScoped<IPatientRepo, PatientRepo>();
+        services.AddScoped<IPatientRepository, PatientRepository>();
         services.AddScoped<IPatientService, PatientService>();
 
         services.AddScoped<PatientMenu>();
-        
+        services.AddScoped<DoctorMenu>();
 
         // 3. Build provider
         var provider = services.BuildServiceProvider();
 
         // 4. Resolve menus
         var patientMenu = provider.GetRequiredService<PatientMenu>();
-        
+        var doctorMenu = provider.GetRequiredService<DoctorMenu>();
+
 
         Console.WriteLine("=====================");
         Console.WriteLine("HEALTH CARE MANAGEMENT");
@@ -67,33 +58,3 @@ class Program
                     break;
             }
         }
-    }
-}
-namespace HealthApp
-{
-    class Program
-    {
-        static void Main(string[] args)
-        {
-            //Create Service Collection
-            var services = new ServiceCollection();
-
-            //Register Dependencies
-            services.AddSingleton<DoctorDb>(); // shared DB instance
-            services.AddScoped<IDoctorRepository, DoctorRepository>();
-            services.AddScoped<IDoctorService, DoctorService>();
-            services.AddScoped<DoctorMenu>();
-
-            //Build Service Provider
-            var provider = services.BuildServiceProvider();
-
-            //Resolve DoctorMenu
-            var menu = provider.GetService<DoctorMenu>();
-
-            if (menu != null)
-            {
-                menu.ShowMenu();
-            }
-        }
-    }
-}

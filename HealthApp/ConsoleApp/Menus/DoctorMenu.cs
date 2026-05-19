@@ -16,6 +16,13 @@ namespace HealthApp
 
         public DoctorMenu(IDoctorService doctorService)
         {
+            Console.WriteLine("\n===== DOCTOR MENU =====");
+            Console.WriteLine("1. Add New Doctor");
+            Console.WriteLine("2. Search Doctors by Specialisation");
+            Console.WriteLine("3. Exit");
+
+            Console.Write("Enter your choice: ");
+            int choice = Convert.ToInt32(Console.ReadLine());
             this.doctorService = doctorService;
         }
 

@@ -6,9 +6,9 @@ namespace HealthApp.ConsoleApp.Models
         public Patient Patient { get; set; }
         public Doctor Doctor { get; set; }
         public DateTime VisitDate { get; set; }
-        public string Diagnosis { get; set; }
-        public string Prescription { get; set; }
-        public string DoctorNotes { get; set; }
+        public string? Diagnosis { get; set; }
+        public string? Prescription { get; set; }
+        public string? DoctorNotes { get; set; }
 
         public string GetSummary()
         {

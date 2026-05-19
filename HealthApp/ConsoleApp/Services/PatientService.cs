@@ -9,9 +9,9 @@ namespace HealthApp.ConsoleApp.Services
 {
     public class PatientService : IPatientService
     {
-        private readonly IPatientRepo patientRepo;
+        private readonly IPatientRepository patientRepo;
 
-        public PatientService(IPatientRepo patientRepo)
+        public PatientService(IPatientRepository patientRepo)
         {
             this.patientRepo = patientRepo;
         }
