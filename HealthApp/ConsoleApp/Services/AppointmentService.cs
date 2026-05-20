@@ -29,7 +29,7 @@ namespace HealthApp.ConsoleApp.Services
                 throw new PastDateException("Cannot book appointment in the past.");
             }
 
-            if (!doctor.IsAvailable(date))
+            if (doctor.IsAvailable(date) == false)
             {
                 throw new DoctorUnavailableException("Doctor is not available on selected date.");
             }
@@ -84,6 +84,15 @@ namespace HealthApp.ConsoleApp.Services
         public List<Appointment> GetAppointmentsByDoctor(int doctorId)
         {
             return _appointmentRepository.GetAppointmentsByDoctor(doctorId);
+        }
+        public Appointment GetAppointmentById(int appointmentId)
+        {
+            var appointment = _appointmentRepository.GetAppointmentById(appointmentId);
+            if (appointment == null)
+            {
+                throw new AppointmentNotFoundException($"Appointment with ID {appointmentId} not found.");
+            }
+            return appointment;
         }
 
         //  GET UPCOMING

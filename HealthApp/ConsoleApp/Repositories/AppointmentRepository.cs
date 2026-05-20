@@ -1,19 +1,20 @@
 using HealthApp.ConsoleApp.Models;
 using HealthApp.ConsoleApp.Interfaces;
 using HealthApp.ConsoleApp.Exceptions;
+using HealthApp.ConsoleApp.Databases;
 namespace HealthApp.ConsoleApp.Repositories
 {
-    public class AppointmentRepo : IAppointmentRepository
+    public class AppointmentRepository : IAppointmentRepository
     {
-        private List<Appointment> _appointments;
-        public AppointmentRepo(List<Appointment> appointments)
+        private readonly List<Appointment> _appointments;
+        public AppointmentRepository(AppointmentDb appointmentDb)
         {
-            _appointments = appointments;
+            _appointments = appointmentDb.appointments;
         }
 
         public void AddAppointment(Appointment appointment)
         {
-            
+
             _appointments.Add(appointment);
         }
 
@@ -42,7 +43,7 @@ namespace HealthApp.ConsoleApp.Repositories
             existing.Status = appointment.Status;
             //existing.CancellationReason = appointment.CancellationReason;
         }
-        
+
         public void CancelAppointment(int id, string reason)
         {
             var appointment = GetAppointmentById(id);

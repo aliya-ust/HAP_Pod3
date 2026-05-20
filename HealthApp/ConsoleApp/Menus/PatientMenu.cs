@@ -1,136 +1,101 @@
 ﻿using System;
+using System.Collections.Generic;
+using HealthApp.ConsoleApp.Helpers;
 using HealthApp.ConsoleApp.Interfaces;
 using HealthApp.ConsoleApp.Models;
 
 namespace HealthApp.ConsoleApp.Menus
 {
+
     public class PatientMenu
     {
-        private readonly IPatientService _service;
+        private readonly IPatientService _patientService;
 
-        public PatientMenu(IPatientService service)
+        // DI Constructor — IPatientService is injected by the ServiceProvider in Program.cs
+        public PatientMenu(IPatientService patientService)
         {
-            _service = service;
-
+            _patientService = patientService;
         }
 
-        public void Show()
+
+        public void RegisterPatient()
         {
-            while (true)
+            PrintHeader("Register New Patient");
+
+            // ── Full Name ───────────────────────────────────────────────────────
+            if (!InputValidator.TryReadString("Full name         : ", out string fullName))
             {
-                Console.WriteLine("------------------");
-                Console.WriteLine("1. Register Patient");
-                Console.WriteLine("2. View Patients");
-                Console.WriteLine("3. View Patient Profile Summary");
-                Console.WriteLine("4. Exit");
-                Console.WriteLine("------------------");
-
-                Console.Write("Enter your choice: ");
-
-                int choice = Convert.ToInt32(Console.ReadLine());
-
-                switch (choice)
-                {
-                    case 1:
-                        Console.WriteLine("------------------");
-                        AddPatient();
-                        break;
-
-                    case 2:
-                        Console.WriteLine("------------------");
-                        ViewAll();
-                        break;
-
-                    case 3:
-                        Console.WriteLine("------------------");
-                        GetPatientProfileSummary();
-                        break;
-
-
-
-                    case 4:
-                        Console.WriteLine("------------------");
-                        Exit();
-                        break;
-
-                    default:
-                        Console.WriteLine("Invalid choice. Please try again.");
-                        break;
-                }
-            }
-        }
-
-        private void AddPatient()
-        {
-            Patient p = new Patient();
-
-            Console.Write("Enter your Name: ");
-            p.Name = Console.ReadLine();
-
-            Console.Write("Enter your DOB(dd-MM-yyyy): ");
-            string s = Console.ReadLine();
-            DateTime dob = DateTime.ParseExact(s, "dd-MM-yyyy", null);
-            p.Dob = dob;
-
-            Console.Write("Enter your Gender: ");
-            p.Gender = Console.ReadLine();
-
-            Console.Write("Enter your Phone Number: ");
-            p.PhoneNumber = Convert.ToInt32(Console.ReadLine());
-
-            Console.Write("Enter your Email: ");
-            p.Email = Console.ReadLine();
-
-            Console.Write("Enter your Insurance Id: ");
-            p.InsuranceId = Convert.ToInt32(Console.ReadLine());
-
-            _service.Register(p);
-
-            Console.WriteLine("Patient Registered Successfully");
-        }
-
-        private void ViewAll()
-        {
-            var patients = _service.GetAllPatients();
-            int c = 1;
-            Console.WriteLine("------------------");
-            Console.WriteLine("All Patients");
-            foreach (var p in patients)
-            {
-                Console.WriteLine($" {c}.{p.Name}");
-                c++;
-            }
-        }
-
-        private void GetPatientProfileSummary()
-        {
-            Console.WriteLine("Enter Patient Id: ");
-            int id = Convert.ToInt32(Console.ReadLine());
-
-            var summary = _service.GetPatientProfileSummary(id);
-            if (!string.IsNullOrEmpty(summary))
-            {
-                Console.WriteLine("Patient Profile Summary:");
-                Console.WriteLine(summary);
-            }
-            else
-            {
-                Console.WriteLine("Patient not found.");
+                InputValidator.Pause();
+                return;
             }
 
+            // ── Date of Birth ───────────────────────────────────────────────────
+            if (!InputValidator.TryReadPastDate("Date of birth     : ", out DateTime dob))
+            {
+                InputValidator.Pause();
+                return;
+            }
+
+            // Gender
+            if (!InputValidator.TryReadString("Gender (M/F/Other): ", out string gender))
+            {
+                InputValidator.Pause();
+                return;
+            }
+
+            // Phone Number 
+            if (!InputValidator.TryReadPhone("Phone number      : ", out string phone))
+            {
+                InputValidator.Pause();
+                return;
+            }
+
+            //  Email 
+            if (!InputValidator.TryReadEmail("Email             : ", out string email))
+            {
+                InputValidator.Pause();
+                return;
+            }
+
+            //  Insurance ID (optional — spec says "press Enter to skip") 
+            string insuranceId = InputValidator.ReadOptionalString("Insurance ID      : ");
+
+            //  Build and register 
+            // PatientId and CreatedDate are set by the service (not the menu)
+            var patient = new Patient
+            {
+                Name = fullName,
+                Dob = dob,
+                Gender = gender,
+                PhoneNumber = phone,
+                Email = email,
+                InsuranceId = insuranceId,
+                CreatedAt = DateTime.Now   // spec property: CreatedDate
+            };
+
+            _patientService.Register(patient);
+
+            Console.WriteLine();
+            PrintSuccess("Patient registered successfully!");
+            Console.WriteLine(patient.GetProfileSummary());   // spec method: GetProfileSummary()
+
+            InputValidator.Pause();
         }
 
+        // ── Helper methods ────────────────────────────────────────────────────────
 
-
-        private void Exit()
+        private static void PrintHeader(string title)
         {
-            Console.WriteLine("\nThank you for using Healthcare Management System");
-            Console.WriteLine("Press any key to exit...");
-            Console.ReadKey();
-            Environment.Exit(0);
+            Console.WriteLine();
+            Console.WriteLine($"  ── {title} ──");
+            Console.WriteLine();
         }
 
-
-
+        private static void PrintSuccess(string msg)
+        {
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine($"  ✔ {msg}");
+            Console.ResetColor();
+        }
     }
 }

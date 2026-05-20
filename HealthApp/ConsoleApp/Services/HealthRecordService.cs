@@ -24,7 +24,7 @@ namespace HealthApp.ConsoleApp.Services
         public string AddRecord(HealthRecord record)
         {
             Patient patient = _patientRepository.GetById(record.Patient.Id);
-            Doctor doctor = _doctorRepository.GetById(record.Doctor.DoctorId);
+            Doctor doctor = _doctorRepository.GetByDoctorId(record.Doctor.DoctorId);
 
             record.Patient = patient;
             record.Doctor = doctor;
@@ -42,7 +42,7 @@ namespace HealthApp.ConsoleApp.Services
         //Get records by doctor ID in descending order of VisitDate
         public List<HealthRecord> GetByDoctorIdOrderByVisitDateDesc(int doctorId)
         {
-            Doctor doctor = _doctorRepository.GetById(doctorId);
+            Doctor doctor = _doctorRepository.GetByDoctorId(doctorId);
             return _healthRecordRepository.GetByDoctorIdOrderByVisitDateDesc(doctorId);
         }
 
@@ -50,7 +50,7 @@ namespace HealthApp.ConsoleApp.Services
         public string Update(HealthRecord updatedRecord)
         {
             updatedRecord.Patient = _patientRepository.GetById(updatedRecord.Patient.Id);
-            updatedRecord.Doctor = _doctorRepository.GetById(updatedRecord.Doctor.DoctorId);
+            updatedRecord.Doctor = _doctorRepository.GetByDoctorId(updatedRecord.Doctor.DoctorId);
 
             return _healthRecordRepository.Update(updatedRecord);
         }

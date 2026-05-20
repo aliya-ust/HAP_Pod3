@@ -1,5 +1,6 @@
 using HealthApp.ConsoleApp.Models;
-namespace HealthApp.ConsoleApp.Models;
+namespace HealthApp.ConsoleApp.Databases
+{
 public class AppointmentDb
 {
     public List<Appointment> appointments = new List<Appointment>
@@ -10,4 +11,5 @@ public class AppointmentDb
         new Appointment{AppointmentId = 4, Patient = new Patient{Id = 4, Name = "Bob Johnson"}, Doctor = new Doctor{DoctorId = 3, FullName = "Dr. Green"}, ScheduledDate = DateTime.Now.AddDays(4), TimeSlot = "03:00 PM", Status = AppointmentStatus.Completed}
     };
 
+}
 }

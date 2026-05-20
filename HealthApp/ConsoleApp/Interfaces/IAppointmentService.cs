@@ -10,5 +10,6 @@ public interface IAppointmentService
     List<Appointment> GetAppointmentsByPatient(int patientId);
     List<Appointment> GetAppointmentsByDoctor(int doctorId);
     List<Appointment> GetUpcomingAppointments();
+    Appointment GetAppointmentById(int appointmentId);
 }
 }

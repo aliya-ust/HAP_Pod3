@@ -49,5 +49,10 @@ namespace HealthApp.ConsoleApp.Services
 
             return doctors;
         }
+        public Doctor GetByDoctorId(int id)
+        {
+            var doctors = doctorRepository.GetAllDoctors();
+            return doctors.FirstOrDefault(d => d.DoctorId == id);
+        }
     }
 }

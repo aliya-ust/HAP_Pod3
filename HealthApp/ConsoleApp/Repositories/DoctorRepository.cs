@@ -2,10 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using HealthApp.ConsoleApp.Models;
-using HealthApp.ConsoleApp.Database;
+using HealthApp.ConsoleApp.Databases;
 using HealthApp.ConsoleApp.Interfaces;
 
-namespace HealthApp.ConsoleApp.Repositories.impl
+namespace HealthApp.ConsoleApp.Repositories
 {
     public class DoctorRepository : IDoctorRepository
     {
@@ -24,6 +24,10 @@ namespace HealthApp.ConsoleApp.Repositories.impl
         public List<Doctor> GetAllDoctors()
         {
             return doctorDb.Doctors;
+        }
+        public Doctor GetByDoctorId(int id)
+        {
+            return doctorDb.Doctors.FirstOrDefault(d => d.DoctorId == id);
         }
 
         public List<Doctor> GetDoctorsBySpecialisation(string specialisation)

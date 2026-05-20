@@ -2,16 +2,16 @@
 using HealthApp.ConsoleApp.Repositories;
 using HealthApp.ConsoleApp.Models;
 
-namespace HealthApp.Tests
+namespace HealthApp.Tests.Repositories
 {
     public class HealthRecordRepositoryTests
     {
-        private HealthRecordDb _db;
-        private HealthRecordRepositoryTests _repository;
+        private HealthRecordDB _db;
+        private HealthRecordRepository _repository;
 
         public HealthRecordRepositoryTests()
         {
-            _db = new ProductDb();
+            _db = new HealthRecordDB();
             _repository = new HealthRecordRepository(_db);
         }
 
