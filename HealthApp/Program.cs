@@ -88,7 +88,7 @@ while (!exit)
             Console.WriteLine(healthRecordMenu.AddHealthRecord());
             break;
         case 8:
-            // View health history for a patient
+            // View health history
             break;
         case 0:
             exit = true;

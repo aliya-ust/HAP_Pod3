@@ -93,7 +93,7 @@ namespace HealthApp.ConsoleApp.Menus
 
             while (true)
             {
-                Console.Write("Enter Visit Date (yyyy-MM-dd) (or 'q' to quit): ");
+                Console.Write("Enter Visit Date (dd-mm-yyyy) (or 'q' to quit): ");
                 var input = Console.ReadLine();
 
                 if (input?.ToLower() == "q")
@@ -170,85 +170,83 @@ namespace HealthApp.ConsoleApp.Menus
             return _healthRecordService.AddHealthRecord(record);
         }
 
-        // public void ViewRecord()
-        // {
-        //     Console.Clear();
+        public void ViewRecord()
+        {
+            Console.WriteLine("1. View records by Patient Id");
+            Console.WriteLine("2. View records by Doctor Id");
+            Console.WriteLine("3. Go back");
+            Console.Write("Enter choice: ");
 
-        //     Console.WriteLine("1. View records by Patient Id");
-        //     Console.WriteLine("2. View records by Doctor Id");
-        //     Console.WriteLine("3. Go back");
-        //     Console.Write("Enter choice: ");
+            string? choice = Console.ReadLine();
 
-        //     string? choice = Console.ReadLine();
+            if (string.IsNullOrWhiteSpace(choice))
+            {
+                Console.WriteLine("Invalid input.");
+                Console.ReadKey();
+                return;
+            }
 
-        //     if (string.IsNullOrWhiteSpace(choice))
-        //     {
-        //         Console.WriteLine("Invalid input.");
-        //         Console.ReadKey();
-        //         return;
-        //     }
+            Console.Clear();
 
-        //     Console.Clear();
+            switch (choice)
+            {
+                case "1":
+                {
+                    Console.Write("Enter Patient Id: ");
+                    string? input = Console.ReadLine();
 
-        //     switch (choice)
-        //     {
-        //         case "1":
-        //         {
-        //             Console.Write("Enter Patient Id: ");
-        //             string? input = Console.ReadLine();
+                    if (string.IsNullOrWhiteSpace(input) || !int.TryParse(input, out int patientId))
+                    {
+                        Console.WriteLine("Invalid Patient Id.");
+                        Console.ReadKey();
+                        return;
+                    }
 
-        //             if (string.IsNullOrWhiteSpace(input) || !int.TryParse(input, out int patientId))
-        //             {
-        //                 Console.WriteLine("Invalid Patient Id.");
-        //                 Console.ReadKey();
-        //                 return;
-        //             }
+                    List<HealthRecord> records = _healthRecordService
+                        .GetByPatientIdOrderByVisitDateDesc(patientId);
 
-        //             List<HealthRecord> records = _healthRecordService
-        //                 .GetByPatientIdOrderByVisitDateDesc(patientId);
+                    foreach (HealthRecord r in records)
+                    {
+                        Console.WriteLine(r);
+                    }
 
-        //             foreach (HealthRecord r in records)
-        //             {
-        //                 Console.WriteLine(r);
-        //             }
+                    Console.ReadKey();
+                    break;
+                }
 
-        //             Console.ReadKey();
-        //             break;
-        //         }
+                case "2":
+                {
+                    Console.Write("Enter Doctor Id: ");
+                    string? input = Console.ReadLine();
 
-        //         case "2":
-        //         {
-        //             Console.Write("Enter Doctor Id: ");
-        //             string? input = Console.ReadLine();
+                    if (string.IsNullOrWhiteSpace(input) || !int.TryParse(input, out int doctorId))
+                    {
+                        Console.WriteLine("Invalid Doctor Id.");
+                        Console.ReadKey();
+                        return;
+                    }
 
-        //             if (string.IsNullOrWhiteSpace(input) || !int.TryParse(input, out int doctorId))
-        //             {
-        //                 Console.WriteLine("Invalid Doctor Id.");
-        //                 Console.ReadKey();
-        //                 return;
-        //             }
+                    List<HealthRecord> records = _healthRecordService
+                        .GetByDoctorIdOrderByVisitDateDesc(doctorId);
 
-        //             List<HealthRecord> records = _healthRecordService
-        //                 .GetByDoctorIdOrderByVisitDateDesc(doctorId);
+                    foreach (HealthRecord r in records)
+                    {
+                        Console.WriteLine(r);
+                    }
 
-        //             foreach (HealthRecord r in records)
-        //             {
-        //                 Console.WriteLine(r);
-        //             }
+                    Console.ReadKey();
+                    break;
+                }
 
-        //             Console.ReadKey();
-        //             break;
-        //         }
+                case "3":
+                    return;
 
-        //         case "3":
-        //             return;
-
-        //         default:
-        //             Console.WriteLine("Invalid choice.");
-        //             Console.ReadKey();
-        //             return;
-        //     }
-        // }
+                default:
+                    Console.WriteLine("Invalid choice.");
+                    Console.ReadKey();
+                    return;
+            }
+        }
 
         // public string GetSummary()
         // {
