@@ -9,23 +9,22 @@ namespace HealthApp.ConsoleApp.Models
         public decimal ConsultationFee { get; set; }
         public bool IsActive { get; set; }
 
-        //Availability method
-        // public string IsAvailable(DateTime date)
-        // {
-        //     if (!IsActive)
-        //     {
-        //         return "Doctor is not available";
-        //     }
+        public string IsAvailable(DateTime date)
+        {
+            if (!IsActive)
+            {
+                return "Doctor is not available";
+            }
 
-        //     int count = Appointments.Count(a => a.Date == date.Date);
+            int count = Appointments.Count(a => a.Date == date.Date);
 
-        //     if (count >= 5)
-        //     {
-        //         return "Appointment limit reached, doctor is not available";
-        //     }
+            if (count >= 6)
+            {
+                return "Appointment limit reached, doctor is not available";
+            }
 
-        //     return "Doctor is available today";
-        // }
+            return "Doctor is available today";
+        }
 
         //Upcoming count
         // public string GetScheduleSummary()
