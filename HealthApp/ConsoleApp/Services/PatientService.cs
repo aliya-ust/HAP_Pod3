@@ -33,12 +33,12 @@ namespace HealthApp.ConsoleApp.Services
              patientRepo.Update(patient);
         }
 
-        public void Delete(int id)
-        {
-            if(id<0)
-              throw new PatientInvalidException();
-            return patientRepo.Delete(id);
-        }
+        // public void Delete(int id)
+        // {
+        //     if(id<0)
+        //       throw new PatientInvalidException();
+        //     return patientRepo.Delete(id);
+        // }
 
         public Patient GetPatientById(int id)
         {

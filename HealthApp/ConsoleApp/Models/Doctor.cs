@@ -16,21 +16,21 @@ namespace HealthApp.ConsoleApp.Models
         public List<DateTime> Appointments { get; set; } = new List<DateTime>();
 
         //Availability method
-        public string IsAvailable(DateTime date)
+        public bool IsAvailable(DateTime date)
         {
             if (!IsActive)
             {
-                return "Doctor is not available";
+                return false;
             }
 
             int count = Appointments.Count(a => a.Date == date.Date);
 
             if (count >= 5)
             {
-                return "Appointment limit reached, doctor is not available";
+                return false;
             }
 
-            return "Doctor is available today";
+            return true;
         }
 
         //Upcoming count

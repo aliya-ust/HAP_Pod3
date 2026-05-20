@@ -50,14 +50,14 @@ namespace HealthApp.ConsoleApp.Repositories
             existingPatient.InsuranceId = patient.InsuranceId;
         }
 
-        public void Delete(int id)
-        {
-            var patient = _patients.FirstOrDefault(p => p.PatientId == id);
-            if (patient == null)
-                throw new PatientNotFoundException(id);
+        // public void Delete(int id)
+        // {
+        //     var patient = _patients.FirstOrDefault(p => p.PatientId == id);
+        //     if (patient == null)
+        //         throw new PatientNotFoundException(id);
 
-            _patients.Remove(patient);
-        }
+        //     _patients.Remove(patient);
+        // }
 
         public Patient GetById(int id)
         {

@@ -10,11 +10,6 @@ namespace HealthApp.ConsoleApp.Interfaces
         List<Doctor> GetAllDoctors();
         List<Doctor> SearchBySpecialisation(string specialisation);
     }
-
-    public interface IDoctorRepository
-    {
-        void AddDoctor(Doctor doctor);
-        List<Doctor> GetAllDoctors();
-        List<Doctor> GetDoctorsBySpecialisation(string specialisation);
-    }
 }
+
+    

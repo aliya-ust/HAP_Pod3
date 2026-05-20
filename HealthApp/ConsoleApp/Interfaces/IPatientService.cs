@@ -8,7 +8,7 @@ namespace HealthApp.ConsoleApp.Interfaces
     {
         void Register(Patient patient);
         void Update(Patient patient);
-        void Delete(int id);
+        // void Delete(int id);
         Patient GetPatientById(int id);
         List<Patient> GetAllPatients();
         int GetPatientAge(int patientId);

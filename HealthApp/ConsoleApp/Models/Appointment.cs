@@ -3,74 +3,77 @@ using System.Numerics;
 using System.Text;
 using HealthApp.ConsoleApp.Models;
 
-public class Appointment
+namespace HealthApp.ConsoleApp.Models
 {
-    //  Properties
-    public int AppointmentId { get; set; }
-    public Patient Patient { get; set; }
-    public Doctor Doctor { get; set; }
-    public DateTime ScheduledDate { get; set; }
-    public string TimeSlot { get; set; }
-    public AppointmentStatus Status { get; set; }
-    public string CancellationReason { get; set; }
-
-   
-    public Appointment()
+    public class Appointment
     {
-        Status = AppointmentStatus.Pending;
-    }
+        //  Properties
+        public int AppointmentId { get; set; }
+        public Patient Patient { get; set; }
+        public Doctor Doctor { get; set; }
+        public DateTime ScheduledDate { get; set; }
+        public string TimeSlot { get; set; }
+        public AppointmentStatus Status { get; set; }
+        public string CancellationReason { get; set; }
 
-    
-    public void Confirm()
-    {
-        if (Status == AppointmentStatus.Cancelled)
+
+        public Appointment()
         {
-            throw new InvalidOperationException("Cannot confirm a cancelled appointment.");
+            Status = AppointmentStatus.Pending;
         }
 
-        Status = AppointmentStatus.Confirmed;
-    }
 
-    
-    public void Cancel(string reason)
-    {
-        if (Status == AppointmentStatus.Completed)
+        public void Confirm()
         {
-            throw new InvalidOperationException("Cannot cancel a completed appointment.");
+            if (Status == AppointmentStatus.Cancelled)
+            {
+                throw new InvalidOperationException("Cannot confirm a cancelled appointment.");
+            }
+
+            Status = AppointmentStatus.Confirmed;
         }
 
-        Status = AppointmentStatus.Cancelled;
-        CancellationReason = reason;
-    }
 
-    
-    public void Complete()
-    {
-        if (Status != AppointmentStatus.Confirmed)
+        public void Cancel(string reason)
         {
-            throw new InvalidOperationException("Only confirmed appointments can be completed.");
+            if (Status == AppointmentStatus.Completed)
+            {
+                throw new InvalidOperationException("Cannot cancel a completed appointment.");
+            }
+
+            Status = AppointmentStatus.Cancelled;
+            CancellationReason = reason;
         }
 
-        Status = AppointmentStatus.Completed;
-    }
 
-   
-    public string GetDetails()
-    {
-        StringBuilder details = new StringBuilder();
-
-        details.AppendLine($"Appointment ID: {AppointmentId}");
-        details.AppendLine($"Patient: {Patient?.Name}");
-        details.AppendLine($"Doctor: {Doctor?.FullName} ({Doctor?.Specialisation})");
-        details.AppendLine($"Date: {ScheduledDate.ToShortDateString()}");
-        details.AppendLine($"Time Slot: {TimeSlot}");
-        details.AppendLine($"Status: {Status}");
-
-        if (!string.IsNullOrEmpty(CancellationReason))
+        public void Complete()
         {
-            details.AppendLine($"Cancellation Reason: {CancellationReason}");
+            if (Status != AppointmentStatus.Confirmed)
+            {
+                throw new InvalidOperationException("Only confirmed appointments can be completed.");
+            }
+
+            Status = AppointmentStatus.Completed;
         }
 
-        return details.ToString();
+
+        public string GetDetails()
+        {
+            StringBuilder details = new StringBuilder();
+
+            details.AppendLine($"Appointment ID: {AppointmentId}");
+            details.AppendLine($"Patient: {Patient.Name}");
+            details.AppendLine($"Doctor: {Doctor.FullName} ({Doctor.Specialisation})");
+            details.AppendLine($"Date: {ScheduledDate.ToShortDateString()}");
+            details.AppendLine($"Time Slot: {TimeSlot}");
+            details.AppendLine($"Status: {Status}");
+
+            if (!string.IsNullOrEmpty(CancellationReason))
+            {
+                details.AppendLine($"Cancellation Reason: {CancellationReason}");
+            }
+
+            return details.ToString();
+        }
     }
 }
