@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using HealthApp.ConsoleApp.Models;
 
-namespace HealthApp.ConsoleApp.Database
+namespace HealthApp.ConsoleApp.Databases
 {
     public class DoctorDb
     {

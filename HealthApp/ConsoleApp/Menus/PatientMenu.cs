@@ -56,7 +56,7 @@ namespace HealthApp.ConsoleApp.Menus
 
             while (true)
             {
-                Console.Write("Enter Date of Birth (yyyy-mm-dd) (or 'q' to quit): ");
+                Console.Write("Enter Date of Birth (dd-mm-yyyy) (or 'q' to quit): ");
                 string? input = Console.ReadLine();
 
                 if (input?.ToLower() == "q")
@@ -78,13 +78,13 @@ namespace HealthApp.ConsoleApp.Menus
 
                 switch (input?.Trim().ToLower())
                 {
-                    case "M":
+                    case "m":
                         gender = GenderType.Male;
                         break;
-                    case "F":
+                    case "f":
                         gender = GenderType.Female;
                         break;
-                    case "Other":
+                    case "other":
                         gender = GenderType.Other;
                         break;
                     default:

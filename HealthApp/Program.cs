@@ -6,19 +6,31 @@ using HealthApp.ConsoleApp.Services;
 using HealthApp.ConsoleApp.Menus;
 using HealthApp.ConsoleApp.Repositories;
 using HealthApp.ConsoleApp.Models;
+using HealthApp.ConsoleApp.Databases;
 
-// 1. Create service collection
 var services = new ServiceCollection();
-// 2. Register dependencies
+
+services.AddSingleton<PatientDb>();
+services.AddSingleton<DoctorDb>();
+services.AddSingleton<HealthRecordDB>();
+
 services.AddScoped<IPatientRepository, PatientRepository>();
+services.AddScoped<IDoctorRepository, DoctorRepository>();
+services.AddScoped<IHealthRecordRepository, HealthRecordRepository>();
+
 services.AddScoped<IPatientService, PatientService>();
+services.AddScoped<IDoctorService, DoctorService>();
+services.AddScoped<IHealthRecordService, HealthRecordService>();
+
 services.AddScoped<PatientMenu>();
 services.AddScoped<DoctorMenu>();
-// 3. Build provider
+services.AddScoped<HealthRecordMenu>(); 
+
 var provider = services.BuildServiceProvider();
-// 4. Resolve menus
+
 var patientMenu = provider.GetRequiredService<PatientMenu>();
 var doctorMenu = provider.GetRequiredService<DoctorMenu>();
+var healthRecordMenu = provider.GetRequiredService<HealthRecordMenu>();
 
 bool exit = false;
 while (!exit)
@@ -36,7 +48,6 @@ while (!exit)
     Console.Write("Enter your choice: ");
     string ?input = Console.ReadLine();
 
-    // Input validation
     if (!int.TryParse(input, out int choice))
     {
         Console.WriteLine("Invalid input. Please enter a number between 0 and 8.");
@@ -74,7 +85,7 @@ while (!exit)
             // Confirm or cancel an appointment
             break;
         case 7:
-            // Add a health record after a completed appointment
+            Console.WriteLine(healthRecordMenu.AddHealthRecord());
             break;
         case 8:
             // View health history for a patient

@@ -4,8 +4,8 @@ using System.Linq;
 using HealthApp.ConsoleApp.Interfaces;
 using HealthApp.ConsoleApp.Models;
 using HealthApp.ConsoleApp.Services;
-using HealthApp.ConsoleApp.Repositories.impl;
-using HealthApp.ConsoleApp.Database;
+using HealthApp.ConsoleApp.Repositories;
+using HealthApp.ConsoleApp.Databases;
 using HealthApp.ConsoleApp.Exceptions;
 
 namespace HealthApp
