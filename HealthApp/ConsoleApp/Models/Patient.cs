@@ -36,5 +36,10 @@ namespace HealthApp.ConsoleApp.Models
         {
             return $"ID: {PatientId} | Name: {FullName} | Age: {GetAge()} | Gender: {Gender} | Email: {Email} | Phone: {PhoneNumber}";
         }
+
+        public override string ToString()
+        {
+            return  $"ID: {PatientId} | Name: {FullName} | Age: {GetAge()} | Gender: {Gender} | Email: {Email} | Phone: {PhoneNumber}";
+        }
     }
 }

@@ -60,21 +60,21 @@ namespace HealthApp.ConsoleApp.Repositories
         //     return _healthRecordDb.Records.ToList();
         // }
 
-        // public List<HealthRecord> GetByPatientIdOrderByVisitDateDesc(int patientId)
-        // {
-        //     return _healthRecordDb.Records
-        //             .Where(r => r.Patient != null && r.Patient.PatientId == patientId)
-        //             .OrderByDescending(r => r.VisitDate)
-        //             .ToList();
-        // }
+        public List<HealthRecord> GetByPatientIdOrderByVisitDateDesc(int id)
+        {
+            return _healthRecordDb.Records
+                    .Where(r => r.Patient != null && r.Patient.PatientId == id)
+                    .OrderByDescending(r => r.VisitDate)
+                    .ToList();
+        }
 
-        // public List<HealthRecord> GetByDoctorIdOrderByVisitDateDesc(int doctorId)
-        // {
-        //     return _healthRecordDb.Records
-        //             .Where(r => r.Doctor != null && r.Doctor.DoctorId == doctorId)
-        //             .OrderByDescending(r => r.VisitDate)
-        //             .ToList();
-        // }
+        public List<HealthRecord> GetByDoctorIdOrderByVisitDateDesc(int id)
+        {
+            return _healthRecordDb.Records
+                    .Where(r => r.Doctor != null && r.Doctor.DoctorId == id)
+                    .OrderByDescending(r => r.VisitDate)
+                    .ToList();
+        }
 
         public HealthRecord? GetRecordById(int id)
         {

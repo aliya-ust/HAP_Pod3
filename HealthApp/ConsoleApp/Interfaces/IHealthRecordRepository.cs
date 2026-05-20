@@ -8,8 +8,8 @@ namespace HealthApp.ConsoleApp.Interfaces
         // string Delete(int recordId);
         // string Update(HealthRecord record);
         HealthRecord? GetRecordById(int id);
-        // List<HealthRecord> GetByPatientIdOrderByVisitDateDesc(int patientId);
-        // List<HealthRecord> GetByDoctorIdOrderByVisitDateDesc(int doctorId);
+        List<HealthRecord> GetByPatientIdOrderByVisitDateDesc(int id);
+        List<HealthRecord> GetByDoctorIdOrderByVisitDateDesc(int id);
         // List<HealthRecord> GetAll();
     }
 }
