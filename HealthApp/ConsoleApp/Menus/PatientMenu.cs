@@ -1,8 +1,9 @@
-﻿using System;
+﻿
+using System;
+using System.Text.RegularExpressions;
 using HealthApp.ConsoleApp.Interfaces;
 using HealthApp.ConsoleApp.Models;
 using HealthApp.ConsoleApp.Exceptions;
-using System.Data;
 
 namespace HealthApp.ConsoleApp.Menus
 {
@@ -13,78 +14,174 @@ namespace HealthApp.ConsoleApp.Menus
         public PatientMenu(IPatientService service)
         {
             _service = service;
-
         }
 
         public void PatientRegisteration()
         {
             while (true)
             {
-                Console.WriteLine("---------------------------------");
-                Console.WriteLine("1. Register a new patient");
-                Console.WriteLine("2. Update Patient Details");
-                Console.WriteLine("3. Get Patient By Id");
-                Console.WriteLine("4. Delete a patient");
-                Console.WriteLine("5. View AllPatients");
-                Console.WriteLine("6. View Patient Profile Summary");
-                Console.WriteLine("7. Exit");
-                Console.WriteLine("---------------------------------");
+                Console.WriteLine("================================================");
+                Console.WriteLine("                PATIENT MENU");
+                Console.WriteLine("------------------------------------------------");
+                Console.WriteLine("        1. Register a new patient");
+                Console.WriteLine("        2. Update Patient Details");
+                Console.WriteLine("        3. Get Patient By Id");
+                Console.WriteLine("        4. Delete a patient");
+                Console.WriteLine("        5. View All Patients");
+                Console.WriteLine("        6. View Patient Profile Summary");
+                Console.WriteLine("        7. Exit");
+                Console.WriteLine("------------------------------------------------");
 
                 Console.Write("Enter your choice: ");
 
-                int choice = Convert.ToInt32(Console.ReadLine());
+                if (!int.TryParse(Console.ReadLine(), out int choice))
+                {
+                    Console.WriteLine("Invalid input! Enter a number.");
+                    continue;
+                }
 
                 switch (choice)
                 {
-                    case 1:
-                        Console.WriteLine("------------------");
-                        AddPatient();
-                        break;
-
-                    case 2:
-                        Console.WriteLine("------------------");
-                        UpdatePatient();
-                        break;
-
-                    case 3:
-                        Console.WriteLine("------------------");
-                        GetPatientProfileSummary();
-                        break;
-
-                    case 4:
-                        Console.WriteLine("------------------");
-                        GetPatientById();
-                        break;
-
-                    case 5:
-                        Console.WriteLine("------------------");
-                        ViewAll();
-                        break;
-
-                    case 6:
-                        Console.WriteLine("------------------");
-                        GetPatientById();
-                        break;
-
-                    case 7:
-                        Console.WriteLine("------------------");
-                        Exit();
-                        break;
+                    case 1: AddPatient(); break;
+                    case 2: UpdatePatient(); break;
+                    case 3: GetPatientById(); break;
+                    case 4: DeletePatient(); break;
+                    case 5: ViewAll(); break;
+                    case 6: GetPatientProfileSummary(); break;
+                    case 7: return;
 
                     default:
-                        Console.WriteLine("Invalid choice. Please try again.");
+                        Console.WriteLine("Invalid choice.");
                         break;
                 }
             }
         }
 
 
+        private string ReadNonEmpty(string message)
+        {
+            string input;
+            do
+            {
+                Console.Write(message);
+                input = Console.ReadLine();
+            } while (string.IsNullOrWhiteSpace(input));
+
+            return input;
+        }
+
+        private int ReadInt(string message)
+        {
+            int value;
+            while (true)
+            {
+                Console.Write(message);
+                if (int.TryParse(Console.ReadLine(), out value))
+                    return value;
+
+                Console.WriteLine("Invalid number. Try again.");
+            }
+        }
+        private DateTime ReadDate(string message)
+        {
+            DateTime date;
+            while (true)
+            {
+                Console.Write(message);
+                if (DateTime.TryParseExact(Console.ReadLine(), "dd/MM/yyyy", null,
+                    System.Globalization.DateTimeStyles.None, out date))
+                {
+                    if (date > DateTime.Now)
+                    {
+                        Console.WriteLine("DOB cannot be in the future.");
+                        continue;
+                    }
+                    return date;
+                }
+
+                Console.WriteLine("Invalid format! Use dd/MM/yyyy.");
+            }
+        }
+
+        private string ReadEmail()
+        {
+            string email;
+            while (true)
+            {
+                Console.Write("Enter Email: ");
+                email = Console.ReadLine();
+
+                if (!string.IsNullOrWhiteSpace(email) &&
+                    Regex.IsMatch(email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
+                    return email;
+
+                Console.WriteLine("Invalid email format.");
+            }
+        }
+
+        private string ReadGender()
+        {
+            while (true)
+            {
+                Console.Write("Enter Gender (Male/Female/Other): ");
+                var gender = Console.ReadLine();
+
+                if (!string.IsNullOrWhiteSpace(gender) &&
+                    (gender.Equals("Male", StringComparison.OrdinalIgnoreCase) ||
+                     gender.Equals("Female", StringComparison.OrdinalIgnoreCase) ||
+                     gender.Equals("Other", StringComparison.OrdinalIgnoreCase)))
+                    return gender;
+
+                Console.WriteLine("Invalid gender.");
+            }
+        }
+
+        private string ReadPhone()
+        {
+            while (true)
+            {
+                Console.Write("Enter Phone Number (10 digits): ");
+                string phone = Console.ReadLine();
+
+                if (Regex.IsMatch(phone, @"^\d{10}$"))
+                    return phone;
+
+                Console.WriteLine("Invalid phone number.");
+            }
+        }
+
+        private void AddPatient()
+        {
+            Patient p = new Patient();
+
+            p.Name = ReadNonEmpty("Enter Name: ");
+            p.Dob = ReadDate("Enter DOB (dd/MM/yyyy): ");
+            p.Gender = ReadGender();
+            p.PhoneNumber = Convert.ToInt32(ReadPhone());
+            p.Email = ReadEmail();
+            p.InsuranceId = ReadInt("Enter Insurance Id: ");
+
+            _service.AddPatient(p);
+            Console.WriteLine("+++++++++++++++++++++++++++++++++");
+            Console.WriteLine(" Patient Registered Successfully");
+            Console.WriteLine("+++++++++++++++++++++++++++++++++");
+
+            Console.WriteLine("----- Patient Details -----");
+            Console.WriteLine($"Id: {p.PatientId}");
+            Console.WriteLine($"Name: {p.Name}");
+            Console.WriteLine($"DOB: {p.Dob:dd/MM/yyyy}");
+            Console.WriteLine($"Gender: {p.Gender}");
+            Console.WriteLine($"Phone: {p.PhoneNumber}");
+            Console.WriteLine($"Email: {p.Email}");
+            Console.WriteLine($"Insurance Id: {p.InsuranceId}");
+            Console.WriteLine("----------------------------------");
+        }
+
         private void UpdatePatient()
         {
             Console.Write("Enter Patient ID to update: ");
             int id = Convert.ToInt32(Console.ReadLine());
 
-            // Assuming you have a method to get patient by ID
             Patient p = _service.GetPatientById(id);
 
             if (p == null)
@@ -93,80 +190,116 @@ namespace HealthApp.ConsoleApp.Menus
                 return;
             }
 
-            Console.Write("Enter your Name: ");
-            p.Name = Console.ReadLine();
+            Console.WriteLine("Leave field empty to keep existing value");
 
-            Console.Write("Enter your DOB(dd-MM-yyyy): ");
-            string s = Console.ReadLine();
-            DateTime dob = DateTime.ParseExact(s, "dd-MM-yyyy", null);
-            p.Dob = dob;
+            Console.Write($"Enter Name ({p.Name}): ");
+            string name = Console.ReadLine();
+            if (!string.IsNullOrWhiteSpace(name))
+                p.Name = name;
 
-            Console.Write("Enter your Gender: ");
-            p.Gender = Console.ReadLine();
+            Console.Write($"Enter DOB (dd/MM/yyyy) ({p.Dob:dd/MM/yyyy}): ");
+            string dobInput = Console.ReadLine();
+            if (!string.IsNullOrWhiteSpace(dobInput))
+            {
+                DateTime dob;
+                while (!DateTime.TryParseExact(dobInput, "dd/MM/yyyy", null,
+                    System.Globalization.DateTimeStyles.None, out dob))
+                {
+                    Console.Write("Invalid format! Enter DOB (dd/MM/yyyy): ");
+                    dobInput = Console.ReadLine();
+                }
+                p.Dob = dob;
+            }
 
-            Console.Write("Enter your Phone Number: ");
-            p.PhoneNumber = Convert.ToInt32(Console.ReadLine());
+            Console.Write($"Enter Gender ({p.Gender}): ");
+            string gender = Console.ReadLine();
+            if (!string.IsNullOrWhiteSpace(gender))
+                p.Gender = gender;
 
-            Console.Write("Enter your Email: ");
-            p.Email = Console.ReadLine();
+            Console.Write($"Enter Phone Number ({p.PhoneNumber}): ");
+            string phoneInput = Console.ReadLine();
+            if (!string.IsNullOrWhiteSpace(phoneInput))
+            {
+                int phone;
+                while (!int.TryParse(phoneInput, out phone))
+                {
+                    Console.Write("Invalid number. Enter Phone Number: ");
+                    phoneInput = Console.ReadLine();
+                }
+                p.PhoneNumber = phone;
+            }
 
-            Console.Write("Enter your Insurance Id: ");
-            p.InsuranceId = Convert.ToInt32(Console.ReadLine());
+            Console.Write($"Enter Email ({p.Email}): ");
+            string email = Console.ReadLine();
+            if (!string.IsNullOrWhiteSpace(email))
+                p.Email = email;
+
+            Console.Write($"Enter Insurance Id ({p.InsuranceId}): ");
+            string insInput = Console.ReadLine();
+            if (!string.IsNullOrWhiteSpace(insInput))
+            {
+                int ins;
+                while (!int.TryParse(insInput, out ins))
+                {
+                    Console.Write("Invalid number. Enter Insurance Id: ");
+                    insInput = Console.ReadLine();
+                }
+                p.InsuranceId = ins;
+            }
 
             _service.UpdatePatient(p);
 
-            Console.WriteLine("Patient Updated Successfully");
+            Console.WriteLine("✅ Patient Updated Successfully");
         }
 
-
-        private void AddPatient()
+        private void DeletePatient()
         {
-            Patient p = new Patient();
+            int id = ReadInt("Enter Patient ID to delete: ");
 
-            Console.Write("Enter your Name: ");
-            p.Name = Console.ReadLine();
+            try
+            {
+                _service.DeletePatient(id);
 
-            Console.Write("Enter your DOB(dd-MM-yyyy): ");
-            string s = Console.ReadLine();
-            DateTime dob = DateTime.ParseExact(s, "dd-MM-yyyy", null);
-            p.Dob = dob;
-
-            Console.Write("Enter your Gender: ");
-            p.Gender = Console.ReadLine();
-
-            Console.Write("Enter your Phone Number: ");
-            p.PhoneNumber = Convert.ToInt32(Console.ReadLine());
-
-            Console.Write("Enter your Email: ");
-            p.Email = Console.ReadLine();
-
-            Console.Write("Enter your Insurance Id: ");
-            p.InsuranceId = Convert.ToInt32(Console.ReadLine());
-
-            _service.AddPatient(p);
-
-            Console.WriteLine("Patient Registered Successfully");
+                Console.WriteLine("Patient deleted successfully.");
+            }
+            catch (PatientNotFoundException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
         }
 
         private void ViewAll()
         {
             var patients = _service.GetAllPatients();
-            int c = 1;
-            Console.WriteLine("------------------");
-            Console.WriteLine("All Patients");
+
+            Console.WriteLine("---- All Patients ----");
+
+            if (patients.Count == 0)
+            {
+                Console.WriteLine("No patients found.");
+                return;
+            }
+
             foreach (var p in patients)
             {
-                Console.WriteLine($" {c}.{p.Name}");
-                c++;
+                Console.WriteLine($"----- Patient Details of Id {p.PatientId}-----");
+                Console.WriteLine($"       Id: {p.PatientId}");
+                Console.WriteLine($"       Name: {p.Name}");
+                Console.WriteLine($"       DOB: {p.Dob:dd/MM/yyyy}");
+                Console.WriteLine($"       Gender: {p.Gender}");
+                Console.WriteLine($"       Phone: {p.PhoneNumber}");
+                Console.WriteLine($"       Email: {p.Email}");
+                Console.WriteLine($"       Insurance Id: {p.InsuranceId}");
+                Console.WriteLine("--------------------------------------------------");
             }
         }
 
         private void GetPatientProfileSummary()
         {
-            Console.WriteLine("Enter Patient Id: ");
-            int id = Convert.ToInt32(Console.ReadLine());
+            int id = ReadInt("Enter Patient Id: ");
 
             var summary = _service.GetPatientProfileSummary(id);
+
             if (!string.IsNullOrEmpty(summary))
             {
                 Console.WriteLine("Patient Profile Summary:");
@@ -174,37 +307,26 @@ namespace HealthApp.ConsoleApp.Menus
             }
             else
             {
-                Console.WriteLine("Patient not found.");
+                Console.WriteLine("❌ Patient not found.");
             }
-
         }
+
+       
         public void GetPatientById()
         {
             try
             {
-                Console.Write("Enter Patient Id: ");
-                int id = Convert.ToInt32(Console.ReadLine());
+                int id = ReadInt("Enter Patient Id: ");
 
                 var patient = _service.GetPatientById(id);
+
                 Console.WriteLine("Patient Details:");
                 Console.WriteLine(patient.GetProfileSummary());
             }
-
             catch (PatientNotFoundException ex)
             {
                 Console.WriteLine(ex.Message);
             }
         }
-
-        private void Exit()
-        {
-            Console.WriteLine("\nThank you for using Healthcare Management System");
-            Console.WriteLine("Press any key to exit...");
-            Console.ReadKey();
-            Environment.Exit(0);
-        }
-
-
-
     }
 }
