@@ -45,6 +45,7 @@ namespace HealthApp.ConsoleApp.Repositories
         
         public void CancelAppointment(int id, string reason)
         {
+
             var appointment = GetAppointmentById(id);
             if (appointment != null)
             {
