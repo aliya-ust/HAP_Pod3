@@ -24,7 +24,7 @@ namespace HealthApp.ConsoleApp.Repositories
             throw new PatientInvalidException();
 
 
-            patient.PatientId = _patients.Patients.Count > 0 ? _patients.Patients.Max(p => p.PatientId) + 1 : 1;
+            patient.Id = _patients.Patients.Count > 0 ? _patients.Patients.Max(p => p.Id) + 1 : 1;
             patient.CreatedAt = DateTime.Now;
 
             _patients.Patients.Add(patient);

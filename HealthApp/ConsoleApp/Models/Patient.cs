@@ -6,8 +6,8 @@ namespace HealthApp.ConsoleApp.Models
         public int Id { get; set; }
         public string Name { get; set; }
         public DateTime Dob { get; set; }
-        public string Gender { get; set; }
-        public int PhoneNumber { get; set; }
+        public GenderType Gender { get; set; }
+        public string PhoneNumber { get; set; }
         public string Email { get; set; }
         public int InsuranceId { get; set; }
         public DateTime CreatedAt { get; set; }
@@ -17,6 +17,13 @@ namespace HealthApp.ConsoleApp.Models
         public Patient()
         {
             CreatedAt = DateTime.Now;
+        }
+
+        public enum GenderType
+        {
+            Male,
+            Female,
+            Other
         }
 
         // Method to calculate age based on Dob
@@ -35,7 +42,7 @@ namespace HealthApp.ConsoleApp.Models
         public string GetProfileSummary()
         {
             return
-           $"Patient Id     : {PatientId}\n" +
+           $"Patient Id     : {Id}\n" +
            $"Name         : {Name}\n" +
            $"DOB          : {Dob:dd/MM/yyyy}\n" +
            $"Gender       : {Gender}\n" +

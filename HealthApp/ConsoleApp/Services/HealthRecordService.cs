@@ -23,7 +23,7 @@ namespace HealthApp.ConsoleApp.Services
         //Add new record
         public string AddRecord(HealthRecord record)
         {
-            Patient patient = _patientRepository.GetPatientById(record.Patient.PatientId);
+            Patient patient = _patientRepository.GetPatientById(record.Patient.Id);
             Doctor doctor = _doctorRepository.GetByDoctorId(record.Doctor.DoctorId);
 
             record.Patient = patient;
@@ -49,7 +49,7 @@ namespace HealthApp.ConsoleApp.Services
         //Update records by record Id if not same
         public string Update(HealthRecord updatedRecord)
         {
-            updatedRecord.Patient = _patientRepository.GetPatientById(updatedRecord.Patient.PatientId);
+            updatedRecord.Patient = _patientRepository.GetPatientById(updatedRecord.Patient.Id);
             updatedRecord.Doctor = _doctorRepository.GetByDoctorId(updatedRecord.Doctor.DoctorId);
 
             return _healthRecordRepository.Update(updatedRecord);

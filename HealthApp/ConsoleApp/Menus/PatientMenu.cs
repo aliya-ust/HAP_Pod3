@@ -1,9 +1,9 @@
 ﻿
-using System;
-using System.Text.RegularExpressions;
+using HealthApp.ConsoleApp.Exceptions;
 using HealthApp.ConsoleApp.Interfaces;
 using HealthApp.ConsoleApp.Models;
-using HealthApp.ConsoleApp.Exceptions;
+using System;
+using System.Text.RegularExpressions;
 
 namespace HealthApp.ConsoleApp.Menus
 {
@@ -119,22 +119,21 @@ namespace HealthApp.ConsoleApp.Menus
             }
         }
 
-        private string ReadGender()
+
+        private Patient.GenderType ReadGender()
         {
             while (true)
             {
                 Console.Write("Enter Gender (Male/Female/Other): ");
-                var gender = Console.ReadLine();
+                var input = Console.ReadLine();
 
-                if (!string.IsNullOrWhiteSpace(gender) &&
-                    (gender.Equals("Male", StringComparison.OrdinalIgnoreCase) ||
-                     gender.Equals("Female", StringComparison.OrdinalIgnoreCase) ||
-                     gender.Equals("Other", StringComparison.OrdinalIgnoreCase)))
+                if (Enum.TryParse<Patient.GenderType>(input, true, out Patient.GenderType gender))
                     return gender;
 
                 Console.WriteLine("Invalid gender.");
             }
         }
+
 
         private string ReadPhone()
         {
@@ -157,23 +156,23 @@ namespace HealthApp.ConsoleApp.Menus
             p.Name = ReadNonEmpty("Enter Name: ");
             p.Dob = ReadDate("Enter DOB (dd/MM/yyyy): ");
             p.Gender = ReadGender();
-            p.PhoneNumber = Convert.ToInt32(ReadPhone());
+            p.PhoneNumber = ReadPhone();
             p.Email = ReadEmail();
             p.InsuranceId = ReadInt("Enter Insurance Id: ");
 
             _service.AddPatient(p);
-            Console.WriteLine("+++++++++++++++++++++++++++++++++");
+            Console.WriteLine("************************************");
             Console.WriteLine(" Patient Registered Successfully");
-            Console.WriteLine("+++++++++++++++++++++++++++++++++");
+            Console.WriteLine("*************************************");
 
             Console.WriteLine("----- Patient Details -----");
-            Console.WriteLine($"Id: {p.Id}");
-            Console.WriteLine($"Name: {p.Name}");
-            Console.WriteLine($"DOB: {p.Dob:dd/MM/yyyy}");
-            Console.WriteLine($"Gender: {p.Gender}");
-            Console.WriteLine($"Phone: {p.PhoneNumber}");
-            Console.WriteLine($"Email: {p.Email}");
-            Console.WriteLine($"Insurance Id: {p.InsuranceId}");
+            Console.WriteLine($"     Id  : {p.Id}");
+            Console.WriteLine($"     Name: {p.Name}");
+            Console.WriteLine($"     DOB : {p.Dob:dd/MM/yyyy}");
+            Console.WriteLine($"     Gender: {p.Gender}");
+            Console.WriteLine($"     Phone: {p.PhoneNumber}");
+            Console.WriteLine($"     Email: {p.Email}");
+            Console.WriteLine($"     Insurance Id: {p.InsuranceId}");
             Console.WriteLine("----------------------------------");
         }
 
@@ -211,23 +210,32 @@ namespace HealthApp.ConsoleApp.Menus
                 p.Dob = dob;
             }
 
+
+
             Console.Write($"Enter Gender ({p.Gender}): ");
-            string gender = Console.ReadLine();
-            if (!string.IsNullOrWhiteSpace(gender))
+            string input = Console.ReadLine();
+
+            Patient.GenderType gender;
+
+            if (!string.IsNullOrWhiteSpace(input))
+            {
+                while (!Enum.TryParse(input, out gender))
+                {
+                    Console.Write("Invalid gender. Enter Male/Female/Other: ");
+                    input = Console.ReadLine();
+                }
                 p.Gender = gender;
+            }
+
 
             Console.Write($"Enter Phone Number ({p.PhoneNumber}): ");
             string phoneInput = Console.ReadLine();
+
             if (!string.IsNullOrWhiteSpace(phoneInput))
             {
-                int phone;
-                while (!int.TryParse(phoneInput, out phone))
-                {
-                    Console.Write("Invalid number. Enter Phone Number: ");
-                    phoneInput = Console.ReadLine();
-                }
-                p.PhoneNumber = phone;
+                p.PhoneNumber = phoneInput; 
             }
+
 
             Console.Write($"Enter Email ({p.Email}): ");
             string email = Console.ReadLine();
