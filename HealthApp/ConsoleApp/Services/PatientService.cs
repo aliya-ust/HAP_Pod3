@@ -19,22 +19,40 @@ namespace HealthApp.ConsoleApp.Services
 
         public string RegisterPatient(Patient patient)
         {
+            List<Patient> patients = _patientRepo.GetAllPatients();
+
+            patient.PatientId = PatientIdGenerator(patients);
+
             return _patientRepo.RegisterPatient(patient);
         }
 
         public Patient UpdatePatient(Patient patient)
         {
-            return _patientRepo.UpdatePatient(patient);
-        }
+            Patient? existingPatient = GetPatientById(patient.PatientId);
 
-        public string DeletePatient(int id)
-        {
-            return _patientRepo.DeletePatient(id);
+            if (existingPatient is null)
+            {
+                throw new PatientNotFoundException($"Patient of ID {patient.PatientId} does not exist");
+            }
+            return _patientRepo.UpdatePatient(existingPatient, patient);
         }
 
         public Patient? GetPatientById(int id)
         {
-            return _patientRepo.GetPatientById(id);
+            Patient? patient = _patientRepo.GetPatientById(id);
+
+            if (patient is null)
+            {
+                throw new PatientNotFoundException($"Patient of ID {id} does not exist");
+            }
+            return patient;
+        }
+
+        public int PatientIdGenerator(List<Patient> patients)
+        {
+            return patients.Any()
+                ? patients.Max(p => p.PatientId) + 1
+                : 101;
         }
     }
 }

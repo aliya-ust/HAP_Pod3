@@ -5,7 +5,7 @@ public interface IDoctorRepository
     string AddDoctor(Doctor doctor);
     Doctor? GetDoctorById(int id);
     List<Doctor> GetDoctorsBySpecialisation(string specialisation);
-    Doctor UpdateDoctor(Doctor doctor);
+    Doctor UpdateDoctor(Doctor existingDoctor, Doctor doctor);
+    List<Doctor> GetAllDoctors();
     string DeleteDoctor(int id);
-    // List<Doctor> GetAllDoctors();
 }

@@ -23,12 +23,8 @@ namespace HealthApp.ConsoleApp.Services
 
         public string AddHealthRecord(HealthRecord record)
         {
-            var existingRecord = GetRecordById(record.RecordId);
-
-            if (existingRecord != null)
-            {
-                throw new Exception("Health record already exists.");
-            }
+            List<HealthRecord> records = _healthRecordRepository.GetAllRecords();
+            record.RecordId = RecordIdGenerator(records);
 
             return _healthRecordRepository.AddHealthRecord(record);
         }
@@ -47,7 +43,7 @@ namespace HealthApp.ConsoleApp.Services
 
             if (records == null || records.Count == 0)
             {
-                throw new HealthRecordNotFoundException("No health records found for this patient.");
+                throw new HealthRecordNotFoundException("No health records found for this patient ID.");
             }
 
             return records;
@@ -67,29 +63,38 @@ namespace HealthApp.ConsoleApp.Services
 
             if (records == null || records.Count == 0)
             {
-                throw new HealthRecordNotFoundException("No health records found for this doctor.");
+                throw new HealthRecordNotFoundException("No health records found for this doctor ID.");
             }
 
             return records;
         }
 
-        // //Update records by record Id if not same
-        // public string Update(HealthRecord updatedRecord)
-        // {
-        //     updatedRecord.Patient = _patientRepository.GetById(updatedRecord.Patient.Id);
-        //     updatedRecord.Doctor = _doctorRepository.GetById(updatedRecord.Doctor.DoctorId);
+        public HealthRecord UpdateHealthRecord(HealthRecord record)
+        {
+            HealthRecord? existingHealthRecord = GetRecordById(record.RecordId);
 
-        //     return _healthRecordRepository.Update(updatedRecord);
-        // }
+            if (existingHealthRecord is null)
+            {
+                throw new HealthRecordNotFoundException($"Health Record of ID {record.RecordId} does not exist");
+            }
+            return _healthRecordRepository.UpdateHealthRecord(existingHealthRecord, record);
+        }
 
         public HealthRecord? GetRecordById(int recordId)
         {
-            return _healthRecordRepository.GetRecordById(recordId);
+            HealthRecord? record = _healthRecordRepository.GetRecordById(recordId);
+            if (record is null)
+            {
+                throw new HealthRecordNotFoundException($"Health Record of ID {recordId} does not exist");
+            }
+            return record;
         }
 
-        // public string Delete(int recordId)
-        // {
-        //     return _healthRecordRepository.Delete(recordId);
-        // }
+        public int RecordIdGenerator(List<HealthRecord> records)
+        {
+            return records.Any()
+                ? records.Max(r => r.RecordId) + 1
+                : 101;
+        }
     }
 }

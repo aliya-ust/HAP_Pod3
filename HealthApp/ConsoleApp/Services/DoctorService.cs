@@ -17,19 +17,21 @@ namespace HealthApp.ConsoleApp.Services
 
         public string AddDoctor(Doctor doctor)
         {
-            var existingDoctor = GetDoctorById(doctor.DoctorId);
-
-            if (existingDoctor != null)
-            {
-                throw new DoctorAlreadyExistsException("Doctor already exists.");
-            }
+            List<Doctor> doctors = _doctorRepo.GetAllDoctors();
+            doctor.DoctorId = DoctorIdGenerator(doctors);
 
             return _doctorRepo.AddDoctor(doctor);
         }
 
         public Doctor? GetDoctorById(int doctorId)
         {
-            return _doctorRepo.GetDoctorById(doctorId);
+            Doctor? doctor = _doctorRepo.GetDoctorById(doctorId);
+
+            if (doctor is null)
+            {
+                throw new PatientNotFoundException($"Doctor of ID {doctorId} does not exist");
+            }
+            return doctor;
         }
 
         public List<Doctor> GetDoctorsBySpecialisation(string specialisation)
@@ -46,12 +48,25 @@ namespace HealthApp.ConsoleApp.Services
 
         public Doctor UpdateDoctor(Doctor doctor)
         {
-            return _doctorRepo.UpdateDoctor(doctor);
+            Doctor? existingDoctor = GetDoctorById(doctor.DoctorId);
+
+            if (existingDoctor is null)
+            {
+                throw new DoctorNotFoundException($"Doctor of ID {doctor.DoctorId} does not exist");
+            }
+            return _doctorRepo.UpdateDoctor(existingDoctor, doctor);
         }
 
         public string DeleteDoctor(int id)
         {
             return _doctorRepo.DeleteDoctor(id);
+        }
+
+        public int DoctorIdGenerator(List<Doctor> doctors)
+        {
+            return doctors.Any()
+                ? doctors.Max(d => d.DoctorId) + 1
+                : 101;
         }
 
         // public List<Doctor> GetAllDoctors()

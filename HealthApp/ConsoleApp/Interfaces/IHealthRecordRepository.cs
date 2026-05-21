@@ -5,11 +5,10 @@ namespace HealthApp.ConsoleApp.Interfaces
     public interface IHealthRecordRepository
     {
         string AddHealthRecord(HealthRecord record);
-        // string Delete(int recordId);
-        // string Update(HealthRecord record);
         HealthRecord? GetRecordById(int id);
         List<HealthRecord> GetByPatientIdOrderByVisitDateDesc(int id);
         List<HealthRecord> GetByDoctorIdOrderByVisitDateDesc(int id);
-        // List<HealthRecord> GetAll();
+        HealthRecord UpdateHealthRecord(HealthRecord existingHealthRecord, HealthRecord record);
+        List<HealthRecord> GetAllRecords();
     }
 }

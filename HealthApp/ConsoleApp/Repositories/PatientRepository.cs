@@ -23,12 +23,13 @@ namespace HealthApp.ConsoleApp.Repositories
             return $"Patient ID {patient.PatientId} added successfully!";
         }
 
-        public Patient UpdatePatient(Patient patient)
+        public List<Patient> GetAllPatients()
         {
-            var existingPatient = _patientsDb.Patients.FirstOrDefault(p => p.PatientId == patient.PatientId);
-            if (existingPatient == null)
-                throw new PatientNotFoundException("Patient with this ID does not exist");
+            return _patientsDb.Patients.ToList();
+        }
 
+        public Patient UpdatePatient(Patient existingPatient, Patient patient)
+        {
             existingPatient.FullName = patient.FullName;
             existingPatient.DateOfBirth = patient.DateOfBirth;
             existingPatient.Gender = patient.Gender;
@@ -37,16 +38,6 @@ namespace HealthApp.ConsoleApp.Repositories
             existingPatient.InsuranceId = patient.InsuranceId;
 
             return existingPatient;
-        }
-
-        public string DeletePatient(int id)
-        {
-            var patient = _patientsDb.Patients.FirstOrDefault(p => p.PatientId == id);
-            if (patient == null)
-                throw new PatientNotFoundException("Patient with this ID does not exist");
-
-            _patientsDb.Patients.Remove(patient);
-            return $"Patient of ID {id} has been deleted successfully";
         }
 
         public Patient? GetPatientById(int id)

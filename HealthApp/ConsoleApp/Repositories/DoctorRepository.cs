@@ -35,12 +35,8 @@ namespace HealthApp.ConsoleApp.Repositories
                 .ToList();
         }
 
-        public Doctor UpdateDoctor(Doctor doctor)
+        public Doctor UpdateDoctor(Doctor existingDoctor, Doctor doctor)
         {
-            var existingDoctor = _doctorDb.Doctors.FirstOrDefault(d => d.DoctorId == doctor.DoctorId);
-            if (existingDoctor == null)
-                throw new DoctorNotFoundException("Patient with this ID does not exist");
-
             existingDoctor.FullName = doctor.FullName;
             existingDoctor.Specialisation = doctor.Specialisation;
             existingDoctor.YearsOfExperience = doctor.YearsOfExperience;
@@ -50,19 +46,19 @@ namespace HealthApp.ConsoleApp.Repositories
             return existingDoctor;
         }
 
-        public string DeleteDoctor(int id)
+        public List<Doctor> GetAllDoctors()
         {
-            var patient = _doctorDb.Doctors.FirstOrDefault(d => d.DoctorId == id);
-            if (patient == null)
-                throw new PatientNotFoundException("Doctor with this ID does not exist");
-
-            _doctorDb.Doctors.Remove(patient);
-            return $"Doctor of ID {id} has been deleted successfully";
+            return _doctorDb.Doctors.ToList();
         }
 
-        // public List<Doctor> GetAllDoctors()
-        // {
-        //     return doctorDb.Doctors;
-        // }
+        public string DeleteDoctor(int id)
+        {
+            var doctor = _doctorDb.Doctors.FirstOrDefault(d => d.DoctorId == id);
+            if (doctor == null)
+                throw new DoctorNotFoundException("Doctor with this ID does not exist");
+
+            _doctorDb.Doctors.Remove(doctor);
+            return $"Doctor of ID {id} has been deleted successfully";
+        }
     }
 }
