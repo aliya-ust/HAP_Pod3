@@ -4,38 +4,43 @@ using System.Linq;
 using HealthApp.ConsoleApp.Interfaces;
 using HealthApp.ConsoleApp.Models;
 using HealthApp.ConsoleApp.Databases;
+using HealthApp.ConsoleApp.Exceptions;
 
 namespace HealthApp.ConsoleApp.Repositories
 {
     public class PatientRepository : IPatientRepository
     {
-        private readonly List<Patient> _patients;
+        private readonly PatientDb _patients;
 
-        public PatientRepository()
+        public PatientRepository(PatientDb db)
         {
-            _patients = PatientDb.Patients;
+            _patients = db;
         }
 
-        public bool Add(Patient patient)
+        public void AddPatient(Patient patient)
         {
             if (patient == null)
-                return false;
+               
+            throw new PatientInvalidException();
 
-            patient.Id = _patients.Count > 0 ? _patients.Max(p => p.Id) + 1 : 1;
+
+            patient.PatientId = _patients.Patients.Count > 0 ? _patients.Patients.Max(p => p.PatientId) + 1 : 1;
             patient.CreatedAt = DateTime.Now;
 
-            _patients.Add(patient);
-            return true;
+            _patients.Patients.Add(patient);
+        
         }
 
-        public bool Update(Patient patient)
+        public void UpdatePatient(Patient patient)
         {
             if (patient == null)
-                return false;
+                throw new PatientInvalidException();
 
-            var existingPatient = _patients.FirstOrDefault(p => p.Id == patient.Id);
+            var existingPatient = _patients.Patients.FirstOrDefault(p => p.PatientId == patient.PatientId);
+
             if (existingPatient == null)
-                return false;
+                throw new PatientNotFoundException(patient.PatientId);
+
 
             existingPatient.Name = patient.Name;
             existingPatient.Dob = patient.Dob;
@@ -43,28 +48,30 @@ namespace HealthApp.ConsoleApp.Repositories
             existingPatient.PhoneNumber = patient.PhoneNumber;
             existingPatient.Email = patient.Email;
             existingPatient.InsuranceId = patient.InsuranceId;
-
-            return true;
         }
 
-        public bool Delete(int id)
+        public void DeletePatient(int id)
         {
-            var patient = _patients.FirstOrDefault(p => p.Id == id);
+            var patient = _patients.Patients.FirstOrDefault(p => p.PatientId == id);
             if (patient == null)
-                return false;
+                throw new PatientNotFoundException(id);
 
-            _patients.Remove(patient);
-            return true;
+            _patients.Patients.Remove(patient);
         }
 
-        public Patient GetById(int id)
+        public Patient GetPatientById(int id)
         {
-            return _patients.FirstOrDefault(p => p.Id == id);
+            var patient = _patients.Patients.FirstOrDefault(p => p.PatientId == id);
+
+            if (patient == null)
+                throw new PatientNotFoundException(id);
+
+            return patient;
         }
 
-        public List<Patient> GetAll()
+        public List<Patient> GetAllPatients()
         {
-            return _patients; 
+            return _patients.Patients.ToList(); 
         }
     }
 }

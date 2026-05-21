@@ -4,10 +4,10 @@ namespace HealthApp.ConsoleApp.Interfaces
 {
     public interface IPatientRepository
     {
-        bool Add(Patient patient);
-        bool Update(Patient patient);
-        bool Delete(int id);
-        Patient GetById(int id);
-        List<Patient> GetAll();
+        void AddPatient(Patient patient);
+        void UpdatePatient(Patient patient);
+        void DeletePatient(int id);
+        Patient GetPatientById(int id);
+        List<Patient> GetAllPatients();
     }
 }

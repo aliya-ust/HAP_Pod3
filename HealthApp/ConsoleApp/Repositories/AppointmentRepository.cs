@@ -64,7 +64,7 @@ namespace HealthApp.ConsoleApp.Repositories
         }
         public List<Appointment> GetAppointmentsByPatient(int patientId)
         {
-            var appointments = _appointments.Where(a => a.Patient.Id == patientId).ToList();
+            var appointments = _appointments.Where(a => a.Patient.PatientId == patientId).ToList();
             if (appointments.Count == 0)
             {
                 throw new AppointmentNotFoundException($"No appointments found for patient ID {patientId}.");
