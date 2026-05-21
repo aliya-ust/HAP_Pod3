@@ -1,60 +1,95 @@
-using System;
-using Microsoft.Extensions.DependencyInjection;
-using HealthApp;
+﻿// ✅ Interfaces
 using HealthApp.ConsoleApp.Interfaces;
-using HealthApp.ConsoleApp.Services;
+// ✅ Menus
 using HealthApp.ConsoleApp.Menus;
+// ✅ Repositories
 using HealthApp.ConsoleApp.Repositories;
+using HealthApp.ConsoleApp.Repositories.impl;
+// ✅ Services
+using HealthApp.ConsoleApp.Services;
+using Microsoft.Extensions.DependencyInjection;
+using System;
 
-        // 1. Create service collection
-        var services = new ServiceCollection();
-
-        // 2. Register dependencies
-        services.AddScoped<IPatientRepository, PatientRepository>();
-        services.AddScoped<IPatientService, PatientService>();
-
-        services.AddScoped<PatientMenu>();
-        services.AddScoped<DoctorMenu>();
-
-        // 3. Build provider
-        var provider = services.BuildServiceProvider();
-
-        // 4. Resolve menus
-        var patientMenu = provider.GetRequiredService<PatientMenu>();
-        var doctorMenu = provider.GetRequiredService<DoctorMenu>();
-
-
-        Console.WriteLine("=====================");
-        Console.WriteLine("HEALTH CARE MANAGEMENT");
-        Console.WriteLine("=====================");
-
-        while (true)
+namespace HealthApp.ConsoleApp
+{
+    class Program
+    {
+        static void Main(string[] args)
         {
-            Console.WriteLine("1. Patient Registration");
-            Console.WriteLine("2. Doctor");
-            Console.WriteLine("3. Exit");
+            // ✅ 1. Create DI container
+            var services = new ServiceCollection();
 
-            Console.Write("Enter your choice: ");
-            var choice = Console.ReadLine();
+            // ✅ 2. Register Repositories
+            services.AddScoped<IPatientRepository, PatientRepository>();
+            services.AddScoped<IDoctorRepository, DoctorRepository>();
+            services.AddScoped<IAppointmentRepository, AppointmentRepo>();
+            services.AddScoped<IHealthRecordRepository, HealthRecordRepository>();
 
-            switch (choice)
+            // ✅ 3. Register Services
+            services.AddScoped<IPatientService, PatientService>();
+            services.AddScoped<IDoctorService, DoctorService>();
+            services.AddScoped<IAppointmentService, AppointmentService>();
+            services.AddScoped<IHealthRecordService, HealthRecordService>();
+
+            // ✅ 4. Register Menus
+            services.AddScoped<PatientMenu>();
+            services.AddScoped<DoctorMenu>();
+            services.AddScoped<AppointmentMenu>();
+            services.AddScoped<HealthRecordMenu>();
+
+            // ✅ 5. Build provider
+            var provider = services.BuildServiceProvider();
+
+            // ✅ 6. Resolve menus
+            var patientMenu = provider.GetRequiredService<PatientMenu>();
+            var doctorMenu = provider.GetRequiredService<DoctorMenu>();
+            var appointmentMenu = provider.GetRequiredService<AppointmentMenu>();
+            var healthRecordMenu = provider.GetRequiredService<HealthRecordMenu>();
+
+            Console.WriteLine("===================================");
+            Console.WriteLine("    HEALTH CARE MANAGEMENT SYSTEM");
+            Console.WriteLine("===================================");
+
+            // ✅ 7. Main Menu Loop
+            while (true)
             {
-                case "1":
-                    Console.WriteLine("Patient Registration selected.");
-                    patientMenu.Show();
-                    break;
+                Console.WriteLine("\n------ MAIN MENU ------");
+                Console.WriteLine("1. Patient Module");
+                Console.WriteLine("2. Doctor Module");
+                Console.WriteLine("3. Appointment Module");
+                Console.WriteLine("4. Health Record Module");
+                Console.WriteLine("5. Exit");
 
-                case "2":
-                    Console.WriteLine("Doctor selected.");
-                    doctorMenu.ShowMenu();
-                    break;
+                Console.Write("Enter your choice: ");
+                var choice = Console.ReadLine();
 
-                case "3":
-                    Console.WriteLine("Exiting the application.");
-                    return;
+                switch (choice)
+                {
+                    case "1":
+                        patientMenu.PatientRegisteration();
+                        break;
 
-                default:
-                    Console.WriteLine("Invalid choice. Please try again.");
-                    break;
+                    case "2":
+                        doctorMenu.ShowMenu();
+                        break;
+
+                    case "3":
+                        appointmentMenu.ShowMenu();
+                        break;
+
+                    case "4":
+                        healthRecordMenu.ShowMenu();
+                        break;
+
+                    case "5":
+                        Console.WriteLine("Exiting Application...");
+                        return;
+
+                    default:
+                        Console.WriteLine("❌ Invalid choice. Try again.");
+                        break;
+                }
             }
         }
+    }
+}

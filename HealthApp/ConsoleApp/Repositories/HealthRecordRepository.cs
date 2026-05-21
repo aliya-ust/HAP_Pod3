@@ -69,7 +69,7 @@ namespace HealthApp.ConsoleApp.Repositories
         public List<HealthRecord> GetByPatientIdOrderByVisitDateDesc(int patientId)
         {
             return _healthRecordDb.Records
-                    .Where(r => r.Patient != null && r.Patient.PatientId == patientId)
+                    .Where(r => r.Patient != null && r.Patient.Id == patientId)
                     .OrderByDescending(r => r.VisitDate)
                     .ToList();
         }
@@ -84,7 +84,7 @@ namespace HealthApp.ConsoleApp.Repositories
 
         public HealthRecord GetByRecordId(int recordId)
         {
-            HealthRecord record = _healthRecordDb.Records.Find(r => r.RecordId == recordId);
+            HealthRecord? record = _healthRecordDb.Records.FirstOrDefault(r => r.RecordId == recordId);
             if (record is null)
             {
                 throw new HealthRecordNotFoundException("There is no Health Records Available");

@@ -1,206 +1,111 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using HealthApp.ConsoleApp.Interfaces;
 using HealthApp.ConsoleApp.Models;
-using HealthApp.ConsoleApp.Services;
-using HealthApp.ConsoleApp.Repositories.impl;
-using HealthApp.ConsoleApp.Database;
-using HealthApp.ConsoleApp.Exceptions;
 
-namespace HealthApp
+namespace HealthApp.ConsoleApp.Menus
 {
     public class DoctorMenu
     {
-        private IDoctorService doctorService;
+        private readonly IDoctorService _service;
 
-        public DoctorMenu(IDoctorService doctorService)
+        public DoctorMenu(IDoctorService service)
         {
-            Console.WriteLine("\n===== DOCTOR MENU =====");
-            Console.WriteLine("1. Add New Doctor");
-            Console.WriteLine("2. Search Doctors by Specialisation");
-            Console.WriteLine("3. Exit");
-
-            Console.Write("Enter your choice: ");
-            int choice = Convert.ToInt32(Console.ReadLine());
-            this.doctorService = doctorService;
+            _service = service;
         }
 
         public void ShowMenu()
         {
-            int choice;
-
-            do
+            while (true)
             {
-                Console.WriteLine("\n===== DOCTOR MENU =====");
+                Console.WriteLine("\n========== DOCTOR MENU ==========");
                 Console.WriteLine("1. Add Doctor");
-                Console.WriteLine("2. View All Doctors");
-                Console.WriteLine("3. Search Doctor By Specialisation");
-                Console.WriteLine("4. Exit");
+                Console.WriteLine("2. Update Doctor");
+                Console.WriteLine("3. Get Doctor By Id");
+                Console.WriteLine("4. Delete Doctor");
+                Console.WriteLine("5. View All Doctors");
+                Console.WriteLine("6. Exit");
 
                 Console.Write("Enter choice: ");
-                while (!int.TryParse(Console.ReadLine(), out choice))
-                {
-                    Console.Write("Invalid choice. Enter again: ");
-                }
+                int choice = int.Parse(Console.ReadLine());
 
                 switch (choice)
                 {
-                    case 1:
-                        AddDoctor();
-                        break;
-
-                    case 2:
-                        ViewDoctors();
-                        break;
-
-                    case 3:
-                        SearchDoctorBySpecialisation();
-                        break;
-
-                    case 4:
-                        Console.WriteLine("Exiting...");
-                        break;
-
-                    default:
-                        Console.WriteLine("Invalid Choice");
-                        break;
+                    case 1: AddDoctor(); break;
+                    case 2: UpdateDoctor(); break;
+                    case 3: GetDoctor(); break;
+                    case 4: DeleteDoctor(); break;
+                    case 5: ViewAll(); break;
+                    case 6: return;
                 }
-
-            } while (choice != 4);
+            }
         }
 
-        // ✅ UPDATED METHOD (Main Fix)
         private void AddDoctor()
         {
-            Console.Write("Enter Doctor ID: ");
-            int id = int.Parse(Console.ReadLine() ?? "0");
+            Doctor d = new Doctor();
 
-            try
-            {
-                // ✅ CHECK DUPLICATE ID FIRST
-                List<Doctor> existingDoctors = doctorService.GetAllDoctors();
+            Console.Write("Enter Name: ");
+            d.FullName = Console.ReadLine();
 
-                foreach (var d in existingDoctors)
-                {
-                    if (d.DoctorId == id)
-                    {
-                        throw new DoctorAlreadyExistsException("Doctor ID already exists!");
-                    }
-                }
-
-                // ✅ Only ask remaining inputs if ID is valid
-                Console.Write("Enter Full Name: ");
-                string name = Console.ReadLine() ?? "";
-
-                Console.Write("Enter Specialisation: ");
-                string specialisation = Console.ReadLine() ?? "";
-
-                Console.Write("Enter Years Of Experience: ");
-                int experience = int.Parse(Console.ReadLine() ?? "0");
-
-                Console.Write("Enter Consultation Fee: ");
-                decimal fee = decimal.Parse(Console.ReadLine() ?? "0");
-
-                Console.Write("Is Active (true/false): ");
-                bool isActive = bool.Parse(Console.ReadLine() ?? "true");
-
-                Doctor doctor = new Doctor
-                {
-                    DoctorId = id,
-                    FullName = name,
-                    Specialisation = specialisation,
-                    YearsOfExperience = experience,
-                    ConsultationFee = fee,
-                    IsActive = isActive
-                };
-
-                doctorService.AddDoctor(doctor);
-
-                Console.WriteLine("Doctor Added Successfully");
-            }
-            catch (DoctorAlreadyExistsException ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Unexpected error: " + ex.Message);
-            }
-        }
-
-        private void ViewDoctors()
-        {
-            List<Doctor> doctors = doctorService.GetAllDoctors();
-
-            if (doctors.Count == 0)
-            {
-                Console.WriteLine("No Doctors Found");
-                return;
-            }
-
-            Console.WriteLine("\n=== Doctor List ===\n");
-
-            foreach (Doctor doctor in doctors)
-            {
-                Console.WriteLine(doctor.GetDoctorDetails());
-
-                // ✅ Print availability
-                Console.WriteLine(doctor.IsAvailable(DateTime.Today));
-
-                // ✅ ✅ IMPORTANT: STOP if inactive
-                if (!doctor.IsActive)
-                {
-                    Console.WriteLine("-----------------------------------");
-                    continue;  // 🔥 THIS LINE FIXES YOUR ISSUE
-                }
-
-                // ✅ Only active doctors reach here
-                Console.WriteLine(doctor.GetScheduleSummary());
-
-                var upcoming = doctor.GetUpcomingAppointments();
-
-                if (upcoming.Count > 0)
-                {
-                    Console.WriteLine("Dates are:");
-
-                    foreach (var date in upcoming)
-                    {
-                        Console.WriteLine(date.ToString("yyyy-MM-dd"));
-                    }
-                }
-
-                Console.WriteLine("-----------------------------------");
-            }
-        }
-
-        private void SearchDoctorBySpecialisation()
-        {
             Console.Write("Enter Specialisation: ");
-            string specialisation = Console.ReadLine() ?? "";
+            d.Specialisation = Console.ReadLine();
 
-            try
-            {
-                List<Doctor> doctors =
-                    doctorService.SearchBySpecialisation(specialisation);
+            Console.Write("Enter Experience: ");
+            d.YearsOfExperience = int.Parse(Console.ReadLine());
 
-                Console.WriteLine("\n=== Matching Doctors ===\n");
+            Console.Write("Enter Consultation Fee: ");
+            d.ConsultationFee = decimal.Parse(Console.ReadLine());
 
-                foreach (var doctor in doctors)
-                {
-                    Console.WriteLine(doctor.GetDoctorDetails());
-                    Console.WriteLine("Available Today: " + doctor.IsAvailable(DateTime.Today));
-                    Console.WriteLine(doctor.GetScheduleSummary());
-                    Console.WriteLine("-----------------------------------");
-                }
-            }
-            catch (SpecialisationNotFoundException ex)
+            _service.AddDoctor(d);
+
+            Console.WriteLine("✅ Doctor Added Successfully");
+        }
+
+        private void UpdateDoctor()
+        {
+            Console.Write("Enter Doctor ID: ");
+            int id = int.Parse(Console.ReadLine());
+
+            var d = _service.GetDoctorById(id);
+
+            Console.Write("Enter New Name: ");
+            d.FullName = Console.ReadLine();
+
+            Console.Write("Enter New Specialisation: ");
+            d.Specialisation = Console.ReadLine();
+
+            _service.UpdateDoctor(d);
+
+            Console.WriteLine("✅ Doctor Updated");
+        }
+
+        private void GetDoctor()
+        {
+            Console.Write("Enter Doctor ID: ");
+            int id = int.Parse(Console.ReadLine());
+
+            var d = _service.GetDoctorById(id);
+
+            Console.WriteLine($"Name: {d.FullName}, Spec: {d.Specialisation}");
+        }
+
+        private void DeleteDoctor()
+        {
+            Console.Write("Enter Doctor ID: ");
+            int id = int.Parse(Console.ReadLine());
+
+            _service.DeleteDoctor(id);
+
+            Console.WriteLine("✅ Doctor Deleted");
+        }
+
+        private void ViewAll()
+        {
+            var list = _service.GetAllDoctors();
+
+            foreach (var d in list)
             {
-                Console.WriteLine(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Unexpected error: " + ex.Message);
+                Console.WriteLine($"{d.DoctorId} - {d.FullName} - {d.Specialisation}");
             }
         }
     }
