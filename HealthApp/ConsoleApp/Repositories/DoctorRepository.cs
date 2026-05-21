@@ -38,12 +38,5 @@ namespace HealthApp.ConsoleApp.Repositories
         // {
         //     return doctorDb.Doctors;
         // }
-
-        // public List<Doctor> GetDoctorsBySpecialisation(string specialisation)
-        // {
-        //     return doctorDb.Doctors
-        //         .Where(d => d.Specialisation.Equals(specialisation, StringComparison.OrdinalIgnoreCase))
-        //         .ToList();
-        // }
     }
 }

@@ -5,10 +5,10 @@ namespace HealthApp.ConsoleApp.Interfaces
 {   
 public interface IAppointmentService
 {
-    Appointment BookAppointment(Patient patient, Doctor doctor, DateTime date, string slot);
+    string BookAppointment(Patient patient, Doctor doctor, DateTime date, string slot);
     // void CancelAppointment(int appointmentId, string reason);
-    // List<Appointment> GetAppointmentsByPatient(int patientId);
-    // List<Appointment> GetAppointmentsByDoctor(int doctorId);
+    List<Appointment> GetAppointmentsByPatientId(int patientId);
+    List<Appointment> GetAppointmentsByDoctorId(int doctorId);
     // List<Appointment> GetUpcomingAppointments();
 }
 }

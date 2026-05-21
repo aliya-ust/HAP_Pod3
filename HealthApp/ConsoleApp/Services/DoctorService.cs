@@ -48,18 +48,5 @@ namespace HealthApp.ConsoleApp.Services
         // {
         //     return doctorRepository.GetAllDoctors();
         // }
-
-        // public List<Doctor> SearchBySpecialisation(string specialisation)
-        // {
-        //     var doctors = doctorRepository.GetDoctorsBySpecialisation(specialisation);
-
-        //     //Throw exception if not found
-        //     if (doctors == null || doctors.Count == 0)
-        //     {
-        //         throw new SpecialisationNotFoundException("No doctors found for this specialisation!");
-        //     }
-
-        //     return doctors;
-        // }
     }
 }

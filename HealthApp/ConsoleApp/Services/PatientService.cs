@@ -51,17 +51,5 @@ namespace HealthApp.ConsoleApp.Services
         // {
         //     return patientRepo.GetAll();
         // }
-
-        // public int GetPatientAge(int patientId)
-        // {
-        //     var patient = GetPatientById(patientId);
-        //     return patient?.GetAge() ?? -1;
-        // }
-
-        // public string GetPatientProfileSummary(int patientId)
-        // {
-        //     var patient = GetPatientById(patientId);
-        //     return patient?.GetProfileSummary() ?? string.Empty;
-        // }
     }
 }

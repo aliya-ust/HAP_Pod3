@@ -24,13 +24,15 @@ services.AddScoped<IHealthRecordService, HealthRecordService>();
 
 services.AddScoped<PatientMenu>();
 services.AddScoped<DoctorMenu>();
-services.AddScoped<HealthRecordMenu>(); 
+services.AddScoped<HealthRecordMenu>();
+services.AddScoped<AppointmentMenu>();
 
 var provider = services.BuildServiceProvider();
 
 var patientMenu = provider.GetRequiredService<PatientMenu>();
 var doctorMenu = provider.GetRequiredService<DoctorMenu>();
 var healthRecordMenu = provider.GetRequiredService<HealthRecordMenu>();
+var appointmentMenu = provider.GetRequiredService<AppointmentMenu>();
 
 bool exit = false;
 while (!exit)
@@ -76,10 +78,10 @@ while (!exit)
             }
             break;
         case 4:
-            // Book an appointment for a patient
+            Console.WriteLine(appointmentMenu.BookAppointment());
             break;
         case 5:
-            // View all appointments for a patient
+            appointmentMenu.ViewAppointments();
             break;
         case 6:
             // Confirm or cancel an appointment

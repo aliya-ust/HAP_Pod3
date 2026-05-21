@@ -3,15 +3,23 @@ using System.Numerics;
 using System.Text;
 using HealthApp.ConsoleApp.Models;
 
+public enum AppointmentStatus
+{
+    Pending,
+    Confirmed,
+    Completed,
+    Cancelled
+}
+
 public class Appointment
 {
     public int AppointmentId { get; set; }
-    public Patient Patient { get; set; }
-    public Doctor Doctor { get; set; }
+    public required Patient Patient { get; set; }
+    public required Doctor Doctor { get; set; }
     public DateTime ScheduledDate { get; set; }
-    public string TimeSlot { get; set; }
+    public required string TimeSlot { get; set; }
     public AppointmentStatus Status { get; set; }
-    public string CancellationReason { get; set; }
+    public string CancellationReason { get; set; } = "";
    
     public Appointment()
     {

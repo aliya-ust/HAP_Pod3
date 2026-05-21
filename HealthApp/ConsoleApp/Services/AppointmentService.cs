@@ -5,24 +5,21 @@ using HealthApp.ConsoleApp.Exceptions;
 using HealthApp.ConsoleApp.Repositories;
 using HealthApp.ConsoleApp.Interfaces;
 using HealthApp.ConsoleApp.Models;
-using HealthApp.ConsoleApp.Interfaces;
 
 namespace HealthApp.ConsoleApp.Services
 {
     public class AppointmentService : IAppointmentService
     {
-        private readonly IAppointmentRepository _appointmentRepository;
+        private readonly IAppointmentRepository _appointmentRepo;
 
         private int _appointmentIdCounter = 1;
 
-        //  Constructor Injection
         public AppointmentService(IAppointmentRepository appointmentRepository)
         {
-            _appointmentRepository = appointmentRepository;
+            _appointmentRepo = appointmentRepository;
         }
 
-        //  BOOK APPOINTMENT
-        public Appointment BookAppointment(Patient patient, Doctor doctor, DateTime date, string slot)
+        public string BookAppointment(Patient patient, Doctor doctor, DateTime date, string slot)
         {
             if (date < DateTime.Now)
             {
@@ -34,7 +31,7 @@ namespace HealthApp.ConsoleApp.Services
                 throw new DoctorUnavailableException("Doctor is not available on selected date.");
             }
 
-            var appointments = _appointmentRepository.GetAllAppointments();
+            var appointments = _appointmentRepo.GetAllAppointments();
 
             bool isSlotTaken = appointments.Any(a =>
                 a.Doctor.DoctorId == doctor.DoctorId &&
@@ -56,10 +53,30 @@ namespace HealthApp.ConsoleApp.Services
                 TimeSlot = slot,
                 Status = AppointmentStatus.Pending
             };
+            
+            return _appointmentRepo.AddAppointment(appointment);
+        }
 
-            _appointmentRepository.AddAppointment(appointment);
+        public List<Appointment> GetAppointmentsByPatientId(int patientId)
+        {
+            var appointments = _appointmentRepo.GetAppointmentsByPatientId(patientId);
+            if (appointments.Count == 0)
+            {
+                throw new AppointmentNotFoundException($"No appointments found for patient ID {patientId}.");
+            }
 
-            return appointment;
+            return appointments;
+        }
+
+        public List<Appointment> GetAppointmentsByDoctorId(int doctorId)
+        {
+            var appointments = _appointmentRepo.GetAppointmentsByDoctorId(doctorId);
+            if (appointments.Count == 0)
+            {
+                throw new AppointmentNotFoundException($"No appointments found for doctor ID {doctorId}.");
+            }
+            
+            return appointments;
         }
 
 //         //  CANCEL APPOINTMENT
@@ -72,18 +89,6 @@ namespace HealthApp.ConsoleApp.Services
 //                 appointment.CancellationReason = reason;
 //                 _appointmentRepository.UpdateAppointment(appointment);
 //             }
-//         }
-
-//         //  GET BY PATIENT
-//         public List<Appointment> GetAppointmentsByPatient(int patientId)
-//         {
-//             return _appointmentRepository.GetAppointmentsByPatient(patientId);
-//         }
-
-//         //  GET BY DOCTOR
-//         public List<Appointment> GetAppointmentsByDoctor(int doctorId)
-//         {
-//             return _appointmentRepository.GetAppointmentsByDoctor(doctorId);
 //         }
 
 //         //  GET UPCOMING
