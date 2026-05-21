@@ -54,7 +54,7 @@ namespace HealthApp.ConsoleApp.Services
                 Doctor = doctor,
                 ScheduledDate = date,
                 TimeSlot = slot,
-                Status = AppointmentStatus.Pending
+                Status = AppointmentStatus.Confirmed
             };
 
             _appointmentRepository.AddAppointment(appointment);
@@ -106,4 +106,5 @@ namespace HealthApp.ConsoleApp.Services
                 .ToList();
         }
     }
+    
 }

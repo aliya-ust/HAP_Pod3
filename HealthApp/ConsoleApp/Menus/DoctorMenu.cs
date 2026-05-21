@@ -23,13 +23,13 @@ namespace HealthApp.ConsoleApp.Menus
             PrintHeader("Add New Doctor");
 
             // ── Full Name ────────────────────────────────────────────────────────
-            if (!InputValidator.TryReadString("Full name            : ", out string fullName))
+            if (!InputValidator.TryReadName("Full name            : ", out string fullName))
             {
                 InputValidator.Pause(); return;
             }
 
             // ── Specialisation ───────────────────────────────────────────────────
-            if (!InputValidator.TryReadString("Specialisation       : ", out string spec))
+            if (!InputValidator.TryReadName("Specialisation       : ", out string spec))
             {
                 InputValidator.Pause(); return;
             }
@@ -41,10 +41,58 @@ namespace HealthApp.ConsoleApp.Menus
             }
 
             // ── Consultation Fee ─────────────────────────────────────────────────
-            if (!InputValidator.TryReadDecimal("Consultation fee (₹) : ", out decimal fee))
+            if (!InputValidator.TryReadDecimal("Consultation fee (Rs.) : ", out decimal fee))
             {
                 InputValidator.Pause(); return;
             }
+            if (!InputValidator.TryReadFutureDate("Enter the future days when the doctor is available (e.g. 01/07/2024). Type 'done' when finished.", out DateTime availableDate))
+            {
+                InputValidator.Pause(); return;
+            }
+            List<DateTime> availableDates = new List<DateTime>();
+            while (true)            {
+                Console.Write("Available date (or 'done'): ");
+                string input = Console.ReadLine()?.Trim() ?? "";
+                if (input.Equals("done", StringComparison.OrdinalIgnoreCase))
+                {
+                    break;
+                }
+                if (DateTime.TryParse(input, out DateTime date))
+                {
+                    if (date.Date < DateTime.Today)
+                    {
+                        Console.WriteLine("Please enter a future date.");
+                    }
+                    else
+                    {
+                        availableDates.Add(date);
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Invalid date format. Please enter in DD/MM/YYYY format.");
+                }
+            }
+            Console.WriteLine("Enter Avaliable slots which doctor can take (e.g. 09:00 AM). Type 'done' when finished.");
+            List<string> availableSlots = new List<string>();
+            while (true)
+            {
+                Console.Write("Available slot (or 'done'): ");
+                string input = Console.ReadLine()?.Trim() ?? "";
+                if (input.Equals("done", StringComparison.OrdinalIgnoreCase))
+                {
+                    break;
+                }
+                if (new SlotHelper().AvailableSlots.Contains(input))
+                {
+                    availableSlots.Add(input);
+                }
+                else
+                {
+                    Console.WriteLine("Invalid slot. Please choose from the available slots.");
+                }
+            }
+
             // DoctorId is assigned by the service (keeps ID management in one place)
             var doctor = new Doctor
             {
@@ -52,7 +100,9 @@ namespace HealthApp.ConsoleApp.Menus
                 Specialisation    = spec,
                 YearsOfExperience = years,
                 ConsultationFee   = fee,
-                IsActive          = true
+                IsActive          = true,
+                AvailableDates      = availableDates,
+                AvailableSlots      = availableSlots
             };
 
             _doctorService.AddDoctor(doctor);
@@ -72,7 +122,7 @@ namespace HealthApp.ConsoleApp.Menus
         {
             PrintHeader("Search Doctors by Specialisation");
 
-            if (!InputValidator.TryReadString("Specialisation (e.g. Cardiology): ", out string query))
+            if (!InputValidator.TryReadName("Specialisation (e.g. Cardiology): ", out string query))
             {
                 InputValidator.Pause(); return;
             }
@@ -93,7 +143,7 @@ namespace HealthApp.ConsoleApp.Menus
                 Console.WriteLine($"  [{d.DoctorId}] Dr. {d.FullName}");
                 Console.WriteLine($"       Specialisation : {d.Specialisation}");
                 Console.WriteLine($"       Experience     : {d.YearsOfExperience} years");
-                Console.WriteLine($"       Fee            : ₹{d.ConsultationFee}");
+                Console.WriteLine($"       Fee            : Rs.{d.ConsultationFee}");
 
                 // IsAvailable() — spec method
                 bool available = d.IsAvailable(DateTime.Today);
@@ -120,7 +170,7 @@ namespace HealthApp.ConsoleApp.Menus
         private static void PrintSuccess(string msg)
         {
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine($"  ✔ {msg}");
+            Console.WriteLine($"{msg}");
             Console.ResetColor();
         }
     }

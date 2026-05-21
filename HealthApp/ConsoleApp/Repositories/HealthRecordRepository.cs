@@ -18,6 +18,7 @@ namespace HealthApp.ConsoleApp.Repositories
         public string Add(HealthRecord record)
         {
             HealthRecord recordToCheck = GetByRecordId(record.RecordId);
+            record.RecordId = _healthRecordDb.Records.Count > 0 ? _healthRecordDb.Records.Max(r => r.RecordId) + 1 : 1;
             if (recordToCheck is not null)
             {
                 throw new HealthRecordExistsException("Health Record already exist");
@@ -69,7 +70,7 @@ namespace HealthApp.ConsoleApp.Repositories
         public List<HealthRecord> GetByPatientIdOrderByVisitDateDesc(int patientId)
         {
             return _healthRecordDb.Records
-                    .Where(r => r.Patient != null && r.Patient.Id == patientId)
+                    .Where(r => r.Patient != null && r.Patient.PatientId == patientId)
                     .OrderByDescending(r => r.VisitDate)
                     .ToList();
         }

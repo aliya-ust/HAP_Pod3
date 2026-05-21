@@ -4,10 +4,10 @@ using System.Linq;
 
 namespace HealthApp.ConsoleApp.Helpers
 {
-    public static class SlotHelper
+    public  class SlotHelper
     {
         // Fixed clinic slots — single source of truth
-        public static readonly List<string> AvailableSlots = new List<string>
+        public readonly List<string> AvailableSlots = new List<string>
         {
             "09:00 AM",
             "10:00 AM",
@@ -20,22 +20,34 @@ namespace HealthApp.ConsoleApp.Helpers
         };
 
         // Displays slots and returns the one the user picks
-        public static string PickSlot()
+        public string PickSlot()
         {
-            System.Console.WriteLine("\nAvailable Time Slots:");
+            Console.WriteLine("\nAvailable Time Slots:");
             for (int i = 0; i < AvailableSlots.Count; i++)
             {
-                System.Console.WriteLine($"  {i + 1}. {AvailableSlots[i]}");
+                Console.WriteLine($"  {i + 1}. {AvailableSlots[i]}");
             }
 
-            System.Console.Write("Pick a slot (1-8): ");
-            int choice = int.Parse(System.Console.ReadLine());
+            Console.Write("Pick a slot (1-8): ");
+           // int choice = int.Parse(Console.ReadLine());
+            if (!InputValidator.TryReadInt("  Choose slot (1-8): ", out int slotChoice)
+                || slotChoice < 1 || slotChoice > 8)
+            {
+                PrintError("Please enter a number between 1 and 8.");
+                InputValidator.Pause(); return "";
+         }
 
-            // Validate choice is in range
-            if (choice < 1 || choice > AvailableSlots.Count)
-                throw new ArgumentException("Invalid slot choice.");
+            // // Validate choice is in range
+            // if (choice < 1 || choice > AvailableSlots.Count)
+            //     throw new ArgumentException("Invalid slot choice.");
 
-            return AvailableSlots[choice - 1]; // return the actual string
+            return AvailableSlots[slotChoice - 1]; // return the actual string
+        }
+         private static void PrintError(string msg)
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine($"{msg}");
+            Console.ResetColor();
         }
     }
 }

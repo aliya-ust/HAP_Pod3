@@ -3,7 +3,7 @@ namespace HealthApp.ConsoleApp.Models
 {
     public class Patient
     {
-        public int Id { get; set; }
+        public int PatientId { get; set; }
         public string Name { get; set; }
         public DateTime Dob { get; set; }
         public string Gender { get; set; }
@@ -33,7 +33,7 @@ namespace HealthApp.ConsoleApp.Models
         // Method to get a summary of the patient's profile
         public string GetProfileSummary()
         {
-            return $"ID: {Id} | Name: {Name} | Age: {GetAge()} | Gender: {Gender} | Email: {Email} | Phone: {PhoneNumber}";
+            return $"ID: {PatientId} | Name: {Name} | Age: {GetAge()} | Gender: {Gender} | Email: {Email} | Phone: {PhoneNumber}";
         }
     }
 }

@@ -66,6 +66,7 @@ using HealthApp.ConsoleApp.Repositories;
 using HealthApp.ConsoleApp.Menus;
 using HealthApp.ConsoleApp.Models;
 using HealthApp.ConsoleApp.Databases;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 // ════════════════════════════════════════════════════════════════════════════════
 //  HealthAxis — Sprint 1 Console App
@@ -81,6 +82,7 @@ var services = new ServiceCollection();
 services.AddSingleton<DoctorDb>();
 services.AddSingleton<AppointmentDb>();
 services.AddSingleton<HealthRecordDB>();
+services.AddSingleton<PatientDb>();
 services.AddSingleton<IPatientRepository, PatientRepository>();
 services.AddSingleton<IDoctorRepository, DoctorRepository>();
 services.AddSingleton<IAppointmentRepository, AppointmentRepository>();
@@ -141,7 +143,6 @@ while (running)
     Console.WriteLine();
     Console.WriteLine("╔══════════════════════════════════════════════════╗");
     Console.WriteLine("║           HealthAxis Patient Portal              ║");
-    Console.WriteLine("║                  — Sprint 1 —                   ║");
     Console.WriteLine("╠══════════════════════════════════════════════════╣");
     Console.WriteLine("║  1. Register a new patient                       ║");
     Console.WriteLine("║  2. Add a new doctor                             ║");
@@ -198,7 +199,7 @@ while (running)
             break;
 
         default:
-            Console.WriteLine("  ✖  Invalid option. Enter a number between 0 and 8.");
+            Console.WriteLine(" Invalid option. Enter a number between 0 and 8.");
             break;
     }
 }

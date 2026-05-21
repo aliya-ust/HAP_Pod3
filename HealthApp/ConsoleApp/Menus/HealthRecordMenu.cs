@@ -339,7 +339,7 @@ namespace HealthApp.ConsoleApp.Menus
 
                 if (!InputValidator.TryReadMenuChoice(out choice))
                 {
-                    Console.WriteLine("  ✖  Invalid input. Enter a number.");
+                    Console.WriteLine("   Invalid input. Enter a number.");
                     continue;
                 }
 
@@ -349,7 +349,7 @@ namespace HealthApp.ConsoleApp.Menus
                     case 2: ViewHealthHistory();  break;
                     case 0: Console.WriteLine("  Returning to main menu..."); break;
                     default:
-                        Console.WriteLine("  ✖  Invalid choice. Try again.");
+                        Console.WriteLine("  Invalid choice. Try again.");
                         break;
                 }
 
@@ -369,10 +369,10 @@ namespace HealthApp.ConsoleApp.Menus
             Patient? patient = _patientService.GetPatientById(patientId);
             if (patient == null)
             {
-                Console.WriteLine("  ✖  Patient not found.");
+                Console.WriteLine("Patient not found.");
                 return;
             }
-            Console.WriteLine($"  ✔  Patient  : {patient.GetProfileSummary()}");
+            Console.WriteLine($"Patient  : {patient.GetProfileSummary()}");
 
             // --- Doctor ---
             if (!InputValidator.TryReadInt("  Doctor ID   : ", out int doctorId))
@@ -381,10 +381,10 @@ namespace HealthApp.ConsoleApp.Menus
             Doctor? doctor = _doctorService.GetByDoctorId(doctorId);
             if (doctor == null)
             {
-                Console.WriteLine("  ✖  Doctor not found.");
+                Console.WriteLine(" Doctor not found.");
                 return;
             }
-            Console.WriteLine($"  ✔  Doctor   : Dr. {doctor.FullName} ({doctor.Specialisation})");
+            Console.WriteLine($"  Doctor   : {doctor.FullName} ({doctor.Specialisation})");
 
             // --- Diagnosis ---
             if (!InputValidator.TryReadString("  Diagnosis   : ", out string diagnosis))
@@ -410,7 +410,7 @@ namespace HealthApp.ConsoleApp.Menus
 
             _healthRecordService.AddRecord(record);
 
-            Console.WriteLine("\n  ✔  Health record saved!");
+            Console.WriteLine("\n  Health record saved!");
             Console.WriteLine($"  {record.GetSummary()}");
             Console.WriteLine($"  Prescription : {record.Prescription}");
 

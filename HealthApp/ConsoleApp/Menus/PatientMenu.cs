@@ -23,7 +23,7 @@ namespace HealthApp.ConsoleApp.Menus
             PrintHeader("Register New Patient");
 
             // ── Full Name ───────────────────────────────────────────────────────
-            if (!InputValidator.TryReadString("Full name         : ", out string fullName))
+            if (!InputValidator.TryReadName("Full name         : ", out string fullName))
             {
                 InputValidator.Pause();
                 return;
@@ -58,7 +58,7 @@ namespace HealthApp.ConsoleApp.Menus
             }
 
             //  Insurance ID (optional — spec says "press Enter to skip") 
-            string insuranceId = InputValidator.ReadOptionalString("Insurance ID      : ");
+            string insuranceId = InputValidator.ReadOptionalString("Insurance ID (optional)     : ");
 
             //  Build and register 
             // PatientId and CreatedDate are set by the service (not the menu)
@@ -94,7 +94,7 @@ namespace HealthApp.ConsoleApp.Menus
         private static void PrintSuccess(string msg)
         {
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine($"  ✔ {msg}");
+            Console.WriteLine($"{msg}");
             Console.ResetColor();
         }
     }

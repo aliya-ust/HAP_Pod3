@@ -11,9 +11,9 @@ namespace HealthApp.ConsoleApp.Repositories
     {
         private readonly List<Patient> _patients;
 
-        public PatientRepository()
+        public PatientRepository(PatientDb patientDb)
         {
-            _patients = PatientDb.Patients;
+            _patients = patientDb.Patients;
         }
 
         public bool Add(Patient patient)
@@ -21,7 +21,7 @@ namespace HealthApp.ConsoleApp.Repositories
             if (patient == null)
                 return false;
 
-            patient.Id = _patients.Count > 0 ? _patients.Max(p => p.Id) + 1 : 1;
+            patient.PatientId = _patients.Count > 0 ? _patients.Max(p => p.PatientId) + 1 : 1;
             patient.CreatedAt = DateTime.Now;
 
             _patients.Add(patient);
@@ -33,7 +33,7 @@ namespace HealthApp.ConsoleApp.Repositories
             if (patient == null)
                 return false;
 
-            var existingPatient = _patients.FirstOrDefault(p => p.Id == patient.Id);
+            var existingPatient = _patients.FirstOrDefault(p => p.PatientId == patient.PatientId);
             if (existingPatient == null)
                 return false;
 
@@ -49,7 +49,7 @@ namespace HealthApp.ConsoleApp.Repositories
 
         public bool Delete(int id)
         {
-            var patient = _patients.FirstOrDefault(p => p.Id == id);
+            var patient = _patients.FirstOrDefault(p => p.PatientId == id);
             if (patient == null)
                 return false;
 
@@ -59,7 +59,7 @@ namespace HealthApp.ConsoleApp.Repositories
 
         public Patient GetById(int id)
         {
-            return _patients.FirstOrDefault(p => p.Id == id);
+            return _patients.FirstOrDefault(p => p.PatientId == id);
         }
 
         public List<Patient> GetAll()
