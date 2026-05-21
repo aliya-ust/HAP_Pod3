@@ -69,7 +69,7 @@ namespace HealthApp.ConsoleApp.Repositories
         public List<HealthRecord> GetByPatientIdOrderByVisitDateDesc(int patientId)
         {
             return _healthRecordDb.Records
-                    .Where(r => r.Patient != null && r.Patient.PatientId == patientId)
+                    .Where(r => r.Patient != null && r.Patient.Id == patientId)
                     .OrderByDescending(r => r.VisitDate)
                     .ToList();
         }

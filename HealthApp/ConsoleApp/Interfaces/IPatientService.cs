@@ -11,7 +11,7 @@ namespace HealthApp.ConsoleApp.Interfaces
         void DeletePatient(int id);
         Patient GetPatientById(int id);
         List<Patient> GetAllPatients();
-        int GetPatientAge(int patientId);
+        int GetPatientAge(int patienId);
         string GetPatientProfileSummary(int patientId);
         
     }

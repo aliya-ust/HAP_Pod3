@@ -45,7 +45,7 @@ while (running)
     Console.WriteLine("===================================================");
     Console.WriteLine("            HEALTH CARE MANAGEMENT");
     Console.WriteLine("===================================================");
-    Console.WriteLine(" 1. Register a new patient");
+    Console.WriteLine(" 1. Patient Management");
     Console.WriteLine(" 2. Add a new doctor     ");
     Console.WriteLine(" 3. Search doctors by specialisation");
     Console.WriteLine(" 4. Book an appointment");

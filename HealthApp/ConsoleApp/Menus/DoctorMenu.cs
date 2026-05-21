@@ -10,42 +10,35 @@ namespace HealthApp.ConsoleApp.Menus
     {
         private readonly IDoctorService _doctorService;
 
-        // DI Constructor
         public DoctorMenu(IDoctorService doctorService)
         {
             _doctorService = doctorService;
         }
 
-        // ── Option 2: Add a new doctor ────────────────────────────────────────────
-
         public void AddDoctor()
         {
             PrintHeader("Add New Doctor");
 
-            // ── Full Name ────────────────────────────────────────────────────────
+            
             if (!InputValidator.TryReadString("Full name            : ", out string fullName))
             {
                 InputValidator.Pause(); return;
             }
 
-            // ── Specialisation ───────────────────────────────────────────────────
             if (!InputValidator.TryReadString("Specialisation       : ", out string spec))
             {
                 InputValidator.Pause(); return;
             }
 
-            // ── Years of Experience ──────────────────────────────────────────────
             if (!InputValidator.TryReadPositiveInt("Years of experience  : ", out int years))
             {
                 InputValidator.Pause(); return;
             }
 
-            // ── Consultation Fee ─────────────────────────────────────────────────
             if (!InputValidator.TryReadDecimal("Consultation fee (₹) : ", out decimal fee))
             {
                 InputValidator.Pause(); return;
             }
-            // DoctorId is assigned by the service (keeps ID management in one place)
             var doctor = new Doctor
             {
                 FullName          = fullName,
@@ -60,13 +53,10 @@ namespace HealthApp.ConsoleApp.Menus
             Console.WriteLine();
             PrintSuccess("Doctor added successfully!");
 
-            // GetScheduleSummary() — spec method (shows appointment count = 0 for new doctor)
             Console.WriteLine($"  {doctor.GetScheduleSummary}");
 
             InputValidator.Pause();
         }
-
-        //  Search by specialisation
 
         public void SearchBySpecialisation()
         {
@@ -108,8 +98,6 @@ namespace HealthApp.ConsoleApp.Menus
             InputValidator.Pause();
         }
 
-        // ── Helper methods ────────────────────────────────────────────────────────
-
         private static void PrintHeader(string title)
         {
             Console.WriteLine();
@@ -120,7 +108,7 @@ namespace HealthApp.ConsoleApp.Menus
         private static void PrintSuccess(string msg)
         {
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine($"  ✔ {msg}");
+            Console.WriteLine($"   {msg}");
             Console.ResetColor();
         }
     }

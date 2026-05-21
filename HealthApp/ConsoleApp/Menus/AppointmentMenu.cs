@@ -70,6 +70,7 @@ namespace HealthApp.ConsoleApp.Menus
             // ── Appointment date ─────────────────────────────────────────────────
             if (!InputValidator.TryReadFutureDate("Date (dd/MM/yyyy)  : ", out DateTime date))
             {
+          
                 InputValidator.Pause(); return;
             }
 
