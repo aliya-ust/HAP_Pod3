@@ -167,7 +167,7 @@ namespace HealthApp.ConsoleApp.Menus
             Console.WriteLine("+++++++++++++++++++++++++++++++++");
 
             Console.WriteLine("----- Patient Details -----");
-            Console.WriteLine($"Id: {p.PatientId}");
+            Console.WriteLine($"Id: {p.Id}");
             Console.WriteLine($"Name: {p.Name}");
             Console.WriteLine($"DOB: {p.Dob:dd/MM/yyyy}");
             Console.WriteLine($"Gender: {p.Gender}");
@@ -282,8 +282,8 @@ namespace HealthApp.ConsoleApp.Menus
 
             foreach (var p in patients)
             {
-                Console.WriteLine($"----- Patient Details of Id {p.PatientId}-----");
-                Console.WriteLine($"       Id: {p.PatientId}");
+                Console.WriteLine($"----- Patient Details of Id {p.Id}-----");
+                Console.WriteLine($"       Id: {p.Id}");
                 Console.WriteLine($"       Name: {p.Name}");
                 Console.WriteLine($"       DOB: {p.Dob:dd/MM/yyyy}");
                 Console.WriteLine($"       Gender: {p.Gender}");
@@ -303,6 +303,7 @@ namespace HealthApp.ConsoleApp.Menus
             if (!string.IsNullOrEmpty(summary))
             {
                 Console.WriteLine("Patient Profile Summary:");
+                Console.WriteLine("------------------------");
                 Console.WriteLine(summary);
             }
             else

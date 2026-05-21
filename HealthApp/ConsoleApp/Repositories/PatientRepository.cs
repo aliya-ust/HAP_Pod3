@@ -36,10 +36,10 @@ namespace HealthApp.ConsoleApp.Repositories
             if (patient == null)
                 throw new PatientInvalidException();
 
-            var existingPatient = _patients.Patients.FirstOrDefault(p => p.PatientId == patient.PatientId);
+            var existingPatient = _patients.Patients.FirstOrDefault(p => p.Id == patient.Id);
 
             if (existingPatient == null)
-                throw new PatientNotFoundException(patient.PatientId);
+                throw new PatientNotFoundException(patient.Id);
 
 
             existingPatient.Name = patient.Name;
@@ -52,7 +52,7 @@ namespace HealthApp.ConsoleApp.Repositories
 
         public void DeletePatient(int id)
         {
-            var patient = _patients.Patients.FirstOrDefault(p => p.PatientId == id);
+            var patient = _patients.Patients.FirstOrDefault(p => p.Id == id);
             if (patient == null)
                 throw new PatientNotFoundException(id);
 
@@ -61,7 +61,7 @@ namespace HealthApp.ConsoleApp.Repositories
 
         public Patient GetPatientById(int id)
         {
-            var patient = _patients.Patients.FirstOrDefault(p => p.PatientId == id);
+            var patient = _patients.Patients.FirstOrDefault(p => p.Id == id);
 
             if (patient == null)
                 throw new PatientNotFoundException(id);
