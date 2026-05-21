@@ -20,22 +20,13 @@ namespace HealthApp.ConsoleApp.Services
         public string RegisterPatient(Patient patient)
         {
             var existingPatient = GetPatientById(patient.PatientId);
-
-            if (existingPatient != null)
-            {
-                throw new PatientAlreadyExistsException("Patient already exists.");
-            }
-
             return _patientRepo.RegisterPatient(patient);
         }
 
-        // public bool Update(Patient patient)
-        // {
-        //     if (patient == null)
-        //         return false;
-
-        //     return patientRepo.Update(patient);
-        // }
+        public Patient UpdatePatient(Patient patient)
+        {
+            return _patientRepo.UpdatePatient(patient);
+        }
 
         // public bool Delete(int id)
         // {

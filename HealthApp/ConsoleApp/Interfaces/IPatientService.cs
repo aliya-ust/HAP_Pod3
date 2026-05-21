@@ -7,7 +7,7 @@ namespace HealthApp.ConsoleApp.Interfaces
     public interface IPatientService
     {
         string RegisterPatient(Patient patient);
-        // bool Update(Patient patient);
+        Patient UpdatePatient(Patient patient);
         // bool Delete(int id);
         Patient? GetPatientById(int id);
         // List<Patient> GetAllPatients();

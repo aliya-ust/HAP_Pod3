@@ -23,24 +23,21 @@ namespace HealthApp.ConsoleApp.Repositories
             return $"Patient ID {patient.PatientId} added successfully!";
         }
 
-        // public bool Update(Patient patient)
-        // {
-        //     if (patient == null)
-        //         return false;
+        public Patient UpdatePatient(Patient patient)
+        {
+            var existingPatient = _patientsDb.Patients.FirstOrDefault(p => p.PatientId == patient.PatientId);
+            if (existingPatient == null)
+                throw new PatientNotFoundException("Patient with this ID does not exist");
 
-        //     var existingPatient = _patients.FirstOrDefault(p => p.Id == patient.Id);
-        //     if (existingPatient == null)
-        //         return false;
+            existingPatient.FullName = patient.FullName;
+            existingPatient.DateOfBirth = patient.DateOfBirth;
+            existingPatient.Gender = patient.Gender;
+            existingPatient.PhoneNumber = patient.PhoneNumber;
+            existingPatient.Email = patient.Email;
+            existingPatient.InsuranceId = patient.InsuranceId;
 
-        //     existingPatient.Name = patient.Name;
-        //     existingPatient.Dob = patient.Dob;
-        //     existingPatient.Gender = patient.Gender;
-        //     existingPatient.PhoneNumber = patient.PhoneNumber;
-        //     existingPatient.Email = patient.Email;
-        //     existingPatient.InsuranceId = patient.InsuranceId;
-
-        //     return true;
-        // }
+            return existingPatient;
+        }
 
         // public bool Delete(int id)
         // {

@@ -157,35 +157,151 @@ namespace HealthApp.ConsoleApp.Menus
             return _patientService.RegisterPatient(patient);
         }
 
-        // private void ViewAll()
-        // {
-        //     var patients = _service.GetAllPatients();
-        //     int c = 1;
-        //     Console.WriteLine("------------------");
-        //     Console.WriteLine("All Patients");
-        //     foreach (var p in patients)
-        //     {
-        //         Console.WriteLine($" {c}.{p.Name}");
-        //         c++;
-        //     }
-        // }
+        public string UpdatePatient()
+        {
+            int patientId;
 
-        // private void GetPatientProfileSummary()
-        // {
-        //     Console.WriteLine("Enter Patient Id: ");
-        //     int id = Convert.ToInt32(Console.ReadLine());
+            Console.Write("Enter Patient ID to update (or 'q' to quit): ");
+            string? input = Console.ReadLine();
 
-        //     var summary = _service.GetPatientProfileSummary(id);
-        //     if (!string.IsNullOrEmpty(summary))
-        //     {
-        //         Console.WriteLine("Patient Profile Summary:");
-        //         Console.WriteLine(summary);
-        //     }
-        //     else
-        //     {
-        //         Console.WriteLine("Patient not found.");
-        //     }
+            if (input?.ToLower() == "q")
+                return "Update cancelled.";
 
-        // }
+            if (!int.TryParse(input, out patientId) || patientId <= 0)
+                return "Invalid Patient ID";
+
+            var existingPatient = _patientService.GetPatientById(patientId);
+
+            if (existingPatient == null)
+                return "Patient not found";
+
+            Console.WriteLine("\nCurrent Patient Details:");
+            Console.WriteLine($"Name: {existingPatient.FullName}");
+            Console.WriteLine($"DOB: {existingPatient.DateOfBirth:dd-MM-yyyy}");
+            Console.WriteLine($"Gender: {existingPatient.Gender}");
+            Console.WriteLine($"Phone: {existingPatient.PhoneNumber}");
+            Console.WriteLine($"Email: {existingPatient.Email}");
+            Console.WriteLine($"Insurance ID: {existingPatient.InsuranceId}");
+            Console.WriteLine("\nPress ENTER to keep existing value.\n");
+
+            Console.Write("Enter Full Name: ");
+            input = Console.ReadLine();
+            string fullName = string.IsNullOrWhiteSpace(input) 
+                ? existingPatient.FullName 
+                : input.Trim();
+
+            DateTime dob = existingPatient.DateOfBirth;
+            while (true)
+            {
+                Console.Write("Enter Date of Birth (dd-mm-yyyy): ");
+                input = Console.ReadLine();
+
+                if (string.IsNullOrWhiteSpace(input))
+                    break;
+
+                if (DateTime.TryParse(input, out DateTime parsedDob) && parsedDob < DateTime.Today)
+                {
+                    dob = parsedDob;
+                    break;
+                }
+
+                Console.WriteLine("Invalid Date of Birth.");
+            }
+
+            GenderType gender = existingPatient.Gender;
+            while (true)
+            {
+                Console.Write("Enter Gender (M/F/Other): ");
+                input = Console.ReadLine();
+
+                if (string.IsNullOrWhiteSpace(input))
+                    break;
+
+                switch (input.Trim().ToLower())
+                {
+                    case "m":
+                        gender = GenderType.Male;
+                        break;
+                    case "f":
+                        gender = GenderType.Female;
+                        break;
+                    case "other":
+                        gender = GenderType.Other;
+                        break;
+                    default:
+                        Console.WriteLine("Invalid gender.");
+                        continue;
+                }
+                break;
+            }
+
+            string phone = existingPatient.PhoneNumber;
+            while (true)
+            {
+                Console.Write("Enter Phone Number: ");
+                input = Console.ReadLine();
+
+                if (string.IsNullOrWhiteSpace(input))
+                    break;
+
+                if (input.All(char.IsDigit))
+                {
+                    phone = input;
+                    break;
+                }
+
+                Console.WriteLine("Phone must contain only digits.");
+            }
+
+            string email = existingPatient.Email;
+            while (true)
+            {
+                Console.Write("Enter Email: ");
+                input = Console.ReadLine();
+
+                if (string.IsNullOrWhiteSpace(input))
+                    break;
+
+                if (input.Contains('@'))
+                {
+                    email = input.Trim();
+                    break;
+                }
+
+                Console.WriteLine("Invalid email.");
+            }
+
+            int insuranceId = existingPatient.InsuranceId;
+            while (true)
+            {
+                Console.Write("Enter Insurance ID: ");
+                input = Console.ReadLine();
+
+                if (string.IsNullOrWhiteSpace(input))
+                    break;
+
+                if (int.TryParse(input, out int parsedId) && parsedId >= 0)
+                {
+                    insuranceId = parsedId;
+                    break;
+                }
+
+                Console.WriteLine("Invalid Insurance ID.");
+            }
+
+            var updatedPatient = new Patient
+            {
+                PatientId = existingPatient.PatientId,
+                FullName = fullName,
+                DateOfBirth = dob,
+                Gender = gender,
+                PhoneNumber = phone,
+                Email = email,
+                InsuranceId = insuranceId
+            };
+
+            updatedPatient = _patientService.UpdatePatient(updatedPatient);
+            return updatedPatient.GetProfileSummary();
+        }
     }
 }
