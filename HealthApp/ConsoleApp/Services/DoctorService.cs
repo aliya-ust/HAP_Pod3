@@ -44,6 +44,16 @@ namespace HealthApp.ConsoleApp.Services
             return result;
         }
 
+        public Doctor UpdateDoctor(Doctor doctor)
+        {
+            return _doctorRepo.UpdateDoctor(doctor);
+        }
+
+        public string DeleteDoctor(int id)
+        {
+            return _doctorRepo.DeleteDoctor(id);
+        }
+
         // public List<Doctor> GetAllDoctors()
         // {
         //     return doctorRepository.GetAllDoctors();

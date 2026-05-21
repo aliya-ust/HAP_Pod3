@@ -19,7 +19,6 @@ namespace HealthApp.ConsoleApp.Services
 
         public string RegisterPatient(Patient patient)
         {
-            var existingPatient = GetPatientById(patient.PatientId);
             return _patientRepo.RegisterPatient(patient);
         }
 
@@ -28,19 +27,14 @@ namespace HealthApp.ConsoleApp.Services
             return _patientRepo.UpdatePatient(patient);
         }
 
-        // public bool Delete(int id)
-        // {
-        //     return patientRepo.Delete(id);
-        // }
+        public string DeletePatient(int id)
+        {
+            return _patientRepo.DeletePatient(id);
+        }
 
         public Patient? GetPatientById(int id)
         {
             return _patientRepo.GetPatientById(id);
         }
-
-        // public List<Patient> GetAllPatients()
-        // {
-        //     return patientRepo.GetAll();
-        // }
     }
 }

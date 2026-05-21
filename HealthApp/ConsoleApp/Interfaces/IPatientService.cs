@@ -8,11 +8,7 @@ namespace HealthApp.ConsoleApp.Interfaces
     {
         string RegisterPatient(Patient patient);
         Patient UpdatePatient(Patient patient);
-        // bool Delete(int id);
-        Patient? GetPatientById(int id);
-        // List<Patient> GetAllPatients();
-        // int GetPatientAge(int patientId);
-        // string GetPatientProfileSummary(int patientId);
-        
+        string DeletePatient(int id);
+        Patient? GetPatientById(int id); 
     }
 }

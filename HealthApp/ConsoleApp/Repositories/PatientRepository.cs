@@ -39,25 +39,19 @@ namespace HealthApp.ConsoleApp.Repositories
             return existingPatient;
         }
 
-        // public bool Delete(int id)
-        // {
-        //     var patient = _patients.FirstOrDefault(p => p.Id == id);
-        //     if (patient == null)
-        //         return false;
+        public string DeletePatient(int id)
+        {
+            var patient = _patientsDb.Patients.FirstOrDefault(p => p.PatientId == id);
+            if (patient == null)
+                throw new PatientNotFoundException("Patient with this ID does not exist");
 
-        //     _patients.Remove(patient);
-        //     return true;
-        // }
+            _patientsDb.Patients.Remove(patient);
+            return $"Patient of ID {id} has been deleted successfully";
+        }
 
-        
         public Patient? GetPatientById(int id)
         {
             return _patientsDb.Patients.FirstOrDefault(p => p.PatientId == id);
         }
-
-        // public List<Patient> GetAll()
-        // {
-        //     return _patients; 
-        // }
     }
 }

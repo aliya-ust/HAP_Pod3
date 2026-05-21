@@ -27,6 +27,11 @@ namespace HealthApp.ConsoleApp.Models
             return true;
         }
 
+        public override string ToString()
+        {
+            return $"Doctor ID: {DoctorId}, Full Name: {FullName}, Specialisation: {Specialisation}, Experience: {YearsOfExperience} years, Consultation Fee: Rs. {ConsultationFee}, Active: {(IsActive ? "Yes" : "No")}";
+        }
+
         //Upcoming count
         // public string GetScheduleSummary()
         // {

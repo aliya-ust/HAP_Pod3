@@ -6,8 +6,7 @@ namespace HealthApp.ConsoleApp.Interfaces
     {
         string RegisterPatient(Patient patient);
         Patient UpdatePatient(Patient patient);
-        // bool Delete(int id);
+        string DeletePatient(int id);
         Patient? GetPatientById(int id);
-        // List<Patient> GetAll();
     }
 }

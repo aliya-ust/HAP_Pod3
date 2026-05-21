@@ -303,5 +303,27 @@ namespace HealthApp.ConsoleApp.Menus
             updatedPatient = _patientService.UpdatePatient(updatedPatient);
             return updatedPatient.GetProfileSummary();
         }
+
+        public string DeletePatient()
+        {
+            int patientId;
+
+            Console.Write("Enter Patient ID to delete (or 'q' to quit): ");
+            string? input = Console.ReadLine();
+
+            if (input?.ToLower() == "q")
+                return "Delete cancelled.";
+
+            if (!int.TryParse(input, out patientId) || patientId <= 0)
+                return "Invalid Patient ID";
+
+            var existingPatient = _patientService.GetPatientById(patientId);
+
+            if (existingPatient == null)
+                return "Patient not found";
+
+            return _patientService.DeletePatient(patientId);
+        }
+
     }
 }
