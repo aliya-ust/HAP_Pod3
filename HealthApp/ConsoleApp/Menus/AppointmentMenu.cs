@@ -26,11 +26,14 @@ namespace HealthApp.ConsoleApp.Menus
             while (true)
             {
                 Console.Clear();
-                Console.WriteLine("----- Appointment Menu -----");
+                Console.WriteLine("===================================");
+                Console.WriteLine("Appointment Menu");
+                Console.WriteLine("===================================");
                 Console.WriteLine("1. Book Appointment");
                 Console.WriteLine("2. View Appointments");
                 Console.WriteLine("3. Cancel Appointment");
                 Console.WriteLine("4. Back");
+                Console.WriteLine("===================================");
 
                 Console.Write("Enter choice: ");
 

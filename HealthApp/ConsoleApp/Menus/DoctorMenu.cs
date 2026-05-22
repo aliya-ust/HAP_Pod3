@@ -1,9 +1,8 @@
 using System;
-using System.Collections.Generic;
+using System.Linq;
 using HealthApp.ConsoleApp.Interfaces;
 using HealthApp.ConsoleApp.Models;
 using HealthApp.ConsoleApp.Exceptions;
-using HealthApp.ConsoleApp.Repositories;
 
 namespace HealthApp.ConsoleApp.Menus
 {
@@ -47,23 +46,18 @@ namespace HealthApp.ConsoleApp.Menus
                     case 1:
                         AddDoctor();
                         break;
-
                     case 2:
                         ViewDoctors();
                         break;
-
                     case 3:
                         SearchDoctorBySpecialisation();
                         break;
-
                     case 4:
                         GetDoctorById();
                         break;
-
                     case 5:
                         Console.WriteLine("Exiting");
                         return;
-
                     default:
                         Console.WriteLine("Invalid choice");
                         break;
@@ -71,7 +65,7 @@ namespace HealthApp.ConsoleApp.Menus
 
                 Pause();
 
-            } while (choice != 4);
+            } while (choice != 5);
         }
 
         private void AddDoctor()
@@ -89,22 +83,27 @@ namespace HealthApp.ConsoleApp.Menus
                 foreach (var d in existingDoctors)
                 {
                     if (d.DoctorId == id)
-                        throw new DoctorAlreadyExistsException("Doctor ID already exists");
+                    {
+                        Console.WriteLine("Doctor ID already exists");
+                        return;
+                    }
                 }
 
                 Console.Write("Enter Full Name: ");
                 string name = Console.ReadLine()?.Trim() ?? "";
-                if (string.IsNullOrWhiteSpace(name))
+
+                if (!IsValidText(name))
                 {
-                    Console.WriteLine("Name cannot be empty");
+                    Console.WriteLine("Invalid name. Only letters and spaces allowed");
                     return;
                 }
 
                 Console.Write("Enter Specialisation: ");
                 string spec = Console.ReadLine()?.Trim() ?? "";
-                if (string.IsNullOrWhiteSpace(spec))
+
+                if (!IsValidText(spec))
                 {
-                    Console.WriteLine("Specialisation cannot be empty");
+                    Console.WriteLine("Invalid specialisation. Only letters allowed");
                     return;
                 }
 
@@ -140,12 +139,7 @@ namespace HealthApp.ConsoleApp.Menus
                 };
 
                 _doctorService.AddDoctor(doctor);
-
                 Console.WriteLine("Doctor added successfully");
-            }
-            catch (DoctorAlreadyExistsException ex)
-            {
-                Console.WriteLine(ex.Message);
             }
             catch (Exception ex)
             {
@@ -195,7 +189,7 @@ namespace HealthApp.ConsoleApp.Menus
             Console.Write("Enter Specialisation: ");
             string spec = Console.ReadLine()?.Trim() ?? "";
 
-            if (string.IsNullOrWhiteSpace(spec))
+            if (!IsValidText(spec))
             {
                 Console.WriteLine("Invalid input");
                 return;
@@ -226,14 +220,19 @@ namespace HealthApp.ConsoleApp.Menus
         private void GetDoctorById()
         {
             Console.Write("Enter Doctor ID: ");
-            int id = int.Parse(Console.ReadLine() ?? "0");
+
+            if (!int.TryParse(Console.ReadLine(), out int id) || id <= 0)
+            {
+                Console.WriteLine("Invalid Doctor ID");
+                return;
+            }
 
             try
             {
                 var doctor = _doctorService.GetDoctorById(id);
 
                 Console.WriteLine(doctor.GetDoctorDetails());
-                Console.WriteLine(doctor.IsAvailable(DateTime.Today));
+                Console.WriteLine(doctor.CheckAvailability(DateTime.Today));
                 Console.WriteLine(doctor.GetScheduleSummary());
 
                 var upcoming = doctor.GetUpcomingAppointments();
@@ -253,6 +252,19 @@ namespace HealthApp.ConsoleApp.Menus
             }
         }
 
+        private bool IsValidText(string value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+                return false;
+
+            foreach (char c in value)
+            {
+                if (!char.IsLetter(c) && c != ' ')
+                    return false;
+            }
+
+            return true;
+        }
 
         private void Pause()
         {
