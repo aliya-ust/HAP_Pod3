@@ -1,31 +1,33 @@
 using HealthApp.ConsoleApp.Models;
 using HealthApp.ConsoleApp.Interfaces;
 using HealthApp.ConsoleApp.Exceptions;
+using HealthApp.ConsoleApp.Databases;
 namespace HealthApp.ConsoleApp.Repositories
 {
-    public class AppointmentRepo : IAppointmentRepository
+    public class AppointmentRepository : IAppointmentRepository
     {
-        private List<Appointment> _appointments;
-        public AppointmentRepo(List<Appointment> appointments)
+        private readonly AppointmentDb _appointmentDb;
+
+        public AppointmentRepository(AppointmentDb appointmentDb)
         {
-            _appointments = appointments;
+            _appointmentDb = appointmentDb;
         }
 
         public string AddAppointment(Appointment appointment)
         {
-            _appointments.Add(appointment);
+            _appointmentDb.Appointments.Add(appointment);
             return $"Appointment of ID {appointment.AppointmentId} has been created successfully";
         }
 
         public List<Appointment> GetAllAppointments()
         {
-            return _appointments;
+            return _appointmentDb.Appointments;
         }
 
-        // public Appointment GetAppointmentById(int id)
-        // {
-        //     return _appointments.FirstOrDefault(a => a.AppointmentId == id);
-        // }
+        public Appointment? GetAppointmentById(int id)
+        {
+            return _appointmentDb.Appointments.FirstOrDefault(a => a.AppointmentId == id);
+        }
 
         // public void UpdateAppointment(Appointment appointment)
         // {
@@ -64,12 +66,12 @@ namespace HealthApp.ConsoleApp.Repositories
 
         public List<Appointment> GetAppointmentsByPatientId(int patientId)
         {
-            return _appointments.Where(a => a.Patient.PatientId == patientId).ToList();
+            return _appointmentDb.Appointments.Where(a => a.Patient.PatientId == patientId).ToList();
         }
 
         public List<Appointment> GetAppointmentsByDoctorId(int doctorId)
         {
-            return _appointments.Where(a => a.Doctor.DoctorId == doctorId).ToList();
+            return _appointmentDb.Appointments.Where(a => a.Doctor.DoctorId == doctorId).ToList();
         }
     }
 }

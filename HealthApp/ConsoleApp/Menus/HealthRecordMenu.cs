@@ -9,85 +9,44 @@ namespace HealthApp.ConsoleApp.Menus
     public class HealthRecordMenu
     {
         private readonly IHealthRecordService _healthRecordService;
-        private readonly IPatientService _patientService;
-        private readonly IDoctorService _doctorService;
+        private readonly IAppointmentService _appointmentService;
 
         public HealthRecordMenu(IHealthRecordService healthRecordService,
-                                IPatientService patientService,
-                                IDoctorService doctorService)
+                                IAppointmentService appointmentService)
         {
             _healthRecordService = healthRecordService;
-            _patientService = patientService;
-            _doctorService = doctorService;
+            _appointmentService = appointmentService;
         }
 
         public string AddHealthRecord()
         {
-            int patientId;
-            int doctorId;
-            DateTime visitDate;
+            int appointmentId;
             string? diagnosis;
             string? prescription;
             string? doctorNotes;
 
-            Patient? patient;
+            Appointment? appointment;
             while (true)
             {
-                Console.Write("Enter Patient ID (or 'q' to quit): ");
+                Console.Write("Enter Appointment ID (or 'q' to quit): ");
                 var input = Console.ReadLine();
 
                 if (input?.ToLower() == "q")
                     return "Health record creation cancelled.";
 
-                if (int.TryParse(input, out patientId) && patientId > 0)
+                if (int.TryParse(input, out appointmentId) && appointmentId > 0)
                 {
-                    patient = _patientService.GetPatientById(patientId);
-                    if (patient != null)
-                        break;
-
-                    Console.WriteLine("Patient not found.");
+                    appointment = _appointmentService.GetAppointmentById(appointmentId);
+                    if (appointment != null)
+                    {
+                        if (_appointmentService.isAppointmentCompleted(appointment))
+                            break;
+                    }
                 }
                 else
                 {
-                    Console.WriteLine("Invalid Patient ID.");
+                    Console.WriteLine("Invalid Appointment ID.");
                 }
-            }
-
-            Doctor? doctor;
-            while (true)
-            {
-                Console.Write("Enter Doctor ID (or 'q' to quit): ");
-                var input = Console.ReadLine();
-
-                if (input?.ToLower() == "q")
-                    return "Health record creation cancelled.";
-
-                if (int.TryParse(input, out doctorId) && doctorId > 0)
-                {
-                    doctor = _doctorService.GetDoctorById(doctorId);
-                    if (doctor != null)
-                        break;
-
-                    Console.WriteLine("Doctor not found.");
-                }
-                else
-                {
-                    Console.WriteLine("Invalid Doctor ID.");
-                }
-            }
-
-            while (true)
-            {
-                Console.Write("Enter Visit Date (dd/mm/yyyy) (or 'q' to quit): ");
-                var input = Console.ReadLine();
-
-                if (input?.ToLower() == "q")
-                    return "Health record creation cancelled.";
-
-                if (DateTime.TryParse(input, out visitDate))
-                    break;
-
-                Console.WriteLine("Invalid date format.");
             }
 
             while (true)
@@ -143,9 +102,9 @@ namespace HealthApp.ConsoleApp.Menus
 
             var record = new HealthRecord
             {
-                Patient = patient,
-                Doctor = doctor,
-                VisitDate = visitDate,
+                Patient = appointment.Patient,
+                Doctor = appointment.Doctor,
+                VisitDate = appointment.ScheduledDate,
                 Diagnosis = diagnosis,
                 Prescription = prescription,
                 DoctorNotes = doctorNotes

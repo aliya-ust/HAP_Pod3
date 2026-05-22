@@ -13,14 +13,17 @@ var services = new ServiceCollection();
 services.AddSingleton<PatientDb>();
 services.AddSingleton<DoctorDb>();
 services.AddSingleton<HealthRecordDB>();
+services.AddSingleton<AppointmentDb>();
 
 services.AddScoped<IPatientRepository, PatientRepository>();
 services.AddScoped<IDoctorRepository, DoctorRepository>();
 services.AddScoped<IHealthRecordRepository, HealthRecordRepository>();
+services.AddScoped<IAppointmentRepository, AppointmentRepository>();
 
 services.AddScoped<IPatientService, PatientService>();
 services.AddScoped<IDoctorService, DoctorService>();
 services.AddScoped<IHealthRecordService, HealthRecordService>();
+services.AddScoped<IAppointmentService, AppointmentService>();
 
 services.AddScoped<PatientMenu>();
 services.AddScoped<DoctorMenu>();

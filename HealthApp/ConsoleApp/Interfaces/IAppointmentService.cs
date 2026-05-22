@@ -8,7 +8,9 @@ public interface IAppointmentService
     string BookAppointment(Patient patient, Doctor doctor, DateTime date, string slot);
     // void CancelAppointment(int appointmentId, string reason);
     List<Appointment> GetAppointmentsByPatientId(int patientId);
+    bool isAppointmentCompleted(Appointment appointment);
     List<Appointment> GetAppointmentsByDoctorId(int doctorId);
+    Appointment? GetAppointmentById(int appointmentId);
     // List<Appointment> GetUpcomingAppointments();
 }
 }

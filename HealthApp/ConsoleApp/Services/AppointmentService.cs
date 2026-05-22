@@ -79,6 +79,26 @@ namespace HealthApp.ConsoleApp.Services
             return appointments;
         }
 
+        public Appointment? GetAppointmentById(int appointmentId)
+        {
+            Appointment? appointment = _appointmentRepo.GetAppointmentById(appointmentId);
+
+            if (appointment is null)
+            {
+                throw new AppointmentNotFoundException($"Appointment of ID {appointmentId} does not exist");
+            }
+            return appointment;
+        }
+
+        public bool isAppointmentCompleted(Appointment appointment)
+        {
+            if (appointment.Status != AppointmentStatus.Completed)
+            {
+                throw new AppointmentNotCompletedException($"Health record of appointment ID {appointment.AppointmentId} cannot be created as the appointment has not been completed");
+            }
+            return true;
+        }
+
 //         //  CANCEL APPOINTMENT
 //         public void CancelAppointment(int appointmentId, string reason)
 //         {
