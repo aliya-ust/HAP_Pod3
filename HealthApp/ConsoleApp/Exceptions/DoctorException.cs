@@ -33,4 +33,12 @@ namespace HealthApp.ConsoleApp.Exceptions
         {
         }
     }
+
+    public class DoctorNullException : Exception
+    {
+        public DoctorNullException()
+            : base("Doctor object cannot be null.")
+        {
+        }
+    }
 }
