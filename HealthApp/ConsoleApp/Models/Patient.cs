@@ -10,7 +10,7 @@ namespace HealthApp.ConsoleApp.Models
         public string PhoneNumber { get; set; }
         public string Email { get; set; }
         public int InsuranceId { get; set; }
-        public DateTime CreatedAt { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
         public int Age => GetAge();
 
         // Constructor to initialize CreatedAt

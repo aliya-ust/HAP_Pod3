@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿
 using HealthApp.ConsoleApp.Interfaces;
 using HealthApp.ConsoleApp.Models;
 using HealthApp.ConsoleApp.Databases;
-using HealthApp.ConsoleApp.Exceptions;
 
 namespace HealthApp.ConsoleApp.Repositories
 {
@@ -19,59 +16,50 @@ namespace HealthApp.ConsoleApp.Repositories
 
         public void AddPatient(Patient patient)
         {
-            if (patient == null)
-               
-            throw new PatientInvalidException();
-
-
-            patient.Id = _patients.Patients.Count > 0 ? _patients.Patients.Max(p => p.Id) + 1 : 1;
-            patient.CreatedAt = DateTime.Now;
+            patient.Id = _patients.Patients.Any()
+                ? _patients.Patients.Max(p => p.Id) + 1
+                : 1;
 
             _patients.Patients.Add(patient);
-        
         }
 
         public void UpdatePatient(Patient patient)
         {
-            if (patient == null)
-                throw new PatientInvalidException();
+            var existing = _patients.Patients
+                .FirstOrDefault(p => p.Id == patient.Id);
 
-            var existingPatient = _patients.Patients.FirstOrDefault(p => p.Id == patient.Id);
-
-            if (existingPatient == null)
-                throw new PatientNotFoundException(patient.Id);
-
-
-            existingPatient.Name = patient.Name;
-            existingPatient.Dob = patient.Dob;
-            existingPatient.Gender = patient.Gender;
-            existingPatient.PhoneNumber = patient.PhoneNumber;
-            existingPatient.Email = patient.Email;
-            existingPatient.InsuranceId = patient.InsuranceId;
+            if (existing != null)
+            {
+                existing.Name = patient.Name;
+                existing.Dob = patient.Dob;
+                existing.Gender = patient.Gender;
+                existing.PhoneNumber = patient.PhoneNumber;
+                existing.Email = patient.Email;
+                existing.InsuranceId = patient.InsuranceId;
+            }
+            // if not found → do nothing (service handles it)
         }
 
         public void DeletePatient(int id)
         {
-            var patient = _patients.Patients.FirstOrDefault(p => p.Id == id);
-            if (patient == null)
-                throw new PatientNotFoundException(id);
+            var patient = _patients.Patients
+                .FirstOrDefault(p => p.Id == id);
 
-            _patients.Patients.Remove(patient);
+            if (patient != null)
+            {
+                _patients.Patients.Remove(patient);
+            }
         }
 
         public Patient GetPatientById(int id)
         {
-            var patient = _patients.Patients.FirstOrDefault(p => p.Id == id);
-
-            if (patient == null)
-                throw new PatientNotFoundException(id);
-
-            return patient;
+            return _patients.Patients
+                .FirstOrDefault(p => p.Id == id);
         }
 
         public List<Patient> GetAllPatients()
         {
-            return _patients.Patients.ToList(); 
+            return _patients.Patients.ToList();
         }
     }
 }
