@@ -26,7 +26,6 @@ public class Appointment
         Status = AppointmentStatus.Pending;
     }
 
-    
     public void Confirm()
     {
         if (Status == AppointmentStatus.Cancelled)

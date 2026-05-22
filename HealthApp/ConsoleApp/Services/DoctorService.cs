@@ -29,7 +29,7 @@ namespace HealthApp.ConsoleApp.Services
 
             if (doctor is null)
             {
-                throw new PatientNotFoundException($"Doctor of ID {doctorId} does not exist");
+                throw new DoctorNotFoundException($"Doctor of ID {doctorId} does not exist");
             }
             return doctor;
         }

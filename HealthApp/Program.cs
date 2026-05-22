@@ -40,6 +40,7 @@ var appointmentMenu = provider.GetRequiredService<AppointmentMenu>();
 bool exit = false;
 while (!exit)
 {
+    Console.Clear();
     Console.WriteLine("\n==== Hospital Management System ====");
     Console.WriteLine("1. Register a new patient");
     Console.WriteLine("2. Add a new doctor");
@@ -49,29 +50,36 @@ while (!exit)
     Console.WriteLine("6. Confirm or cancel an appointment");
     Console.WriteLine("7. Add a health record after a completed appointment");
     Console.WriteLine("8. View health history for a patient");
+    Console.WriteLine("9. Update patient");
+    Console.WriteLine("10. Update doctor");
+    Console.WriteLine("11. Update HR");
     Console.WriteLine("0. Exit");
     Console.Write("Enter your choice: ");
     string ?input = Console.ReadLine();
 
     if (!int.TryParse(input, out int choice))
     {
-        Console.WriteLine("Invalid input. Please enter a number between 0 and 8.");
+        Console.WriteLine("Invalid input. Please enter a number between 0 and 11.");
         continue;
     }
 
-    if (choice < 0 || choice > 8)
+    if (choice < 0 || choice > 11)
     {
-        Console.WriteLine("Invalid choice. Please select a valid option (0-8).");
+        Console.WriteLine("Invalid choice. Please select a valid option (0-11).");
         continue;
     }
     
     switch (choice)
     {
         case 1:
-            Console.WriteLine(patientMenu.RegisterPatient());
+            Console.WriteLine($"\n{patientMenu.RegisterPatient()}");
+            Console.Write("\nPress any key to continue...");
+            Console.ReadKey();
             break;
         case 2:
-            Console.WriteLine(doctorMenu.AddDoctor());
+            Console.WriteLine($"\n{doctorMenu.AddDoctor()}");
+            Console.Write("\nPress any key to continue...");
+            Console.ReadKey();
             break;
         case 3:
             List<Doctor> doctors = doctorMenu.SearchDoctorBySpecialisation();
@@ -81,19 +89,42 @@ while (!exit)
             }
             break;
         case 4:
-            Console.WriteLine(appointmentMenu.BookAppointment());
+            Console.WriteLine($"\n{appointmentMenu.BookAppointment()}");
+            Console.Write("\nPress any key to continue...");
+            Console.ReadKey();
             break;
         case 5:
             appointmentMenu.ViewAppointments();
+            Console.Write("\nPress any key to continue...");
+            Console.ReadKey();
             break;
         case 6:
-            // Confirm or cancel an appointment
+            appointmentMenu.ConfirmCancelAppointment();
+            Console.Write("\nPress any key to continue...");
+            Console.ReadKey();
             break;
         case 7:
-            Console.WriteLine(healthRecordMenu.AddHealthRecord());
+            Console.WriteLine($"\n{healthRecordMenu.AddHealthRecord()}");
+            Console.Write("\nPress any key to continue...");
+            Console.ReadKey();
             break;
         case 8:
             healthRecordMenu.ViewRecord();
+            break;
+        case 9:
+            Console.WriteLine($"\nPatient details:\n{patientMenu.UpdatePatient()}");
+            Console.Write("\nPress any key to continue...");
+            Console.ReadKey();
+            break;
+        case 10:
+            Console.WriteLine($"\nDoctor details:\n{doctorMenu.UpdateDoctor()}");
+            Console.Write("\nPress any key to continue...");
+            Console.ReadKey();
+            break;
+        case 11:
+            Console.WriteLine($"\nHealth record details:\n{healthRecordMenu.UpdateHealthRecord()}");
+            Console.Write("\nPress any key to continue...");
+            Console.ReadKey();
             break;
         case 0:
             exit = true;

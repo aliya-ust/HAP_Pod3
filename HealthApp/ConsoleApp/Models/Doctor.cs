@@ -29,7 +29,7 @@ namespace HealthApp.ConsoleApp.Models
 
         public override string ToString()
         {
-            return $"Doctor ID: {DoctorId}, Full Name: {FullName}, Specialisation: {Specialisation}, Experience: {YearsOfExperience} years, Consultation Fee: Rs. {ConsultationFee}, Active: {(IsActive ? "Yes" : "No")}";
+            return $"Doctor ID: {DoctorId} \nFull Name: {FullName} \nSpecialisation: {Specialisation} \nExperience: {YearsOfExperience} years \nConsultation Fee: Rs. {ConsultationFee} \nActive: {(IsActive ? "Yes" : "No")}";
         }
 
         //Upcoming count
@@ -43,15 +43,6 @@ namespace HealthApp.ConsoleApp.Models
         //     }
 
         //     return $"Upcoming appointments count: {count}";
-        // }
-
-        //Upcoming list
-        // public List<DateTime> GetUpcomingAppointments()
-        // {
-        //     return Appointments
-        //         .Where(a => a.Date >= DateTime.Today)
-        //         .OrderBy(a => a)
-        //         .ToList();
         // }
 
         // public string GetDoctorDetails()

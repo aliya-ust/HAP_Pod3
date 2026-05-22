@@ -17,7 +17,7 @@ namespace HealthApp.ConsoleApp.Models
 
         public override string ToString()
         {
-            return $"Record Id: {RecordId} | Patient: {Patient} | Doctor: {Doctor} | Visit Date: {VisitDate.ToShortDateString()} | Diagnosis: {Diagnosis} | Prescription: {Prescription} | Doctor Notes: {DoctorNotes}";
+            return $"\nVisit Date: {VisitDate.ToShortDateString()} | Patient: {Patient.FullName} | Doctor: {Doctor.FullName} \nDiagnosis: {Diagnosis} \nPrescription: {Prescription} \nDoctor Notes: {DoctorNotes}";
         }
     }
 }

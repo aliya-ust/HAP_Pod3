@@ -25,23 +25,28 @@ namespace HealthApp
             string specialisation;
             int yearsOfExperience;
             decimal consultationFee;
-            bool isActive;
 
+            Console.Clear();
             while (true)
             {
                 Console.Write("Enter Full Name (or 'q' to quit): ");
                 string? input = Console.ReadLine();
 
                 if (input?.ToLower() == "q")
-                    return "Doctor registration cancelled.";
+                {
+                    Console.WriteLine("Doctor registration cancelled.");
+                    Console.Write("Press any key to continue...");
+                    Console.ReadKey();
+                    return "";            
+                }
 
-                if (!string.IsNullOrWhiteSpace(input))
+                if (!string.IsNullOrWhiteSpace(input) && !input.Any(char.IsDigit))
                 {
                     fullName = input.Trim();
                     break;
                 }
 
-                Console.WriteLine("Full Name cannot be empty.");
+                Console.WriteLine("Full Name cannot be empty and must not contain numbers.\n");
             }
 
             while (true)
@@ -50,15 +55,20 @@ namespace HealthApp
                 string? input = Console.ReadLine();
 
                 if (input?.ToLower() == "q")
-                    return "Doctor registration cancelled.";
+                {
+                    Console.WriteLine("Doctor registration cancelled.");
+                    Console.Write("Press any key to continue...");
+                    Console.ReadKey();
+                    return "";            
+                }
 
-                if (!string.IsNullOrWhiteSpace(input))
+                if (!string.IsNullOrWhiteSpace(input) && !input.Any(char.IsDigit))
                 {
                     specialisation = input.Trim();
                     break;
                 }
 
-                Console.WriteLine("Specialisation cannot be empty.");
+                Console.WriteLine("Specialisation cannot be empty and must not contain numbers.\n");
             }
 
             while (true)
@@ -67,12 +77,17 @@ namespace HealthApp
                 string? input = Console.ReadLine();
 
                 if (input?.ToLower() == "q")
-                    return "Doctor registration cancelled.";
+                {
+                    Console.WriteLine("Doctor registration cancelled.");
+                    Console.Write("Press any key to continue...");
+                    Console.ReadKey();
+                    return "";            
+                }
 
                 if (int.TryParse(input, out yearsOfExperience) && yearsOfExperience >= 0)
                     break;
 
-                Console.WriteLine("Invalid years of experience.");
+                Console.WriteLine("Invalid years of experience.\n");
             }
 
             while (true)
@@ -81,34 +96,17 @@ namespace HealthApp
                 string? input = Console.ReadLine();
 
                 if (input?.ToLower() == "q")
-                    return "Doctor registration cancelled.";
+                {
+                    Console.WriteLine("Doctor registration cancelled.");
+                    Console.Write("Press any key to continue...");
+                    Console.ReadKey();
+                    return "";            
+                }
 
                 if (decimal.TryParse(input, out consultationFee) && consultationFee >= 0)
                     break;
 
-                Console.WriteLine("Invalid consultation fee.");
-            }
-
-            while (true)
-            {
-                Console.Write("Is the doctor active? (Y/N) (or 'q' to quit): ");
-                string? input = Console.ReadLine();
-
-                if (input?.ToLower() == "q")
-                    return "Doctor registration cancelled.";
-
-                if (input?.Trim().ToLower() == "y")
-                {
-                    isActive = true;
-                    break;
-                }
-                else if (input?.Trim().ToLower() == "n")
-                {
-                    isActive = false;
-                    break;
-                }
-
-                Console.WriteLine("Invalid input. Enter Y or N.");
+                Console.WriteLine("Invalid consultation fee.\n");
             }
 
             var doctor = new Doctor
@@ -117,7 +115,7 @@ namespace HealthApp
                 Specialisation = specialisation,
                 YearsOfExperience = yearsOfExperience,
                 ConsultationFee = consultationFee,
-                IsActive = isActive
+                IsActive = true
             };
 
             return _doctorService.AddDoctor(doctor);
@@ -125,40 +123,60 @@ namespace HealthApp
 
         public List<Doctor> SearchDoctorBySpecialisation()
         {
-            string specialisation;
-
-            while (true)
+            try
             {
-                Console.Write("Enter Specialisation to search (or 'q' to quit): ");
-                string? input = Console.ReadLine();
+                string? specialisation;
 
-                if (input?.ToLower() == "q")
-                    Console.WriteLine("Search cancelled.");
-
-                if (!string.IsNullOrWhiteSpace(input) && !input.Any(char.IsDigit))
+                Console.Clear();
+                while (true)
                 {
-                    specialisation = input.Trim();
-                    break;
+                    Console.Write("Enter Specialisation to search (or 'q' to quit): ");
+                    string? input = Console.ReadLine();
+
+                    if (input?.ToLower() == "q")
+                    {
+                        Console.WriteLine("Search cancelled.");
+                        Console.Write("Press any key to continue...");
+                        Console.ReadKey();
+                        return [];            
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(input) && !input.Any(char.IsDigit))
+                    {
+                        specialisation = input.Trim();
+                        break;
+                    }
+
+                    Console.WriteLine("Specialisation cannot be empty and must not contain numbers\n");
                 }
 
-                Console.WriteLine("Specialisation cannot be empty and must not contain numbers");
+                return _doctorService.GetDoctorsBySpecialisation(specialisation);
+            } catch (SpecialisationNotFoundException ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.Write("\nPress any key to continue...");
+                Console.ReadKey();
+                return [];
             }
-
-            return _doctorService.GetDoctorsBySpecialisation(specialisation);
         }
 
         public string UpdateDoctor()
         {
             try
             {
-                
                 int doctorId;
+                Console.Clear();
 
                 Console.Write("Enter Doctor ID to update (or 'q' to quit): ");
                 string? input = Console.ReadLine();
 
                 if (input?.ToLower() == "q")
-                    return "Update cancelled.";
+                {
+                        Console.WriteLine("Update cancelled.");
+                        Console.Write("Press any key to continue...");
+                        Console.ReadKey();
+                        return "";            
+                }
 
                 if (!int.TryParse(input, out doctorId) || doctorId <= 0)
                     return "Invalid Doctor ID";
@@ -174,24 +192,47 @@ namespace HealthApp
                 Console.WriteLine($"Experience: {existingDoctor.YearsOfExperience} years");
                 Console.WriteLine($"Consultation Fee: {existingDoctor.ConsultationFee}");
                 Console.WriteLine($"Active: {(existingDoctor.IsActive ? "Yes" : "No")}");
-                Console.WriteLine("\nPress ENTER to keep existing value.\n");
 
-                Console.Write("Enter Full Name: ");
-                input = Console.ReadLine();
-                string fullName = string.IsNullOrWhiteSpace(input)
-                    ? existingDoctor.FullName
-                    : input.Trim();
+                string fullName = existingDoctor.FullName;
+                while (true)
+                {
+                    Console.Write("Enter Full Name (Press ENTER to keep existing value): ");
+                    input = Console.ReadLine();
 
-                Console.Write("Enter Specialisation: ");
-                input = Console.ReadLine();
-                string specialisation = string.IsNullOrWhiteSpace(input)
-                    ? existingDoctor.Specialisation
-                    : input.Trim();
+                    if (string.IsNullOrWhiteSpace(input))
+                        break;
+
+                    if (!input.Any(char.IsDigit))
+                    {
+                        fullName = input.Trim();
+                        break;
+                    }
+
+                    Console.WriteLine("Full Name must not contain numbers.\n");
+                }
+
+                string specialisation = existingDoctor.Specialisation;
+                while (true)
+                {
+                    Console.Write("Enter Specialisation (Press ENTER to keep existing value): ");
+                    input = Console.ReadLine();
+
+                    if (string.IsNullOrWhiteSpace(input))
+                        break;
+
+                    if (!input.Any(char.IsDigit))
+                    {
+                        specialisation = input.Trim();
+                        break;
+                    }
+
+                    Console.WriteLine("Specialisation must not contain numbers.\n");
+                }
 
                 int experience = existingDoctor.YearsOfExperience;
                 while (true)
                 {
-                    Console.Write("Enter Years of Experience: ");
+                    Console.Write("Enter Years of Experience (Press ENTER to keep existing value): ");
                     input = Console.ReadLine();
 
                     if (string.IsNullOrWhiteSpace(input))
@@ -203,13 +244,13 @@ namespace HealthApp
                         break;
                     }
 
-                    Console.WriteLine("Invalid experience value.");
+                    Console.WriteLine("Invalid experience value.\n");
                 }
 
                 decimal fee = existingDoctor.ConsultationFee;
                 while (true)
                 {
-                    Console.Write("Enter Consultation Fee: ");
+                    Console.Write("Enter Consultation Fee (Press ENTER to keep existing value): ");
                     input = Console.ReadLine();
 
                     if (string.IsNullOrWhiteSpace(input))
@@ -221,13 +262,13 @@ namespace HealthApp
                         break;
                     }
 
-                    Console.WriteLine("Invalid fee.");
+                    Console.WriteLine("Invalid fee.\n");
                 }
 
                 bool isActive = existingDoctor.IsActive;
                 while (true)
                 {
-                    Console.Write("Is Active? (Y/N): ");
+                    Console.Write("Is Active? (Y/N) (Press ENTER to keep existing value): ");
                     input = Console.ReadLine();
 
                     if (string.IsNullOrWhiteSpace(input))
@@ -242,7 +283,7 @@ namespace HealthApp
                             isActive = false;
                             break;
                         default:
-                            Console.WriteLine("Invalid input. Enter Y or N.");
+                            Console.WriteLine("Invalid input. Enter Y or N.\n");
                             continue;
                     }
                     break;
@@ -259,32 +300,12 @@ namespace HealthApp
                     Appointments = existingDoctor.Appointments
                 };
 
+                Console.Clear();
                 return _doctorService.UpdateDoctor(updatedDoctor).ToString();
             } catch (DoctorNotFoundException ex)
             {
                 return ex.Message;
             }
-        }
-
-        public string DeleteDoctor()
-        {
-            int doctorId;
-
-            Console.Write("Enter Doctor ID to delete (or 'q' to quit): ");
-            string? input = Console.ReadLine();
-
-            if (input?.ToLower() == "q")
-                return "Delete cancelled.";
-
-            if (!int.TryParse(input, out doctorId) || doctorId <= 0)
-                return "Invalid Doctor ID";
-
-            var existingDoctor = _doctorService.GetDoctorById(doctorId);
-
-            if (existingDoctor == null)
-                return "Doctor not found";
-
-            return _doctorService.DeleteDoctor(doctorId);
         }
     }
 }

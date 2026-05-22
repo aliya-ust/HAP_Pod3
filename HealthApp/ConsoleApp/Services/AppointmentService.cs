@@ -46,20 +46,20 @@ namespace HealthApp.ConsoleApp.Services
 
             var appointment = new Appointment
             {
-                AppointmentId = _appointmentIdCounter++,
+                AppointmentId = AppointmentIdGenerator(appointments),
                 Patient = patient,
                 Doctor = doctor,
                 ScheduledDate = date,
                 TimeSlot = slot,
                 Status = AppointmentStatus.Pending
             };
-            
+
             return _appointmentRepo.AddAppointment(appointment);
         }
 
         public List<Appointment> GetAppointmentsByPatientId(int patientId)
         {
-            var appointments = _appointmentRepo.GetAppointmentsByPatientId(patientId);
+            List<Appointment> appointments = _appointmentRepo.GetAppointmentsByPatientId(patientId);
             if (appointments.Count == 0)
             {
                 throw new AppointmentNotFoundException($"No appointments found for patient ID {patientId}.");
@@ -90,26 +90,25 @@ namespace HealthApp.ConsoleApp.Services
             return appointment;
         }
 
-        public bool isAppointmentCompleted(Appointment appointment)
+        public int AppointmentIdGenerator(List<Appointment> appointments)
         {
-            if (appointment.Status != AppointmentStatus.Completed)
-            {
-                throw new AppointmentNotCompletedException($"Health record of appointment ID {appointment.AppointmentId} cannot be created as the appointment has not been completed");
-            }
-            return true;
+            return appointments.Any()
+                ? appointments.Max(a => a.AppointmentId) + 1
+                : 101;
         }
 
-//         //  CANCEL APPOINTMENT
-//         public void CancelAppointment(int appointmentId, string reason)
-//         {
-//             var appointment = _appointmentRepository.GetAppointmentById(appointmentId);
+        //  CANCEL APPOINTMENT
+        public string CancelAppointment(int appointmentId, string reason)
+        {
+            var appointment = _appointmentRepo.GetAppointmentById(appointmentId);
 
-//             if (appointment != null)
-//             {
-//                 appointment.CancellationReason = reason;
-//                 _appointmentRepository.UpdateAppointment(appointment);
-//             }
-//         }
+            if (appointment is null)
+            {
+                throw new AppointmentNotFoundException($"Appointment of ID {appointmentId} does not exist");
+            }
+            appointment.Cancel(reason);
+            return $"Appointment of ID {appointmentId} has been cancelled successfully";
+        }
 
 //         //  GET UPCOMING
 //         public List<Appointment> GetUpcomingAppointments()

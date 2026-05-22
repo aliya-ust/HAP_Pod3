@@ -11,7 +11,7 @@ namespace HealthApp.ConsoleApp.Databases
     AppointmentId = 1,
     Patient = new Patient
     {
-        PatientId = 1,
+        PatientId = 101,
         FullName = "John Doe",
         Email = "john.doe@email.com",
         PhoneNumber = "9876543210"
