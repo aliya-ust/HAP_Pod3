@@ -16,35 +16,35 @@ namespace HealthApp.ConsoleApp.Services
             this.patientRepo = patientRepo;
         }
 
-        public bool Register(Patient patient)
+        public string AddPatient(Patient patient)
         {
             if (patient == null)
-                return false;
+                return "Invalid patient data.";
 
-            return patientRepo.Add(patient);
+            return patientRepo.AddPatient(patient);
         }
 
-        public bool Update(Patient patient)
+        public string UpdatePatient(Patient patient)
         {
             if (patient == null)
-                return false;
+                return "Invalid patient data.";
 
-            return patientRepo.Update(patient);
+            return patientRepo.UpdatePatient(patient);
         }
 
-        public bool Delete(int id)
+        public string DeletePatient(int id)
         {
-            return patientRepo.Delete(id);
+            return patientRepo.DeletePatient(id);
         }
 
         public Patient GetPatientById(int id)
         {
-            return patientRepo.GetById(id);
+            return patientRepo.GetPatientById(id);
         }
 
         public List<Patient> GetAllPatients()
         {
-            return patientRepo.GetAll();
+            return patientRepo.GetAllPatients();
         }
 
         public int GetPatientAge(int patientId)

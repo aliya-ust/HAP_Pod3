@@ -2,6 +2,7 @@ using HealthApp.ConsoleApp.Services;
 using HealthApp.ConsoleApp.Repositories;
 using HealthApp.ConsoleApp.Models;
 using HealthApp.ConsoleApp.Interfaces;
+using HealthApp.ConsoleApp.Exceptions;
 namespace HealthApp.ConsoleApp.Services
 {
     public class HealthRecordService : IHealthRecordService
@@ -20,49 +21,80 @@ namespace HealthApp.ConsoleApp.Services
             _patientRepository = patientRepository;
         }
 
-        //Add new record
-        public string AddRecord(HealthRecord record)
+        public string AddHealthRecord(HealthRecord record)
         {
-            Patient patient = _patientRepository.GetById(record.Patient.PatientId);
-            Doctor doctor = _doctorRepository.GetByDoctorId(record.Doctor.DoctorId);
+            List<HealthRecord> records = _healthRecordRepository.GetAllRecords();
+            record.RecordId = RecordIdGenerator(records);
 
-            record.Patient = patient;
-            record.Doctor = doctor;
-
-            return _healthRecordRepository.Add(record);
+            return _healthRecordRepository.AddHealthRecord(record);
         }
 
-        //Get records by patient ID in descending order of VisitDate
-        public List<HealthRecord> GetByPatientIdOrderByVisitDateDesc(int patientId)
+        public List<HealthRecord> GetByPatientIdOrderByVisitDateDesc(int id)
         {
-            Patient patient = _patientRepository.GetById(patientId);
-            return _healthRecordRepository.GetByPatientIdOrderByVisitDateDesc(patientId);
+            var patient = _patientRepository.GetPatientById(id);
+
+            if (patient == null)
+            {
+                throw new PatientNotFoundException("Patient of this id has not been found.");
+            }
+
+            var records = _healthRecordRepository
+                .GetByPatientIdOrderByVisitDateDesc(id);
+
+            if (records == null || records.Count == 0)
+            {
+                throw new HealthRecordNotFoundException("No health records found for this patient ID.");
+            }
+
+            return records;
         }
 
-        //Get records by doctor ID in descending order of VisitDate
-        public List<HealthRecord> GetByDoctorIdOrderByVisitDateDesc(int doctorId)
+        public List<HealthRecord> GetByDoctorIdOrderByVisitDateDesc(int id)
         {
-            Doctor doctor = _doctorRepository.GetByDoctorId(doctorId);
-            return _healthRecordRepository.GetByDoctorIdOrderByVisitDateDesc(doctorId);
+            var doctor = _doctorRepository.GetByDoctorId(id);
+
+            if (doctor == null)
+            {
+                throw new DoctorNotFoundException("Doctor of this id has not been found.");
+            }
+
+            var records = _healthRecordRepository
+                .GetByDoctorIdOrderByVisitDateDesc(id);
+
+            if (records == null || records.Count == 0)
+            {
+                throw new HealthRecordNotFoundException("No health records found for this doctor ID.");
+            }
+
+            return records;
         }
 
-        //Update records by record Id if not same
-        public string Update(HealthRecord updatedRecord)
+        public HealthRecord UpdateHealthRecord(HealthRecord record)
         {
-                updatedRecord.Patient = _patientRepository.GetById(updatedRecord.Patient.PatientId);
-            updatedRecord.Doctor = _doctorRepository.GetByDoctorId(updatedRecord.Doctor.DoctorId);
+            HealthRecord? existingHealthRecord = GetRecordById(record.RecordId);
 
-            return _healthRecordRepository.Update(updatedRecord);
+            if (existingHealthRecord is null)
+            {
+                throw new HealthRecordNotFoundException($"Health Record of ID {record.RecordId} does not exist");
+            }
+            return _healthRecordRepository.UpdateHealthRecord(existingHealthRecord, record);
         }
 
-        public HealthRecord GetByRecordId(int recordId)
+        public HealthRecord? GetRecordById(int recordId)
         {
-            return _healthRecordRepository.GetByRecordId(recordId);
+            HealthRecord? record = _healthRecordRepository.GetRecordById(recordId);
+            if (record is null)
+            {
+                throw new HealthRecordNotFoundException($"Health Record of ID {recordId} does not exist");
+            }
+            return record;
         }
 
-        public string Delete(int recordId)
+        public int RecordIdGenerator(List<HealthRecord> records)
         {
-            return _healthRecordRepository.Delete(recordId);
+            return records.Any()
+                ? records.Max(r => r.RecordId) + 1
+                : 401;
         }
     }
 }

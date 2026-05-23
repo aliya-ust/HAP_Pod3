@@ -4,7 +4,7 @@ namespace HealthApp.ConsoleApp.Exceptions
     {
         public AppointmentConflictException(string message) : base(message)
         {
-            
+            //Console.WriteLine("Appointment conflict detected: " + message);
         }
     }
 }

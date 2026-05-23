@@ -6,12 +6,12 @@ namespace HealthApp.Tests.Repositories
 {
     public class HealthRecordRepositoryTests
     {
-        private HealthRecordDB _db;
+        private HealthRecordDb _db;
         private HealthRecordRepository _repository;
 
         public HealthRecordRepositoryTests()
         {
-            _db = new HealthRecordDB();
+            _db = new HealthRecordDb();
             _repository = new HealthRecordRepository(_db);
         }
 

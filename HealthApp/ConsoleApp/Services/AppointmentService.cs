@@ -13,12 +13,14 @@ namespace HealthApp.ConsoleApp.Services
     {
         private readonly IAppointmentRepository _appointmentRepository;
 
-        private int _appointmentIdCounter = 1;
+        private readonly IHealthRecordRepository _healthRecordRepository;
+
 
         //  Constructor Injection
-        public AppointmentService(IAppointmentRepository appointmentRepository)
+        public AppointmentService(IAppointmentRepository appointmentRepository, IHealthRecordRepository healthRecordRepository)
         {
             _appointmentRepository = appointmentRepository;
+            _healthRecordRepository = healthRecordRepository;
         }
 
         //  BOOK APPOINTMENT
@@ -49,7 +51,7 @@ namespace HealthApp.ConsoleApp.Services
 
             var appointment = new Appointment
             {
-                AppointmentId = _appointmentIdCounter++,
+                AppointmentId = _appointmentRepository.GetAllAppointments().Count > 0 ? _appointmentRepository.GetAllAppointments().Max(a => a.AppointmentId) + 1 : 301,
                 Patient = patient,
                 Doctor = doctor,
                 ScheduledDate = date,
@@ -77,13 +79,13 @@ namespace HealthApp.ConsoleApp.Services
         //  GET BY PATIENT
         public List<Appointment> GetAppointmentsByPatient(int patientId)
         {
-            return _appointmentRepository.GetAppointmentsByPatient(patientId);
+            return _appointmentRepository.GetAppointmentsByPatient(patientId).OrderByDescending(a => a.ScheduledDate).ToList();
         }
 
         //  GET BY DOCTOR
         public List<Appointment> GetAppointmentsByDoctor(int doctorId)
         {
-            return _appointmentRepository.GetAppointmentsByDoctor(doctorId);
+            return _appointmentRepository.GetAppointmentsByDoctor(doctorId).OrderByDescending(a => a.ScheduledDate).ToList();
         }
         public Appointment GetAppointmentById(int appointmentId)
         {
@@ -101,10 +103,20 @@ namespace HealthApp.ConsoleApp.Services
             return _appointmentRepository
                 .GetAllAppointments()
                 .Where(a => a.ScheduledDate > DateTime.Now &&
-                            a.Status == AppointmentStatus.Confirmed)
+                            a.Status == AppointmentStatus.Confirmed || a.Status == AppointmentStatus.Pending)
                 .OrderBy(a => a.ScheduledDate)
                 .ToList();
         }
+        public bool IsAppointmentCompleted(int appointmentId)
+        {
+            var appointment = _appointmentRepository.GetAppointmentById(appointmentId);
+            if (appointment == null)
+            {
+                throw new AppointmentNotFoundException($"Appointment with ID {appointmentId} not found.");
+            }
+            return appointment.Status == AppointmentStatus.Completed;
+        }
     }
+    
     
 }

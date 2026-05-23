@@ -78,10 +78,10 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 // ── 1. Register every dependency ────────────────────────────────────────────────
 var services = new ServiceCollection();
 
-// Repositories (in-memory List<T> stores — swapped for EF Core in Sprint 2)
+// Repositories (in-memory data Lists)
 services.AddSingleton<DoctorDb>();
 services.AddSingleton<AppointmentDb>();
-services.AddSingleton<HealthRecordDB>();
+services.AddSingleton<HealthRecordDb>();
 services.AddSingleton<PatientDb>();
 services.AddSingleton<IPatientRepository, PatientRepository>();
 services.AddSingleton<IDoctorRepository, DoctorRepository>();
@@ -94,7 +94,7 @@ services.AddScoped<IDoctorService, DoctorService>();
 services.AddScoped<IAppointmentService, AppointmentService>();
 services.AddScoped<IHealthRecordService, HealthRecordService>();
 
-// Menus (thin UI layer — injected with their required services)
+// Menus (UI layer — injected with their required services)
 services.AddScoped<PatientMenu>();
 services.AddScoped<DoctorMenu>();
 services.AddScoped<AppointmentMenu>();
@@ -103,38 +103,12 @@ services.AddScoped<HealthRecordMenu>();
 // ── 2. Build the service provider ───────────────────────────────────────────────
 var provider = services.BuildServiceProvider();
 
-// ── 3. Seed three sample doctors (matches the original Program.cs) ───────────────
-//    Resolved from DI so the seeded data goes into the singleton repository
-// var doctorService = provider.GetRequiredService<IDoctorService>();
-
-// doctorService.AddDoctor(new Doctor
-// {
-//     DoctorId = 1, FullName = "Arjun Mehta",
-//     Specialisation = "General Physician", YearsOfExperience = 10,
-//     ConsultationFee = 500, IsActive = true
-// });
-// doctorService.AddDoctor(new Doctor
-// {
-//     DoctorId = 2, FullName = "Priya Nair",
-//     Specialisation = "Cardiology", YearsOfExperience = 15,
-//     ConsultationFee = 1200, IsActive = true
-// });
-// doctorService.AddDoctor(new Doctor
-// {
-//     DoctorId = 3, FullName = "Deepa Krishnan",
-//     Specialisation = "Psychiatry", YearsOfExperience = 8,
-//     ConsultationFee = 900, IsActive = true
-// });
 
 // ── 4. Resolve menus once (Scoped — same scope for the whole session) ────────────
 var patientMenu = provider.GetRequiredService<PatientMenu>();
 var doctorMenu = provider.GetRequiredService<DoctorMenu>();
 var appointmentMenu = provider.GetRequiredService<AppointmentMenu>();
 var healthRecordMenu = provider.GetRequiredService<HealthRecordMenu>();
-
-// ════════════════════════════════════════════════════════════════════════════════
-//  5. Main menu loop — 8 options as specified in s.pdf
-// ════════════════════════════════════════════════════════════════════════════════
 
 bool running = true;
 
@@ -151,9 +125,10 @@ while (running)
     Console.WriteLine("║  5. View all appointments for a patient          ║");
     Console.WriteLine("║  6. Confirm or cancel an appointment             ║");
     Console.WriteLine("║  7. Add a health record after a consultation     ║");
-    Console.WriteLine("║  8. View health history for a patient            ║");
+    Console.WriteLine("║  8. View health history                          ║");
     Console.WriteLine("║  0. Exit                                         ║");
     Console.WriteLine("╚══════════════════════════════════════════════════╝");
+    Console.WriteLine( "Enter back anywhere to return back to main menu   " );
     Console.Write("  Choose an option: ");
 
     string input = Console.ReadLine()?.Trim() ?? "";
@@ -187,9 +162,9 @@ while (running)
             break;
 
         // ── Health records ────────────────────────────────────────────────────
-        case "7":
-        case "8":
-            healthRecordMenu.Show();
+        case "7":healthRecordMenu.AddHealthRecord();
+            break;
+        case "8":healthRecordMenu.ViewRecord();
             break;
 
         // ── Exit ──────────────────────────────────────────────────────────────

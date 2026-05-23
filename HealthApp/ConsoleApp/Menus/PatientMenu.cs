@@ -9,6 +9,7 @@ namespace HealthApp.ConsoleApp.Menus
 
     public class PatientMenu
     {
+
         private readonly IPatientService _patientService;
 
         // DI Constructor — IPatientService is injected by the ServiceProvider in Program.cs
@@ -20,66 +21,75 @@ namespace HealthApp.ConsoleApp.Menus
 
         public void RegisterPatient()
         {
-            PrintHeader("Register New Patient");
-
-            // ── Full Name ───────────────────────────────────────────────────────
-            if (!InputValidator.TryReadName("Full name         : ", out string fullName))
+            try
             {
+                PrintHeader("Register New Patient");
+
+                // ── Full Name ───────────────────────────────────────────────────────
+                if (!InputValidator.TryReadName("Full name         : ", out string Name))
+                {
+                    InputValidator.Pause();
+                    return;
+                }
+
+                // ── Date of Birth ───────────────────────────────────────────────────
+                if (!InputValidator.TryReadPastDate("Date of birth     : ", out DateTime dob))
+                {
+                    InputValidator.Pause();
+                    return;
+                }
+
+                // Gender
+                if (!InputValidator.TryReadGender("Gender (Male/Female/Other): ", out Gender gender))
+                {
+                    InputValidator.Pause();
+                    return;
+                }
+               
+
+                // Phone Number 
+                if (!InputValidator.TryReadPhone("Phone number      : ", out string phone))
+                {
+                    InputValidator.Pause();
+                    return;
+                }
+
+                //  Email 
+                if (!InputValidator.TryReadEmail("Email             : ", out string email))
+                {
+                    InputValidator.Pause();
+                    return;
+                }
+
+                //  Insurance ID (optional — spec says "press Enter to skip") 
+                string insuranceId = InputValidator.ReadOptionalString("Insurance ID (optional)     : ");
+
+                //  Build and register 
+                // PatientId and CreatedDate are set by the service (not the menu)
+                var patient = new Patient
+                {
+                    Name = Name,
+                    Dob = dob,
+                    Gender = gender,
+                    PhoneNumber = phone,
+                    Email = email,
+                    InsuranceId = insuranceId,
+                    CreatedAt = DateTime.Now   // spec property: CreatedDate
+                };
+
+                _patientService.AddPatient(patient);
+
+                Console.WriteLine();
+                PrintSuccess("Patient registered successfully!");
+                Console.WriteLine(patient.GetProfileSummary());   // spec method: GetProfileSummary()
+
                 InputValidator.Pause();
-                return;
             }
-
-            // ── Date of Birth ───────────────────────────────────────────────────
-            if (!InputValidator.TryReadPastDate("Date of birth     : ", out DateTime dob))
+            catch (Exception ex)
             {
+                Console.WriteLine($"An error occurred: {ex.Message}");
                 InputValidator.Pause();
-                return;
             }
-
-            // Gender
-            if (!InputValidator.TryReadString("Gender (M/F/Other): ", out string gender))
-            {
-                InputValidator.Pause();
-                return;
-            }
-
-            // Phone Number 
-            if (!InputValidator.TryReadPhone("Phone number      : ", out string phone))
-            {
-                InputValidator.Pause();
-                return;
-            }
-
-            //  Email 
-            if (!InputValidator.TryReadEmail("Email             : ", out string email))
-            {
-                InputValidator.Pause();
-                return;
-            }
-
-            //  Insurance ID (optional — spec says "press Enter to skip") 
-            string insuranceId = InputValidator.ReadOptionalString("Insurance ID (optional)     : ");
-
-            //  Build and register 
-            // PatientId and CreatedDate are set by the service (not the menu)
-            var patient = new Patient
-            {
-                Name = fullName,
-                Dob = dob,
-                Gender = gender,
-                PhoneNumber = phone,
-                Email = email,
-                InsuranceId = insuranceId,
-                CreatedAt = DateTime.Now   // spec property: CreatedDate
-            };
-
-            _patientService.Register(patient);
-
-            Console.WriteLine();
-            PrintSuccess("Patient registered successfully!");
-            Console.WriteLine(patient.GetProfileSummary());   // spec method: GetProfileSummary()
-
-            InputValidator.Pause();
         }
 
         // ── Helper methods ────────────────────────────────────────────────────────

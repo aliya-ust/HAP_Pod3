@@ -23,7 +23,7 @@ namespace HealthApp.ConsoleApp.Menus
             PrintHeader("Add New Doctor");
 
             // ── Full Name ────────────────────────────────────────────────────────
-            if (!InputValidator.TryReadName("Full name            : ", out string fullName))
+            if (!InputValidator.TryReadName("Full name            : ", out string Name))
             {
                 InputValidator.Pause(); return;
             }
@@ -96,7 +96,7 @@ namespace HealthApp.ConsoleApp.Menus
             // DoctorId is assigned by the service (keeps ID management in one place)
             var doctor = new Doctor
             {
-                FullName          = fullName,
+                Name          = Name,
                 Specialisation    = spec,
                 YearsOfExperience = years,
                 ConsultationFee   = fee,
@@ -140,7 +140,7 @@ namespace HealthApp.ConsoleApp.Menus
 
             foreach (Doctor d in results)
             {
-                Console.WriteLine($"  [{d.DoctorId}] Dr. {d.FullName}");
+                Console.WriteLine($"  [{d.DoctorId}] Dr. {d.Name}");
                 Console.WriteLine($"       Specialisation : {d.Specialisation}");
                 Console.WriteLine($"       Experience     : {d.YearsOfExperience} years");
                 Console.WriteLine($"       Fee            : Rs.{d.ConsultationFee}");
@@ -151,7 +151,7 @@ namespace HealthApp.ConsoleApp.Menus
                 Console.WriteLine($"       Available Today : {(available ? "Yes" : "No")}");
                 Console.ResetColor();
 
-                Console.WriteLine($"       {d.GetScheduleSummary}");
+               // Console.WriteLine($"       {d.GetScheduleSummary}");
                 Console.WriteLine();
             }
 

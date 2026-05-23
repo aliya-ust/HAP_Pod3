@@ -28,7 +28,7 @@ namespace HealthApp.ConsoleApp.Helpers
                 Console.WriteLine($"  {i + 1}. {AvailableSlots[i]}");
             }
 
-            Console.Write("Pick a slot (1-8): ");
+          //  Console.Write("Pick a slot (1-8): ");
            // int choice = int.Parse(Console.ReadLine());
             if (!InputValidator.TryReadInt("  Choose slot (1-8): ", out int slotChoice)
                 || slotChoice < 1 || slotChoice > 8)

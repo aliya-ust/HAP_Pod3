@@ -16,26 +16,26 @@ namespace HealthApp.ConsoleApp.Repositories
             _patients = patientDb.Patients;
         }
 
-        public bool Add(Patient patient)
+        public string AddPatient(Patient patient)
         {
             if (patient == null)
-                return false;
+                return "Invalid patient data.";
 
             patient.PatientId = _patients.Count > 0 ? _patients.Max(p => p.PatientId) + 1 : 1;
             patient.CreatedAt = DateTime.Now;
 
             _patients.Add(patient);
-            return true;
+            return "Patient added successfully.";
         }
 
-        public bool Update(Patient patient)
+        public string UpdatePatient(Patient patient)
         {
             if (patient == null)
-                return false;
+                return "Invalid patient data.";
 
             var existingPatient = _patients.FirstOrDefault(p => p.PatientId == patient.PatientId);
             if (existingPatient == null)
-                return false;
+                return "Patient not found.";
 
             existingPatient.Name = patient.Name;
             existingPatient.Dob = patient.Dob;
@@ -44,25 +44,25 @@ namespace HealthApp.ConsoleApp.Repositories
             existingPatient.Email = patient.Email;
             existingPatient.InsuranceId = patient.InsuranceId;
 
-            return true;
+            return "Patient updated successfully.";
         }
 
-        public bool Delete(int id)
+        public string DeletePatient(int id)
         {
             var patient = _patients.FirstOrDefault(p => p.PatientId == id);
             if (patient == null)
-                return false;
+                return "Patient not found.";
 
             _patients.Remove(patient);
-            return true;
+            return "Patient deleted successfully.";
         }
 
-        public Patient GetById(int id)
+        public Patient GetPatientById(int id)
         {
             return _patients.FirstOrDefault(p => p.PatientId == id);
         }
 
-        public List<Patient> GetAll()
+        public List<Patient> GetAllPatients()
         {
             return _patients; 
         }

@@ -25,17 +25,13 @@ namespace HealthApp.ConsoleApp.Menus
             _doctorService = doctorService;
         }
 
-        // ===============================
         // BOOK APPOINTMENT
-        // ===============================
         public void BookAppointment()
         {
             Console.Clear();
             PrintHeader("BOOK APPOINTMENT");
 
-            // ===============================
             // PATIENT VALIDATION
-            // ===============================
 
             Patient patient;
 
@@ -59,9 +55,7 @@ namespace HealthApp.ConsoleApp.Menus
                 break;
             }
 
-            // ===============================
             // DISPLAY DOCTORS
-            // ===============================
 
             Console.WriteLine("\nAVAILABLE DOCTORS");
             Console.WriteLine("----------------------------------------------------------");
@@ -73,7 +67,7 @@ namespace HealthApp.ConsoleApp.Menus
                 Console.WriteLine
                 (
                     $"ID : {doc.DoctorId} | " +
-                    $"{doc.FullName} | " +
+                    $"{doc.Name} | " +
                     $"{doc.Specialisation} | " +
                     $"Fee : Rs.{doc.ConsultationFee} | " +
                     $"{doc.YearsOfExperience} Years Exp | " +
@@ -83,9 +77,7 @@ namespace HealthApp.ConsoleApp.Menus
 
             Console.WriteLine("----------------------------------------------------------");
 
-            // ===============================
             // DOCTOR VALIDATION
-            // ===============================
 
             Doctor doctor;
 
@@ -107,17 +99,15 @@ namespace HealthApp.ConsoleApp.Menus
 
                 if (!doctor.IsActive)
                 {
-                    PrintError($"Dr. {doctor.FullName} is currently inactive.");
+                    PrintError($"Dr. {doctor.Name} is currently inactive.");
                     continue;
                 }
 
-                Console.WriteLine($"\nDoctor Selected : {doctor.FullName}");
+                Console.WriteLine($"\nDoctor Selected : {doctor.Name}");
                 break;
             }
 
-            // ===============================
             // DISPLAY AVAILABLE DAYS
-            // ===============================
 
             Console.WriteLine("\nAVAILABLE DAYS");
 
@@ -130,9 +120,7 @@ namespace HealthApp.ConsoleApp.Menus
                 );
             }
 
-            // ===============================
             // DATE SELECTION
-            // ===============================
 
             DateTime selectedDate;
 
@@ -160,9 +148,7 @@ namespace HealthApp.ConsoleApp.Menus
                 break;
             }
 
-            // ===============================
             // FIND BOOKED SLOTS
-            // ===============================
 
             List<string> bookedSlots = _appointmentService
                 .GetAppointmentsByDoctor(doctor.DoctorId)
@@ -172,9 +158,7 @@ namespace HealthApp.ConsoleApp.Menus
                 .Select(a => a.TimeSlot)
                 .ToList() ?? new List<string>();
 
-            // ===============================
             // FIND AVAILABLE SLOTS
-            // ===============================
 
             List<string> availableSlots = doctor.AvailableSlots
                 .Except(bookedSlots)
@@ -187,9 +171,7 @@ namespace HealthApp.ConsoleApp.Menus
                 return;
             }
 
-            // ===============================
             // DISPLAY AVAILABLE SLOTS
-            // ===============================
 
             Console.WriteLine("\nAVAILABLE SLOTS");
 
@@ -198,9 +180,7 @@ namespace HealthApp.ConsoleApp.Menus
                 Console.WriteLine($"{i + 1}. {availableSlots[i]}");
             }
 
-            // ===============================
             // SLOT SELECTION
-            // ===============================
 
             string selectedSlot;
 
@@ -235,15 +215,13 @@ namespace HealthApp.ConsoleApp.Menus
                 break;
             }
 
-            // ===============================
             // CONFIRMATION
-            // ===============================
 
             Console.WriteLine("\nCONFIRM APPOINTMENT");
             Console.WriteLine("----------------------------------");
 
             Console.WriteLine($"Patient : {patient.Name}");
-            Console.WriteLine($"Doctor  : {doctor.FullName}");
+            Console.WriteLine($"Doctor  : {doctor.Name}");
             Console.WriteLine($"Date    : {selectedDate:dd MMM yyyy}");
             Console.WriteLine($"Slot    : {selectedSlot}");
 
@@ -258,9 +236,7 @@ namespace HealthApp.ConsoleApp.Menus
                 return;
             }
 
-            // ===============================
             // BOOK APPOINTMENT
-            // ===============================
 
             try
             {
@@ -279,18 +255,6 @@ namespace HealthApp.ConsoleApp.Menus
 
                 Console.WriteLine($"\n{appt.GetDetails()}");
             }
-            catch (PastDateException ex)
-            {
-                PrintError(ex.Message);
-            }
-            catch (DoctorUnavailableException ex)
-            {
-                PrintError(ex.Message);
-            }
-            catch (AppointmentConflictException ex)
-            {
-                PrintError(ex.Message);
-            }
             catch (Exception ex)
             {
                 PrintError(ex.Message);
@@ -299,9 +263,7 @@ namespace HealthApp.ConsoleApp.Menus
             InputValidator.Pause();
         }
 
-        // ===============================
         // VIEW PATIENT APPOINTMENTS
-        // ===============================
 
         public void ViewPatientAppointments()
         {
@@ -342,9 +304,7 @@ namespace HealthApp.ConsoleApp.Menus
             InputValidator.Pause();
         }
 
-        // ===============================
         // CONFIRM OR CANCEL APPOINTMENT
-        // ===============================
 
         public void ConfirmOrCancel()
         {
@@ -427,9 +387,7 @@ namespace HealthApp.ConsoleApp.Menus
             InputValidator.Pause();
         }
 
-        // ===============================
         // UI HELPERS
-        // ===============================
 
         private void PrintHeader(string title)
         {
@@ -484,7 +442,7 @@ namespace HealthApp.ConsoleApp.Menus
 //             {
 //                 InputValidator.Pause(); return;
 //             }
-            
+
 
 //             Patient? patient = _patientService.GetPatientById(patientId);
 //             if (patient == null)
@@ -492,13 +450,13 @@ namespace HealthApp.ConsoleApp.Menus
 //                 PrintError($"No patient found with ID {patientId}.");
 //                 InputValidator.Pause(); return;
 //             }
-            
+
 
 //             Console.WriteLine($"  Found: {patient.GetProfileSummary()}");
 //             Console.WriteLine($"Doctors Details :- ");
 //             foreach (var doc in _doctorService.GetAllDoctors())
 //             {
-//                 Console.WriteLine($" Doctor ID:- {doc.DoctorId}   - Doctor's Name:- {doc.FullName}  ({doc.Specialisation})  ");
+//                 Console.WriteLine($" Doctor ID:- {doc.DoctorId}   - Doctor's Name:- {doc.Name}  ({doc.Specialisation})  ");
 //             }
 
 //             // ── Doctor lookup ────────────────────────────────────────────────────
@@ -508,7 +466,7 @@ namespace HealthApp.ConsoleApp.Menus
 //             }
 
 //             Doctor? doctor = _doctorService.GetByDoctorId(doctorId);
-            
+
 //             if (doctor == null)
 //             {
 //                 PrintError($"No doctor found with ID {doctorId}.");
@@ -517,10 +475,10 @@ namespace HealthApp.ConsoleApp.Menus
 
 //             if (!doctor.IsActive)
 //             {
-//                 PrintError($"Dr. {doctor.FullName} is currently inactive.");
+//                 PrintError($"Dr. {doctor.Name} is currently inactive.");
 //                 InputValidator.Pause(); return;
 //             }
-//             Console.WriteLine("Current appointments for {0}:", doctor.FullName);
+//             Console.WriteLine("Current appointments for {0}:", doctor.Name);
 //             foreach (var appt in _appointmentService.GetAppointmentsByDoctor(doctorId))
 //             {
 //                 Console.Write($" on {appt.ScheduledDate} at {appt.TimeSlot}");
@@ -528,7 +486,7 @@ namespace HealthApp.ConsoleApp.Menus
 //             Console.WriteLine();
 
 
-//            // Console.WriteLine($"  Found: Dr. {doctor.FullName} ({doctor.Specialisation})");
+//            // Console.WriteLine($"  Found: Dr. {doctor.Name} ({doctor.Specialisation})");
 
 
 //             // ── Appointment date ─────────────────────────────────────────────────
@@ -536,7 +494,7 @@ namespace HealthApp.ConsoleApp.Menus
 //             {
 //                 InputValidator.Pause(); return;
 //             }
-                
+
 //             // ── Time slot ────────────────────────────────────────────────────────
 //             // Show available slots so the user doesn't have to guess the format
 //             // Console.WriteLine();
@@ -553,7 +511,7 @@ namespace HealthApp.ConsoleApp.Menus
 //             // }
 //             SlotHelper slotHelper = new SlotHelper();
 //             string slot = slotHelper.PickSlot();
-        
+
 
 //             //string[] slots = { "09:00 AM", "10:00 AM", "11:00 AM", "02:00 PM", "03:00 PM", "04:00 PM" };
 //             //string   slot  = slots[slotChoice - 1];

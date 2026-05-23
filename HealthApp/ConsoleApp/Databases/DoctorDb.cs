@@ -14,7 +14,7 @@ namespace HealthApp.ConsoleApp.Databases
                 new Doctor
                 {
                     DoctorId = 201,
-                    FullName = "Dr. John Smith",
+                    Name = "John Smith",
                     Specialisation = "Cardiology",
                     YearsOfExperience = 15,
                     ConsultationFee = 500,
@@ -37,7 +37,7 @@ namespace HealthApp.ConsoleApp.Databases
                 new Doctor
                 {
                     DoctorId = 202,
-                    FullName = "Dr. Emily Davis",
+                    Name = "Emily Davis",
                     Specialisation = "Dermatology",
                     YearsOfExperience = 10,
                     ConsultationFee = 400,
@@ -59,7 +59,7 @@ namespace HealthApp.ConsoleApp.Databases
                 new Doctor
                 {
                     DoctorId = 203,
-                    FullName = "Dr. Michael Brown",
+                    Name = "Michael Brown",
                     Specialisation = "Orthopedics",
                     YearsOfExperience = 20,
                     ConsultationFee = 600,
@@ -81,7 +81,7 @@ namespace HealthApp.ConsoleApp.Databases
                 new Doctor
                 {
                     DoctorId = 204,
-                    FullName = "Dr. Sarah Johnson",
+                    Name = "Sarah Johnson",
                     Specialisation = "Pediatrics",
                     YearsOfExperience = 8,
                     ConsultationFee = 300,
@@ -102,7 +102,7 @@ namespace HealthApp.ConsoleApp.Databases
                 new Doctor
                 {
                     DoctorId = 205,
-                    FullName = "Dr. David Wilson",
+                    Name = "David Wilson",
                     Specialisation = "Neurology",
                     YearsOfExperience = 12,
                     ConsultationFee = 550,
@@ -123,7 +123,7 @@ namespace HealthApp.ConsoleApp.Databases
                 new Doctor
                 {
                     DoctorId = 206,
-                    FullName = "Dr. Loki",
+                    Name = "Loki",
                     Specialisation = "Skin",
                     YearsOfExperience = 3,
                     ConsultationFee = 400,
@@ -159,7 +159,7 @@ namespace HealthApp.ConsoleApp.Databases
 //                 new Doctor
 //                 {
 //                     DoctorId = 201,
-//                     FullName = "Dr. John Smith",
+//                     Name = "Dr. John Smith",
 //                     Specialisation = "Cardiology",
 //                     YearsOfExperience = 15,
 //                     ConsultationFee = 500,
@@ -177,7 +177,7 @@ namespace HealthApp.ConsoleApp.Databases
 //                 new Doctor
 //                 {
 //                     DoctorId = 202,
-//                     FullName = "Dr. Emily Davis",
+//                     Name = "Dr. Emily Davis",
 //                     Specialisation = "Dermatology",
 //                     YearsOfExperience = 10,
 //                     ConsultationFee = 400,
@@ -193,7 +193,7 @@ namespace HealthApp.ConsoleApp.Databases
 //                 new Doctor
 //                 {
 //                     DoctorId = 203,
-//                     FullName = "Dr. Michael Brown",
+//                     Name = "Dr. Michael Brown",
 //                     Specialisation = "Orthopedics",
 //                     YearsOfExperience = 20,
 //                     ConsultationFee = 600,
@@ -213,7 +213,7 @@ namespace HealthApp.ConsoleApp.Databases
 //                 new Doctor
 //                 {
 //                     DoctorId = 204,
-//                     FullName = "Dr. Sarah Johnson",
+//                     Name = "Dr. Sarah Johnson",
 //                     Specialisation = "Pediatrics",
 //                     YearsOfExperience = 8,
 //                     ConsultationFee = 300,
@@ -224,7 +224,7 @@ namespace HealthApp.ConsoleApp.Databases
 //                 new Doctor
 //                 {
 //                     DoctorId = 205,
-//                     FullName = "Dr. David Wilson",
+//                     Name = "Dr. David Wilson",
 //                     Specialisation = "Neurology",
 //                     YearsOfExperience = 12,
 //                     ConsultationFee = 550,
@@ -239,7 +239,7 @@ namespace HealthApp.ConsoleApp.Databases
 //                 new Doctor
 //                 {
 //                     DoctorId = 206,
-//                     FullName = "Dr. Loki",
+//                     Name = "Dr. Loki",
 //                     Specialisation = "Skin",
 //                     YearsOfExperience = 3,
 //                     ConsultationFee = 400,

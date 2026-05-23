@@ -11,5 +11,6 @@ public interface IAppointmentService
     List<Appointment> GetAppointmentsByDoctor(int doctorId);
     List<Appointment> GetUpcomingAppointments();
     Appointment GetAppointmentById(int appointmentId);
+    bool IsAppointmentCompleted(int appointmentId);
 }
 }
