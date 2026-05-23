@@ -9,6 +9,6 @@ namespace HealthApp.ConsoleApp.Interfaces
         void AddDoctor(Doctor doctor);
         List<Doctor> GetAllDoctors();
         List<Doctor> SearchBySpecialisation(string specialisation);
-        Doctor GetDoctorById(int id);
+        Doctor GetByDoctorId(int id);
     }
 }

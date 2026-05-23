@@ -32,31 +32,22 @@ namespace HealthApp.ConsoleApp.Services
             return patientRepo.Update(patient);
         }
 
-        public bool Delete(int id)
-        {
-            return patientRepo.Delete(id);
-        }
-
-        public Patient GetPatientById(int id)
-        {
-            return patientRepo.GetById(id);
-        }
 
         public List<Patient> GetAllPatients()
         {
             return patientRepo.GetAll();
         }
 
-        public int GetPatientAge(int patientId)
+
+        public string GetPatientProfileSummaryById(int patientId)
         {
-            var patient = GetPatientById(patientId);
-            return patient?.GetAge() ?? -1;
+            var patient = patientRepo.GetById(patientId);
+            return patient?.GetProfileSummary() ?? string.Empty;
         }
 
-        public string GetPatientProfileSummary(int patientId)
+        public Patient GetPatientById(int id)
         {
-            var patient = GetPatientById(patientId);
-            return patient?.GetProfileSummary() ?? string.Empty;
+            return patientRepo.GetById(id);
         }
     }
 }

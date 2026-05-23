@@ -11,33 +11,29 @@ namespace HealthApp.ConsoleApp.Repositories
     {
         private readonly List<Patient> _patients;
 
-        // ✅ Default constructor (used in application)
-        public PatientRepository(PatientDb db)
+        public PatientRepository(PatientDb patientDb)
         {
-            _patients = db.Patients;
+            _patients = patientDb.Patients;
         }
 
-        // ✅ ADD
         public bool Add(Patient patient)
         {
             if (patient == null)
                 return false;
 
-            patient.Id = _patients.Count > 0 ? _patients.Max(p => p.Id) + 1 : 1;
+            patient.PatientId = _patients.Count > 0 ? _patients.Max(p => p.PatientId) + 1 : 1;
             patient.CreatedAt = DateTime.Now;
 
             _patients.Add(patient);
             return true;
         }
 
-        // ✅ UPDATE
         public bool Update(Patient patient)
         {
             if (patient == null)
                 return false;
 
-            var existingPatient = _patients.FirstOrDefault(p => p.Id == patient.Id);
-
+            var existingPatient = _patients.FirstOrDefault(p => p.PatientId == patient.PatientId);
             if (existingPatient == null)
                 return false;
 
@@ -51,25 +47,12 @@ namespace HealthApp.ConsoleApp.Repositories
             return true;
         }
 
-        //DELETE
-        public bool Delete(int id)
+
+        public Patient? GetById(int id)
         {
-            var patient = _patients.FirstOrDefault(p => p.Id == id);
-
-            if (patient == null)
-                return false;
-
-            _patients.Remove(patient);
-            return true;
+            return _patients.FirstOrDefault(p => p.PatientId == id);
         }
 
-        //GET BY ID
-        public Patient GetById(int id)
-        {
-            return _patients.FirstOrDefault(p => p.Id == id);
-        }
-
-        //GET ALL
         public List<Patient> GetAll()
         {
             return _patients;

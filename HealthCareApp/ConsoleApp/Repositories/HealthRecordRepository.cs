@@ -8,88 +8,58 @@ namespace HealthApp.ConsoleApp.Repositories
 
     public class HealthRecordRepository : IHealthRecordRepository
     {
-        private readonly HealthRecordDB _healthRecordDb;
+        private readonly HealthRecordDb _healthRecordDb;
 
-        public HealthRecordRepository(HealthRecordDB healthRecordDB)
+        public HealthRecordRepository(HealthRecordDb healthRecordDB)
         {
             _healthRecordDb = healthRecordDB;
         }
 
-        public string Add(HealthRecord record)
+        public string AddHealthRecord(HealthRecord record)
         {
-            HealthRecord recordToCheck = GetByRecordId(record.Id);
-            if (recordToCheck is not null)
-            {
-                throw new HealthRecordExistsException("Health Record already exist");
-            }
             _healthRecordDb.Records.Add(record);
-
-            return $"Record ID {record.Id} added successfully!";
+            return $"Record ID {record.RecordId} added successfully!";
         }
 
-        public string Delete(int recordId)
-        {
-            HealthRecord record = GetByRecordId(recordId);
-            if (record is null)
-            {
-                throw new HealthRecordNotFoundException("Health Record doesn't Exist");
-            }
-            _healthRecordDb.Records.Remove(record);
-
-            return $"Record ID {recordId} has been deleted successfully";
-        }
-        public string Update(HealthRecord record)
-        {
-
-            HealthRecord recordToUpdate = GetByRecordId(record.Id);
-            if (recordToUpdate is null)
-            {
-                throw new HealthRecordNotFoundException("Health Record doesn't Exist");
-            }
-
-            recordToUpdate.Id = record.Id;
-            recordToUpdate.Patient = record.Patient;
-            recordToUpdate.Doctor = record.Doctor;
-            recordToUpdate.Diagnosis = record.Diagnosis;
-            recordToUpdate.Prescription = record.Prescription;
-            recordToUpdate.DoctorNotes = record.DoctorNotes;
-
-            return $"Record {record.Id} has been updated";
-        }
-
-        public List<HealthRecord> GetAll()
-        {
-            if (!_healthRecordDb.Records.Any())
-            {
-                throw new HealthRecordNotFoundException("There is no Health Records Available");
-            }
-            return _healthRecordDb.Records.ToList();
-        }
-
-        public List<HealthRecord> GetByPatientIdOrderByVisitDateDesc(int patientId)
+        public List<HealthRecord> GetAllRecords()
         {
             return _healthRecordDb.Records
-                    .Where(r => r.Patient != null && r.Patient.Id == patientId)
+                .OrderByDescending(r => r.VisitDate)   // ✅ ADD THIS LINE
+                .ToList();
+        }
+
+        public List<HealthRecord> GetByPatientIdOrderByVisitDateDesc(int id)
+        {
+            return _healthRecordDb.Records
+                    .Where(r => r.Patient != null && r.Patient.PatientId == id)
                     .OrderByDescending(r => r.VisitDate)
                     .ToList();
         }
 
-        public List<HealthRecord> GetByDoctorIdOrderByVisitDateDesc(int doctorId)
+        public List<HealthRecord> GetByDoctorIdOrderByVisitDateDesc(int id)
         {
             return _healthRecordDb.Records
-                    .Where(r => r.Doctor != null && r.Doctor.Id == doctorId)
+                    .Where(r => r.Doctor != null && r.Doctor.DoctorId == id)
                     .OrderByDescending(r => r.VisitDate)
                     .ToList();
         }
 
-        public HealthRecord GetByRecordId(int recordId)
+        public HealthRecord? GetRecordById(int id)
         {
-            HealthRecord record = _healthRecordDb.Records.Find(r => r.Id == recordId);
-            if (record is null)
-            {
-                throw new HealthRecordNotFoundException("There is no Health Records Available");
-            }
-            return record;
+            return _healthRecordDb.Records.FirstOrDefault(r => r.RecordId == id);
+        }
+
+        public HealthRecord UpdateHealthRecord(HealthRecord existingHealthRecord, HealthRecord record)
+        {
+            existingHealthRecord.RecordId = record.RecordId;
+            existingHealthRecord.Patient = record.Patient;
+            existingHealthRecord.Doctor = record.Doctor;
+            existingHealthRecord.VisitDate = record.VisitDate;
+            existingHealthRecord.Diagnosis = record.Diagnosis;
+            existingHealthRecord.Prescription = record.Prescription;
+            existingHealthRecord.DoctorNotes = record.DoctorNotes;
+
+            return existingHealthRecord;
         }
     }
 }

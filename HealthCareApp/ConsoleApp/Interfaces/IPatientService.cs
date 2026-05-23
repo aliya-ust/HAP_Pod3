@@ -1,5 +1,5 @@
-﻿using HealthApp.ConsoleApp.Models;
-using System;
+﻿using System;
+using HealthApp.ConsoleApp.Models;
 using System.Collections.Generic;
 
 namespace HealthApp.ConsoleApp.Interfaces
@@ -8,11 +8,9 @@ namespace HealthApp.ConsoleApp.Interfaces
     {
         bool Register(Patient patient);
         bool Update(Patient patient);
-        bool Delete(int id);
-        Patient GetPatientById(int id);
         List<Patient> GetAllPatients();
-        int GetPatientAge(int patientId);
-        string GetPatientProfileSummary(int patientId);
+        string GetPatientProfileSummaryById(int patientId);
+        Patient GetPatientById(int id);
 
     }
 }

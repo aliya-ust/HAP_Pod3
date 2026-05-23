@@ -8,7 +8,6 @@ namespace HealthApp.ConsoleApp.Interfaces
         Appointment GetAppointmentById(int id);
         void UpdateAppointment(Appointment appointment);
         void DeleteAppointment(int id);
-        void CancelAppointment(int appointmentId, string reason);
         List<Appointment> GetAppointmentsByDoctor(int doctorId);
         List<Appointment> GetAppointmentsByPatient(int patientId);
     }

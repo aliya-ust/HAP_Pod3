@@ -1,57 +1,60 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using HealthApp.ConsoleApp.Exceptions;
+using HealthApp.ConsoleApp.Repositories;
 using HealthApp.ConsoleApp.Interfaces;
 using HealthApp.ConsoleApp.Models;
-using HealthApp.ConsoleApp.Exceptions;
+using HealthApp.ConsoleApp.Interfaces;
 
 namespace HealthApp.ConsoleApp.Services
 {
     public class AppointmentService : IAppointmentService
     {
         private readonly IAppointmentRepository _appointmentRepository;
+
         private int _appointmentIdCounter = 1;
 
+        //  Constructor Injection
         public AppointmentService(IAppointmentRepository appointmentRepository)
         {
             _appointmentRepository = appointmentRepository;
         }
 
+        //  BOOK APPOINTMENT
         public Appointment BookAppointment(Patient patient, Doctor doctor, DateTime date, string slot)
         {
-            if (patient == null || doctor == null)
-                throw new ArgumentException("Patient and Doctor details are required.");
-
-            if (date < DateTime.Today)
+            if (date < DateTime.Now)
+            {
                 throw new PastDateException("Cannot book appointment in the past.");
+            }
 
-            if (string.IsNullOrWhiteSpace(slot))
-                throw new ArgumentException("Time slot cannot be empty.");
-
-            var availability = doctor.IsAvailable(date);
-            if (availability != "Doctor is available.")
-                throw new DoctorUnavailableException(availability);
+            if (doctor.IsAvailable(date) == false)
+            {
+                throw new DoctorUnavailableException("Doctor is not available on selected date.");
+            }
 
             var appointments = _appointmentRepository.GetAllAppointments();
 
             bool isSlotTaken = appointments.Any(a =>
-                a.Doctor != null &&
-                a.Doctor.Id == doctor.Id &&
+                a.Doctor.DoctorId == doctor.DoctorId &&
                 a.ScheduledDate.Date == date.Date &&
                 a.TimeSlot == slot &&
                 a.Status != AppointmentStatus.Cancelled);
 
             if (isSlotTaken)
+            {
                 throw new AppointmentConflictException("Selected time slot is already booked.");
+            }
 
             var appointment = new Appointment
             {
-                Id = _appointmentIdCounter++,
+                AppointmentId = _appointmentIdCounter++,
                 Patient = patient,
                 Doctor = doctor,
                 ScheduledDate = date,
                 TimeSlot = slot,
-                Status = AppointmentStatus.Pending
+                Status = AppointmentStatus.Confirmed
             };
 
             _appointmentRepository.AddAppointment(appointment);
@@ -59,38 +62,40 @@ namespace HealthApp.ConsoleApp.Services
             return appointment;
         }
 
+        //  CANCEL APPOINTMENT
         public void CancelAppointment(int appointmentId, string reason)
         {
-            if (string.IsNullOrWhiteSpace(reason))
-                throw new ArgumentException("Cancellation reason is required.");
+            var appointment = _appointmentRepository.GetAppointmentById(appointmentId);
 
-            _appointmentRepository.CancelAppointment(appointmentId, reason);
+            if (appointment != null)
+            {
+                appointment.CancellationReason = reason;
+                _appointmentRepository.UpdateAppointment(appointment);
+            }
         }
 
+        //  GET BY PATIENT
         public List<Appointment> GetAppointmentsByPatient(int patientId)
         {
-            if (patientId <= 0)
-                throw new ArgumentException("Invalid patient ID.");
-
             return _appointmentRepository.GetAppointmentsByPatient(patientId);
         }
 
+        //  GET BY DOCTOR
         public List<Appointment> GetAppointmentsByDoctor(int doctorId)
         {
-            if (doctorId <= 0)
-                throw new ArgumentException("Invalid doctor ID.");
-
             return _appointmentRepository.GetAppointmentsByDoctor(doctorId);
         }
-
         public Appointment GetAppointmentById(int appointmentId)
         {
-            if (appointmentId <= 0)
-                throw new ArgumentException("Invalid appointment ID.");
-
-            return _appointmentRepository.GetAppointmentById(appointmentId);
+            var appointment = _appointmentRepository.GetAppointmentById(appointmentId);
+            if (appointment == null)
+            {
+                throw new AppointmentNotFoundException($"Appointment with ID {appointmentId} not found.");
+            }
+            return appointment;
         }
 
+        //  GET UPCOMING
         public List<Appointment> GetUpcomingAppointments()
         {
             return _appointmentRepository
@@ -100,5 +105,16 @@ namespace HealthApp.ConsoleApp.Services
                 .OrderBy(a => a.ScheduledDate)
                 .ToList();
         }
+
+        public bool IsAppointmentCompleted(int appointmentId)
+        {
+            var appointment = _appointmentRepository.GetAppointmentById(appointmentId);
+            if (appointment == null)
+            {
+                throw new AppointmentNotFoundException($"Appointment with ID {appointmentId} not found.");
+            }
+            return appointment.Status == AppointmentStatus.Completed;
+        }
     }
+
 }

@@ -1,64 +1,64 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using HealthApp.ConsoleApp.Models;
 
 namespace HealthApp.ConsoleApp.Models
 {
     public class Doctor
     {
-        public int Id { get; set; }
+        public int DoctorId { get; set; }
         public string FullName { get; set; } = "";
         public string Specialisation { get; set; } = "";
         public int YearsOfExperience { get; set; }
         public decimal ConsultationFee { get; set; }
         public bool IsActive { get; set; }
+        public List<string> AvailableSlots { get; set; } = new List<string>();
 
-        public List<DateTime> Appointments { get; set; } = new List<DateTime>();
+        public List<DateTime> AvailableDates { get; set; } = new List<DateTime>();
 
         //Availability method
-        public string IsAvailable(DateTime date)
+        public bool IsAvailable(DateTime date)
         {
             if (!IsActive)
             {
-                return "Doctor is not available";
+                return false;
             }
 
-            int count = Appointments.Count(a => a.Date == date.Date);
+            int count = AvailableDates.Count(d => d.Date == date.Date);
 
             if (count >= 5)
             {
-                return "Appointment limit reached, doctor is not available";
+                return false;
             }
 
-            return "Doctor is available today";
+            return true;
         }
 
         //Upcoming count
         public string GetScheduleSummary()
         {
-            int count = Appointments.Count(a => a.Date >= DateTime.Today);
+            int count = AvailableDates.Count(d => d.Date >= DateTime.Today);
 
             if (count == 0)
             {
-                return "No upcoming appointments";
+                return "No available slots";
             }
 
-            return $"Upcoming appointments count: {count}";
+            return $"Available slots  count: {count}";
         }
 
         //Upcoming list
         public List<DateTime> GetUpcomingAppointments()
         {
-            return Appointments
-                .Where(a => a.Date >= DateTime.Today)
-                .OrderBy(a => a)
+            return AvailableDates
+                .Where(d => d.Date >= DateTime.Today)
+                .OrderBy(d => d)
                 .ToList();
         }
 
         public string GetDoctorDetails()
         {
-            return $"Doctor ID: {Id}, Full Name: {FullName}, Specialisation: {Specialisation}, Experience: {YearsOfExperience} years, Consultation Fee: Rs. {ConsultationFee}, Active: {(IsActive ? "Yes" : "No")}";
+            return $"Doctor ID: {DoctorId}, Full Name: {FullName}, Specialisation: {Specialisation}, Experience: {YearsOfExperience} years, Consultation Fee: Rs. {ConsultationFee}, Active: {(IsActive ? "Yes" : "No")}";
         }
     }
 }

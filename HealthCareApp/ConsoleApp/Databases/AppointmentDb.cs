@@ -1,24 +1,63 @@
-﻿using HealthApp.ConsoleApp.Models;
-namespace HealthApp.ConsoleApp.Databases
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using HealthApp.ConsoleApp.Models;
 
+namespace HealthApp.ConsoleApp.Databases
 {
     public class AppointmentDb
     {
+        private readonly DoctorDb _doctorDb;
+        private readonly PatientDb _patientDb;
 
-        public List<Appointment> appointments = new List<Appointment>
-    {
+        public List<Appointment> appointments;   // ✅ DECLARE HERE
 
-        new Appointment{Id = 1, Patient = new Patient{Id = 1, Name = "John Doe"}, Doctor = new Doctor{Id = 1, FullName = "Dr. Smith"}, ScheduledDate = DateTime.Now.AddDays(1), TimeSlot = "10:00 AM", Status = AppointmentStatus.Confirmed},
+        // ✅ SINGLE constructor (DI version)
+        public AppointmentDb(DoctorDb doctorDb, PatientDb patientDb)
+        {
+            _doctorDb = doctorDb;
+            _patientDb = patientDb;
 
-        new Appointment{Id = 2, Patient = new Patient{Id = 2, Name = "Jane Doe"}, Doctor = new Doctor{Id = 2, FullName = "Dr. Brown"}, ScheduledDate = DateTime.Now.AddDays(2), TimeSlot = "11:00 AM", Status = AppointmentStatus.Pending},
+            appointments = new List<Appointment>
+            {
+                new Appointment
+                {
+                    AppointmentId = 301,
 
-        new Appointment{Id = 3, Patient = new Patient{Id = 3, Name = "Alice Smith"}, Doctor = new Doctor{Id = 1, FullName = "Dr. Smith"}, ScheduledDate = DateTime.Now.AddDays(3), TimeSlot = "02:00 PM", Status = AppointmentStatus.Cancelled, CancellationReason = "Patient requested cancellation"},
+                    Patient = _patientDb.Patients
+                        .FirstOrDefault(p => p.PatientId == 101),
 
-        new Appointment{Id = 4, Patient = new Patient{Id = 4, Name = "Bob Johnson"}, Doctor = new Doctor{Id = 3, FullName = "Dr. Green"}, ScheduledDate = DateTime.Now.AddDays(4), TimeSlot = "03:00 PM", Status = AppointmentStatus.Completed}
+                    Doctor = new Doctor
+                    {
+                        DoctorId = 201,
+                        FullName = "Dr. John Smith",
+                        Specialisation = "Cardiology"
+                    },
 
-    };
+                    ScheduledDate = DateTime.Today.AddDays(1),
+                    TimeSlot = "10:00 AM",
+                    Status = AppointmentStatus.Confirmed
+                },
 
+                new Appointment
+                {
+                    AppointmentId = 302,
 
+                    Patient = _patientDb.Patients
+                        .FirstOrDefault(p => p.PatientId == 102),
+
+                    Doctor = new Doctor
+                    {
+                        DoctorId = 202,
+                        FullName = "Dr. Emily Davis",
+                        Specialisation = "Dermatology"
+                    },
+
+                    ScheduledDate = DateTime.Today.AddDays(2),
+                    TimeSlot = "12:00 PM",
+                    Status = AppointmentStatus.Confirmed   // ✅ changed from Pending
+                }
+            };
+        }
     }
-
 }

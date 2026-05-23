@@ -16,7 +16,7 @@ namespace HealthApp.ConsoleApp
 
                 .AddSingleton<PatientDb>()
                 .AddSingleton<DoctorDb>()
-                .AddSingleton<HealthRecordDB>()
+                .AddSingleton<HealthRecordDb>()
                 .AddSingleton<AppointmentDb>()
 
                 .AddScoped<IPatientRepository, PatientRepository>()
@@ -49,8 +49,8 @@ namespace HealthApp.ConsoleApp
                 Console.WriteLine("=================================");
                 Console.WriteLine("1. Patient Menu");
                 Console.WriteLine("2. Doctor Menu");
-                Console.WriteLine("3. Health Record Menu");
-                Console.WriteLine("4. Appointment Menu");
+                Console.WriteLine("3. Appointment Menu");
+                Console.WriteLine("4. HealthRecord Menu");
                 Console.WriteLine("5. Exit");
                 Console.WriteLine("=================================");
 
@@ -66,7 +66,7 @@ namespace HealthApp.ConsoleApp
                 switch (choice)
                 {
                     case 1:
-                        serviceProvider.GetRequiredService<PatientMenu>().Show();
+                        serviceProvider.GetRequiredService<PatientMenu>().PatientRegisteration();
                         break;
 
                     case 2:
@@ -74,11 +74,11 @@ namespace HealthApp.ConsoleApp
                         break;
 
                     case 3:
-                        serviceProvider.GetRequiredService<HealthRecordMenu>().Show();
+                        serviceProvider.GetRequiredService<AppointmentMenu>().Show();
                         break;
 
                     case 4:
-                        serviceProvider.GetRequiredService<AppointmentMenu>().Show();
+                        serviceProvider.GetRequiredService<HealthRecordMenu>().ShowMenu();
                         break;
 
                     case 5:

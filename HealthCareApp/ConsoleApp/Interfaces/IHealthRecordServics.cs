@@ -4,11 +4,11 @@ namespace HealthApp.ConsoleApp.Interfaces
 {
     public interface IHealthRecordService
     {
-        string AddRecord(HealthRecord record);
-        string Update(HealthRecord record);
-        string Delete(int recordId);
-        HealthRecord GetByRecordId(int recordId);
+        string AddHealthRecord(HealthRecord record);
+        HealthRecord UpdateHealthRecord(HealthRecord record);
+        HealthRecord? GetRecordById(int recordId);
         List<HealthRecord> GetByPatientIdOrderByVisitDateDesc(int id);
         List<HealthRecord> GetByDoctorIdOrderByVisitDateDesc(int id);
+        List<HealthRecord> GetAllRecords();
     }
 }

@@ -2,219 +2,433 @@
 using HealthApp.ConsoleApp.Helpers;
 using HealthApp.ConsoleApp.Interfaces;
 using HealthApp.ConsoleApp.Models;
+using HealthApp.ConsoleApp.Services;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.Metrics;
 using System.Linq;
 
 namespace HealthApp.ConsoleApp.Menus
 {
     public class DoctorMenu
     {
-        private IDoctorService doctorService;
+        private readonly IDoctorService _doctorService;
+        private readonly IAppointmentService _appointmentService;
 
-        public DoctorMenu(IDoctorService doctorService)
+        public DoctorMenu(IDoctorService doctorService, IAppointmentService appointmentService)
         {
-            this.doctorService = doctorService;
+            _doctorService = doctorService;
+            _appointmentService = appointmentService;
         }
 
-        public void ShowMenu()
+        // ADD DOCTOR
+        public void AddDoctor()
         {
-            int choice;
+            PrintHeader("Add New Doctor");
 
-            do
+            //FULL NAME
+            string fullName;
+            while (!InputValidator.TryReadName("Full name            : ", out fullName)) { }
+
+            //SPECIALISATION
+            string spec;
+            while (!InputValidator.TryReadName("Specialisation       : ", out spec)) { }
+
+            //EXPERIENCE
+            int years;
+            while (!InputValidator.TryReadPositiveInt("Years of experience  : ", out years))
             {
-                Console.WriteLine("\n===== DOCTOR MENU =====");
-                Console.WriteLine("1. Add Doctor");
-                Console.WriteLine("2. View All Doctors");
-                Console.WriteLine("3. Search Doctor By Specialisation");
-                Console.WriteLine("4. Get Doctor By ID");
-                Console.WriteLine("5. Exit");
-
-                Console.Write("Enter choice: ");
-                while (!int.TryParse(Console.ReadLine(), out choice))
-                {
-                    Console.Write("Invalid choice. Enter again: ");
-                }
-
-                switch (choice)
-                {
-                    case 1:
-                        AddDoctor();
-                        break;
-
-                    case 2:
-                        ViewDoctors();
-                        break;
-
-                    case 3:
-                        SearchDoctorBySpecialisation();
-                        break;
-
-                    case 4:
-                        GetDoctorById();
-                        break;
-
-                    case 5:
-                        Console.WriteLine("Exiting...");
-                        break;
-
-                    default:
-                        Console.WriteLine("Invalid Choice");
-                        break;
-                }
-
-            } while (choice != 5);
-        }
-
-        private void AddDoctor()
-        {
-            try
-            {
-                if (!InputValidator.TryReadPositiveInt("Enter Doctor ID: ", out int id))
-                    return;
-
-                if (!InputValidator.TryReadDoctorName("Enter Full Name: ", out string name))
-                    return;
-
-                if (!InputValidator.TryReadSpecialisation("Enter Specialisation: ", out string spec))
-                    return;
-
-                if (!InputValidator.TryReadExperience("Enter Years of Experience: ", out int exp))
-                    return;
-
-                if (!InputValidator.TryReadConsultationFee("Enter Consultation Fee: ", out decimal fee))
-                    return;
-
-                if (!InputValidator.TryReadIsActive("Is Active (yes/no): ", out bool isActive))
-                    return;
-
-                Doctor doctor = new Doctor
-                {
-                    Id = id,
-                    FullName = name,
-                    Specialisation = spec,
-                    YearsOfExperience = exp,
-                    ConsultationFee = fee,
-                    IsActive = isActive
-                };
-
-                doctorService.AddDoctor(doctor);
-
-                Console.WriteLine("✅ Doctor Added Successfully");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-        }
-
-
-        private void ViewDoctors()
-        {
-            var doctors = doctorService.GetAllDoctors();
-
-            if (doctors.Count == 0)
-            {
-                Console.WriteLine("No Doctors Found");
-                return;
+                Console.WriteLine("Invalid number.");
             }
 
-            Console.WriteLine("\n=== Doctor List ===\n");
-
-            foreach (var doctor in doctors)
+            //FEE
+            decimal fee;
+            while (!InputValidator.TryReadDecimal("Consultation fee (Rs.) : ", out fee))
             {
-                Console.WriteLine(doctor.GetDoctorDetails());
-                Console.WriteLine(doctor.IsAvailable(DateTime.Today));
+                Console.WriteLine("Invalid fee.");
+            }
 
-                if (!doctor.IsActive)
+            //LEAVE INPUT
+            Console.WriteLine("\nDoctor is available EVERYDAY for next 30 days.");
+            Console.WriteLine("Enter leave dates (dd/MM/yyyy). Type 'done'");
+
+            List<DateTime> leaveDates = new();
+            DateTime startDate = DateTime.Today;
+            DateTime endDate = DateTime.Today.AddDays(30);
+
+            while (true)
+            {
+                Console.Write("\nEnter leave date (or 'done'): ");
+                string input = Console.ReadLine()?.Trim() ?? "";
+
+                if (input.Equals("done", StringComparison.OrdinalIgnoreCase))
+                    break;
+
+                if (!DateTime.TryParseExact(input, "dd/MM/yyyy",
+                    System.Globalization.CultureInfo.InvariantCulture,
+                    System.Globalization.DateTimeStyles.None,
+                    out DateTime date))
                 {
-                    Console.WriteLine("-----------------------------------");
+                    Console.WriteLine("Invalid format.");
                     continue;
                 }
 
-                Console.WriteLine(doctor.GetScheduleSummary());
-
-                var upcoming = doctor.GetUpcomingAppointments();
-
-                if (upcoming.Count > 0)
+                if (date < startDate || date > endDate)
                 {
-                    Console.WriteLine("Dates are:");
-                    foreach (var date in upcoming)
-                    {
-                        Console.WriteLine(date.ToString("yyyy-MM-dd"));
-                    }
+                    Console.WriteLine("Only next 30 days allowed.");
+                    continue;
                 }
 
-                Console.WriteLine("-----------------------------------");
+                if (leaveDates.Contains(date))
+                {
+                    Console.WriteLine("Already added.");
+                    continue;
+                }
+
+                leaveDates.Add(date);
+                Console.WriteLine($"✅ Leave added: {date:dd/MM/yyyy}");
             }
+
+            //GENERATE AVAILABLE DATES
+            List<DateTime> availableDates = new();
+            for (DateTime d = startDate; d <= endDate; d = d.AddDays(1))
+            {
+                if (!leaveDates.Contains(d))
+                    availableDates.Add(d);
+            }
+
+            //SLOT SELECTION (VALIDATION FIXED)
+            var allSlots = new SlotHelper().AvailableSlots;
+            List<string> defaultSlots = new();
+
+            while (true)
+            {
+                Console.WriteLine("\nAvailable Slots:");
+
+                for (int i = 0; i < allSlots.Count; i++)
+                {
+                    Console.WriteLine($"{i + 1}. {allSlots[i]}");
+                }
+
+                Console.Write("Select slots (example: 1,3,5): ");
+                string input = Console.ReadLine();
+
+                if (string.IsNullOrWhiteSpace(input))
+                {
+                    Console.WriteLine("❌ Select at least one slot.");
+                    continue;
+                }
+
+                string[] choices = input.Split(',');
+                List<string> tempSlots = new();
+                bool isValid = true;
+
+                foreach (var c in choices)
+                {
+                    if (!int.TryParse(c.Trim(), out int index))
+                    {
+                        Console.WriteLine($"❌ Invalid input: {c}");
+                        isValid = false;
+                        break;
+                    }
+
+                    if (index < 1 || index > allSlots.Count)
+                    {
+                        Console.WriteLine($"❌ Only {allSlots.Count} slots available.");
+                        isValid = false;
+                        break;
+                    }
+
+                    string slot = allSlots[index - 1];
+
+                    if (!tempSlots.Contains(slot))
+                        tempSlots.Add(slot);
+                }
+
+                if (!isValid)
+                    continue;
+
+                defaultSlots = tempSlots;
+                break;
+            }
+
+            //APPLY DEFAULT SLOTS
+            Dictionary<DateTime, List<string>> doctorSchedule = new();
+
+            foreach (var date in availableDates)
+            {
+                doctorSchedule[date] = new List<string>(defaultSlots);
+            }
+
+            //MODIFY FEATURE (FIXED)
+            string modifyChoice;
+
+            while (true)
+            {
+                Console.Write("\nModify slots for specific date? (Y/N): ");
+                modifyChoice = Console.ReadLine()?.Trim().ToUpper();
+
+                if (modifyChoice == "Y" || modifyChoice == "N")
+                    break;
+
+                Console.WriteLine("❌ Enter Y or N.");
+            }
+
+            while (modifyChoice == "Y")
+            {
+                Console.Write("\nEnter date to modify (dd/MM/yyyy): ");
+                string input = Console.ReadLine();
+
+                if (!DateTime.TryParseExact(input, "dd/MM/yyyy",
+                    System.Globalization.CultureInfo.InvariantCulture,
+                    System.Globalization.DateTimeStyles.None,
+                    out DateTime modifyDate))
+                {
+                    Console.WriteLine("Invalid date.");
+                    continue;
+                }
+
+                if (!doctorSchedule.ContainsKey(modifyDate))
+                {
+                    Console.WriteLine("Date not available.");
+                    continue;
+                }
+
+                Console.WriteLine($"\nCurrent slots: {string.Join(", ", doctorSchedule[modifyDate])}");
+
+                Console.WriteLine("\nAvailable Slots:");
+                for (int i = 0; i < allSlots.Count; i++)
+                {
+                    Console.WriteLine($"{i + 1}. {allSlots[i]}");
+                }
+
+                Console.Write("Enter new slots (or 'none' to mark leave): ");
+                string slotInput = Console.ReadLine();
+
+                if (slotInput.ToLower() == "none")
+                {
+                    doctorSchedule.Remove(modifyDate);
+                    Console.WriteLine("✅ Marked as leave.");
+                }
+                else
+                {
+                    string[] choices = slotInput.Split(',');
+                    List<string> updatedSlots = new();
+                    bool isValid = true;
+
+                    foreach (var c in choices)
+                    {
+                        if (!int.TryParse(c.Trim(), out int index) ||
+                            index < 1 || index > allSlots.Count)
+                        {
+                            Console.WriteLine($"❌ Invalid choice: {c}");
+                            isValid = false;
+                            break;
+                        }
+
+                        string slot = allSlots[index - 1];
+
+                        if (!updatedSlots.Contains(slot))
+                            updatedSlots.Add(slot);
+                    }
+
+                    if (!isValid || updatedSlots.Count == 0)
+                    {
+                        Console.WriteLine("❌ Try again.");
+                        continue;
+                    }
+
+                    doctorSchedule[modifyDate] = updatedSlots;
+                    Console.WriteLine($"✅ Updated: {string.Join(", ", updatedSlots)}");
+                }
+
+                Console.Write("Modify another date? (Y/N): ");
+                modifyChoice = Console.ReadLine()?.Trim().ToUpper();
+            }
+
+            //FINAL SCHEDULE PRINT
+            Console.WriteLine("\n========== FINAL DOCTOR SCHEDULE ==========");
+
+            foreach (var entry in doctorSchedule)
+            {
+                Console.WriteLine($"{entry.Key:dd/MM/yyyy} → {string.Join(", ", entry.Value)}");
+            }
+
+            Console.WriteLine("===========================================");
+
+            //CREATE DOCTOR
+            var doctor = new Doctor
+            {
+                FullName = fullName,
+                Specialisation = spec,
+                YearsOfExperience = years,
+                ConsultationFee = fee,
+                IsActive = true,
+                AvailableDates = doctorSchedule.Keys.ToList(),
+                AvailableSlots = doctorSchedule
+                    .SelectMany(d => d.Value)
+                    .Distinct()
+                    .ToList()
+            };
+
+            _doctorService.AddDoctor(doctor);
+
+            Console.WriteLine();
+            PrintSuccess("Doctor added successfully!");
+
+            InputValidator.Pause();
         }
 
-        private void SearchDoctorBySpecialisation()
+
+        //SEARCH
+        public void SearchBySpecialisation()
         {
-            Console.Write("Enter Specialisation: ");
-            string specialisation = Console.ReadLine() ?? "";
+            PrintHeader("Search Doctors by Specialisation");
+
+            if (!InputValidator.TryReadName("Specialisation: ", out string query))
+            {
+                InputValidator.Pause();
+                return;
+            }
 
             try
             {
-                var doctors = doctorService.SearchBySpecialisation(specialisation);
 
-                Console.WriteLine("\n=== Matching Doctors ===\n");
+                var results = _doctorService.SearchBySpecialisation(query);
 
-                foreach (var doctor in doctors)
+                foreach (var d in results)
                 {
-                    Console.WriteLine(doctor.GetDoctorDetails());
-                    Console.WriteLine(doctor.IsAvailable(DateTime.Today));
-                    Console.WriteLine(doctor.GetScheduleSummary());
+                    Console.WriteLine($"\n[{d.DoctorId}] {d.FullName} - {d.Specialisation}");
 
-                    var upcoming = doctor.GetUpcomingAppointments();
+                    // ✅ Fetch appointments for this doctor
+                    var appointments = _appointmentService.GetAppointmentsByDoctor(d.DoctorId);
 
-                    if (upcoming.Count > 0)
+                    if (appointments.Count == 0)
                     {
-                        Console.WriteLine("Dates are:");
-                        foreach (var date in upcoming)
-                        {
-                            Console.WriteLine(date.ToString("yyyy-MM-dd"));
-                        }
+                        Console.WriteLine("No available slots.");
+                        continue;
                     }
 
-                    Console.WriteLine("-----------------------------------");
+                    Console.WriteLine("Available Slots:");
+
+                    foreach (var appt in appointments)
+                    {
+                        Console.WriteLine($"Date: {appt.ScheduledDate:dd-MM-yyyy} | Time: {appt.TimeSlot}");
+                    }
                 }
             }
             catch (SpecialisationNotFoundException ex)
             {
                 Console.WriteLine(ex.Message);
             }
+
+            InputValidator.Pause();
         }
 
-        private void GetDoctorById()
-        {
-            Console.Write("Enter Doctor ID: ");
-            int id = int.Parse(Console.ReadLine() ?? "0");
+        // GET BY ID
+        public void GetDoctorById()
+        { 
+            Console.WriteLine("----- Get Doctor By ID -----");
 
-            try
+            if (!InputValidator.TryReadPositiveInt("Enter Doctor ID: ", out int doctorId))
             {
-                var doctor = doctorService.GetDoctorById(id);
+                Console.WriteLine("Invalid input.");
+                InputValidator.Pause();
+                return;
+            }
 
-                Console.WriteLine(doctor.GetDoctorDetails());
-                Console.WriteLine(doctor.IsAvailable(DateTime.Today));
-                Console.WriteLine(doctor.GetScheduleSummary());
+            Doctor doctor = _doctorService.GetByDoctorId(doctorId);
 
-                var upcoming = doctor.GetUpcomingAppointments();
+            if (doctor == null)
+            {
+                Console.WriteLine("Doctor not found.");
+                InputValidator.Pause();
+                return;
+            }
 
-                if (upcoming.Count > 0)
+            Console.WriteLine("\nDoctor Details:");
+            Console.WriteLine("--------------------------------");
+            Console.WriteLine($"ID             : {doctor.DoctorId}");
+            Console.WriteLine($"Name           : {doctor.FullName}");
+            Console.WriteLine($"Specialisation : {doctor.Specialisation}");
+            Console.WriteLine($"Experience     : {doctor.YearsOfExperience} years");
+            Console.WriteLine($"Consultation   : Rs.{doctor.ConsultationFee}");
+            Console.WriteLine($"Active         : {(doctor.IsActive ? "Yes" : "No")}");
+            Console.WriteLine("--------------------------------");
+
+            InputValidator.Pause();
+        }
+        public void ViewAllDoctors()
+        {
+            Console.WriteLine("----- ALL DOCTORS -----\n");
+
+            var doctors = _doctorService.GetAllDoctors();
+
+            if (doctors == null || doctors.Count == 0)
+            {
+                Console.WriteLine("No doctors available.");
+                InputValidator.Pause();
+                return;
+            }
+
+            foreach (var doctor in doctors)
+            {
+                Console.WriteLine("------------------------------------");
+                Console.WriteLine($"ID             : {doctor.DoctorId}");
+                Console.WriteLine($"Name           : {doctor.FullName}");
+                Console.WriteLine($"Specialisation : {doctor.Specialisation}");
+                Console.WriteLine($"Experience     : {doctor.YearsOfExperience} years");
+                Console.WriteLine($"Fee            : Rs.{doctor.ConsultationFee}");
+                Console.WriteLine($"Active         : {(doctor.IsActive ? "Yes" : "No")}");
+            }
+
+            Console.WriteLine("------------------------------------");
+
+            InputValidator.Pause();
+        }
+
+        // MENU
+        public void ShowMenu()
+        {
+            while (true)
+            {
+                Console.Clear();
+                Console.WriteLine("=================================");
+                Console.WriteLine("DOCTOR MENU");
+                Console.WriteLine("=================================");
+                Console.WriteLine("1. Add Doctor");
+                Console.WriteLine("2. Search by Specialisation");
+                Console.WriteLine("3. Get Doctor By ID");
+                Console.WriteLine("4. View All Doctors");
+                Console.WriteLine("5. Back");
+
+                Console.Write("Enter choice: ");
+                string choice = Console.ReadLine();
+
+                switch (choice)
                 {
-                    Console.WriteLine("Dates are:");
-                    foreach (var date in upcoming)
-                    {
-                        Console.WriteLine(date.ToString("yyyy-MM-dd"));
-                    }
+                    case "1": AddDoctor(); break;
+                    case "2": SearchBySpecialisation(); break;
+                    case "3": GetDoctorById(); break;
+                    case "4": ViewAllDoctors(); break;
+                    case "5": return;
+                    default:
+                        Console.WriteLine("Invalid choice.");
+                        InputValidator.Pause();
+                        break;
                 }
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
+        }
+
+        private static void PrintHeader(string title)
+        {
+            Console.WriteLine($"\n--- {title} ---\n");
+        }
+
+        private static void PrintSuccess(string msg)
+        {
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine(msg);
+            Console.ResetColor();
         }
     }
 }

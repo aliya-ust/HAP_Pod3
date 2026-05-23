@@ -18,11 +18,12 @@ namespace HealthApp.ConsoleApp.Services
         public void AddDoctor(Doctor doctor)
         {
             List<Doctor> doctors = doctorRepository.GetAllDoctors();
+            doctor.DoctorId = doctors.Count > 0 ? doctors.Max(d => d.DoctorId) + 1 : 1;
 
             // Check duplicate ID
             foreach (var d in doctors)
             {
-                if (d.Id == doctor.Id)
+                if (d.DoctorId == doctor.DoctorId)
                 {
                     throw new DoctorAlreadyExistsException("Doctor ID already exists!");
                 }
@@ -49,19 +50,15 @@ namespace HealthApp.ConsoleApp.Services
 
             return doctors;
         }
-
-
-        public Doctor GetDoctorById(int id)
+        public Doctor GetByDoctorId(int id)
         {
-            var doctor = doctorRepository.GetDoctorById(id);
-
-            if (doctor == null)
-            {
-                throw new Exception("Doctor not found!");
-            }
-
-            return doctor;
+            var doctors = doctorRepository.GetAllDoctors();
+            return doctors.FirstOrDefault(d => d.DoctorId == id);
         }
 
+        public List<Doctor> ViewAllDoctors()
+        {
+            return doctorRepository.GetAllDoctors();
+        }
     }
 }
