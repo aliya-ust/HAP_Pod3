@@ -26,9 +26,7 @@ namespace HealthApp.ConsoleApp.Menus
                 Console.WriteLine("2. View Records");
                 Console.WriteLine("3. Get Summary");
                 Console.WriteLine("4. Update Record");
-                Console.WriteLine("5. Delete Record");
-                Console.WriteLine("6. Back");
-                Console.WriteLine("===================================");
+                Console.WriteLine("5. Back");
 
                 Console.Write("Enter choice: ");
 
@@ -44,19 +42,20 @@ namespace HealthApp.ConsoleApp.Menus
                     case 1:
                         Console.WriteLine(AddRecord());
                         break;
+
                     case 2:
                         ViewRecord();
                         break;
+
                     case 3:
                         Console.WriteLine(GetSummary());
                         break;
+
                     case 4:
                         Console.WriteLine(Update());
                         break;
+
                     case 5:
-                        Delete();
-                        break;
-                    case 6:
                         return;
                 }
 
@@ -97,20 +96,20 @@ namespace HealthApp.ConsoleApp.Menus
 
                 Console.Write("Enter Diagnosis: ");
                 string diagnosis = Console.ReadLine()?.Trim() ?? "";
-                if (string.IsNullOrWhiteSpace(diagnosis))
-                    return "Diagnosis cannot be empty";
+                if (!IsValidTextInput(diagnosis))
+                    return "Invalid diagnosis. Must contain letters.";
                 record.Diagnosis = diagnosis;
 
                 Console.Write("Enter Prescription: ");
                 string prescription = Console.ReadLine()?.Trim() ?? "";
-                if (string.IsNullOrWhiteSpace(prescription))
-                    return "Prescription cannot be empty";
+                if (!IsValidTextInput(prescription))
+                    return "Invalid prescription. Must contain letters.";
                 record.Prescription = prescription;
 
                 Console.Write("Enter Doctor Notes: ");
                 string notes = Console.ReadLine()?.Trim() ?? "";
-                if (string.IsNullOrWhiteSpace(notes))
-                    return "Doctor notes cannot be empty";
+                if (!IsValidTextInput(notes))
+                    return "Invalid doctor notes. Must contain letters.";
                 record.DoctorNotes = notes;
 
                 return _healthRecordService.AddRecord(record);
@@ -121,67 +120,65 @@ namespace HealthApp.ConsoleApp.Menus
             }
         }
 
-       public void ViewRecord()
-{
-    Console.WriteLine("1. By Patient Id");
-    Console.WriteLine("2. By Doctor Id");
-
-    string choice = Console.ReadLine();
-
-    try
-    {
-        if (choice == "1")
+        public void ViewRecord()
         {
-            Console.Write("Enter Patient Id: ");
-            if (!int.TryParse(Console.ReadLine(), out int patientId) || patientId <= 0)
+            Console.WriteLine("1. By Patient Id");
+            Console.WriteLine("2. By Doctor Id");
+
+            string choice = Console.ReadLine();
+
+            try
             {
-                Console.WriteLine("Invalid input");
-                return;
+                if (choice == "1")
+                {
+                    Console.Write("Enter Patient Id: ");
+                    if (!int.TryParse(Console.ReadLine(), out int patientId) || patientId <= 0)
+                    {
+                        Console.WriteLine("Invalid input");
+                        return;
+                    }
+
+                    var records = _healthRecordService.GetByPatientIdOrderByVisitDateDesc(patientId);
+
+                    if (records.Count == 0)
+                    {
+                        Console.WriteLine("No records found");
+                        return;
+                    }
+
+                    foreach (var r in records)
+                        Console.WriteLine(r);
+                }
+                else if (choice == "2")
+                {
+                    Console.Write("Enter Doctor Id: ");
+                    if (!int.TryParse(Console.ReadLine(), out int doctorId) || doctorId <= 0)
+                    {
+                        Console.WriteLine("Invalid input");
+                        return;
+                    }
+
+                    var records = _healthRecordService.GetByDoctorIdOrderByVisitDateDesc(doctorId);
+
+                    if (records.Count == 0)
+                    {
+                        Console.WriteLine("No records found");
+                        return;
+                    }
+
+                    foreach (var r in records)
+                        Console.WriteLine(r);
+                }
+                else
+                {
+                    Console.WriteLine("Invalid choice");
+                }
             }
-
-            var records = _healthRecordService
-                .GetByPatientIdOrderByVisitDateDesc(patientId);
-
-            if (records.Count == 0)
+            catch (Exception ex)
             {
-                Console.WriteLine("No records found");
-                return;
+                Console.WriteLine(ex.Message);
             }
-
-            foreach (var r in records)
-                Console.WriteLine(r);
         }
-        else if (choice == "2")
-        {
-            Console.Write("Enter Doctor Id: ");
-            if (!int.TryParse(Console.ReadLine(), out int doctorId) || doctorId <= 0)
-            {
-                Console.WriteLine("Invalid input");
-                return;
-            }
-
-            var records = _healthRecordService
-                .GetByDoctorIdOrderByVisitDateDesc(doctorId);
-
-            if (records.Count == 0)
-            {
-                Console.WriteLine("No records found");
-                return;
-            }
-
-            foreach (var r in records)
-                Console.WriteLine(r);
-        }
-        else
-        {
-            Console.WriteLine("Invalid choice");
-        }
-    }
-    catch (Exception ex)
-    {
-        Console.WriteLine(ex.Message);
-    }
-}
 
         public string GetSummary()
         {
@@ -191,19 +188,6 @@ namespace HealthApp.ConsoleApp.Menus
                 return "Invalid Record Id";
 
             return _healthRecordService.GetByRecordId(id).GetSummary();
-        }
-
-        public void Delete()
-        {
-            Console.Write("Enter Record Id: ");
-
-            if (!int.TryParse(Console.ReadLine(), out int id) || id <= 0)
-            {
-                Console.WriteLine("Invalid input");
-                return;
-            }
-
-            Console.WriteLine(_healthRecordService.Delete(id));
         }
 
         public string Update()
@@ -220,7 +204,8 @@ namespace HealthApp.ConsoleApp.Menus
                 {
                     RecordId = id,
                     Patient = new Patient(),
-                    Doctor = new Doctor()
+                    Doctor = new Doctor(),
+                    VisitDate = existing.VisitDate
                 };
 
                 Console.Write("New Patient Id: ");
@@ -233,19 +218,32 @@ namespace HealthApp.ConsoleApp.Menus
                     did = existing.Doctor.DoctorId;
                 record.Doctor.DoctorId = did;
 
-                record.VisitDate = existing.VisitDate;
-
                 Console.Write("New Diagnosis: ");
                 string diagnosis = Console.ReadLine();
-                record.Diagnosis = string.IsNullOrWhiteSpace(diagnosis) ? existing.Diagnosis : diagnosis;
+                if (string.IsNullOrWhiteSpace(diagnosis))
+                    record.Diagnosis = existing.Diagnosis;
+                else if (IsValidTextInput(diagnosis))
+                    record.Diagnosis = diagnosis;
+                else
+                    return "Invalid diagnosis input";
 
                 Console.Write("New Prescription: ");
                 string prescription = Console.ReadLine();
-                record.Prescription = string.IsNullOrWhiteSpace(prescription) ? existing.Prescription : prescription;
+                if (string.IsNullOrWhiteSpace(prescription))
+                    record.Prescription = existing.Prescription;
+                else if (IsValidTextInput(prescription))
+                    record.Prescription = prescription;
+                else
+                    return "Invalid prescription input";
 
                 Console.Write("New Doctor Notes: ");
                 string notes = Console.ReadLine();
-                record.DoctorNotes = string.IsNullOrWhiteSpace(notes) ? existing.DoctorNotes : notes;
+                if (string.IsNullOrWhiteSpace(notes))
+                    record.DoctorNotes = existing.DoctorNotes;
+                else if (IsValidTextInput(notes))
+                    record.DoctorNotes = notes;
+                else
+                    return "Invalid doctor notes input";
 
                 return _healthRecordService.Update(record);
             }
@@ -260,11 +258,10 @@ namespace HealthApp.ConsoleApp.Menus
             result = default;
             error = "";
 
-            if (!DateTime.TryParseExact(input, "dd-MM-yyyy",
-                CultureInfo.InvariantCulture,
+            if (!DateTime.TryParseExact(input, "dd-MM-yyyy", CultureInfo.InvariantCulture,
                 DateTimeStyles.None, out DateTime parsed))
             {
-                error = "Invalid date format (dd-MM-yyyy required)";
+                error = "Invalid date format";
                 return false;
             }
 
@@ -276,6 +273,20 @@ namespace HealthApp.ConsoleApp.Menus
 
             result = parsed;
             return true;
+        }
+
+        private bool IsValidTextInput(string value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+                return false;
+
+            foreach (char c in value)
+            {
+                if (char.IsLetter(c))
+                    return true;
+            }
+
+            return false;
         }
     }
 }

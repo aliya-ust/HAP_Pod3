@@ -6,7 +6,6 @@ namespace HealthApp.ConsoleApp.Interfaces
     {
         string AddRecord(HealthRecord record);
         string Update(HealthRecord record);
-        string Delete(int recordId);
         HealthRecord GetByRecordId(int recordId);
         List<HealthRecord> GetByPatientIdOrderByVisitDateDesc(int id);
         List<HealthRecord> GetByDoctorIdOrderByVisitDateDesc(int id);
