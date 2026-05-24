@@ -1,7 +1,5 @@
 ﻿using HealthApp.ConsoleApp.Models;
-using HealthApp.ConsoleApp.Services;
 using HealthApp.ConsoleApp.Interfaces;
-using System;
 using System.Globalization;
 using HealthApp.ConsoleApp.Exceptions;
 
@@ -30,7 +28,7 @@ namespace HealthApp.ConsoleApp.Menus
 
                 Appointment? appointment = null;
 
-                // ✅ Appointment Input Loop
+                //Appointment Input Loop
                 while (true)
                 {
                     Console.Write("Enter Appointment ID (or 'q' to quit): ");
@@ -49,8 +47,18 @@ namespace HealthApp.ConsoleApp.Menus
                         try
                         {
                             appointment = _appointmentService.GetAppointmentById(appointmentId);
-                            appointment.Complete();   // ✅ mark as completed
-                            break;   // ✅ exit loop after success
+
+                            if (appointment is not null)
+                            {
+                                appointment.Complete();   
+                                break;
+                            }
+                            else
+                            {
+                                Console.WriteLine("Appointment not found.");
+                                continue;
+                            }
+
                         }
                         catch (AppointmentNotFoundException ex)
                         {
@@ -63,7 +71,7 @@ namespace HealthApp.ConsoleApp.Menus
                     }
                 }
 
-                // ✅ Diagnosis Input
+                // Diagnosis Input
                 while (true)
                 {
                     Console.Write("Enter Diagnosis (or 'q' to quit): ");
@@ -86,7 +94,7 @@ namespace HealthApp.ConsoleApp.Menus
                     Console.WriteLine("Diagnosis cannot be empty.\n");
                 }
 
-                // ✅ Prescription Input
+                // Prescription Input
                 while (true)
                 {
                     Console.Write("Enter Prescription (or 'q' to quit): ");
@@ -109,7 +117,7 @@ namespace HealthApp.ConsoleApp.Menus
                     Console.WriteLine("Prescription cannot be empty.\n");
                 }
 
-                // ✅ Doctor Notes Input
+                //Doctor Notes Input
                 while (true)
                 {
                     Console.Write("Enter Doctor Notes (or 'q' to quit): ");
@@ -131,16 +139,21 @@ namespace HealthApp.ConsoleApp.Menus
 
                     Console.WriteLine("Doctor Notes cannot be empty.\n");
                 }
+                // NULL CHECK FIRST
+                if (appointment == null)
+                {
+                    return "Invalid appointment";
+                }
 
-                // ✅ Create HealthRecord
+                // THEN create object
                 var record = new HealthRecord
                 {
-                    Patient = appointment.Patient,
-                    Doctor = appointment.Doctor,
-                    VisitDate = appointment.ScheduledDate, // ✅ auto from appointment
-                    Diagnosis = diagnosis,
-                    Prescription = prescription,
-                    DoctorNotes = doctorNotes
+                    Patient = appointment.Patient ?? throw new Exception("Patient missing"),
+                    Doctor = appointment.Doctor ?? throw new Exception("Doctor missing"),
+                    VisitDate = appointment.ScheduledDate,
+                    Diagnosis = diagnosis ?? "",
+                    Prescription = prescription ?? "",
+                    DoctorNotes = doctorNotes ?? ""
                 };
 
                 return _healthRecordService.AddHealthRecord(record);
@@ -168,7 +181,7 @@ namespace HealthApp.ConsoleApp.Menus
         {
             Console.WriteLine("Invalid input.");
             Console.ReadKey();
-            continue;   // ✅ FIX
+            continue;   
         }
 
         switch (choice)
@@ -183,7 +196,7 @@ namespace HealthApp.ConsoleApp.Menus
                     {
                         Console.WriteLine("Invalid Patient Id.");
                         Console.ReadKey();
-                        continue;   // ✅ FIX
+                        continue;   
                     }
 
                     var records = _healthRecordService
@@ -222,7 +235,7 @@ namespace HealthApp.ConsoleApp.Menus
                     {
                         Console.WriteLine("Invalid Doctor Id.");
                         Console.ReadKey();
-                        continue;   // ✅ FIX
+                        continue;  
                     }
 
                     var records = _healthRecordService
@@ -261,7 +274,7 @@ namespace HealthApp.ConsoleApp.Menus
                     {
                         Console.WriteLine("Invalid Record Id.");
                         Console.ReadKey();
-                        continue;   // ✅ FIX
+                        continue;   
                     }
 
                     var record = _healthRecordService.GetRecordById(recordId);
@@ -280,13 +293,13 @@ namespace HealthApp.ConsoleApp.Menus
                         }
                         break;
 
-            case "4":
-                return;   // ✅ ONLY exit point
+            case "4": 
+                return;   
 
             default:
                 Console.WriteLine("Invalid choice.");
                 Console.ReadKey();
-                continue;   // ✅ FIX
+                continue;   
         }
     }
 }
@@ -467,7 +480,7 @@ public string UpdateHealthRecord()
                         break;
 
                     case "2":
-                        ViewRecord();   //opens submenu
+                        ViewRecord();   
                         break;
 
                     case "3":

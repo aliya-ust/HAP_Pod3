@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using HealthApp.ConsoleApp.Models;
+﻿using HealthApp.ConsoleApp.Models;
 
 namespace HealthApp.ConsoleApp.Databases
 {

@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using HealthApp.ConsoleApp.Interfaces;
+﻿using HealthApp.ConsoleApp.Interfaces;
 using HealthApp.ConsoleApp.Models;
 using HealthApp.ConsoleApp.Exceptions;
 
@@ -50,7 +48,7 @@ namespace HealthApp.ConsoleApp.Services
 
             return doctors;
         }
-        public Doctor GetByDoctorId(int id)
+        public Doctor? GetByDoctorId(int id)
         {
             var doctors = doctorRepository.GetAllDoctors();
             return doctors.FirstOrDefault(d => d.DoctorId == id);

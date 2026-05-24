@@ -1,6 +1,4 @@
-﻿using System;
-using HealthApp.ConsoleApp.Models;
-using System.Collections.Generic;
+﻿using HealthApp.ConsoleApp.Models;
 
 namespace HealthApp.ConsoleApp.Interfaces
 {
@@ -10,7 +8,7 @@ namespace HealthApp.ConsoleApp.Interfaces
         bool Update(Patient patient);
         List<Patient> GetAllPatients();
         string GetPatientProfileSummaryById(int patientId);
-        Patient GetPatientById(int id);
+        Patient? GetPatientById(int id);
 
     }
 }

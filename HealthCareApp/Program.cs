@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using HealthApp.ConsoleApp.Interfaces;
 using HealthApp.ConsoleApp.Repositories;
 using HealthApp.ConsoleApp.Services;

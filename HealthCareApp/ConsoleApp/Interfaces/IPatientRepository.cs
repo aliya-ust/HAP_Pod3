@@ -6,7 +6,7 @@ namespace HealthApp.ConsoleApp.Interfaces
     {
         bool Add(Patient patient);
         bool Update(Patient patient);
-        Patient GetById(int id);
+        Patient? GetById(int id);
         List<Patient> GetAll();
     }
 }

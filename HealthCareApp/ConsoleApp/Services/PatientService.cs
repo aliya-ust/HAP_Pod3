@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using HealthApp.ConsoleApp.Interfaces;
+﻿using HealthApp.ConsoleApp.Interfaces;
 using HealthApp.ConsoleApp.Models;
-using HealthApp.ConsoleApp.Repositories;
+
 
 
 namespace HealthApp.ConsoleApp.Services
@@ -47,7 +45,11 @@ namespace HealthApp.ConsoleApp.Services
 
         public Patient GetPatientById(int id)
         {
-            return patientRepo.GetById(id);
+            var patient = patientRepo.GetById(id);
+            if (patient == null)
+                throw new Exception("Patient not found");
+
+            return patient;
         }
     }
 }

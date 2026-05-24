@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using HealthApp.ConsoleApp.Exceptions;
+﻿
 using HealthApp.ConsoleApp.Helpers;
 using HealthApp.ConsoleApp.Interfaces;
 using HealthApp.ConsoleApp.Models;
@@ -27,7 +24,7 @@ namespace HealthApp.ConsoleApp.Menus
         }
 
         // ===============================
-        // ✅ MAIN MENU (NEW METHOD ADDED)
+        // MAIN MENU 
         // ===============================
         public void Show()
         {
@@ -44,7 +41,7 @@ namespace HealthApp.ConsoleApp.Menus
                 Console.WriteLine("========================================");
 
                 Console.Write("Enter choice: ");
-                string choice = Console.ReadLine();
+                string choice = Console.ReadLine() ?? "";
 
                 switch (choice)
                 {
@@ -246,8 +243,7 @@ namespace HealthApp.ConsoleApp.Menus
 
             try
             {
-                Appointment appt = _appointmentService
-                    .BookAppointment(patient, doctor, selectedDate, selectedSlot);
+                Appointment appt = _appointmentService.BookAppointment(patient, doctor, selectedDate, selectedSlot);
 
                 Console.WriteLine();
                 PrintSuccess("Appointment booked successfully!");
@@ -327,7 +323,7 @@ namespace HealthApp.ConsoleApp.Menus
             else if (action == "X")
             {
                 Console.Write("Reason: ");
-                string reason = Console.ReadLine();
+                string reason = Console.ReadLine() ?? "";
 
                 _appointmentService.CancelAppointment(id, reason);
                 PrintSuccess("Cancelled!");

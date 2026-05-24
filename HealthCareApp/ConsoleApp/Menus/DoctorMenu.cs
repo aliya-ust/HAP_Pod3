@@ -2,10 +2,6 @@
 using HealthApp.ConsoleApp.Helpers;
 using HealthApp.ConsoleApp.Interfaces;
 using HealthApp.ConsoleApp.Models;
-using HealthApp.ConsoleApp.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace HealthApp.ConsoleApp.Menus
 {
@@ -85,7 +81,7 @@ namespace HealthApp.ConsoleApp.Menus
                 }
 
                 leaveDates.Add(date);
-                Console.WriteLine($"✅ Leave added: {date:dd/MM/yyyy}");
+                Console.WriteLine($"Leave added: {date:dd/MM/yyyy}");
             }
 
             //GENERATE AVAILABLE DATES
@@ -300,20 +296,6 @@ namespace HealthApp.ConsoleApp.Menus
                     Console.WriteLine($"\n[{d.DoctorId}] {d.FullName} - {d.Specialisation}");
 
                     // ✅ Fetch appointments for this doctor
-                    var appointments = _appointmentService.GetAppointmentsByDoctor(d.DoctorId);
-
-                    if (appointments.Count == 0)
-                    {
-                        Console.WriteLine("No available slots.");
-                        continue;
-                    }
-
-                    Console.WriteLine("Available Slots:");
-
-                    foreach (var appt in appointments)
-                    {
-                        Console.WriteLine($"Date: {appt.ScheduledDate:dd-MM-yyyy} | Time: {appt.TimeSlot}");
-                    }
                 }
             }
             catch (SpecialisationNotFoundException ex)

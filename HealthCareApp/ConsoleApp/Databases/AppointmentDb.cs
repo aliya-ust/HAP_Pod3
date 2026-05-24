@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿
 using HealthApp.ConsoleApp.Models;
 
 namespace HealthApp.ConsoleApp.Databases
@@ -10,9 +8,9 @@ namespace HealthApp.ConsoleApp.Databases
         private readonly DoctorDb _doctorDb;
         private readonly PatientDb _patientDb;
 
-        public List<Appointment> appointments;   // ✅ DECLARE HERE
+        public List<Appointment> appointments;   //DECLARE HERE
 
-        // ✅ SINGLE constructor (DI version)
+        // SINGLE constructor (DI version)
         public AppointmentDb(DoctorDb doctorDb, PatientDb patientDb)
         {
             _doctorDb = doctorDb;
@@ -55,7 +53,7 @@ namespace HealthApp.ConsoleApp.Databases
 
                     ScheduledDate = DateTime.Today.AddDays(2),
                     TimeSlot = "12:00 PM",
-                    Status = AppointmentStatus.Confirmed   // ✅ changed from Pending
+                    Status = AppointmentStatus.Confirmed  
                 }
             };
         }

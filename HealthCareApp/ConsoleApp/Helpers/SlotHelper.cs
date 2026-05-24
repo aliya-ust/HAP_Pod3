@@ -37,9 +37,7 @@ namespace HealthApp.ConsoleApp.Helpers
                 InputValidator.Pause(); return "";
             }
 
-            // // Validate choice is in range
-            // if (choice < 1 || choice > AvailableSlots.Count)
-            //     throw new ArgumentException("Invalid slot choice.");
+            
 
             return AvailableSlots[slotChoice - 1]; // return the actual string
         }

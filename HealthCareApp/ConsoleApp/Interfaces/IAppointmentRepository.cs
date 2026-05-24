@@ -5,7 +5,7 @@ namespace HealthApp.ConsoleApp.Interfaces
     {
         void AddAppointment(Appointment appointment);
         List<Appointment> GetAllAppointments();
-        Appointment GetAppointmentById(int id);
+        Appointment? GetAppointmentById(int id);
         void UpdateAppointment(Appointment appointment);
         void DeleteAppointment(int id);
         List<Appointment> GetAppointmentsByDoctor(int doctorId);

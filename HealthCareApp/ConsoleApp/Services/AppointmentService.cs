@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using HealthApp.ConsoleApp.Exceptions;
-using HealthApp.ConsoleApp.Repositories;
+﻿using HealthApp.ConsoleApp.Exceptions;
 using HealthApp.ConsoleApp.Interfaces;
 using HealthApp.ConsoleApp.Models;
-using HealthApp.ConsoleApp.Interfaces;
 
 namespace HealthApp.ConsoleApp.Services
 {
@@ -37,6 +32,7 @@ namespace HealthApp.ConsoleApp.Services
             var appointments = _appointmentRepository.GetAllAppointments();
 
             bool isSlotTaken = appointments.Any(a =>
+                a.Doctor != null &&
                 a.Doctor.DoctorId == doctor.DoctorId &&
                 a.ScheduledDate.Date == date.Date &&
                 a.TimeSlot == slot &&

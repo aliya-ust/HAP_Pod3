@@ -1,8 +1,6 @@
 ﻿using HealthApp.ConsoleApp.Helpers;
 using HealthApp.ConsoleApp.Interfaces;
 using HealthApp.ConsoleApp.Models;
-using System;
-using System.Collections.Generic;
 
 namespace HealthApp.ConsoleApp.Menus
 {
@@ -15,7 +13,7 @@ namespace HealthApp.ConsoleApp.Menus
             _patientService = patientService;
         }
 
-        // ✅ MAIN MENU
+        // MAIN MENU
         public void PatientRegisteration()
         {
             while (true)
@@ -63,7 +61,7 @@ namespace HealthApp.ConsoleApp.Menus
             }
         }
 
-        // ✅ REGISTER
+        // REGISTER
         public void RegisterPatient()
         {
             //Console.Clear();
@@ -102,7 +100,7 @@ namespace HealthApp.ConsoleApp.Menus
             InputValidator.Pause();
         }
 
-        // ✅ VIEW ALL
+        // VIEW ALL
         public void ViewAllPatients()
         {
             Console.WriteLine("---- All Patients ----");
@@ -124,7 +122,7 @@ namespace HealthApp.ConsoleApp.Menus
             InputValidator.Pause();
         }
 
-        // ✅ GET BY ID
+        // GET BY ID
         public void GetPatientSummary()
         {
 
@@ -141,14 +139,14 @@ namespace HealthApp.ConsoleApp.Menus
             InputValidator.Pause();
         }
 
-        // ✅ UPDATE
+        //  UPDATE
         public void UpdatePatient()
         {
             Console.WriteLine("---- Update Patient ----");
 
-            Patient existing;
+            Patient? existing;
 
-            // ✅ STEP 1: VALIDATE PATIENT ID
+            // STEP 1: VALIDATE PATIENT ID
             while (true)
             {
                 if (!InputValidator.TryReadPositiveInt("Enter Patient ID: ", out int id))
@@ -169,7 +167,7 @@ namespace HealthApp.ConsoleApp.Menus
 
             Console.WriteLine("\nPress ENTER to keep existing value\n");
 
-            // ✅ NAME
+            // NAME
             while (true)
             {
                 Console.Write($"Name ({existing.Name}): ");
@@ -188,7 +186,7 @@ namespace HealthApp.ConsoleApp.Menus
 
                 Console.WriteLine("Invalid name. Try again.");
             }
-            // ✅ DOB
+            // DOB
             while (true)
             {
                 Console.Write($"DOB ({existing.Dob:dd-MM-yyyy}): ");
@@ -203,10 +201,10 @@ namespace HealthApp.ConsoleApp.Menus
                     break;
                 }
 
-                Console.WriteLine("❌ Invalid DOB. Try again.");
+                Console.WriteLine("❌ Invalid format .Please use dd-MM--yyyy");
             }
 
-            // ✅ GENDER
+            // GENDER
             while (true)
             {
                 Console.Write($"Gender ({existing.Gender}): ");
@@ -224,7 +222,7 @@ namespace HealthApp.ConsoleApp.Menus
                 Console.WriteLine("❌ Invalid gender (Male/Female/Other).");
             }
 
-            // ✅ PHONE
+            // PHONE
             while (true)
             {
                 Console.Write($"Phone ({existing.PhoneNumber}): ");
@@ -243,7 +241,7 @@ namespace HealthApp.ConsoleApp.Menus
             }
 
 
-            // ✅ EMAIL
+            // EMAIL
             while (true)
             {
                 Console.Write($"Email ({existing.Email}): ");
@@ -261,14 +259,14 @@ namespace HealthApp.ConsoleApp.Menus
                 Console.WriteLine("❌ Invalid email. Try again.");
             }
 
-            // ✅ INSURANCE
+            // INSURANCE
             Console.Write($"Insurance ID ({existing.InsuranceId}): ");
             string insuranceInput = Console.ReadLine() ?? "";
 
             if (!string.IsNullOrWhiteSpace(insuranceInput))
                 existing.InsuranceId = insuranceInput.Trim();
 
-            // ✅ SAVE
+            // SAVE
             bool result = _patientService.Update(existing);
 
             Console.WriteLine(result ? "\n✅ Updated successfully!" : "\n❌ Failed");

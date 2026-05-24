@@ -1,6 +1,4 @@
-﻿using HealthApp.ConsoleApp.Services;
-using HealthApp.ConsoleApp.Repositories;
-using HealthApp.ConsoleApp.Models;
+﻿using HealthApp.ConsoleApp.Models;
 using HealthApp.ConsoleApp.Interfaces;
 using HealthApp.ConsoleApp.Exceptions;
 namespace HealthApp.ConsoleApp.Services
@@ -69,7 +67,7 @@ namespace HealthApp.ConsoleApp.Services
             return records;
         }
 
-        public HealthRecord UpdateHealthRecord(HealthRecord record)
+        public HealthRecord? UpdateHealthRecord(HealthRecord record)
         {
             HealthRecord? existingHealthRecord = GetRecordById(record.RecordId);
 
@@ -80,7 +78,7 @@ namespace HealthApp.ConsoleApp.Services
             return _healthRecordRepository.UpdateHealthRecord(existingHealthRecord, record);
         }
 
-        public HealthRecord? GetRecordById(int recordId)
+        public HealthRecord GetRecordById(int recordId)
         {
             HealthRecord? record = _healthRecordRepository.GetRecordById(recordId);
             if (record is null)

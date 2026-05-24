@@ -1,5 +1,4 @@
 ﻿using HealthApp.ConsoleApp.Models;
-using HealthApp.ConsoleApp.Exceptions;
 using HealthApp.ConsoleApp.Databases;
 using HealthApp.ConsoleApp.Interfaces;
 
@@ -24,7 +23,7 @@ namespace HealthApp.ConsoleApp.Repositories
         public List<HealthRecord> GetAllRecords()
         {
             return _healthRecordDb.Records
-                .OrderByDescending(r => r.VisitDate)   // ✅ ADD THIS LINE
+                .OrderByDescending(r => r.VisitDate)   
                 .ToList();
         }
 

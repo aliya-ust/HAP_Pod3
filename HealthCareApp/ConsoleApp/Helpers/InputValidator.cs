@@ -1,6 +1,4 @@
-﻿using System;
-using System.Globalization;
-using System.Text.RegularExpressions;
+﻿using System.Globalization;
 using System.Text.RegularExpressions;
 
 namespace HealthApp.ConsoleApp.Helpers
@@ -117,13 +115,13 @@ namespace HealthApp.ConsoleApp.Helpers
             Console.Write(prompt);
             string? input = Console.ReadLine();
 
-            // ✅ Allow empty (optional field)
+            //Allow empty (optional field)
             if (string.IsNullOrWhiteSpace(input))
             {
                 return "";
             }
 
-            // ✅ Validate Insurance ID format
+            //Validate Insurance ID format
             if (!Regex.IsMatch(input, @"^[A-Za-z0-9]{5,}$"))
             {
                 Console.WriteLine("Invalid Insurance ID. Use letters/numbers (min 5 characters).");
@@ -144,10 +142,7 @@ namespace HealthApp.ConsoleApp.Helpers
             {
                 Console.Write(prompt);
                 value = Console.ReadLine()?.Trim() ?? "";
-                string pattern = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";//("^[\\w.-]+@[\\w.-]+\\.\\w+$");
-
-                // int atIndex = value.IndexOf('@');
-                // bool valid  = atIndex > 0 && value.LastIndexOf('.') > atIndex;
+                string pattern = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
 
                 if (!Regex.IsMatch(value, pattern))
                 {
@@ -168,13 +163,7 @@ namespace HealthApp.ConsoleApp.Helpers
             {
                 Console.Write(prompt);
                 value = Console.ReadLine()?.Trim() ?? "";
-                // string pattern = @"^[6-9]\d{9}$";
-                // if(!Regex.IsMatch(value,pattern))
-                // {
-                //     PrintError("Phone number must be exactly 10 digits (e.g. 9876543210).");
-                //     return false;
-                // }
-
+               
                 // Strip spaces/dashes for validation, keep original
                 string digits = value.Replace(" ", "").Replace("-", "");
 
@@ -207,7 +196,6 @@ namespace HealthApp.ConsoleApp.Helpers
                 {
                     PrintError("Date of birth cannot be today or in the future.");
                     continue;
-                    //return false;
                 }
 
                 return true;
