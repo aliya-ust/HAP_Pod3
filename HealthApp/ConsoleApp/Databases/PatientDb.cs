@@ -4,5 +4,12 @@ namespace HealthApp.ConsoleApp.Databases;
 
 public class PatientDb
 {
-    public List<Patient> Patients = new List<Patient>();
+    private List<Patient> _patients = new List<Patient>();
+
+    public List<Patient> Patients
+    {
+        get { return _patients; }
+        set { _patients = value; }
+    }
+
 }

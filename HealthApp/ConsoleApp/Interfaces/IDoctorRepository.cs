@@ -1,11 +1,14 @@
 using HealthApp.ConsoleApp.Models;
 
-public interface IDoctorRepository
+namespace HealthApp.ConsoleApp.Interfaces
 {
-    string AddDoctor(Doctor doctor);
-    Doctor? GetDoctorById(int id);
-    List<Doctor> GetDoctorsBySpecialisation(string specialisation);
-    Doctor UpdateDoctor(Doctor existingDoctor, Doctor doctor);
-    List<Doctor> GetAllDoctors();
-    string DeleteDoctor(int id);
+    public interface IDoctorRepository
+    {
+        string AddDoctor(Doctor doctor);
+        Doctor? GetDoctorById(int id);
+        List<Doctor> GetDoctorsBySpecialisation(string specialisation);
+        Doctor UpdateDoctor(Doctor existingDoctor, Doctor doctor);
+        List<Doctor> GetAllDoctors();
+        string DeleteDoctor(int id);
+    }
 }
