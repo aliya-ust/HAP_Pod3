@@ -48,6 +48,22 @@ public class AppointmentDb
                     TimeSlot = "12:00 PM",
 
                     Status = AppointmentStatus.Pending
+                },
+                  new Appointment
+                {
+                    AppointmentId = 303,
+
+                    Patient = patientDb.Patients
+                        .FirstOrDefault(p => p.PatientId == 103),
+
+                    Doctor = doctorDb.Doctors
+                        .FirstOrDefault(d => d.DoctorId == 204),
+
+                    ScheduledDate = DateTime.Today.AddDays(2),
+
+                    TimeSlot = "12:00 PM",
+
+                    Status = AppointmentStatus.Completed
                 }
             
     };

@@ -1,5 +1,6 @@
 using System;
 using System.Globalization;
+using System.Linq.Expressions;
 using System.Text.RegularExpressions;
 using HealthApp.ConsoleApp.Exceptions;
 using HealthApp.ConsoleApp.Models;
@@ -38,6 +39,7 @@ namespace HealthApp.ConsoleApp.Helpers
         // Reads an integer that must be greater than zero.
         public static bool TryReadPositiveInt(string prompt, out int value)
         {
+            try{
             if (!TryReadInt(prompt, out value)) return false;
 
             if (value <= 0)
@@ -47,6 +49,13 @@ namespace HealthApp.ConsoleApp.Helpers
             }
 
             return true;
+            }
+            catch(UserExitException)
+            {
+                value = -1;
+                Console.WriteLine("\nReturning to Main Menu...");
+                return false;
+            }
         }
 
         // Reads a decimal (e.g. consultation fee). Must be >= 0.
