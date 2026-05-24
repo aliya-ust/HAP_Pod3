@@ -6,12 +6,6 @@ namespace HealthApp.ConsoleApp.Databases
 {
     public class DoctorDb
     {
-        private List<Doctor> _doctors = new List<Doctor>();
-
-        public List<Doctor> Doctors
-        {
-            get { return _doctors; }
-            set { _doctors = value; }
-        }
+        public List<Doctor> Doctors = new List<Doctor>();
     }
 }

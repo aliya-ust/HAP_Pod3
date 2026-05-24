@@ -50,9 +50,9 @@ while (!exit)
     Console.WriteLine("6. Confirm or cancel an appointment");
     Console.WriteLine("7. Add a health record after a completed appointment");
     Console.WriteLine("8. View health history for a patient");
-    Console.WriteLine("9. Update patient record");
-    Console.WriteLine("10. Update doctor record");
-    Console.WriteLine("11. Update Health Record");
+    Console.WriteLine("9. Update patient");
+    Console.WriteLine("10. Update doctor");
+    Console.WriteLine("11. Update HR");
     Console.WriteLine("0. Exit");
     Console.Write("Enter your choice: ");
     string ?input = Console.ReadLine();
@@ -87,8 +87,6 @@ while (!exit)
             {
                 Console.WriteLine(d);
             }
-            Console.Write("\nPress any key to continue...");
-            Console.ReadKey();
             break;
         case 4:
             Console.WriteLine($"\n{appointmentMenu.BookAppointment()}");
