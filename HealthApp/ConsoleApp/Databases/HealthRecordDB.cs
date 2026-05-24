@@ -5,13 +5,6 @@ namespace HealthApp.ConsoleApp.Databases
 {
     public class HealthRecordDB
     {
-        private List<HealthRecord> _records = new List<HealthRecord>();
-        
-        public List<HealthRecord> Records
-        {
-            get { return _records; }
-            set { _records = value; }
-        }
-
+        public List<HealthRecord> Records { get; set; } = new List<HealthRecord>();
     }
 }

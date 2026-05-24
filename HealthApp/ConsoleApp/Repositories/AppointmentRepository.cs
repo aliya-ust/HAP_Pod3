@@ -29,40 +29,15 @@ namespace HealthApp.ConsoleApp.Repositories
             return _appointmentDb.Appointments.FirstOrDefault(a => a.AppointmentId == id);
         }
 
-        // public void UpdateAppointment(Appointment appointment)
-        // {
-        //     var existing = GetAppointmentById(appointment.AppointmentId);
-        //     if (existing is null)
-        //     {
+        public Appointment UpdateAppointment(Appointment existingAppointment, Appointment appointment)
+        {
+            existingAppointment.Patient = appointment.Patient;
+            existingAppointment.Doctor = appointment.Doctor;
+            existingAppointment.ScheduledDate = appointment.ScheduledDate;
+            existingAppointment.TimeSlot = appointment.TimeSlot;
 
-        //         throw new AppointmentNotFoundException($"Appointment with ID {appointment.AppointmentId} not found.");
-        //     }
-        //     existing.Patient = appointment.Patient;
-        //     existing.Doctor = appointment.Doctor;
-        //     existing.ScheduledDate = appointment.ScheduledDate;
-        //     existing.TimeSlot = appointment.TimeSlot;
-        //     existing.Status = appointment.Status;
-        //     //existing.CancellationReason = appointment.CancellationReason;
-        // }
-        
-        // public void CancelAppointment(int id, string reason)
-        // {
-        //     var appointment = GetAppointmentById(id);
-        //     if (appointment != null)
-        //     {
-        //         appointment.Status = AppointmentStatus.Cancelled;
-        //         appointment.CancellationReason = reason;
-        //     }
-        // }
-
-        // public void DeleteAppointment(int id)
-        // {
-        //     var appointment = GetAppointmentById(id);
-        //     if (appointment != null)
-        //     {
-        //         _appointments.Remove(appointment);
-        //     }
-        // }
+            return existingAppointment;
+        }
 
         public List<Appointment> GetAppointmentsByPatientId(int patientId)
         {

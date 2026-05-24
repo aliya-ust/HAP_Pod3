@@ -12,7 +12,9 @@ namespace HealthApp
 {
     public class DoctorMenu
     {
-        private IDoctorService _doctorService;
+        private readonly IDoctorService _doctorService;
+        private const string CancelMessage = "Doctor registration cancelled.";
+        private const string ContinueMessage = "Press any key to continue...";
 
         public DoctorMenu(IDoctorService doctorService)
         {
@@ -34,8 +36,8 @@ namespace HealthApp
 
                 if (input?.ToLower() == "q")
                 {
-                    Console.WriteLine("Doctor registration cancelled.");
-                    Console.Write("Press any key to continue...");
+                    Console.WriteLine(CancelMessage);
+                    Console.Write(ContinueMessage);
                     Console.ReadKey();
                     return "";            
                 }
@@ -56,8 +58,8 @@ namespace HealthApp
 
                 if (input?.ToLower() == "q")
                 {
-                    Console.WriteLine("Doctor registration cancelled.");
-                    Console.Write("Press any key to continue...");
+                    Console.WriteLine(CancelMessage);
+                    Console.Write(ContinueMessage);
                     Console.ReadKey();
                     return "";            
                 }
@@ -78,8 +80,8 @@ namespace HealthApp
 
                 if (input?.ToLower() == "q")
                 {
-                    Console.WriteLine("Doctor registration cancelled.");
-                    Console.Write("Press any key to continue...");
+                    Console.WriteLine(CancelMessage);
+                    Console.Write(ContinueMessage);
                     Console.ReadKey();
                     return "";            
                 }
@@ -97,8 +99,8 @@ namespace HealthApp
 
                 if (input?.ToLower() == "q")
                 {
-                    Console.WriteLine("Doctor registration cancelled.");
-                    Console.Write("Press any key to continue...");
+                    Console.WriteLine(CancelMessage);
+                    Console.Write(ContinueMessage);
                     Console.ReadKey();
                     return "";            
                 }
@@ -136,7 +138,7 @@ namespace HealthApp
                     if (input?.ToLower() == "q")
                     {
                         Console.WriteLine("Search cancelled.");
-                        Console.Write("Press any key to continue...");
+                        Console.Write(ContinueMessage);
                         Console.ReadKey();
                         return [];            
                     }
@@ -173,7 +175,7 @@ namespace HealthApp
                 if (input?.ToLower() == "q")
                 {
                         Console.WriteLine("Update cancelled.");
-                        Console.Write("Press any key to continue...");
+                        Console.Write(ContinueMessage);
                         Console.ReadKey();
                         return "";            
                 }

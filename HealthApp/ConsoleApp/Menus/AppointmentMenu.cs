@@ -96,8 +96,15 @@ namespace HealthApp
                         return "";            
                     }
 
-                    if (DateTime.TryParse(input, out date))
+                    if (DateTime.TryParseExact(
+                            input,
+                            "dd/MM/yyyy",
+                            System.Globalization.CultureInfo.InvariantCulture,
+                            System.Globalization.DateTimeStyles.None,
+                            out date))
+                    {
                         break;
+                    }
 
                     Console.WriteLine("Invalid date format.\n");
                 }
@@ -191,6 +198,10 @@ namespace HealthApp
                             }
 
                             var existingPatient = _patientService.GetPatientById(patientId);
+                            if (existingPatient is null)
+                            {
+                                return [];
+                            }
 
                             List<Appointment> appointments = _appointmentService.GetAppointmentsByPatientId(patientId);
 
@@ -228,6 +239,10 @@ namespace HealthApp
                             }
 
                             var existingDoctor = _doctorService.GetDoctorById(doctorId);
+                            if (existingDoctor is null)
+                            {
+                                return [];
+                            }
 
                             List<Appointment> appointments = _appointmentService.GetAppointmentsByDoctorId(doctorId);
 
@@ -264,6 +279,11 @@ namespace HealthApp
 
                             Appointment? appointment = _appointmentService
                                 .GetAppointmentById(appointmentId);
+
+                            if (appointment == null)
+                            {
+                                return [];
+                            }
 
                             Console.Clear();
                             Console.WriteLine("Appointment: ");
@@ -316,6 +336,11 @@ namespace HealthApp
 
                         Appointment? appointment = _appointmentService
                             .GetAppointmentById(appointmentId);
+
+                        if (appointment == null)
+                        {
+                            return "Appointment not found.";
+                        }
 
                         appointment.Confirm();
 

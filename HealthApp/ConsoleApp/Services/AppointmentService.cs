@@ -12,13 +12,12 @@ namespace HealthApp.ConsoleApp.Services
     {
         private readonly IAppointmentRepository _appointmentRepo;
 
-        private int _appointmentIdCounter = 1;
-
         public AppointmentService(IAppointmentRepository appointmentRepository)
         {
             _appointmentRepo = appointmentRepository;
         }
 
+        // Book an appointment with date and time slot
         public string BookAppointment(Patient patient, Doctor doctor, DateTime date, string slot)
         {
             if (date < DateTime.Now)
@@ -57,6 +56,7 @@ namespace HealthApp.ConsoleApp.Services
             return _appointmentRepo.AddAppointment(appointment);
         }
 
+        // Get appointment by patient id
         public List<Appointment> GetAppointmentsByPatientId(int patientId)
         {
             List<Appointment> appointments = _appointmentRepo.GetAppointmentsByPatientId(patientId);
@@ -68,6 +68,7 @@ namespace HealthApp.ConsoleApp.Services
             return appointments;
         }
 
+        // Get appointment by doctor id
         public List<Appointment> GetAppointmentsByDoctorId(int doctorId)
         {
             var appointments = _appointmentRepo.GetAppointmentsByDoctorId(doctorId);
@@ -79,6 +80,7 @@ namespace HealthApp.ConsoleApp.Services
             return appointments;
         }
 
+        // Get appointment by id
         public Appointment? GetAppointmentById(int appointmentId)
         {
             Appointment? appointment = _appointmentRepo.GetAppointmentById(appointmentId);
@@ -90,14 +92,15 @@ namespace HealthApp.ConsoleApp.Services
             return appointment;
         }
 
-        public int AppointmentIdGenerator(List<Appointment> appointments)
+        // Assign appointment id based on latest record id
+        public static int AppointmentIdGenerator(List<Appointment> appointments)
         {
             return appointments.Any()
                 ? appointments.Max(a => a.AppointmentId) + 1
                 : 101;
         }
 
-        //  CANCEL APPOINTMENT
+        //  Cancel an appointment and update reason
         public string CancelAppointment(int appointmentId, string reason)
         {
             var appointment = _appointmentRepo.GetAppointmentById(appointmentId);
@@ -110,15 +113,32 @@ namespace HealthApp.ConsoleApp.Services
             return $"Appointment of ID {appointmentId} has been cancelled successfully";
         }
 
-//         //  GET UPCOMING
-//         public List<Appointment> GetUpcomingAppointments()
-//         {
-//             return _appointmentRepository
-//                 .GetAllAppointments()
-//                 .Where(a => a.ScheduledDate > DateTime.Now &&
-//                             a.Status == AppointmentStatus.Confirmed)
-//                 .OrderBy(a => a.ScheduledDate)
-//                 .ToList();
-//         }
+        //  Get list of confirmed (upcoming) appointments
+        public List<Appointment> GetUpcomingAppointments()
+        {
+            List<Appointment> upcomingAppointments =  _appointmentRepo
+                .GetAllAppointments()
+                .Where(a => a.ScheduledDate > DateTime.Now &&
+                            a.Status == AppointmentStatus.Confirmed)
+                .OrderBy(a => a.ScheduledDate)
+                .ToList();
+
+            if (upcomingAppointments is null)
+            {
+                throw new AppointmentNotFoundException("There are no upcoming appointments");
+            }
+            return upcomingAppointments;
+        }
+
+        public Appointment UpdateAppointment(Appointment appointment)
+        {
+            Appointment? existingAppointment = GetAppointmentById(appointment.AppointmentId);
+
+            if (existingAppointment is null)
+            {
+                throw new AppointmentNotFoundException($"Appointment of ID {appointment.AppointmentId} does not exist");
+            }
+            return _appointmentRepo.UpdateAppointment(existingAppointment, appointment);
+        }
     }
 }

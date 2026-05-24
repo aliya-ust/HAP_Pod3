@@ -37,6 +37,8 @@ var doctorMenu = provider.GetRequiredService<DoctorMenu>();
 var healthRecordMenu = provider.GetRequiredService<HealthRecordMenu>();
 var appointmentMenu = provider.GetRequiredService<AppointmentMenu>();
 
+const string ContinueMessage = "\nPress any key to continue...";
+
 bool exit = false;
 while (!exit)
 {
@@ -73,12 +75,12 @@ while (!exit)
     {
         case 1:
             Console.WriteLine($"\n{patientMenu.RegisterPatient()}");
-            Console.Write("\nPress any key to continue...");
+            Console.Write(ContinueMessage);
             Console.ReadKey();
             break;
         case 2:
             Console.WriteLine($"\n{doctorMenu.AddDoctor()}");
-            Console.Write("\nPress any key to continue...");
+            Console.Write(ContinueMessage);
             Console.ReadKey();
             break;
         case 3:
@@ -87,27 +89,27 @@ while (!exit)
             {
                 Console.WriteLine(d);
             }
-            Console.Write("\nPress any key to continue...");
+            Console.Write(ContinueMessage);
             Console.ReadKey();
             break;
         case 4:
             Console.WriteLine($"\n{appointmentMenu.BookAppointment()}");
-            Console.Write("\nPress any key to continue...");
+            Console.Write(ContinueMessage);
             Console.ReadKey();
             break;
         case 5:
             appointmentMenu.ViewAppointments();
-            Console.Write("\nPress any key to continue...");
+            Console.Write(ContinueMessage);
             Console.ReadKey();
             break;
         case 6:
             appointmentMenu.ConfirmCancelAppointment();
-            Console.Write("\nPress any key to continue...");
+            Console.Write(ContinueMessage);
             Console.ReadKey();
             break;
         case 7:
             Console.WriteLine($"\n{healthRecordMenu.AddHealthRecord()}");
-            Console.Write("\nPress any key to continue...");
+            Console.Write(ContinueMessage);
             Console.ReadKey();
             break;
         case 8:
@@ -115,17 +117,17 @@ while (!exit)
             break;
         case 9:
             Console.WriteLine($"\nPatient details:\n{patientMenu.UpdatePatient()}");
-            Console.Write("\nPress any key to continue...");
+            Console.Write(ContinueMessage);
             Console.ReadKey();
             break;
         case 10:
             Console.WriteLine($"\nDoctor details:\n{doctorMenu.UpdateDoctor()}");
-            Console.Write("\nPress any key to continue...");
+            Console.Write(ContinueMessage);
             Console.ReadKey();
             break;
         case 11:
             Console.WriteLine($"\nHealth record details:\n{healthRecordMenu.UpdateHealthRecord()}");
-            Console.Write("\nPress any key to continue...");
+            Console.Write(ContinueMessage);
             Console.ReadKey();
             break;
         case 0:

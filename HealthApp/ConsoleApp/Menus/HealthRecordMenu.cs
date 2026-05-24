@@ -12,6 +12,10 @@ namespace HealthApp.ConsoleApp.Menus
         private readonly IHealthRecordService _healthRecordService;
         private readonly IAppointmentService _appointmentService;
 
+        public const string Continue = "\nPress any key to continue...";
+        public const string HealthRecordCancelled = "Health record creation cancelled.";
+
+
         public HealthRecordMenu(IHealthRecordService healthRecordService,
                                 IAppointmentService appointmentService)
         {
@@ -37,8 +41,8 @@ namespace HealthApp.ConsoleApp.Menus
 
                     if (input?.ToLower() == "q")
                     {
-                        Console.WriteLine("Health record creation cancelled.");
-                        Console.WriteLine("Press any key to continue...");
+                        Console.WriteLine(HealthRecordCancelled);
+                        Console.WriteLine(Continue);
                         Console.ReadKey();
                         return "";
                     }
@@ -65,8 +69,8 @@ namespace HealthApp.ConsoleApp.Menus
 
                     if (input?.ToLower() == "q")
                     {
-                        Console.WriteLine("Health record creation cancelled.");
-                        Console.WriteLine("Press any key to continue...");
+                        Console.WriteLine(HealthRecordCancelled);
+                        Console.WriteLine(Continue);
                         Console.ReadKey();
                         return "";
                     }
@@ -87,8 +91,8 @@ namespace HealthApp.ConsoleApp.Menus
 
                     if (input?.ToLower() == "q")
                     {
-                        Console.WriteLine("Health record creation cancelled.");
-                        Console.WriteLine("Press any key to continue...");
+                        Console.WriteLine(HealthRecordCancelled);
+                        Console.WriteLine(Continue);
                         Console.ReadKey();
                         return "";
                     }
@@ -109,8 +113,8 @@ namespace HealthApp.ConsoleApp.Menus
 
                     if (input?.ToLower() == "q")
                     {
-                        Console.WriteLine("Health record creation cancelled.");
-                        Console.WriteLine("Press any key to continue...");
+                        Console.WriteLine(HealthRecordCancelled);
+                        Console.WriteLine(Continue);
                         Console.ReadKey();
                         return "";
                     }
@@ -186,13 +190,13 @@ namespace HealthApp.ConsoleApp.Menus
                                 Console.WriteLine(r.ToString());
                             }
 
-                            Console.WriteLine("\nPress any key to continue...");
+                            Console.WriteLine(Continue);
                             Console.ReadKey();
                             break;
                         } catch (PatientNotFoundException ex)
                         {
                             Console.WriteLine(ex.Message);
-                            Console.Write("\nPress any key to continue...");
+                            Console.Write(Continue);
                             Console.ReadKey();
                         }
                     }
@@ -221,13 +225,13 @@ namespace HealthApp.ConsoleApp.Menus
                                 Console.WriteLine(r.ToString());
                             }
 
-                            Console.WriteLine("\nPress any key to continue...");
+                            Console.WriteLine(Continue);
                             Console.ReadKey();
                             break;
                         } catch (DoctorNotFoundException ex)
                         {
                             Console.WriteLine(ex.Message);
-                            Console.Write("\nPress any key to continue...");
+                            Console.Write(Continue);
                             Console.ReadKey();
                         }
                     }
@@ -252,13 +256,13 @@ namespace HealthApp.ConsoleApp.Menus
                             Console.WriteLine("Health records: ");
                             Console.WriteLine(record);
 
-                            Console.WriteLine("\nPress any key to continue...");
+                            Console.WriteLine(Continue);
                             Console.ReadKey();
                             break;
                         } catch (HealthRecordNotFoundException ex)
                         {
                             Console.WriteLine(ex.Message);
-                            Console.Write("\nPress any key to continue...");
+                            Console.Write(Continue);
                             Console.ReadKey();
                         }
                         break;
@@ -283,8 +287,8 @@ namespace HealthApp.ConsoleApp.Menus
 
                 if (input?.ToLower() == "q")
                 {
-                    Console.WriteLine("Health record creation cancelled.");
-                    Console.WriteLine("Press any key to continue...");
+                    Console.WriteLine(HealthRecordCancelled);
+                    Console.WriteLine(Continue);
                     Console.ReadKey();
                     return "";
                 }
@@ -310,9 +314,13 @@ namespace HealthApp.ConsoleApp.Menus
                     if (string.IsNullOrWhiteSpace(input))
                         break;
 
-                    if (DateTime.TryParse(input, out DateTime parsedDate) && parsedDate <= DateTime.Today)
+                    if (DateTime.TryParseExact(
+                            input,
+                            "dd/MM/yyyy",
+                            System.Globalization.CultureInfo.InvariantCulture,
+                            System.Globalization.DateTimeStyles.None,
+                            out visitDate))
                     {
-                        visitDate = parsedDate;
                         break;
                     }
 
@@ -354,32 +362,6 @@ namespace HealthApp.ConsoleApp.Menus
             {
                 return ex.Message;
             }
-        }
-
-        public bool TryParseVisitDate(string visitDate, out DateTime result, out string? error)
-        {
-            result = default;
-            error = null;
-
-            if (!DateTime.TryParseExact(
-                visitDate,
-                "dd-MM-yyyy",
-                CultureInfo.InvariantCulture,
-                DateTimeStyles.None,
-                out DateTime visitDateParsed))
-            {
-                error = "Visit date not entered in the correct format";
-                return false;
-            }
-
-            if (visitDateParsed.Date > DateTime.Today)
-            {
-                error = "Visit Date can't be in the future";
-                return false;
-            }
-
-            result = visitDateParsed;
-            return true;
         }
     }
 }

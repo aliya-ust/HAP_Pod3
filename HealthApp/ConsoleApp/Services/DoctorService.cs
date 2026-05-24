@@ -23,13 +23,13 @@ namespace HealthApp.ConsoleApp.Services
             return _doctorRepo.AddDoctor(doctor);
         }
 
-        public Doctor? GetDoctorById(int doctorId)
+        public Doctor? GetDoctorById(int id)
         {
-            Doctor? doctor = _doctorRepo.GetDoctorById(doctorId);
+            Doctor? doctor = _doctorRepo.GetDoctorById(id);
 
             if (doctor is null)
             {
-                throw new DoctorNotFoundException($"Doctor of ID {doctorId} does not exist");
+                throw new DoctorNotFoundException($"Doctor of ID {id} does not exist");
             }
             return doctor;
         }
@@ -57,21 +57,12 @@ namespace HealthApp.ConsoleApp.Services
             return _doctorRepo.UpdateDoctor(existingDoctor, doctor);
         }
 
-        public string DeleteDoctor(int id)
-        {
-            return _doctorRepo.DeleteDoctor(id);
-        }
-
-        public int DoctorIdGenerator(List<Doctor> doctors)
+        
+        public static int DoctorIdGenerator(List<Doctor> doctors)
         {
             return doctors.Any()
                 ? doctors.Max(d => d.DoctorId) + 1
                 : 101;
         }
-
-        // public List<Doctor> GetAllDoctors()
-        // {
-        //     return doctorRepository.GetAllDoctors();
-        // }
     }
 }

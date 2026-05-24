@@ -4,7 +4,7 @@ namespace HealthApp.ConsoleApp.Databases
 {
     public class AppointmentDb
     {
-        private List<Appointment> _appointments = new List<Appointment>
+        public List<Appointment> Appointments { get; set; } = new List<Appointment>
         {
             new Appointment
             {
@@ -91,11 +91,5 @@ namespace HealthApp.ConsoleApp.Databases
                 Status = AppointmentStatus.Completed
             }
         };
-
-        public List<Appointment> Appointments
-        {
-            get { return _appointments; }
-            set { _appointments = value; }
-        }
     }
 }

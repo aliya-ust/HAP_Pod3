@@ -11,13 +11,7 @@ namespace HealthApp.ConsoleApp.Models
         public required string PhoneNumber { get; set; }
         public required string Email { get; set; }
         public int InsuranceId { get; set; }
-        public DateTime CreatedDate { get; set; }
-
-        // Constructor to initialize CreatedAt
-        public Patient()
-        {
-            CreatedDate = DateTime.Now;
-        }
+        public DateTime CreatedDate { get; set; } = DateTime.Now;
 
         // Calculate age based on Date of Birth
         public int GetAge()
@@ -33,11 +27,6 @@ namespace HealthApp.ConsoleApp.Models
 
         // Return summary of the patient's profile
         public string GetProfileSummary()
-        {
-            return $"ID: {PatientId} | Name: {FullName} | Age: {GetAge()} | Gender: {Gender} | Email: {Email} | Phone: {PhoneNumber}";
-        }
-
-        public override string ToString()
         {
             return  $"ID: {PatientId} \nName: {FullName} \nAge: {GetAge()} \nGender: {Gender} \nEmail: {Email} \nPhone: {PhoneNumber} \nInsurance Id: {InsuranceId}";
         }

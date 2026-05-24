@@ -8,6 +8,10 @@ namespace HealthApp.ConsoleApp.Menus
     public class PatientMenu
     {
         private readonly IPatientService _patientService;
+        
+        public const string Continue = "\nPress any key to continue...";
+        public const string PatientRegistrationCancelled = "Patient registration cancelled.";
+
 
         public PatientMenu(IPatientService patientService)
         {
@@ -31,8 +35,8 @@ namespace HealthApp.ConsoleApp.Menus
 
                 if (input?.ToLower() == "q")
                 {
-                    Console.WriteLine("Patient registration cancelled.");
-                    Console.WriteLine("Press any key to continue...");
+                    Console.WriteLine(PatientRegistrationCancelled);
+                    Console.WriteLine(Continue);
                     Console.ReadKey();
                     return "";            
                 }
@@ -53,14 +57,21 @@ namespace HealthApp.ConsoleApp.Menus
 
                 if (input?.ToLower() == "q")
                 {
-                    Console.WriteLine("Patient registration cancelled.");
-                    Console.WriteLine("Press any key to continue...");
+                    Console.WriteLine(PatientRegistrationCancelled);
+                    Console.WriteLine(Continue);
                     Console.ReadKey();
                     return "";            
                 }
 
-                if (DateTime.TryParse(input, out dob) && dob < DateTime.Today)
+                if (DateTime.TryParseExact(
+                        input,
+                        "dd/MM/yyyy",
+                        System.Globalization.CultureInfo.InvariantCulture,
+                        System.Globalization.DateTimeStyles.None,
+                        out dob))
+                {
                     break;
+                }
 
                 Console.WriteLine("Invalid Date of Birth.\n");
             }
@@ -72,8 +83,8 @@ namespace HealthApp.ConsoleApp.Menus
 
                 if (input?.ToLower() == "q")
                 {
-                    Console.WriteLine("Patient registration cancelled.");
-                    Console.WriteLine("Press any key to continue...");
+                    Console.WriteLine(PatientRegistrationCancelled);
+                    Console.WriteLine(Continue);
                     Console.ReadKey();
                     return "";            
                 }
@@ -94,8 +105,8 @@ namespace HealthApp.ConsoleApp.Menus
 
                 if (input?.ToLower() == "q")
                 {
-                    Console.WriteLine("Patient registration cancelled.");
-                    Console.WriteLine("Press any key to continue...");
+                    Console.WriteLine(PatientRegistrationCancelled);
+                    Console.WriteLine(Continue);
                     Console.ReadKey();
                     return "";            
                 }
@@ -118,8 +129,8 @@ namespace HealthApp.ConsoleApp.Menus
 
                 if (input?.ToLower() == "q")
                 {
-                    Console.WriteLine("Patient registration cancelled.");
-                    Console.WriteLine("Press any key to continue...");
+                    Console.WriteLine(PatientRegistrationCancelled);
+                    Console.WriteLine(Continue);
                     Console.ReadKey();
                     return "";            
                 }
@@ -140,8 +151,8 @@ namespace HealthApp.ConsoleApp.Menus
 
                 if (input?.ToLower() == "q")
                 {
-                    Console.WriteLine("Patient registration cancelled.");
-                    Console.WriteLine("Press any key to continue...");
+                    Console.WriteLine(PatientRegistrationCancelled);
+                    Console.WriteLine(Continue);
                     Console.ReadKey();
                     return "";            
                 }
@@ -187,8 +198,6 @@ namespace HealthApp.ConsoleApp.Menus
                     
                 Console.WriteLine("\nCurrent Patient Details:");
                 Console.WriteLine(existingPatient);
-                Console.Write("\nEnter Full Name: ");
-                input = Console.ReadLine();
 
                 string fullName = existingPatient.FullName;
                 while (true)
@@ -215,9 +224,13 @@ namespace HealthApp.ConsoleApp.Menus
                     input = Console.ReadLine();
                     if (string.IsNullOrWhiteSpace(input))
                         break;
-                    if (DateTime.TryParse(input, out DateTime parsedDob) && parsedDob < DateTime.Today)
+                    if (DateTime.TryParseExact(
+                            input,
+                            "dd/MM/yyyy",
+                            System.Globalization.CultureInfo.InvariantCulture,
+                            System.Globalization.DateTimeStyles.None,
+                            out dob))
                     {
-                        dob = parsedDob;
                         break;
                     }
                     Console.WriteLine("Invalid Date of Birth.");
@@ -295,7 +308,7 @@ namespace HealthApp.ConsoleApp.Menus
                 };
 
                 Console.Clear();
-                return _patientService.UpdatePatient(updatedPatient).ToString();
+                return _patientService.UpdatePatient(updatedPatient).GetProfileSummary();
             } catch (PatientNotFoundException ex)
             {
                 return ex.Message;

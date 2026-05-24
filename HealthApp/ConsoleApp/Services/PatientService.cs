@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Net.NetworkInformation;
 using HealthApp.ConsoleApp.Exceptions;
 using HealthApp.ConsoleApp.Interfaces;
 using HealthApp.ConsoleApp.Models;
@@ -48,7 +49,7 @@ namespace HealthApp.ConsoleApp.Services
             return patient;
         }
 
-        public int PatientIdGenerator(List<Patient> patients)
+        public static int PatientIdGenerator(List<Patient> patients)
         {
             return patients.Any()
                 ? patients.Max(p => p.PatientId) + 1

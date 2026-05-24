@@ -12,14 +12,10 @@ namespace HealthApp.ConsoleApp.Models
         public required Doctor Doctor { get; set; }
         public DateTime ScheduledDate { get; set; }
         public required string TimeSlot { get; set; }
-        public AppointmentStatus Status { get; set; }
+        public AppointmentStatus Status { get; set; } = AppointmentStatus.Pending;
         public string CancellationReason { get; set; } = "";
-    
-        public Appointment()
-        {
-            Status = AppointmentStatus.Pending;
-        }
 
+        // Change Appointment status to confirmed
         public void Confirm()
         {
             if (Status == AppointmentStatus.Cancelled)
@@ -30,7 +26,7 @@ namespace HealthApp.ConsoleApp.Models
             Status = AppointmentStatus.Confirmed;
         }
 
-        
+        // Change appointment status to cancelled and assign reason
         public void Cancel(string reason)
         {
             if (Status == AppointmentStatus.Completed)
@@ -42,7 +38,7 @@ namespace HealthApp.ConsoleApp.Models
             CancellationReason = reason;
         }
 
-        
+        // Mark appointment as completeed
         public void Complete()
         {
             if (Status != AppointmentStatus.Confirmed)
@@ -53,7 +49,7 @@ namespace HealthApp.ConsoleApp.Models
             Status = AppointmentStatus.Completed;
         }
 
-    
+        // Formatted string for appointment details
         public string GetDetails()
         {
             StringBuilder details = new StringBuilder();

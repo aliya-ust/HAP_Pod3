@@ -27,27 +27,23 @@ namespace HealthApp.ConsoleApp.Models
             return true;
         }
 
+        // Count of upcoming appointments
+        public string GetScheduleSummary()
+        {
+            int count = Appointments.Count(a => a.Date >= DateTime.Today);
+
+            if (count == 0)
+            {
+                return "No upcoming appointments";
+            }
+
+            return $"Upcoming appointments count: {count}";
+        }
+
+        // Formatted string of doctor details
         public override string ToString()
         {
             return $"Doctor ID: {DoctorId} \nFull Name: {FullName} \nSpecialisation: {Specialisation} \nExperience: {YearsOfExperience} years \nConsultation Fee: Rs. {ConsultationFee} \nActive: {(IsActive ? "Yes" : "No")}";
         }
-
-        //Upcoming count
-        // public string GetScheduleSummary()
-        // {
-        //     int count = Appointments.Count(a => a.Date >= DateTime.Today);
-
-        //     if (count == 0)
-        //     {
-        //         return "No upcoming appointments";
-        //     }
-
-        //     return $"Upcoming appointments count: {count}";
-        // }
-
-        // public string GetDoctorDetails()
-        // {
-        //     return $"Doctor ID: {DoctorId}, Full Name: {FullName}, Specialisation: {Specialisation}, Experience: {YearsOfExperience} years, Consultation Fee: Rs. {ConsultationFee}, Active: {(IsActive ? "Yes" : "No")}";
-        // }
     }
 }
