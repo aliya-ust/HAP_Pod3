@@ -19,7 +19,7 @@ namespace HealthApp.ConsoleApp.Repositories
         public void AddDoctor(Doctor doctor)
         {
             if (doctor == null)
-                throw new ArgumentNullException(nameof(doctor));
+                return;
 
             doctor.DoctorId = _doctorDb.Doctors.Count > 0
                 ? _doctorDb.Doctors.Max(d => d.DoctorId) + 1
@@ -44,11 +44,27 @@ namespace HealthApp.ConsoleApp.Repositories
         }
 
         public Doctor GetDoctorById(int id)
-
         {
+            return _doctorDb.Doctors
+                .FirstOrDefault(d => d.DoctorId == id);
+        }
 
-            return _doctorDb.Doctors.FirstOrDefault(d => d.DoctorId == id);
+        public void UpdateDoctor(Doctor doctor)
+        {
+            if (doctor == null)
+                return;
 
+            var existing = _doctorDb.Doctors
+                .FirstOrDefault(d => d.DoctorId == doctor.DoctorId);
+
+            if (existing == null)
+                return;
+
+            existing.FullName = doctor.FullName;
+            existing.Specialisation = doctor.Specialisation;
+            existing.YearsOfExperience = doctor.YearsOfExperience;
+            existing.ConsultationFee = doctor.ConsultationFee;
+            existing.IsActive = doctor.IsActive;
         }
     }
 }

@@ -32,6 +32,11 @@ namespace HealthApp.ConsoleApp.Exceptions
             : base($"Doctor with ID {id} not found.")
         {
         }
+
+        public DoctorNotFoundException(string message)
+            : base(message)
+        {
+        }
     }
 
     public class DoctorNullException : Exception

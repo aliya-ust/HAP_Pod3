@@ -6,7 +6,11 @@ namespace HealthApp.ConsoleApp.Interfaces
     public interface IDoctorService
     {
         void AddDoctor(Doctor doctor);
+
+        void UpdateDoctor(Doctor doctor);
+
         Doctor GetDoctorById(int id);
+
         List<Doctor> GetAllDoctors();
 
         List<Doctor> SearchBySpecialisation(string specialisation);
