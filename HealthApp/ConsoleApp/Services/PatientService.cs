@@ -1,64 +1,78 @@
-using System;
-using System.Collections.Generic;
+
+using HealthApp.ConsoleApp.Exceptions;
 using HealthApp.ConsoleApp.Interfaces;
 using HealthApp.ConsoleApp.Models;
-using HealthApp.ConsoleApp.Repositories;
-using HealthApp.ConsoleApp.Exceptions;
 
-
-namespace HealthApp.ConsoleApp.Services
+public class PatientService : IPatientService
 {
-    public class PatientService : IPatientService
+    private readonly IPatientRepository _patientRepo;
+
+    public PatientService(IPatientRepository patientRepo)
     {
-        private readonly IPatientRepository patientRepo;
+        this._patientRepo = patientRepo;
+    }
 
-        public PatientService(IPatientRepository patientRepo)
-        {
-            this.patientRepo = patientRepo;
-        }
+    private void ValidatePatient(Patient patient)
+    {
+        if (patient == null)
+            throw new PatientInvalidException();
 
-        public void AddPatient (Patient patient)
-        {
-            if (patient == null)
-                throw new PatientInvalidException();
+        if (string.IsNullOrWhiteSpace(patient.Name))
+            throw new PatientInvalidException();
 
-            patientRepo.AddPatient(patient);
-        }
+        if (patient.Dob > DateTime.Now)
+            throw new PatientInvalidException();
+    }
 
-        public void UpdatePatient(Patient patient)
-        {
-            if (patient == null)
-                throw new PatientInvalidException();
+    public void AddPatient(Patient patient)
+    {
+        //ValidatePatient(patient);
+        _patientRepo.AddPatient(patient);
+    }
 
-             patientRepo.UpdatePatient(patient);
-        }
+    public void UpdatePatient(Patient patient)
+    {
+        ValidatePatient(patient);
 
-        public void DeletePatient(int id)
-        {
-            if(id<0)
-              throw new PatientInvalidException();
-             patientRepo.DeletePatient(id);
-        }
+        var existing = _patientRepo.GetPatientById(patient.Id);
 
-        public Patient GetPatientById(int id)
-        {
-            return patientRepo.GetPatientById(id);
-        }
+        _patientRepo.UpdatePatient(patient);
+    }
 
-        public List<Patient> GetAllPatients()
-        {
-            return patientRepo.GetAllPatients();
-        }
+    public void DeletePatient(int id)
+    {
+        if (id <= 0)
+            throw new PatientInvalidException();
 
-        public int GetPatientAge(int patientId)
-        {
-            var patient = GetPatientById(patientId);
-            return patient.GetAge();
-        }
-        public string GetPatientProfileSummary(int patientId)
-        {
-            var patient = GetPatientById(patientId);
-            return patient.GetProfileSummary();
-        }
+        var patient = _patientRepo.GetPatientById(id);
+        if (patient == null)
+            throw new PatientNotFoundException();
+
+        _patientRepo.DeletePatient(id);
+    }
+
+    public Patient GetPatientById(int id)
+    {
+        var patient = _patientRepo.GetPatientById(id);
+
+        if (patient == null)
+            throw new PatientNotFoundException();
+
+        return patient;
+    }
+
+    public List<Patient> GetAllPatients()
+    {
+        return _patientRepo.GetAllPatients();
+    }
+
+    public int GetPatientAge(int id)
+    {
+        return GetPatientById(id).GetAge();
+    }
+
+    public string GetPatientProfileSummary(int id)
+    {
+        return GetPatientById(id).GetProfileSummary();
     }
 }

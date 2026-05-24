@@ -11,7 +11,7 @@ namespace HealthApp.Tests.Repositories
         public AppointmentRepositoryTests()
         {
             _db = new AppointmentDb();
-            _repository = new AppointmentRepository(_db.appointments);
+            _repository = new AppointmentRepository(_db);
         }
 
         [Fact]

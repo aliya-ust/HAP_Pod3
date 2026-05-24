@@ -1,9 +1,8 @@
-﻿
-using System;
-using System.Text.RegularExpressions;
+﻿using System;
 using HealthApp.ConsoleApp.Interfaces;
 using HealthApp.ConsoleApp.Models;
 using HealthApp.ConsoleApp.Exceptions;
+using HealthApp.ConsoleApp.Helpers;
 
 namespace HealthApp.ConsoleApp.Menus
 {
@@ -16,7 +15,6 @@ namespace HealthApp.ConsoleApp.Menus
             _service = service;
         }
 
-        // ✅ CENTRALIZED EXCEPTION HANDLER
         private void Execute(Action action)
         {
             try
@@ -25,302 +23,211 @@ namespace HealthApp.ConsoleApp.Menus
             }
             catch (PatientInvalidException ex)
             {
-                Console.WriteLine("-------------------------------");
                 Console.WriteLine($"⚠️ {ex.Message}");
             }
             catch (PatientNotFoundException ex)
             {
-                Console.WriteLine("-------------------------------");
                 Console.WriteLine($"❌ {ex.Message}");
             }
             catch (Exception ex)
             {
-                Console.WriteLine("-------------------------------");
                 Console.WriteLine($"⚠️ {ex.Message}");
             }
         }
 
-        // ✅ MAIN MENU
         public void PatientRegisteration()
         {
             while (true)
             {
-                Console.WriteLine("\n======================================");
-                Console.WriteLine("           PATIENT MENU");
-                Console.WriteLine("======================================");
+                Console.WriteLine("\n===== PATIENT MENU =====");
                 Console.WriteLine("1. Register Patient");
                 Console.WriteLine("2. Update Patient");
                 Console.WriteLine("3. View All Patients");
                 Console.WriteLine("4. Profile Summary By Id");
                 Console.WriteLine("5. Exit");
 
-                // Console.WriteLine("3. Get Patient By Id");
-                // Console.WriteLine("4. Delete Patient");
+                Console.Write("Enter your choice: ");
 
-                int choice = ReadInt("Enter choice: ");
-                Console.WriteLine("--------------------------------------");
+                
+
+                if (!InputValidator.TryReadMenuChoice(out int choice))
+                {
+                    Console.WriteLine("Invalid choice");
+                    continue;
+                }
+
                 switch (choice)
                 {
                     case 1: Execute(AddPatient); break;
                     case 2: Execute(UpdatePatient); break;
-                    //case 3: Execute(GetPatientById); break;
-                    //case 4: Execute(DeletePatient); break;
                     case 3: Execute(ViewAll); break;
                     case 4: Execute(GetProfile); break;
                     case 5: return;
-                    default: Console.WriteLine("Invalid choice"); break;
+
                 }
             }
         }
 
-        // INPUT HELPERS  FOR VALIDATION
-        private string ReadNonEmpty(string msg)
-        {
-            string input;
-            do
-            {
-                Console.Write(msg);
-                input = Console.ReadLine();
-            } while (string.IsNullOrWhiteSpace(input));
-
-            return input;
-        }
-
-        private string ReadOptional(string msg)
-        {
-            Console.Write(msg);
-            return Console.ReadLine();
-        }
-        private int ReadInt(string msg)
-        {
-            while (true)
-            {
-                Console.Write(msg);
-                if (int.TryParse(Console.ReadLine(), out int val))
-                    return val;
-
-                Console.WriteLine("Invalid number");
-            }
-        }
-        private DateTime ReadDate(string msg)
-        {
-            while (true)
-            {
-                Console.Write(msg);
-                if (DateTime.TryParseExact(Console.ReadLine(), "dd/MM/yyyy", null,
-                    System.Globalization.DateTimeStyles.None, out DateTime date))
-                {
-                    return date;
-                }
-
-                Console.WriteLine("Invalid format (dd/MM/yyyy)");
-            }
-        }
-        private string ReadEmail()
-        {
-            while (true)
-            {
-                Console.Write("Enter Email: ");
-                string email = Console.ReadLine();
-
-                if (Regex.IsMatch(email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
-                    return email;
-
-                Console.WriteLine("Invalid email");
-            }
-        }
-        private string ReadPhone()
-        {
-            while (true)
-            {
-                Console.Write("Enter Phone (10 digits): ");
-                string phone = Console.ReadLine();
-
-                if (Regex.IsMatch(phone, @"^\d{10}$"))
-                    return phone;
-
-                Console.WriteLine("Invalid phone");
-            }
-        }
-
-        private Patient.GenderType ReadGender()
-        {
-            while (true)
-            {
-                Console.Write("Enter Gender (Male/Female/Other): ");
-
-                if (Enum.TryParse(Console.ReadLine(), true,
-                    out Patient.GenderType gender))
-                    return gender;
-
-                Console.WriteLine("Invalid gender");
-            }
-        }
-
-        // MENU OPERATIONS
         private void AddPatient()
         {
+            InputValidator.TryReadName("Enter Name: ", out string name);
+            InputValidator.TryReadPastDate("Enter DOB: ", out DateTime dob);
+
+            string genderInput;
+            do
+            {
+                Console.Write("Enter Gender: ");
+                genderInput = Console.ReadLine() ?? "";
+            }
+            while (!InputValidator.TryValidateGender(genderInput, out genderInput));
+
+            InputValidator.TryReadPhone("Enter Phone: ", out string phone);
+            InputValidator.TryReadEmail("Enter Email: ", out string email);
+
+            string insurance = InputValidator.ReadOptionalString("Enter Insurance Id: ");
+
+            if (!InputValidator.TryValidateInsurance(insurance, out insurance))
+            {
+                Console.WriteLine("Invalid Insurance ID.");
+                return;
+            }
+
             var p = new Patient
             {
-                Name = ReadNonEmpty("Enter Name: "),
-                Dob = ReadDate("Enter DOB (dd/MM/yyyy): "),
-                Gender = ReadGender(),
-                PhoneNumber = ReadPhone(),
-                Email = ReadEmail(),
-                InsuranceId = ReadInt("Enter Insurance Id: ")
+                Name = name,
+                Dob = dob,
+                Gender = Enum.Parse<Patient.GenderType>(genderInput, true),
+                PhoneNumber = phone,
+                Email = email,
+                InsuranceId = insurance
             };
 
             _service.AddPatient(p);
 
             Console.WriteLine("\n✅ Patient Registered Successfully");
-            Console.WriteLine(p.GetProfileSummary());
         }
 
         private void UpdatePatient()
         {
-            int id = ReadInt("Enter Patient Id: ");
+            InputValidator.TryReadInt("Enter Patient Id: ", out int id);
             var p = _service.GetPatientById(id);
 
-            Console.WriteLine("\n🔔 Update Instructions:");
-            Console.WriteLine("Press ENTER to keep existing value.");
-            Console.WriteLine("Enter new value to update.\n");
+            Console.WriteLine("\nPress ENTER to keep existing value\n");
 
             // ✅ NAME
-            string name = ReadOptional($"Name ({p.Name}): ");
-            if (!string.IsNullOrWhiteSpace(name))
-                p.Name = name;
-
-            // ✅ DOB (LOOP UNTIL VALID OR EMPTY)
             while (true)
             {
-                string dobInput = ReadOptional($"DOB ({p.Dob:dd/MM/yyyy}): ");
+                string input = InputValidator.ReadOptionalString($"Name ({p.Name}): ");
 
-                if (string.IsNullOrWhiteSpace(dobInput))
+                if (string.IsNullOrWhiteSpace(input)) break;
+
+                if (InputValidator.TryValidateName(input, out string valid))
+                {
+                    p.Name = valid;
                     break;
+                }
 
-                if (DateTime.TryParseExact(dobInput, "dd/MM/yyyy", null,
-                    System.Globalization.DateTimeStyles.None, out DateTime dob)
-                    && dob <= DateTime.Now)
+                Console.WriteLine("❌ Invalid name. Try again.");
+            }
+
+            // ✅ DOB
+            while (true)
+            {
+                string input = InputValidator.ReadOptionalString($"DOB ({p.Dob:dd/MM/yyyy}): ");
+
+                if (string.IsNullOrWhiteSpace(input)) break;
+
+                if (InputValidator.TryValidatePastDate(input, out DateTime dob))
                 {
                     p.Dob = dob;
                     break;
                 }
 
-                Console.WriteLine("❌ Invalid DOB. Please enter again.");
+                Console.WriteLine("❌ Invalid DOB. Use dd/MM/yyyy and past date.");
             }
 
             // ✅ GENDER
             while (true)
             {
-                string genderInput = ReadOptional($"Gender ({p.Gender}): ");
+                string input = InputValidator.ReadOptionalString($"Gender ({p.Gender}): ");
 
-                if (string.IsNullOrWhiteSpace(genderInput))
-                    break;
+                if (string.IsNullOrWhiteSpace(input)) break;
 
-                if (Enum.TryParse(genderInput, true, out Patient.GenderType gender))
+                if (InputValidator.TryValidateGender(input, out string valid))
                 {
-                    p.Gender = gender;
+                    p.Gender = Enum.Parse<Patient.GenderType>(valid, true);
                     break;
                 }
 
-                Console.WriteLine("❌ Invalid Gender. Try again (Male/Female/Other).");
+                Console.WriteLine("❌ Invalid gender (Male/Female/Other).");
             }
 
             // ✅ PHONE
             while (true)
             {
-                string phone = ReadOptional($"Phone ({p.PhoneNumber}): ");
+                string input = InputValidator.ReadOptionalString($"Phone ({p.PhoneNumber}): ");
 
-                if (string.IsNullOrWhiteSpace(phone))
-                    break;
+                if (string.IsNullOrWhiteSpace(input)) break;
 
-                if (Regex.IsMatch(phone, @"^\d{10}$"))
+                if (InputValidator.TryValidatePhone(input, out string valid))
                 {
-                    p.PhoneNumber = phone;
+                    p.PhoneNumber = valid;
                     break;
                 }
 
-                Console.WriteLine("❌ Invalid Phone (must be 10 digits). Try again.");
+                Console.WriteLine("❌ Invalid phone (10 digits).");
             }
 
             // ✅ EMAIL
             while (true)
             {
-                string email = ReadOptional($"Email ({p.Email}): ");
+                string input = InputValidator.ReadOptionalString($"Email ({p.Email}): ");
 
-                if (string.IsNullOrWhiteSpace(email))
-                    break;
+                if (string.IsNullOrWhiteSpace(input)) break;
 
-                if (Regex.IsMatch(email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
+                if (InputValidator.TryValidateEmail(input, out string valid))
                 {
-                    p.Email = email;
+                    p.Email = valid;
                     break;
                 }
 
-                Console.WriteLine("❌ Invalid Email. Try again.");
+                Console.WriteLine("❌ Invalid email.");
             }
 
-            // ✅ INSURANCE ID
+            // ✅ INSURANCE
             while (true)
             {
-                string insInput = ReadOptional($"Insurance Id ({p.InsuranceId}): ");
+                string input = InputValidator.ReadOptionalString($"Insurance Id ({p.InsuranceId}): ");
 
-                if (string.IsNullOrWhiteSpace(insInput))
-                    break;
+                if (string.IsNullOrWhiteSpace(input)) break;
 
-                if (int.TryParse(insInput, out int ins))
+                if (InputValidator.TryValidateInsurance(input, out string valid))
                 {
-                    p.InsuranceId = ins;
+                    p.InsuranceId = valid;
                     break;
                 }
 
-                Console.WriteLine("❌ Invalid number. Try again.");
+                Console.WriteLine("❌ Invalid Insurance ID.");
             }
 
             _service.UpdatePatient(p);
 
             Console.WriteLine("\n✅ Patient Updated Successfully");
         }
-
         private void ViewAll()
         {
             var patients = _service.GetAllPatients();
 
-            if (patients.Count == 0)
-            {
-                Console.WriteLine("No patients found");
-                return;
-            }
-
             foreach (var p in patients)
             {
-                Console.WriteLine("--------------------------------");
                 Console.WriteLine(p.GetProfileSummary());
             }
         }
 
         private void GetProfile()
         {
-            int id = ReadInt("Enter Patient Id: ");
-            string summary = _service.GetPatientProfileSummary(id);
-
-            Console.WriteLine(summary);
+            InputValidator.TryReadInt("Enter Patient Id: ", out int id);
+            Console.WriteLine(_service.GetPatientProfileSummary(id));
         }
-
-        //private void DeletePatient()
-        //{
-        //    int id = ReadInt("Enter Patient Id: ");
-        //    _service.DeletePatient(id);
-
-        //    Console.WriteLine("✅ Patient Deleted Successfully");
-        //}
-
-        //private void GetPatientById()
-        //{
-        //    int id = ReadInt("Enter Patient Id: ");
-        //    var p = _service.GetPatientById(id);
-
-        //    Console.WriteLine(p.GetProfileSummary());
-        //}
     }
 }

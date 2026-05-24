@@ -2,8 +2,6 @@
 using HealthApp.ConsoleApp.Repositories;
 using HealthApp.ConsoleApp.Databases;
 using HealthApp.ConsoleApp.Models;
-using System;
-using Xunit;
 
 namespace HealthApp_Testing
 {
@@ -15,8 +13,8 @@ namespace HealthApp_Testing
         //  Dependency Injection
         public PatientRepositoryTests()
         {
-            _db = new PatientDb();                    // Create DB instance
-            _repository = new PatientRepository(_db); // Inject into repository
+            _db = new PatientDb();                   
+            _repository = new PatientRepository(_db); 
         }
 
         [Fact]
@@ -51,11 +49,11 @@ namespace HealthApp_Testing
         {
             var newPatient = new Patient
             {
-                PatientId = 4,
+                Id = 4,
                 Name = "Test",
                 Dob = new DateTime(2000, 1, 1),
-                Gender = "Other",
-                InsuranceId = 1
+                Gender = Patient.GenderType.Male,
+                InsuranceId = "A123"
             };
 
             _repository.AddPatient(newPatient);
@@ -80,11 +78,11 @@ namespace HealthApp_Testing
         {
             var nonExistingPatient = new Patient
             {
-                PatientId = 999,
+                Id = 999,
                 Name = "Non Existing",
                 Dob = new DateTime(1990, 1, 1),
-                Gender = "Male",
-                InsuranceId = 1
+                Gender = Patient.GenderType.Other,
+                InsuranceId = "A1"
             };
 
             _repository.UpdatePatient(nonExistingPatient);

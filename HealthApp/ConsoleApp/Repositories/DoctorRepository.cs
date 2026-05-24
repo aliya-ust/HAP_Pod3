@@ -25,7 +25,7 @@ namespace HealthApp.ConsoleApp.Repositories
         {
             return doctorDb.Doctors;
         }
-        public Doctor GetByDoctorId(int id)
+        public Doctor? GetByDoctorId(int id)
         {
             return doctorDb.Doctors.FirstOrDefault(d => d.DoctorId == id);
         }
@@ -35,6 +35,10 @@ namespace HealthApp.ConsoleApp.Repositories
             return doctorDb.Doctors
                 .Where(d => d.Specialisation.Equals(specialisation, StringComparison.OrdinalIgnoreCase))
                 .ToList();
+        }
+        public List<Doctor> ViewAllDoctors()
+        {
+            return doctorDb.Doctors;
         }
     }
 }

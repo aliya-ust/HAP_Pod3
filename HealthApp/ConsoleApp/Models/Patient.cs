@@ -9,7 +9,7 @@ namespace HealthApp.ConsoleApp.Models
         public GenderType Gender { get; set; }
         public string PhoneNumber { get; set; }
         public string Email { get; set; }
-        public int InsuranceId { get; set; }
+        public string InsuranceId { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public int Age => GetAge();
 
@@ -42,7 +42,7 @@ namespace HealthApp.ConsoleApp.Models
         public string GetProfileSummary()
         {
             return
-           $"Patient Id     : {Id}\n" +
+           $"Patient Id   : {Id}\n" +
            $"Name         : {Name}\n" +
            $"DOB          : {Dob:dd/MM/yyyy}\n" +
            $"Gender       : {Gender}\n" +

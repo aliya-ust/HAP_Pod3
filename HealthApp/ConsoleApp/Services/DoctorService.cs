@@ -18,6 +18,7 @@ namespace HealthApp.ConsoleApp.Services
         public void AddDoctor(Doctor doctor)
         {
             List<Doctor> doctors = doctorRepository.GetAllDoctors();
+            doctor.DoctorId = doctors.Count > 0 ? doctors.Max(d => d.DoctorId) + 1 : 1;
 
             // Check duplicate ID
             foreach (var d in doctors)
@@ -53,6 +54,11 @@ namespace HealthApp.ConsoleApp.Services
         {
             var doctors = doctorRepository.GetAllDoctors();
             return doctors.FirstOrDefault(d => d.DoctorId == id);
+        }
+
+        public List<Doctor> ViewAllDoctors()
+        {
+            return doctorRepository.GetAllDoctors();
         }
     }
 }

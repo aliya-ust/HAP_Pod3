@@ -1,86 +1,178 @@
-﻿using Moq;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using HealthApp.ConsoleApp.Services;
-using HealthApp.ConsoleApp.Repositories;
+﻿
+using Moq;
+using Xunit;
+using HealthApp.ConsoleApp.Interfaces;
 using HealthApp.ConsoleApp.Models;
+using HealthApp.ConsoleApp.Exceptions;
 
 namespace HealthApp.Tests.Service
 {
     public class PatientServiceTest
     {
-        private Mock<PatientRepository> _mockRepo;
-        private PatientService _patientService;
+        private readonly Mock<IPatientRepository> _mockRepo;
+        private readonly PatientService _service;
 
         public PatientServiceTest()
         {
-            _mockRepo = new Mock<PatientRepository>();
-            _patientService=new PatientService(_mockRepo.Object);
+            _mockRepo = new Mock<IPatientRepository>();
+            _service = new PatientService(_mockRepo.Object);
         }
 
+        // ADD
         [Fact]
-        public void AddPatient_ShouldAddPatient()
+        public void AddPatient_Should_CallRepository()
         {
-            // Arrange
-            var patient = new Patient { Name = "Arjun" };
-            _mockRepo.Setup(repo => repo.Add(patient)).Verifiable();
-            // Act
-            _patientService.Register(patient);
-            // Assert
-            _mockRepo.Verify(repo => repo.Add(patient), Times.Once);
+            var patient = new Patient { Name = "Arjun", Dob = DateTime.Now.AddYears(-20) };
+
+            _service.AddPatient(patient);
+
+            _mockRepo.Verify(r => r.AddPatient(patient), Times.Once);
         }
 
+        //  UPDATE SUCCESS
         [Fact]
-        public void UpdatePatient_ShouldUpdatePatient()
+        public void UpdatePatient_Should_CallRepository_WhenValid()
         {
-            // Arrange
-            var patient = new Patient { PatientId = 1, Name = "Arjun" };
-            _mockRepo.Setup(repo => repo.Update(patient)).Verifiable();
-            // Act
-            _patientService.Update(patient);
-            // Assert
-            _mockRepo.Verify(repo => repo.Update(patient), Times.Once);
+            var patient = new Patient
+            {
+                Id = 1,
+                Name = "Arjun",
+                Dob = DateTime.Now.AddYears(-20)
+            };
+
+            _mockRepo.Setup(r => r.GetPatientById(1))
+                     .Returns(patient);
+
+            _service.UpdatePatient(patient);
+
+            _mockRepo.Verify(r => r.UpdatePatient(patient), Times.Once);
         }
 
+        //  UPDATE INVALID (Validation fails)
         [Fact]
-        public void DeletePatient_ShouldDeletePatient()
+        public void UpdatePatient_Should_ThrowException_WhenInvalid()
         {
-            // Arrange
-            int patientId = 1;
-            _mockRepo.Setup(repo => repo.Delete(patientId)).Verifiable();
-            // Act
-            _patientService.Delete(patientId);
-            // Assert
-            _mockRepo.Verify(repo => repo.Delete(patientId), Times.Once);
+            var patient = new Patient
+            {
+                Id = 1,
+                Name = "", // invalid
+                Dob = DateTime.Now.AddYears(-20)
+            };
+
+            Assert.Throws<PatientInvalidException>(() =>
+                _service.UpdatePatient(patient));
         }
 
+        // DELETE SUCCESS
         [Fact]
-        public void GetPatientById_ShouldReturnPatient()
+        public void DeletePatient_Should_Delete_WhenExists()
         {
-            // Arrange
-            var patient = new Patient { PatientId = 1, Name = "Arjun" };
-            _mockRepo.Setup(repo => repo.GetById(1)).Returns(patient);
+            _mockRepo.Setup(r => r.GetPatientById(1))
+                     .Returns(new Patient { Id = 1 });
+
+            _service.DeletePatient(1);
+
+            _mockRepo.Verify(r => r.DeletePatient(1), Times.Once);
         }
 
+        //  DELETE - NOT FOUND
         [Fact]
-        public void GetAllPatients_ShouldReturnAllPatients()
+        public void DeletePatient_Should_Throw_NotFound()
         {
-            // Arrange
+            _mockRepo.Setup(r => r.GetPatientById(1))
+                     .Returns((Patient)null);
+
+            Assert.Throws<PatientNotFoundException>(() =>
+                _service.DeletePatient(1));
+        }
+
+        // DELETE - INVALID ID
+        [Fact]
+        public void DeletePatient_Should_Throw_Invalid_WhenIdZero()
+        {
+            Assert.Throws<PatientInvalidException>(() =>
+                _service.DeletePatient(0));
+        }
+
+        //  GET BY ID SUCCESS
+        [Fact]
+        public void GetPatientById_Should_ReturnPatient()
+        {
+            var patient = new Patient { Id = 1, Name = "Arjun" };
+
+            _mockRepo.Setup(r => r.GetPatientById(1))
+                     .Returns(patient);
+
+            var result = _service.GetPatientById(1);
+
+            Assert.NotNull(result);
+            Assert.Equal("Arjun", result.Name);
+        }
+
+        // GET BY ID NOT FOUND
+        [Fact]
+        public void GetPatientById_Should_Throw_WhenNotFound()
+        {
+            _mockRepo.Setup(r => r.GetPatientById(1))
+                     .Returns((Patient)null);
+
+            Assert.Throws<PatientNotFoundException>(() =>
+                _service.GetPatientById(1));
+        }
+
+        //  GET ALL
+        [Fact]
+        public void GetAllPatients_Should_ReturnList()
+        {
             var patients = new List<Patient>
             {
-                new Patient { PatientId = 1, Name = "Arjun" },
-                new Patient { PatientId = 2, Name = "kevin" }
+                new Patient { Id = 1, Name = "Arjun" },
+                new Patient { Id = 2, Name = "Kevin" }
             };
-            _mockRepo.Setup(repo => repo.GetAll()).Returns(patients);
-            // Act
 
-            var result = _patientService.GetAllPatients();
-            // Assert
-            Assert.NotNull(result);
+            _mockRepo.Setup(r => r.GetAllPatients())
+                     .Returns(patients);
+
+            var result = _service.GetAllPatients();
+
             Assert.Equal(2, result.Count);
-            Assert.Equal("Arjun", result[0].Name);
         }
 
+        // AGE CALCULATION
+        [Fact]
+        public void GetPatientAge_Should_ReturnAge()
+        {
+            var patient = new Patient
+            {
+                Id = 1,
+                Dob = DateTime.Now.AddYears(-25)
+            };
+
+            _mockRepo.Setup(r => r.GetPatientById(1))
+                     .Returns(patient);
+
+            var age = _service.GetPatientAge(1);
+
+            Assert.True(age >= 24); // safe check
+        }
+
+        //  PROFILE SUMMARY
+        [Fact]
+        public void GetPatientProfileSummary_Should_ReturnSummary()
+        {
+            var patient = new Patient
+            {
+                Id = 1,
+                Name = "Arjun",
+                Dob = DateTime.Now.AddYears(-20)
+            };
+
+            _mockRepo.Setup(r => r.GetPatientById(1))
+                     .Returns(patient);
+
+            var result = _service.GetPatientProfileSummary(1);
+
+            Assert.NotNull(result);
+        }
     }
 }
