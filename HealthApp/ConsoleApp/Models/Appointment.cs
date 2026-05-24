@@ -38,7 +38,7 @@ namespace HealthApp.ConsoleApp.Models
             CancellationReason = reason;
         }
 
-        // Mark appointment as completeed
+        // Mark appointment as completed
         public void Complete()
         {
             if (Status != AppointmentStatus.Confirmed)

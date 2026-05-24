@@ -1,5 +1,6 @@
 ﻿using System;
 using HealthApp.ConsoleApp.Exceptions;
+using HealthApp.ConsoleApp.Helpers;
 using HealthApp.ConsoleApp.Interfaces;
 using HealthApp.ConsoleApp.Models;
 
@@ -20,296 +21,127 @@ namespace HealthApp.ConsoleApp.Menus
 
         public string RegisterPatient()
         {
-            string fullName;
-            DateTime dob;
-            GenderType gender;
-            string phone;
-            string email;
-            int insuranceId;
-
-            Console.Clear();
-            while (true)
+            try
             {
-                Console.Write("Enter Full name of patient (or 'q' to quit): ");
-                string? input = Console.ReadLine();
+                Console.Clear();
 
-                if (input?.ToLower() == "q")
+                var fullName = InputValidator.GetValidatedInput(
+                    "Enter Full Name (or 'q' to quit): ",
+                    InputValidator.IsValidName,
+                    "Name must not contain numbers");
+
+                var dob = InputValidator.GetValidDate("Enter DOB (dd/MM/yyyy): ");
+                var gender = InputValidator.GetValidGender("Enter Gender (M/F/Other): ");
+
+                var phone = InputValidator.GetValidatedInput(
+                    "Enter Phone: ",
+                    InputValidator.IsValidPhone,
+                    "Phone must be 10 digits");
+
+                var email = InputValidator.GetValidatedInput(
+                    "Enter Email: ",
+                    InputValidator.IsValidEmail,
+                    "Invalid email");
+
+                var insuranceInput = InputValidator.GetValidatedInput(
+                    "Enter Insurance ID: ",
+                    InputValidator.IsValidInsuranceId,
+                    "Invalid insurance ID");
+
+                int insuranceId = int.Parse(insuranceInput!);
+
+                var patient = new Patient
                 {
-                    Console.WriteLine(PatientRegistrationCancelled);
-                    Console.WriteLine(Continue);
-                    Console.ReadKey();
-                    return "";            
-                }
+                    FullName = fullName!,
+                    DateOfBirth = dob,
+                    Gender = gender,
+                    PhoneNumber = phone!,
+                    Email = email!,
+                    InsuranceId = insuranceId
+                };
 
-                if (!string.IsNullOrWhiteSpace(input) && !input.Any(char.IsDigit))
-                {
-                    fullName = input.Trim();
-                    break;
-                }
-
-                Console.WriteLine("Full Name cannot be empty and must not contain numbers.\n");
+                return _patientService.RegisterPatient(patient);
             }
-
-            while (true)
+            catch (OperationCanceledException)
             {
-                Console.Write("Enter Date of Birth (dd/mm/yyyy) (or 'q' to quit): ");
-                string? input = Console.ReadLine();
-
-                if (input?.ToLower() == "q")
-                {
-                    Console.WriteLine(PatientRegistrationCancelled);
-                    Console.WriteLine(Continue);
-                    Console.ReadKey();
-                    return "";            
-                }
-
-                if (DateTime.TryParseExact(
-                        input,
-                        "dd/MM/yyyy",
-                        System.Globalization.CultureInfo.InvariantCulture,
-                        System.Globalization.DateTimeStyles.None,
-                        out dob))
-                {
-                    break;
-                }
-
-                Console.WriteLine("Invalid Date of Birth.\n");
+                return "Operation Canceled";
             }
-
-            while (true)
-            {
-                Console.Write("Enter Gender (M/F/Other) (or 'q' to quit): ");
-                string? input = Console.ReadLine();
-
-                if (input?.ToLower() == "q")
-                {
-                    Console.WriteLine(PatientRegistrationCancelled);
-                    Console.WriteLine(Continue);
-                    Console.ReadKey();
-                    return "";            
-                }
-                
-                if (Enum.TryParse<GenderType>(input, true, out var parsedGender))
-                    {
-                        gender = parsedGender;
-                        break;
-                    }
-
-                Console.WriteLine("Invalid gender\n");
-            }
-
-            while (true)
-            {
-                Console.Write("Enter Phone Number (or 'q' to quit): ");
-                string? input = Console.ReadLine()?.Trim();
-
-                if (input?.ToLower() == "q")
-                {
-                    Console.WriteLine(PatientRegistrationCancelled);
-                    Console.WriteLine(Continue);
-                    Console.ReadKey();
-                    return "";            
-                }
-
-                if (!string.IsNullOrWhiteSpace(input) &&
-                    input.Length == 10 &&
-                    input.All(char.IsDigit))
-                {
-                    phone = input;
-                    break;
-                }
-
-                Console.WriteLine("Phone must be exactly 10 digits.\n");
-            }
-
-            while (true)
-            {
-                Console.Write("Enter Email (or 'q' to quit): ");
-                string? input = Console.ReadLine();
-
-                if (input?.ToLower() == "q")
-                {
-                    Console.WriteLine(PatientRegistrationCancelled);
-                    Console.WriteLine(Continue);
-                    Console.ReadKey();
-                    return "";            
-                }
-
-                if (!string.IsNullOrWhiteSpace(input) && input.Contains('@'))
-                {
-                    email = input.Trim();
-                    break;
-                }
-
-                Console.WriteLine("Invalid email.\n");
-            }
-
-            while (true)
-            {
-                Console.Write("Enter Insurance ID (or 'q' to quit): ");
-                string? input = Console.ReadLine();
-
-                if (input?.ToLower() == "q")
-                {
-                    Console.WriteLine(PatientRegistrationCancelled);
-                    Console.WriteLine(Continue);
-                    Console.ReadKey();
-                    return "";            
-                }
-
-                if (int.TryParse(input, out insuranceId) && insuranceId >= 0)
-                    break;
-
-                Console.WriteLine("Invalid Insurance ID.\n");
-            }
-
-            var patient = new Patient
-            {
-                FullName = fullName,
-                DateOfBirth = dob,
-                Gender = gender,
-                PhoneNumber = phone,
-                Email = email,
-                InsuranceId = insuranceId
-            };
-
-            return _patientService.RegisterPatient(patient);
         }
 
         public string UpdatePatient()
         {
             try
             {
-                int patientId;
-
                 Console.Clear();
+
                 Console.Write("Enter ID of patient you wish to update (or 'q' to quit): ");
                 string? input = Console.ReadLine();
 
                 if (input?.ToLower() == "q")
                     return "Update cancelled.";
 
-                if (!int.TryParse(input, out patientId) || patientId <= 0)
+                if (!int.TryParse(input, out int patientId) || patientId <= 0)
                     return "Invalid Patient ID";
 
                 var existingPatient = _patientService.GetPatientById(patientId);
                 if (existingPatient == null)
                     return "Patient not found";
-                    
+
                 Console.WriteLine("\nCurrent Patient Details:");
                 Console.WriteLine(existingPatient);
 
-                string fullName = existingPatient.FullName;
-                while (true)
-                {
-                    Console.Write("\nEnter Full Name (Press ENTER to keep existing value): ");
-                    input = Console.ReadLine();
+                var fullNameInput = InputValidator.GetValidatedInput(
+                    "\nEnter Full Name (Press ENTER to keep existing value): ",
+                    InputValidator.IsValidName,
+                    "Full Name must not contain numbers.",
+                    allowEmpty: true);
 
-                    if (string.IsNullOrWhiteSpace(input))
-                        break;
+                var dobInput = InputValidator.GetOptionalDate(
+                    "Enter DOB (dd/MM/yyyy) (Press ENTER to keep existing): ");
 
-                    if (!input.Any(char.IsDigit))
-                    {
-                        fullName = input.Trim();
-                        break;
-                    }
+                var genderInput = InputValidator.GetOptionalGender(
+                    "Enter Gender (M/F/Other) (Press ENTER to keep existing): ");
 
-                    Console.WriteLine("Full Name must not contain numbers.\n");
-                }
 
-                DateTime dob = existingPatient.DateOfBirth;
-                while (true)
-                {
-                    Console.Write("Enter Date of Birth (dd-mm-yyyy) (Press ENTER to keep existing value): ");
-                    input = Console.ReadLine();
-                    if (string.IsNullOrWhiteSpace(input))
-                        break;
-                    if (DateTime.TryParseExact(
-                            input,
-                            "dd/MM/yyyy",
-                            System.Globalization.CultureInfo.InvariantCulture,
-                            System.Globalization.DateTimeStyles.None,
-                            out dob))
-                    {
-                        break;
-                    }
-                    Console.WriteLine("Invalid Date of Birth.");
-                }
+                var phoneInput = InputValidator.GetValidatedInput(
+                    "Enter Phone (Press ENTER to keep existing value): ",
+                    InputValidator.IsValidPhone,
+                    "Phone must be 10 digits.",
+                    allowEmpty: true);
 
-                GenderType gender = existingPatient.Gender;
-                while (true)
-                {
-                    Console.Write("Enter Gender (M/F/Other) (Press ENTER to keep existing value): ");
-                    input = Console.ReadLine();
-                    if (string.IsNullOrWhiteSpace(input))
-                        break;
-                    if (Enum.TryParse<GenderType>(input, true, out var parsedGender))
-                    {
-                        gender = parsedGender;
-                        break;
-                    }
-                    Console.WriteLine("Invalid input");
-                }
+                var emailInput = InputValidator.GetValidatedInput(
+                    "Enter Email (Press ENTER to keep existing value): ",
+                    InputValidator.IsValidEmail,
+                    "Invalid email.",
+                    allowEmpty: true);
 
-                string phone = existingPatient.PhoneNumber;
-                while (true)
-                {
-                    Console.Write("Enter Phone Number (Press ENTER to keep existing value): ");
-                    input = Console.ReadLine()?.Trim();
-                    if (string.IsNullOrWhiteSpace(input))
-                        break;
-                    if (input.Length == 10 && input.All(char.IsDigit))
-                    {
-                        phone = input;
-                        break;
-                    }
-                    Console.WriteLine("Phone must be exactly 10 digits and contain only numbers.");
-                }
-
-                string email = existingPatient.Email;
-                while (true)
-                {
-                    Console.Write("Enter Email (Press ENTER to keep existing value): ");
-                    input = Console.ReadLine();
-                    if (string.IsNullOrWhiteSpace(input))
-                        break;
-                    if (input.Contains('@'))
-                    {
-                        email = input.Trim();
-                        break;
-                    }
-                    Console.WriteLine("Invalid email.");
-                }
-
-                int insuranceId = existingPatient.InsuranceId;
-                while (true)
-                {
-                    Console.Write("Enter Insurance ID (Press ENTER to keep existing value): ");
-                    input = Console.ReadLine();
-                    if (string.IsNullOrWhiteSpace(input))
-                        break;
-                    if (int.TryParse(input, out int parsedId) && parsedId >= 0)
-                    {
-                        insuranceId = parsedId;
-                        break;
-                    }
-                    Console.WriteLine("Invalid Insurance ID.");
-                }
-
+                var insuranceInput = InputValidator.GetValidatedInput(
+                    "Enter Insurance ID (Press ENTER to keep existing value): ",
+                    InputValidator.IsValidInsuranceId,
+                    "Invalid Insurance ID.",
+                    allowEmpty: true);
+                    
                 var updatedPatient = new Patient
                 {
                     PatientId = existingPatient.PatientId,
-                    FullName = fullName,
-                    DateOfBirth = dob,
-                    Gender = gender,
-                    PhoneNumber = phone,
-                    Email = email,
-                    InsuranceId = insuranceId
+                    FullName = fullNameInput ?? existingPatient.FullName,
+                    DateOfBirth = dobInput ?? existingPatient.DateOfBirth,
+                    Gender = genderInput ?? existingPatient.Gender,
+                    PhoneNumber = phoneInput ?? existingPatient.PhoneNumber,
+                    Email = emailInput ?? existingPatient.Email,
+                    InsuranceId = insuranceInput != null
+                        ? int.Parse(insuranceInput)
+                        : existingPatient.InsuranceId
                 };
 
                 Console.Clear();
                 return _patientService.UpdatePatient(updatedPatient).GetProfileSummary();
-            } catch (PatientNotFoundException ex)
+            }
+            catch (OperationCanceledException)
+            {
+                return "Update cancelled.";
+            }
+            catch (PatientNotFoundException ex)
             {
                 return ex.Message;
             }

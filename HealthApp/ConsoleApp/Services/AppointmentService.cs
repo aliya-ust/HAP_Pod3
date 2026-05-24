@@ -113,6 +113,19 @@ namespace HealthApp.ConsoleApp.Services
             return $"Appointment of ID {appointmentId} has been cancelled successfully";
         }
 
+        //  Cancel an appointment and update reason
+        public string ConfirmAppointment(int appointmentId)
+        {
+            var appointment = _appointmentRepo.GetAppointmentById(appointmentId);
+
+            if (appointment is null)
+            {
+                throw new AppointmentNotFoundException($"Appointment of ID {appointmentId} does not exist");
+            }
+            appointment.Confirm();
+            return $"Appointment of ID {appointmentId} has been cancelled successfully";
+        }
+
         //  Get list of confirmed (upcoming) appointments
         public List<Appointment> GetUpcomingAppointments()
         {

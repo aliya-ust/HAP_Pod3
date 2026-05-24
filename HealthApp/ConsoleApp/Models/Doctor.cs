@@ -8,8 +8,10 @@ namespace HealthApp.ConsoleApp.Models
         public int YearsOfExperience { get; set; }
         public decimal ConsultationFee { get; set; }
         public bool IsActive { get; set; }
-        public List<DateTime> Appointments { get; set; } = new List<DateTime>();
+        public List<string> AvailableSlots { get; set; } = new List<string>();
+        public List<DateTime> LeaveDates { get; set; } = new List<DateTime>();
 
+        // Check if doctor is available based on leaves, and number of confirmed appointments
         public bool IsAvailable(DateTime date)
         {
             if (!IsActive)
@@ -17,9 +19,7 @@ namespace HealthApp.ConsoleApp.Models
                 return false;
             }
 
-            int count = Appointments.Count(a => a.Date == date.Date);
-
-            if (count >= 6)
+            if (LeaveDates.Any(d => d.Date == date.Date))
             {
                 return false;
             }
@@ -27,17 +27,21 @@ namespace HealthApp.ConsoleApp.Models
             return true;
         }
 
-        // Count of upcoming appointments
-        public string GetScheduleSummary()
+        // Count of upcoming confirmed appointments for this doctor
+        public string GetScheduleSummary(List<Appointment> appointments)
         {
-            int count = Appointments.Count(a => a.Date >= DateTime.Today);
+            int count = appointments.Count(a =>
+                a.Doctor.DoctorId == this.DoctorId &&
+                a.ScheduledDate.Date >= DateTime.Today &&
+                a.Status == AppointmentStatus.Confirmed
+            );
 
             if (count == 0)
             {
-                return "No upcoming appointments";
+                return $"Dr. {FullName} has no upcoming confirmed appointments.";
             }
 
-            return $"Upcoming appointments count: {count}";
+            return $"Dr. {FullName} has {count} upcoming confirmed appointments.";
         }
 
         // Formatted string of doctor details
