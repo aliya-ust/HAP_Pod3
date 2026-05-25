@@ -2,6 +2,7 @@ using HealthApp.ConsoleApp.Models;
 
 namespace HealthApp.ConsoleApp.Interfaces
 {
+    // Repository interface for managing doctors
     public interface IDoctorRepository
     {
         string AddDoctor(Doctor doctor);

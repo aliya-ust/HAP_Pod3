@@ -2,6 +2,7 @@
 
 namespace HealthApp.ConsoleApp.Interfaces
 {
+    // Repository interface for managing patients
     public interface IPatientRepository
     {
         string RegisterPatient(Patient patient);

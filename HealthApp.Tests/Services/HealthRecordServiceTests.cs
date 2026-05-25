@@ -9,6 +9,7 @@ using HealthApp.ConsoleApp.Exceptions;
 
 namespace HealthApp.Tests.Services
 {
+    // Test class for HealthRecordService to validate health record management functionalities
     public class HealthRecordServiceTests
     {
         private readonly Mock<IHealthRecordRepository> _healthRepoMock;
@@ -29,7 +30,7 @@ namespace HealthApp.Tests.Services
                 _patientRepoMock.Object
             );
         }
-
+        // Helper methods to create sample patients, doctors, and health records for testing
         private static Patient GetSamplePatient(int id)
         {
             return new Patient

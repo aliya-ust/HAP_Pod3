@@ -1,8 +1,10 @@
-namespace HealthApp.ConsoleApp.Models{
-public enum GenderType
+namespace HealthApp.ConsoleApp.Models
 {
-    Male,
-    Female,
-    Other
-}
+    // Enum to represent the gender of a patient
+    public enum GenderType
+    {
+        Male,
+        Female,
+        Other
+    }
 }

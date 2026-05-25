@@ -4,20 +4,22 @@ using System.Linq;
 
 namespace HealthApp.ConsoleApp.Models
 {
+    // Represents a doctor in the healthcare system
     public class Doctor
     {
+
         public int DoctorId { get; set; }
-        public string Name { get; set; }="";
-        public  string Specialisation { get; set; }="";
-        public  int YearsOfExperience { get; set; }=0;
-        public  decimal ConsultationFee { get; set; }=0;
+        public string Name { get; set; } = "";
+        public string Specialisation { get; set; } = "";
+        public int YearsOfExperience { get; set; } = 0;
+        public decimal ConsultationFee { get; set; } = 0;
         public bool IsActive { get; set; }
         public List<string> AvailableSlots { get; set; } = new List<string>();
 
         public List<DateTime> AvailableDates { get; set; } = new List<DateTime>();
 
         //Availability method
-        public  virtual bool IsAvailable(DateTime date)
+        public virtual bool IsAvailable(DateTime date)
         {
             if (!IsActive)
             {

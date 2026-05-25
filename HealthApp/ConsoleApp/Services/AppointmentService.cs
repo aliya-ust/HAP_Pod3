@@ -7,6 +7,7 @@ using HealthApp.ConsoleApp.Models;
 
 namespace HealthApp.ConsoleApp.Services
 {
+    // Service class to manage appointments in the healthcare system
     public class AppointmentService : IAppointmentService
     {
         private readonly IAppointmentRepository _appointmentRepo;
@@ -15,6 +16,7 @@ namespace HealthApp.ConsoleApp.Services
         {
             _appointmentRepo = appointmentRepository;
         }
+        // Method to get all appointments from the database
         public List<Appointment> GetAllAppointments()
         {
             return _appointmentRepo.GetAllAppointments();
@@ -144,7 +146,7 @@ namespace HealthApp.ConsoleApp.Services
             }
             return upcomingAppointments;
         }
-
+        // Method to update an existing appointment in the database
         public Appointment UpdateAppointment(Appointment appointment)
         {
             Appointment? existingAppointment = GetAppointmentById(appointment.AppointmentId);

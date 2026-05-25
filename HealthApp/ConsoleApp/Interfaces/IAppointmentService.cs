@@ -5,6 +5,7 @@ namespace HealthApp.ConsoleApp.Interfaces
 {   
 public interface IAppointmentService
 {
+    // Service interface for appointment-related operations
     string BookAppointment(Patient patient, Doctor doctor, DateTime date, string slot);
     string CancelAppointment(int appointmentId, string reason);
     List<Appointment> GetAppointmentsByPatientId(int patientId);

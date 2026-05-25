@@ -1,6 +1,7 @@
 using System;
 namespace HealthApp.ConsoleApp.Models
 {
+    // Represents a patient in the healthcare system
     public class Patient
     {
         public int PatientId { get; set; }
@@ -9,8 +10,8 @@ namespace HealthApp.ConsoleApp.Models
         public GenderType Gender { get; set; }
         public required string PhoneNumber { get; set; }
         public required string Email { get; set; }
-        public string InsuranceId { get; set; }="";
-        public DateTime ?CreatedAt { get; set; }
+        public string InsuranceId { get; set; } = "";
+        public DateTime? CreatedAt { get; set; }
 
         // Constructor to initialize CreatedAt
         public Patient()

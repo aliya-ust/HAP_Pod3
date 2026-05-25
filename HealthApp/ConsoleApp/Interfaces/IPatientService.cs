@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 namespace HealthApp.ConsoleApp.Interfaces
 {
+    // Service interface for patient-related operations
     public interface IPatientService
     {
         string  RegisterPatient(Patient patient);

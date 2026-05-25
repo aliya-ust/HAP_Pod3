@@ -4,7 +4,7 @@ namespace HealthApp.ConsoleApp.Exceptions
     {
         public AppointmentNotFoundException(string message) : base(message)
         {
-            
+            Console.WriteLine("Appointment not found: " + message);
         }
     }
 }
