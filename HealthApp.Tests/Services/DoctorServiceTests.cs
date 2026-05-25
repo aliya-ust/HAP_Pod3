@@ -20,7 +20,7 @@ namespace HealthApp.Tests.Services
             _service = new DoctorService(_mockRepo.Object);
         }
 
-        private Doctor GetSampleDoctor(int id)
+        private static Doctor GetSampleDoctor(int id)
         {
             return new Doctor
             {

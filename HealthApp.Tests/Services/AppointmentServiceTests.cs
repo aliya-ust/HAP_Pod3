@@ -27,7 +27,7 @@ namespace HealthApp.Tests.Services
             return IsAvailableOverride;
         }
 
-        private Patient GetSamplePatient(int id)
+        private static Patient GetSamplePatient(int id)
         {
             return new Patient
             {
@@ -38,7 +38,7 @@ namespace HealthApp.Tests.Services
             };
         }
 
-        private Doctor GetSampleDoctor(int id, bool isAvailable = true)
+        private static Doctor GetSampleDoctor(int id, bool isAvailable = true)
         {
             var mockDoctor = new Mock<Doctor>();
 

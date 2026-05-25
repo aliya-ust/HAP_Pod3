@@ -30,7 +30,7 @@ namespace HealthApp.Tests.Services
             );
         }
 
-        private Patient GetSamplePatient(int id)
+        private static Patient GetSamplePatient(int id)
         {
             return new Patient
             {
@@ -41,7 +41,7 @@ namespace HealthApp.Tests.Services
             };
         }
 
-        private Doctor GetSampleDoctor(int id)
+        private static Doctor GetSampleDoctor(int id)
         {
             return new Doctor
             {
