@@ -17,7 +17,7 @@ namespace HealthApp.ConsoleApp.Models
         public List<DateTime> AvailableDates { get; set; } = new List<DateTime>();
 
         //Availability method
-        public bool IsAvailable(DateTime date)
+        public  virtual bool IsAvailable(DateTime date)
         {
             if (!IsActive)
             {

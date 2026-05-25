@@ -30,11 +30,11 @@ namespace HealthApp.ConsoleApp.Helpers
 
           //  Console.Write("Pick a slot (1-8): ");
            // int choice = int.Parse(Console.ReadLine());
-            if (!InputValidator.TryReadInt("  Choose slot (1-8): ", out int slotChoice)
+            if (!int.TryParse("  Choose slot (1-8): ", out int slotChoice)
                 || slotChoice < 1 || slotChoice > 8)
             {
                 PrintError("Please enter a number between 1 and 8.");
-                InputValidator.Pause(); return "";
+                Pause(); return "";
          }
 
             // // Validate choice is in range
@@ -48,6 +48,11 @@ namespace HealthApp.ConsoleApp.Helpers
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine($"{msg}");
             Console.ResetColor();
+        }
+         private static void Pause()
+        {
+            Console.WriteLine("\nPress any key to continue...");
+            Console.ReadKey(intercept: true);
         }
     }
 }

@@ -2,457 +2,312 @@
 using HealthApp.ConsoleApp.Helpers;
 using HealthApp.ConsoleApp.Interfaces;
 using HealthApp.ConsoleApp.Models;
-using HealthApp.ConsoleApp.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace HealthApp.ConsoleApp.Menus
 {
     public class DoctorMenu
     {
-        private readonly IDoctorService _doctorService;
+        private readonly IDoctorService      _doctorService;
         private readonly IAppointmentService _appointmentService;
 
         public DoctorMenu(IDoctorService doctorService, IAppointmentService appointmentService)
         {
-            _doctorService = doctorService;
+            _doctorService      = doctorService;
             _appointmentService = appointmentService;
         }
-
-       // =========================================================
-        // ADD DOCTOR
-        // =========================================================
-
-        public void AddDoctor()
+         public void ShowMenu()
         {
-            PrintHeader("Add New Doctor");
-
-            // NAME
-            if (!InputValidator.TryReadName(
-                "Full Name              : ",
-                out string fullName))
-            {
-                return;
-            }
-
-            // SPECIALISATION
-            if (!InputValidator.TryReadName(
-                "Specialisation         : ",
-                out string spec))
-            {
-                return;
-            }
-
-            // EXPERIENCE
-            if (!InputValidator.TryReadPositiveInt(
-                "Years Of Experience    : ",
-                out int years))
-            {
-                return;
-            }
-
-            // FEE
-            if (!InputValidator.TryReadDecimal(
-                "Consultation Fee       : ",
-                out decimal fee))
-            {
-                return;
-            }
-
-            Console.WriteLine();
-            Console.WriteLine("Doctor available for next 30 days.");
-            Console.WriteLine("Type 'done' when finished.\n");
-
-            // =====================================================
-            // LEAVE DATES
-            // =====================================================
-
-            List<DateTime> leaveDates = new();
-
-            DateTime startDate = DateTime.Today;
-            DateTime endDate = DateTime.Today.AddDays(30);
-
             while (true)
             {
-                Console.Write("Enter Leave Date : ");
+                Console.Clear();
+                Console.WriteLine("=================================");
+                Console.WriteLine("DOCTOR MENU");
+                Console.WriteLine("=================================");
+                Console.WriteLine("1. Add Doctor");
+                Console.WriteLine("2. Search by Specialisation");
+                Console.WriteLine("3. Get Doctor By ID");
+                Console.WriteLine("4. View All Doctors");
+                Console.WriteLine("5. Back");
 
-                string input =
-                    Console.ReadLine()?.Trim() ?? "";
+                Console.Write("Enter choice: ");
+                string ?choice = Console.ReadLine();
 
-                InputValidator.CheckForExit(input);
-
-                if (input.Equals("done",
-                    StringComparison.OrdinalIgnoreCase))
+                switch (choice)
                 {
-                    break;
-                }
-
-                if (!DateTime.TryParseExact(
-                    input,
-                    "dd/MM/yyyy",
-                    System.Globalization.CultureInfo.InvariantCulture,
-                    System.Globalization.DateTimeStyles.None,
-                    out DateTime leaveDate))
-                {
-                    PrintError("Invalid format. Use dd/MM/yyyy");
-                    continue;
-                }
-
-                if (leaveDate < startDate ||
-                    leaveDate > endDate)
-                {
-                    PrintError("Only next 30 days allowed.");
-                    continue;
-                }
-
-                if (leaveDates.Contains(leaveDate))
-                {
-                    PrintError("Already added.");
-                    continue;
-                }
-
-                leaveDates.Add(leaveDate);
-
-                Console.WriteLine(
-                    $"Leave Added : {leaveDate:dd/MM/yyyy}");
-            }
-
-            // =====================================================
-            // GENERATE AVAILABLE DATES
-            // =====================================================
-
-            List<DateTime> availableDates = new();
-
-            for (DateTime d = startDate;
-                 d <= endDate;
-                 d = d.AddDays(1))
-            {
-                if (!leaveDates.Contains(d))
-                {
-                    availableDates.Add(d);
-                }
-            }
-
-            // =====================================================
-            // SLOT SELECTION
-            // =====================================================
-
-            SlotHelper slotHelper = new();
-
-            List<string> allSlots =
-                slotHelper.AvailableSlots;
-
-            List<string> defaultSlots = new();
-
-            while (true)
-            {
-                Console.WriteLine("\nAvailable Slots:");
-
-                for (int i = 0; i < allSlots.Count; i++)
-                {
-                    Console.WriteLine(
-                        $"{i + 1}. {allSlots[i]}");
-                }
-
-                if (!InputValidator.TryReadString(
-                    "\nSelect Slots (1,2,3): ",
-                    out string slotInput))
-                {
-                    return;
-                }
-
-                string[] choices = slotInput.Split(',');
-
-                List<string> selectedSlots = new();
-
-                bool valid = true;
-
-                foreach (string choice in choices)
-                {
-                    if (!int.TryParse(
-                        choice.Trim(),
-                        out int index))
-                    {
-                        PrintError($"Invalid choice : {choice}");
-                        valid = false;
+                    case "1": AddDoctor(); break;
+                    case "2": SearchBySpecialisation(); break;
+                    case "3": GetDoctorById(); break;
+                    case "4": ViewAllDoctors(); break;
+                    case "5": return;
+                    default:
+                        Console.WriteLine("Invalid choice.");
+                        Pause();
                         break;
-                    }
-
-                    if (index < 1 || index > allSlots.Count)
-                    {
-                        PrintError("Invalid slot number.");
-                        valid = false;
-                        break;
-                    }
-
-                    string slot = allSlots[index - 1];
-
-                    if (!selectedSlots.Contains(slot))
-                    {
-                        selectedSlots.Add(slot);
-                    }
                 }
-
-                if (!valid || selectedSlots.Count == 0)
-                {
-                    continue;
-                }
-
-                defaultSlots = selectedSlots;
-                break;
             }
-
-            // =====================================================
-            // CREATE SCHEDULE
-            // =====================================================
-
-            Dictionary<DateTime, List<string>>
-                doctorSchedule = new();
-
-            foreach (DateTime date in availableDates)
-            {
-                doctorSchedule[date] =
-                    new List<string>(defaultSlots);
-            }
-
-            // =====================================================
-            // MODIFY SPECIFIC DATES
-            // =====================================================
-
-            while (InputValidator.Confirm(
-                "\nModify slots for specific date"))
-            {
-                if (!InputValidator.TryReadFutureDate(
-                    "Enter Date (dd/MM/yyyy): ",
-                    out DateTime modifyDate))
-                {
-                    return;
-                }
-
-                if (!doctorSchedule.ContainsKey(modifyDate))
-                {
-                    PrintError("Date unavailable.");
-                    continue;
-                }
-
-                Console.WriteLine(
-                    $"\nCurrent Slots : " +
-                    $"{string.Join(", ",
-                    doctorSchedule[modifyDate])}");
-
-                for (int i = 0; i < allSlots.Count; i++)
-                {
-                    Console.WriteLine(
-                        $"{i + 1}. {allSlots[i]}");
-                }
-
-                Console.WriteLine(
-                    "\nType NONE for leave");
-
-                if (!InputValidator.TryReadString(
-                    "New Slots : ",
-                    out string newInput))
-                {
-                    return;
-                }
-
-                if (newInput.Equals("none",
-                    StringComparison.OrdinalIgnoreCase))
-                {
-                    doctorSchedule.Remove(modifyDate);
-
-                    Console.WriteLine(
-                        "Marked as leave.");
-
-                    continue;
-                }
-
-                string[] choices = newInput.Split(',');
-
-                List<string> updatedSlots = new();
-
-                bool valid = true;
-
-                foreach (string choice in choices)
-                {
-                    if (!int.TryParse(
-                        choice.Trim(),
-                        out int index))
-                    {
-                        valid = false;
-                        break;
-                    }
-
-                    if (index < 1 || index > allSlots.Count)
-                    {
-                        valid = false;
-                        break;
-                    }
-
-                    string slot = allSlots[index - 1];
-
-                    if (!updatedSlots.Contains(slot))
-                    {
-                        updatedSlots.Add(slot);
-                    }
-                }
-
-                if (!valid || updatedSlots.Count == 0)
-                {
-                    PrintError("Invalid slots.");
-                    continue;
-                }
-
-                doctorSchedule[modifyDate] =
-                    updatedSlots;
-
-                Console.WriteLine(
-                    "Schedule updated.");
-            }
-
-            // =====================================================
-            // FINAL SCHEDULE
-            // =====================================================
-
-            Console.WriteLine(
-                "\n========== FINAL SCHEDULE ==========");
-
-            foreach (var entry in doctorSchedule)
-            {
-                Console.WriteLine(
-                    $"{entry.Key:dd/MM/yyyy}" +
-                    $" → {string.Join(", ", entry.Value)}");
-            }
-
-            // =====================================================
-            // CREATE DOCTOR
-            // =====================================================
-
-            Doctor doctor = new()
-            {
-                Name = fullName,
-                Specialisation = spec,
-                YearsOfExperience = years,
-                ConsultationFee = fee,
-                IsActive = true,
-
-                AvailableDates =
-                    doctorSchedule.Keys.ToList(),
-
-                AvailableSlots =
-                    doctorSchedule
-                    .SelectMany(x => x.Value)
-                    .Distinct()
-                    .ToList()
-            };
-
-            _doctorService.AddDoctor(doctor);
-
-            Console.WriteLine();
-
-            PrintSuccess(
-                "Doctor Added Successfully!");
-
-            InputValidator.Pause();
         }
 
 
-
-        //SEARCH
-        public void SearchBySpecialisation()
+        // Add a new doctor with schedule and available slots
+        public void AddDoctor()
         {
-            PrintHeader("Search Doctors by Specialisation");
-
-            if (!InputValidator.TryReadName("Specialisation: ", out string query))
-            {
-                InputValidator.Pause();
-                return;
-            }
-
             try
             {
+                PrintHeader("Add New Doctor");
+                Console.WriteLine("Type 'q' or 'back' anytime to return.\n");
 
-                var results = _doctorService.SearchBySpecialisation(query);
+                // Get and validate doctor full name
+                string name = InputValidator.GetValidatedInput(
+                    "Full Name              : ",
+                    InputValidator.IsValidName,
+                    "Name cannot be empty or contain numbers.")!;
 
-                foreach (var d in results)
+                // Get and validate specialisation
+                string spec = InputValidator.GetValidatedInput(
+                    "Specialisation         : ",
+                    InputValidator.IsValidName,
+                    "Specialisation cannot be empty or contain numbers.")!;
+
+                // Get and validate years of experience
+                string yearsRaw = InputValidator.GetValidatedInput(
+                    "Years Of Experience    : ",
+                    InputValidator.IsValidExperience,
+                    "Please enter a valid non-negative number.")!;
+
+                // Get and validate consultation fee
+                string feeRaw = InputValidator.GetValidatedInput(
+                    "Consultation Fee (Rs.) : ",
+                    InputValidator.IsValidFee,
+                    "Please enter a valid non-negative amount.")!;
+
+                int     years = int.Parse(yearsRaw);
+                decimal fee   = decimal.Parse(feeRaw);
+
+                // Collect leave dates within the next 30 days
+                List<DateTime> leaveDates = new();
+                DateTime startDate = DateTime.Today;
+                DateTime endDate   = DateTime.Today.AddDays(30);
+
+                Console.WriteLine("\nDoctor is available for the next 30 days.");
+                Console.WriteLine("Enter leave dates one by one. Type 'done' when finished.\n");
+
+                while (true)
                 {
-                    Console.WriteLine($"\n[{d.DoctorId}] {d.Name} - {d.Specialisation}");
+                    Console.Write("Enter Leave Date (dd/MM/yyyy) or 'done' : ");
+                    string input = Console.ReadLine()?.Trim() ?? "";
 
-                    // Fetch appointments for this doctor
-                    var appointments = _appointmentService.GetAppointmentsByDoctor(d.DoctorId);
+                    if (input.Equals("q",    StringComparison.OrdinalIgnoreCase) ||
+                        input.Equals("back", StringComparison.OrdinalIgnoreCase))
+                        throw new OperationCanceledException();
 
-                    if (appointments.Count == 0)
+                    if (input.Equals("done", StringComparison.OrdinalIgnoreCase))
+                        break;
+
+                    if (!DateTime.TryParseExact(input, "dd/MM/yyyy",
+                        System.Globalization.CultureInfo.InvariantCulture,
+                        System.Globalization.DateTimeStyles.None, out DateTime leaveDate))
                     {
-                        Console.WriteLine("No available slots.");
+                        PrintError("Invalid format. Use dd/MM/yyyy.");
                         continue;
                     }
 
-                    Console.WriteLine("Available Slots:");
-
-                    foreach (var appt in appointments)
+                    if (leaveDate < startDate || leaveDate > endDate)
                     {
-                        Console.WriteLine($"Date: {appt.ScheduledDate:dd-MM-yyyy} | Time: {appt.TimeSlot}");
+                        PrintError("Only dates within the next 30 days are allowed.");
+                        continue;
                     }
+
+                    if (leaveDates.Contains(leaveDate))
+                    {
+                        PrintError("Already added.");
+                        continue;
+                    }
+
+                    leaveDates.Add(leaveDate);
+                    Console.WriteLine($"  Leave added : {leaveDate:dd/MM/yyyy}");
                 }
+
+                // Build available dates by excluding leave dates
+                List<DateTime> availableDates = new();
+                for (DateTime d = startDate; d <= endDate; d = d.AddDays(1))
+                    if (!leaveDates.Contains(d))
+                        availableDates.Add(d);
+
+                // Display and select available time slots
+                SlotHelper slotHelper = new();
+                List<string> allSlots = slotHelper.AvailableSlots;
+                List<string> defaultSlots = new();
+
+                while (true)
+                {
+                    Console.WriteLine("\nAvailable Slots:");
+                    for (int i = 0; i < allSlots.Count; i++)
+                        Console.WriteLine($"  {i + 1}. {allSlots[i]}");
+
+                    string slotInput = InputValidator.GetValidatedInput(
+                        "\nSelect Slots (e.g. 1,2,3) : ",
+                        InputValidator.IsNonEmpty,
+                        "Please enter at least one slot number.")!;
+
+                    List<string> selected = new();
+                    bool valid = true;
+
+                    foreach (string choice in slotInput.Split(','))
+                    {
+                        if (!int.TryParse(choice.Trim(), out int index) ||
+                            index < 1 || index > allSlots.Count)
+                        {
+                            PrintError($"Invalid slot choice: {choice.Trim()}");
+                            valid = false;
+                            break;
+                        }
+
+                        string slot = allSlots[index - 1];
+                        if (!selected.Contains(slot)) selected.Add(slot);
+                    }
+
+                    if (!valid || selected.Count == 0) continue;
+
+                    defaultSlots = selected;
+                    break;
+                }
+
+                // Build and save the doctor
+                Doctor doctor = new()
+                {
+                    Name              = name,
+                    Specialisation    = spec,
+                    YearsOfExperience = years,
+                    ConsultationFee   = fee,
+                    IsActive          = true,
+                    AvailableDates    = availableDates,
+                    AvailableSlots    = defaultSlots
+                };
+
+                _doctorService.AddDoctor(doctor);
+
+                PrintSuccess("Doctor Added Successfully!");
+                Console.WriteLine($"  {doctor.GetScheduleSummary()}");
+            }
+            catch (OperationCanceledException)
+            {
+                Console.WriteLine("\nReturning to Main Menu...");
+            }
+            catch (Exception ex)
+            {
+                PrintError(ex.Message);
+            }
+
+            Pause();
+        }
+
+        // Search doctors by specialisation and show their details
+        public void SearchBySpecialisation()
+        {
+            try
+            {
+                PrintHeader("Search Doctors by Specialisation");
+                Console.WriteLine("Type 'q' or 'back' to return.\n");
+
+                // Get specialisation keyword
+                string query = InputValidator.GetValidatedInput(
+                    "Specialisation : ",
+                    InputValidator.IsValidName,
+                    "Specialisation cannot be empty.")!;
+
+                var results = _doctorService.GetDoctorsBySpecialisation(query);
+                Console.WriteLine($"\n  {results.Count} doctor(s) found:\n");
+
+                foreach (var d in results)
+                {
+                    Console.WriteLine($"  [{d.DoctorId}] {d.Name} — {d.Specialisation}");
+                    Console.WriteLine($"  Experience : {d.YearsOfExperience} years | Fee : Rs.{d.ConsultationFee}");
+                    Console.WriteLine($"  Status     : {(d.IsActive ? "Active" : "Inactive")}");
+                    Console.WriteLine(d.AvailableSlots.Count > 0
+                        ? $"  Slots      : {string.Join(", ", d.AvailableSlots)}"
+                        : "  Slots      : None configured");
+
+                    // Show availability using spec method IsAvailable()
+                    bool availableToday = d.IsAvailable(DateTime.Today);
+                    Console.ForegroundColor = availableToday ? ConsoleColor.Green : ConsoleColor.Yellow;
+                    Console.WriteLine($"  Available Today : {(availableToday ? "Yes" : "No")}");
+                    Console.ResetColor();
+
+                    // Show schedule summary using spec method GetScheduleSummary()
+                    Console.WriteLine($"  {d.GetScheduleSummary()}");
+                    Console.WriteLine(new string('-', 50));
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                Console.WriteLine("\nReturning to Main Menu...");
             }
             catch (SpecialisationNotFoundException ex)
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine($"\n  {ex.Message}");
             }
 
-            InputValidator.Pause();
+            Pause();
         }
 
-        // GET BY ID
+        // Get and display a single doctor by ID
         public void GetDoctorById()
         {
-            Console.WriteLine("----- Get Doctor By ID -----");
-
-            if (!InputValidator.TryReadPositiveInt("Enter Doctor ID: ", out int doctorId))
+            try
             {
-                Console.WriteLine("Invalid input.");
-                InputValidator.Pause();
-                return;
+                PrintHeader("Get Doctor by ID");
+                Console.WriteLine("Type 'q' or 'back' to return.\n");
+
+                // Get and validate doctor ID
+                string raw = InputValidator.GetValidatedInput(
+                    "Enter Doctor ID : ",
+                    InputValidator.IsValidId,
+                    "Please enter a valid positive number.")!;
+
+                Doctor doctor = _doctorService.GetDoctorById(int.Parse(raw));
+
+                if (doctor == null)
+                {
+                    PrintError("Doctor not found.");
+                    Pause();
+                    return;
+                }
+
+                Console.WriteLine(new string('-', 36));
+                Console.WriteLine($"ID             : {doctor.DoctorId}");
+                Console.WriteLine($"Name           : {doctor.Name}");
+                Console.WriteLine($"Specialisation : {doctor.Specialisation}");
+                Console.WriteLine($"Experience     : {doctor.YearsOfExperience} years");
+                Console.WriteLine($"Fee            : Rs.{doctor.ConsultationFee}");
+                Console.WriteLine($"Active         : {(doctor.IsActive ? "Yes" : "No")}");
+                Console.WriteLine($"Slots          : {string.Join(", ", doctor.AvailableSlots)}");
+                Console.WriteLine(new string('-', 36));
+            }
+            catch (OperationCanceledException)
+            {
+                Console.WriteLine("\nReturning to Main Menu...");
             }
 
-            Doctor doctor = _doctorService.GetByDoctorId(doctorId);
-
-            if (doctor == null)
-            {
-                Console.WriteLine("Doctor not found.");
-                InputValidator.Pause();
-                return;
-            }
-
-            Console.WriteLine("\nDoctor Details:");
-            Console.WriteLine("--------------------------------");
-            Console.WriteLine($"ID             : {doctor.DoctorId}");
-            Console.WriteLine($"Name           : {doctor.Name}");
-            Console.WriteLine($"Specialisation : {doctor.Specialisation}");
-            Console.WriteLine($"Experience     : {doctor.YearsOfExperience} years");
-            Console.WriteLine($"Consultation   : Rs.{doctor.ConsultationFee}");
-            Console.WriteLine($"Active         : {(doctor.IsActive ? "Yes" : "No")}");
-            Console.WriteLine("--------------------------------");
-
-            InputValidator.Pause();
+            Pause();
         }
+
+        // Display all doctors in the system
         public void ViewAllDoctors()
         {
-            Console.WriteLine("----- ALL DOCTORS -----\n");
+            PrintHeader("All Doctors");
 
             var doctors = _doctorService.GetAllDoctors();
 
             if (doctors == null || doctors.Count == 0)
             {
-                Console.WriteLine("No doctors available.");
-                InputValidator.Pause();
+                PrintError("No doctors available.");
+                Pause();
                 return;
             }
 
             foreach (var doctor in doctors)
             {
-                Console.WriteLine("------------------------------------");
+                Console.WriteLine(new string('-', 40));
                 Console.WriteLine($"ID             : {doctor.DoctorId}");
                 Console.WriteLine($"Name           : {doctor.Name}");
                 Console.WriteLine($"Specialisation : {doctor.Specialisation}");
@@ -461,43 +316,42 @@ namespace HealthApp.ConsoleApp.Menus
                 Console.WriteLine($"Active         : {(doctor.IsActive ? "Yes" : "No")}");
             }
 
-            Console.WriteLine("------------------------------------");
+            Console.WriteLine(new string('-', 40));
+            Pause();
+        }
+        public void UpdateDoctor()
+        {
+             try
+            {
+                PrintHeader("Get Doctor by ID");
+                Console.WriteLine("Type 'q' or 'back' to return.\n");
 
-            InputValidator.Pause();
+                // Get and validate doctor ID
+                string raw = InputValidator.GetValidatedInput(
+                    "Enter Doctor ID : ",
+                    InputValidator.IsValidId,
+                    "Please enter a valid positive number.")!;
+
+                Doctor doctor = _doctorService.GetDoctorById(int.Parse(raw));
+
+                if (doctor == null)
+                {
+                    PrintError("Doctor not found.");
+                    Pause();
+                    return;
+                }
+
+            }
+            catch (OperationCanceledException)
+            {
+               Console.WriteLine("\nReturning to Main Menu...");
+            }
+
+            Pause();
+            
         }
 
-        // // MENU
-        // public void ShowMenu()
-        // {
-        //     while (true)
-        //     {
-        //         Console.Clear();
-        //         Console.WriteLine("=================================");
-        //         Console.WriteLine("DOCTOR MENU");
-        //         Console.WriteLine("=================================");
-        //         Console.WriteLine("1. Add Doctor");
-        //         Console.WriteLine("2. Search by Specialisation");
-        //         Console.WriteLine("3. Get Doctor By ID");
-        //         Console.WriteLine("4. View All Doctors");
-        //         Console.WriteLine("5. Back");
-
-        //         Console.Write("Enter choice: ");
-        //         string choice = Console.ReadLine();
-
-        //         switch (choice)
-        //         {
-        //             case "1": AddDoctor(); break;
-        //             case "2": SearchBySpecialisation(); break;
-        //             case "3": GetDoctorById(); break;
-        //             case "4": ViewAllDoctors(); break;
-        //             case "5": return;
-        //             default:
-        //                 Console.WriteLine("Invalid choice.");
-        //                 InputValidator.Pause();
-        //                 break;
-        //         }
-        //     }
-        // }
+        // ── Helpers ──────────────────────────────────────────────────────────────
 
         private static void PrintHeader(string title)
         {
@@ -510,199 +364,18 @@ namespace HealthApp.ConsoleApp.Menus
             Console.WriteLine(msg);
             Console.ResetColor();
         }
-        private void PrintError(string message)
+
+        private static void PrintError(string message)
         {
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine($"\nERROR : {message}");
             Console.ResetColor();
         }
+
+        private static void Pause()
+        {
+            Console.WriteLine("\nPress any key to continue...");
+            Console.ReadKey(intercept: true);
+        }
     }
 }
-// using System;
-// using System.Collections.Generic;
-// using System.Xml.Linq;
-// using HealthApp.ConsoleApp.Helpers;
-// using HealthApp.ConsoleApp.Interfaces;
-// using HealthApp.ConsoleApp.Models;
-
-// namespace HealthApp.ConsoleApp.Menus
-// {
-//     public class DoctorMenu
-//     {
-//         private readonly IDoctorService _doctorService;
-
-//         // DI Constructor
-//         public DoctorMenu(IDoctorService doctorService)
-//         {
-//             _doctorService = doctorService;
-//         }
-
-//         // ── Option 2: Add a new doctor ────────────────────────────────────────────
-
-//         public void AddDoctor()
-//         {
-//             PrintHeader("Add New Doctor");
-
-//                 // ── Full Name ────────────────────────────────────────────────────────
-//                 if (!InputValidator.TryReadName("Full name            : ", out string Name))
-//                 {
-//                     PrintError("Name can contain only letters.Try again");//InputValidator.Pause(); return;
-//                 }
-
-//                 // ── Specialisation ───────────────────────────────────────────────────
-//                 if (!InputValidator.TryReadName("Specialisation       : ", out string spec))
-//                 {
-//                     InputValidator.Pause(); return;
-//                 }
-
-//                 // ── Years of Experience ──────────────────────────────────────────────
-//                 if (!InputValidator.TryReadPositiveInt("Years of experience  : ", out int years))
-//                 {
-//                     InputValidator.Pause(); return;
-//                 }
-
-//                 // ── Consultation Fee ─────────────────────────────────────────────────
-//                 if (!InputValidator.TryReadDecimal("Consultation fee (Rs.) : ", out decimal fee))
-//                 {
-//                     InputValidator.Pause(); return;
-//                 }
-//                 if (!InputValidator.TryReadFutureDate("Enter the future days when the doctor is available (e.g. 01/07/2024). Type 'done' when finished.", out DateTime availableDate))
-//                 {
-//                     InputValidator.Pause(); return;
-//                 }
-
-
-//             List<DateTime> availableDates = new List<DateTime>();
-//             while (true)
-//             {
-//                 Console.Write("Available date (or 'done'): ");
-//                 string input = Console.ReadLine()?.Trim() ?? "";
-//                 if (input.Equals("done", StringComparison.OrdinalIgnoreCase))
-//                 {
-//                     break;
-//                 }
-//                 if (DateTime.TryParse(input, out DateTime date))
-//                 {
-//                     if (date.Date < DateTime.Today)
-//                     {
-//                         Console.WriteLine("Please enter a future date.");
-//                     }
-//                     else
-//                     {
-//                         availableDates.Add(date);
-//                     }
-//                 }
-//                 else
-//                 {
-//                     Console.WriteLine("Invalid date format. Please enter in DD/MM/YYYY format.");
-//                 }
-//             }
-//             Console.WriteLine("Enter Avaliable slots which doctor can take (e.g. 09:00 AM). Type 'done' when finished.");
-//             List<string> availableSlots = new List<string>();
-//             while (true)
-//             {
-//                 Console.Write("Available slot (or 'done'): ");
-//                 string input = Console.ReadLine()?.Trim() ?? "";
-//                 if (input.Equals("done", StringComparison.OrdinalIgnoreCase))
-//                 {
-//                     break;
-//                 }
-//                 if (new SlotHelper().AvailableSlots.Contains(input))
-//                 {
-//                     availableSlots.Add(input);
-//                 }
-//                 else
-//                 {
-//                     Console.WriteLine("Invalid slot. Please choose from the available slots.");
-//                 }
-//             }
-
-//             // DoctorId is assigned by the service (keeps ID management in one place)
-//             var doctor = new Doctor
-//             {
-//                 Name = Name,
-//                 Specialisation = spec,
-//                 YearsOfExperience = years,
-//                 ConsultationFee = fee,
-//                 IsActive = true,
-//                 AvailableDates = availableDates,
-//                 AvailableSlots = availableSlots
-//             };
-
-//             _doctorService.AddDoctor(doctor);
-
-//             Console.WriteLine();
-//             PrintSuccess("Doctor added successfully!");
-
-//             // GetScheduleSummary() — spec method (shows appointment count = 0 for new doctor)
-//             Console.WriteLine($"  {doctor.GetScheduleSummary}");
-
-//             InputValidator.Pause();
-//         }
-
-
-//         //  Search by specialisation
-
-//         public void SearchBySpecialisation()
-//         {
-//             PrintHeader("Search Doctors by Specialisation");
-
-//             if (!InputValidator.TryReadName("Specialisation (e.g. Cardiology): ", out string query))
-//             {
-//                 InputValidator.Pause(); return;
-//             }
-
-//             List<Doctor> results = _doctorService.SearchBySpecialisation(query);
-
-//             if (results.Count == 0)
-//             {
-//                 Console.WriteLine($"\n  No active doctors found for '{query}'.");
-//                 InputValidator.Pause();
-//                 return;
-//             }
-
-//             Console.WriteLine($"\n  {results.Count} doctor(s) found:\n");
-
-//             foreach (Doctor d in results)
-//             {
-//                 Console.WriteLine($"  [{d.DoctorId}] Dr. {d.Name}");
-//                 Console.WriteLine($"       Specialisation : {d.Specialisation}");
-//                 Console.WriteLine($"       Experience     : {d.YearsOfExperience} years");
-//                 Console.WriteLine($"       Fee            : Rs.{d.ConsultationFee}");
-
-//                 // IsAvailable() — spec method
-//                 bool available = d.IsAvailable(DateTime.Today);
-//                 Console.ForegroundColor = available ? ConsoleColor.Green : ConsoleColor.Yellow;
-//                 Console.WriteLine($"       Available Today : {(available ? "Yes" : "No")}");
-//                 Console.ResetColor();
-
-//                 // Console.WriteLine($"       {d.GetScheduleSummary}");
-//                 Console.WriteLine();
-//             }
-
-//             InputValidator.Pause();
-//         }
-
-//         // ── Helper methods ────────────────────────────────────────────────────────
-
-//         private static void PrintHeader(string title)
-//         {
-//             Console.WriteLine();
-//             Console.WriteLine($"  ── {title} ──");
-//             Console.WriteLine();
-//         }
-//          private void PrintError(string message)
-//         {
-//             Console.ForegroundColor = ConsoleColor.Red;
-//             Console.WriteLine($"\nERROR : {message}");
-//             Console.ResetColor();
-//         }
-
-//         private static void PrintSuccess(string msg)
-//         {
-//             Console.ForegroundColor = ConsoleColor.Green;
-//             Console.WriteLine($"{msg}");
-//             Console.ResetColor();
-//         }
-//     }
-// }

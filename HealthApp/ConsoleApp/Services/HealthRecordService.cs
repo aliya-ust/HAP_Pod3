@@ -51,7 +51,7 @@ namespace HealthApp.ConsoleApp.Services
 
         public List<HealthRecord> GetByDoctorIdOrderByVisitDateDesc(int id)
         {
-            var doctor = _doctorRepository.GetByDoctorId(id);
+            var doctor = _doctorRepository.GetDoctorById(id);
 
             if (doctor == null)
             {
@@ -90,7 +90,7 @@ namespace HealthApp.ConsoleApp.Services
             return record;
         }
 
-        public int RecordIdGenerator(List<HealthRecord> records)
+        public static int RecordIdGenerator(List<HealthRecord> records)
         {
             return records.Any()
                 ? records.Max(r => r.RecordId) + 1
