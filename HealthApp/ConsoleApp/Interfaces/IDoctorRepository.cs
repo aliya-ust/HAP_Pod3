@@ -9,6 +9,5 @@ namespace HealthApp.ConsoleApp.Interfaces
         List<Doctor> GetDoctorsBySpecialisation(string specialisation);
         Doctor UpdateDoctor(Doctor existingDoctor, Doctor doctor);
         List<Doctor> GetAllDoctors();
-        string DeleteDoctor(int id);
     }
 }

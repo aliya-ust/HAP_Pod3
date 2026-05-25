@@ -50,15 +50,5 @@ namespace HealthApp.ConsoleApp.Repositories
         {
             return _doctorDb.Doctors.ToList();
         }
-
-        public string DeleteDoctor(int id)
-        {
-            var doctor = _doctorDb.Doctors.FirstOrDefault(d => d.DoctorId == id);
-            if (doctor == null)
-                throw new DoctorNotFoundException("Doctor with this ID does not exist");
-
-            _doctorDb.Doctors.Remove(doctor);
-            return $"Doctor of ID {id} has been deleted successfully";
-        }
     }
 }
