@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
 using Xunit;
-using HealthApp.ConsoleApp.Repositories.impl;
-using HealthApp.ConsoleApp.Database;
+using HealthApp.ConsoleApp.Repositories;
 using HealthApp.ConsoleApp.Models;
+using HealthApp.ConsoleApp.Databases;
+using HealthApp.ConsoleApp.Exceptions;
 
 namespace HealthApp.Tests.Repositories
 {
@@ -14,87 +15,145 @@ namespace HealthApp.Tests.Repositories
 
         public DoctorRepositoryTests()
         {
-            _doctorDb = new DoctorDb();
+            _doctorDb = new DoctorDb
+            {
+                Doctors = new List<Doctor>()
+            };
+
             _repository = new DoctorRepository(_doctorDb);
         }
 
-        private Doctor CreateValidDoctor(int id, string name, string specialisation)
-        {
-            return new Doctor
-            {
-                DoctorId = id,
-                FullName = name,
-                Specialisation = specialisation,
-                YearsOfExperience = 10,
-                ConsultationFee = 500m,
-                IsActive = true
-            };
-        }
-
+        // AddDoctor - Success
         [Fact]
-        public void AddDoctor_ShouldAddDoctor_ToDatabase()
+        public void AddDoctor_ShouldAddDoctor()
         {
-            var doctor = CreateValidDoctor(1, "Dr. John Smith", "Cardiology");
+            var doctor = new Doctor
+            {
+                DoctorId = 1,
+                FullName = "Dr. Smith",
+                Specialisation = "Cardiology"
+            };
 
             var result = _repository.AddDoctor(doctor);
 
             Assert.Single(_doctorDb.Doctors);
-            Assert.Equal(doctor, _doctorDb.Doctors[0]);
-            Assert.Equal("Doctor ID 1 added successfully!", result);
+            Assert.Contains("added successfully", result);
         }
 
+        // GetDoctorById - Success
         [Fact]
-        public void GetDoctorById_ShouldReturnDoctor_WhenExists()
+        public void GetDoctorById_ShouldReturnDoctor()
         {
-            var doctor = CreateValidDoctor(1, "Dr. John Smith", "Cardiology");
-            _doctorDb.Doctors.Add(doctor);
+            _doctorDb.Doctors.Add(new Doctor
+            {
+                DoctorId = 1,
+                FullName = "Dr. A",
+                Specialisation = "Neurology"
+            });
 
             var result = _repository.GetDoctorById(1);
 
             Assert.NotNull(result);
-            Assert.Equal(1, result.DoctorId);
-            Assert.Equal("Dr. John Smith", result.FullName);
-            Assert.Equal("Cardiology", result.Specialisation);
+            Assert.Equal("Dr. A", result.FullName);
         }
 
+        // GetDoctorById - Not Found
         [Fact]
         public void GetDoctorById_ShouldReturnNull_WhenNotFound()
         {
-            _doctorDb.Doctors.Add(CreateValidDoctor(1, "Dr. Existing", "Orthopedics"));
-
-            var result = _repository.GetDoctorById(999);
+            var result = _repository.GetDoctorById(99);
 
             Assert.Null(result);
         }
 
+        // GetDoctorsBySpecialisation - Success
         [Fact]
         public void GetDoctorsBySpecialisation_ShouldReturnMatchingDoctors()
         {
-            _doctorDb.Doctors.Add(CreateValidDoctor(1, "Dr. A", "Cardiology"));
-            _doctorDb.Doctors.Add(CreateValidDoctor(2, "Dr. B", "Cardiology"));
-            _doctorDb.Doctors.Add(CreateValidDoctor(3, "Dr. C", "Neurology"));
+            _doctorDb.Doctors.Add(new Doctor
+            {
+                DoctorId = 1,
+                FullName = "Dr. X",
+                Specialisation = "Cardiology"
+            });
 
-            var result = _repository.GetDoctorsBySpecialisation("Cardiology");
-
-            Assert.Equal(2, result.Count);
-        }
-
-        [Fact]
-        public void GetDoctorsBySpecialisation_ShouldBeCaseInsensitive()
-        {
-            _doctorDb.Doctors.Add(CreateValidDoctor(1, "Dr. A", "Cardiology"));
+            _doctorDb.Doctors.Add(new Doctor
+            {
+                DoctorId = 2,
+                FullName = "Dr. Y",
+                Specialisation = "Neurology"
+            });
 
             var result = _repository.GetDoctorsBySpecialisation("cardiology");
 
             Assert.Single(result);
         }
 
+        // GetDoctorsBySpecialisation - No Matches
         [Fact]
         public void GetDoctorsBySpecialisation_ShouldReturnEmptyList_WhenNoMatch()
         {
-            _doctorDb.Doctors.Add(CreateValidDoctor(1, "Dr. A", "Orthopedics"));
+            var result = _repository.GetDoctorsBySpecialisation("Oncology");
 
-            var result = _repository.GetDoctorsBySpecialisation("Cardiology");
+            Assert.Empty(result);
+        }
+
+        // UpdateDoctor - Success
+        [Fact]
+        public void UpdateDoctor_ShouldUpdateDoctorDetails()
+        {
+            var existing = new Doctor
+            {
+                DoctorId = 1,
+                FullName = "Old Name",
+                Specialisation = "General"
+            };
+
+            var updated = new Doctor
+            {
+                DoctorId = 1,
+                FullName = "New Name",
+                Specialisation = "Ortho",
+                YearsOfExperience = 10,
+                ConsultationFee = 500,
+                IsActive = true
+            };
+
+            var result = _repository.UpdateDoctor(existing, updated);
+
+            Assert.Equal("New Name", result.FullName);
+            Assert.Equal("Ortho", result.Specialisation);
+            Assert.Equal(10, result.YearsOfExperience);
+        }
+
+        // GetAllDoctors - Success
+        [Fact]
+        public void GetAllDoctors_ShouldReturnAllDoctors()
+        {
+            _doctorDb.Doctors.Add(new Doctor
+            {
+                DoctorId = 1,
+                FullName = "Doc1",
+                Specialisation = "General"
+            });
+
+            _doctorDb.Doctors.Add(new Doctor
+            {
+                DoctorId = 2,
+                FullName = "Doc2",
+                Specialisation = "Cardiology"
+            });
+
+            var result = _repository.GetAllDoctors();
+
+            Assert.Equal(2, result.Count);
+        }
+
+        // GetAllDoctors - Empty Case
+        [Fact]
+        public void GetAllDoctors_ShouldReturnEmptyList_WhenNoDoctors()
+        {
+            var result = _repository.GetAllDoctors();
 
             Assert.Empty(result);
         }

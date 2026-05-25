@@ -12,7 +12,7 @@ namespace HealthApp.ConsoleApp.Models
         public List<DateTime> LeaveDates { get; set; } = new List<DateTime>();
 
         // Check if doctor is available based on leaves, and number of confirmed appointments
-        public bool IsAvailable(DateTime date)
+        public virtual bool IsAvailable(DateTime date)
         {
             if (!IsActive)
             {

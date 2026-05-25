@@ -20,103 +20,141 @@ namespace HealthApp.Tests.Services
             _service = new DoctorService(_mockRepo.Object);
         }
 
-        private Doctor CreateValidDoctor(int id, string name, string specialisation)
+        private Doctor GetSampleDoctor(int id)
         {
             return new Doctor
             {
                 DoctorId = id,
-                FullName = name,
-                Specialisation = specialisation,
-                YearsOfExperience = 10,
-                ConsultationFee = 500m,
-                IsActive = true
+                FullName = "Doctor " + id,
+                Specialisation = "General"
             };
         }
 
+        // AddDoctor
         [Fact]
-        public void AddDoctor_ShouldAddDoctor_WhenNotExists()
-        {
-            var doctor = CreateValidDoctor(1, "Dr. John", "Cardiology");
-
-            _mockRepo.Setup(r => r.GetDoctorById(1))
-                     .Returns((Doctor?)null);
-
-            _mockRepo.Setup(r => r.AddDoctor(doctor))
-                     .Returns("Doctor ID 1 added successfully!");
-
-            var result = _service.AddDoctor(doctor);
-
-            Assert.Equal("Doctor ID 1 added successfully!", result);
-            _mockRepo.Verify(r => r.AddDoctor(doctor), Times.Once);
-        }
-
-        [Fact]
-        public void AddDoctor_ShouldThrowException_WhenDoctorExists()
-        {
-            var doctor = CreateValidDoctor(1, "Dr. John", "Cardiology");
-
-            _mockRepo.Setup(r => r.GetDoctorById(1))
-                     .Returns(doctor);
-
-            Assert.Throws<DoctorAlreadyExistsException>(
-                () => _service.AddDoctor(doctor)
-            );
-
-            _mockRepo.Verify(r => r.AddDoctor(It.IsAny<Doctor>()), Times.Never);
-        }
-
-        [Fact]
-        public void GetDoctorById_ShouldReturnDoctor_WhenExists()
-        {
-            var doctor = CreateValidDoctor(1, "Dr. John", "Cardiology");
-
-            _mockRepo.Setup(r => r.GetDoctorById(1))
-                     .Returns(doctor);
-
-            var result = _service.GetDoctorById(1);
-
-            Assert.NotNull(result);
-            Assert.Equal(1, result.DoctorId);
-            Assert.Equal("Dr. John", result.FullName);
-        }
-
-        [Fact]
-        public void GetDoctorById_ShouldReturnNull_WhenNotFound()
-        {
-            _mockRepo.Setup(r => r.GetDoctorById(1))
-                     .Returns((Doctor?)null);
-
-            var result = _service.GetDoctorById(1);
-
-            Assert.Null(result);
-        }
-
-        [Fact]
-        public void GetDoctorsBySpecialisation_ShouldReturnDoctors_WhenFound()
+        public void AddDoctor_ShouldAssignIdAndAddDoctor()
         {
             var doctors = new List<Doctor>
             {
-                CreateValidDoctor(1, "Dr. A", "Cardiology"),
-                CreateValidDoctor(2, "Dr. B", "Cardiology")
+                GetSampleDoctor(101),
+                GetSampleDoctor(102)
             };
 
-            _mockRepo.Setup(r => r.GetDoctorsBySpecialisation("Cardiology"))
+            var newDoctor = GetSampleDoctor(0);
+
+            _mockRepo.Setup(r => r.GetAllDoctors()).Returns(doctors);
+            _mockRepo.Setup(r => r.AddDoctor(It.IsAny<Doctor>()))
+                     .Returns("Doctor added successfully");
+
+            var result = _service.AddDoctor(newDoctor);
+
+            Assert.Equal(103, newDoctor.DoctorId);
+            Assert.Contains("successfully", result);
+        }
+
+        // GetDoctorById
+        [Fact]
+        public void GetDoctorById_ShouldReturnDoctor()
+        {
+            var doctor = GetSampleDoctor(101);
+
+            _mockRepo.Setup(r => r.GetDoctorById(101)).Returns(doctor);
+
+            var result = _service.GetDoctorById(101);
+
+            Assert.NotNull(result);
+            Assert.Equal(101, result.DoctorId);
+        }
+
+        // GetDoctorById - Exception
+        [Fact]
+        public void GetDoctorById_ShouldThrowException_WhenNotFound()
+        {
+            _mockRepo.Setup(r => r.GetDoctorById(999)).Returns((Doctor?)null);
+
+            Assert.Throws<DoctorNotFoundException>(() => _service.GetDoctorById(999));
+        }
+
+        // GetDoctorsBySpecialisation
+        [Fact]
+        public void GetDoctorsBySpecialisation_ShouldReturnDoctors()
+        {
+            var doctors = new List<Doctor>
+            {
+                GetSampleDoctor(101),
+                GetSampleDoctor(102)
+            };
+
+            _mockRepo.Setup(r => r.GetDoctorsBySpecialisation("General"))
                      .Returns(doctors);
 
-            var result = _service.GetDoctorsBySpecialisation("Cardiology");
+            var result = _service.GetDoctorsBySpecialisation("General");
 
             Assert.Equal(2, result.Count);
         }
 
+        // GetDoctorsBySpecialisation - Exception
         [Fact]
-        public void GetDoctorsBySpecialisation_ShouldThrowException_WhenEmptyList()
+        public void GetDoctorsBySpecialisation_ShouldThrowException_WhenNoDoctors()
         {
             _mockRepo.Setup(r => r.GetDoctorsBySpecialisation("Cardiology"))
                      .Returns(new List<Doctor>());
 
-            Assert.Throws<SpecialisationNotFoundException>(
-                () => _service.GetDoctorsBySpecialisation("Cardiology")
-            );
+            Assert.Throws<SpecialisationNotFoundException>(() =>
+                _service.GetDoctorsBySpecialisation("Cardiology"));
+        }
+
+        // UpdateDoctor
+        [Fact]
+        public void UpdateDoctor_ShouldUpdateDoctor()
+        {
+            var existing = GetSampleDoctor(101);
+            var updated = GetSampleDoctor(101);
+            updated.FullName = "Updated Name";
+
+            _mockRepo.Setup(r => r.GetDoctorById(101)).Returns(existing);
+            _mockRepo.Setup(r => r.UpdateDoctor(existing, updated)).Returns(updated);
+
+            var result = _service.UpdateDoctor(updated);
+
+            Assert.Equal("Updated Name", result.FullName);
+        }
+
+        // UpdateDoctor - Exception
+        [Fact]
+        public void UpdateDoctor_ShouldThrowException_WhenDoctorNotFound()
+        {
+            var doctor = GetSampleDoctor(999);
+
+            _mockRepo.Setup(r => r.GetDoctorById(999)).Returns((Doctor?)null);
+
+            Assert.Throws<DoctorNotFoundException>(() => _service.UpdateDoctor(doctor));
+        }
+
+        // DoctorIdGenerator
+        [Fact]
+        public void DoctorIdGenerator_ShouldReturnNextId()
+        {
+            var doctors = new List<Doctor>
+            {
+                GetSampleDoctor(101),
+                GetSampleDoctor(102)
+            };
+
+            var result = DoctorService.DoctorIdGenerator(doctors);
+
+            Assert.Equal(103, result);
+        }
+
+        // DoctorIdGenerator - Empty List
+        [Fact]
+        public void DoctorIdGenerator_ShouldReturn101_WhenEmpty()
+        {
+            var doctors = new List<Doctor>();
+
+            var result = DoctorService.DoctorIdGenerator(doctors);
+
+            Assert.Equal(101, result);
         }
     }
 }
