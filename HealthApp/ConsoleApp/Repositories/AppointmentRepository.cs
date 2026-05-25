@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using HealthApp.ConsoleApp.Models;
 using HealthApp.ConsoleApp.Interfaces;
-using HealthApp.ConsoleApp.Exceptions;
 using HealthApp.ConsoleApp.Databases;
 
 namespace HealthApp.ConsoleApp.Repositories
@@ -20,7 +19,7 @@ namespace HealthApp.ConsoleApp.Repositories
         public void AddAppointment(Appointment appointment)
         {
             if (appointment == null)
-                throw new ArgumentNullException("Appointment can't be null");
+                return;
 
             _appointments.Add(appointment);
         }
@@ -32,20 +31,20 @@ namespace HealthApp.ConsoleApp.Repositories
 
         public Appointment GetAppointmentById(int id)
         {
-            var appointment = _appointments.FirstOrDefault(a => a.AppointmentId == id);
-
-            if (appointment == null)
-                throw new AppointmentNotFoundException($"Appointment with ID {id} not found.");
-
-            return appointment;
+            return _appointments
+                .FirstOrDefault(a => a.AppointmentId == id);
         }
 
         public void UpdateAppointment(Appointment appointment)
         {
             if (appointment == null)
-                throw new ArgumentNullException(nameof(appointment));
+                return;
 
-            var existing = GetAppointmentById(appointment.AppointmentId);
+            var existing = _appointments
+                .FirstOrDefault(a => a.AppointmentId == appointment.AppointmentId);
+
+            if (existing == null)
+                return;
 
             existing.Patient = appointment.Patient;
             existing.Doctor = appointment.Doctor;
@@ -58,40 +57,40 @@ namespace HealthApp.ConsoleApp.Repositories
         public void CancelAppointment(int id, string reason)
         {
             if (string.IsNullOrWhiteSpace(reason))
-                throw new ArgumentException("Cancellation reason is required.");
+                return;
 
-            var appointment = GetAppointmentById(id);
+            var appointment = _appointments
+                .FirstOrDefault(a => a.AppointmentId == id);
+
+            if (appointment == null)
+                return;
+
             appointment.Cancel(reason);
         }
 
         public void DeleteAppointment(int id)
         {
-            var appointment = GetAppointmentById(id);
+            var appointment = _appointments
+                .FirstOrDefault(a => a.AppointmentId == id);
+
+            if (appointment == null)
+                return;
+
             _appointments.Remove(appointment);
         }
 
         public List<Appointment> GetAppointmentsByPatient(int patientId)
         {
-            var appointments = _appointments
+            return _appointments
                 .Where(a => a.Patient != null && a.Patient.Id == patientId)
                 .ToList();
-
-            if (appointments.Count == 0)
-                throw new AppointmentNotFoundException($"No appointments found for patient ID {patientId}.");
-
-            return appointments;
         }
 
         public List<Appointment> GetAppointmentsByDoctor(int doctorId)
         {
-            var appointments = _appointments
+            return _appointments
                 .Where(a => a.Doctor != null && a.Doctor.DoctorId == doctorId)
                 .ToList();
-
-            if (appointments.Count == 0)
-                throw new AppointmentNotFoundException($"No appointments found for doctor ID {doctorId}.");
-
-            return appointments;
         }
     }
 }

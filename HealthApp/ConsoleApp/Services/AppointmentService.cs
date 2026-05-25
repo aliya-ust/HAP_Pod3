@@ -19,8 +19,20 @@ namespace HealthApp.ConsoleApp.Services
 
         public Appointment BookAppointment(Patient patient, Doctor doctor, DateTime date, string slot)
         {
-            if (patient == null || doctor == null)
-                throw new ArgumentException("Patient and Doctor details are required.");
+            if (patient == null)
+                throw new ArgumentException("Patient details are required.");
+
+            if (doctor == null)
+                throw new ArgumentException("Doctor details are required.");
+
+            if (patient.Id <= 0)
+                throw new ArgumentException("Invalid patient ID.");
+
+            if (doctor.DoctorId <= 0)
+                throw new ArgumentException("Invalid doctor ID.");
+
+            if (!doctor.IsActive)
+                throw new DoctorUnavailableException("Doctor is not active.");
 
             if (date < DateTime.Today)
                 throw new PastDateException("Cannot book appointment in the past.");
@@ -58,10 +70,19 @@ namespace HealthApp.ConsoleApp.Services
 
             return appointment;
         }
+
         public void CancelAppointment(int appointmentId, string reason)
         {
+            if (appointmentId <= 0)
+                throw new ArgumentException("Invalid appointment ID.");
+
             if (string.IsNullOrWhiteSpace(reason))
                 throw new ArgumentException("Cancellation reason is required.");
+
+            var existing = _appointmentRepository.GetAppointmentById(appointmentId);
+
+            if (existing == null)
+                throw new AppointmentNotFoundException($"Appointment with ID {appointmentId} not found.");
 
             _appointmentRepository.CancelAppointment(appointmentId, reason);
         }
@@ -71,7 +92,12 @@ namespace HealthApp.ConsoleApp.Services
             if (patientId <= 0)
                 throw new ArgumentException("Invalid patient ID.");
 
-            return _appointmentRepository.GetAppointmentsByPatient(patientId);
+            var list = _appointmentRepository.GetAppointmentsByPatient(patientId);
+
+            if (list == null || list.Count == 0)
+                throw new AppointmentNotFoundException("No appointments found for this patient.");
+
+            return list;
         }
 
         public List<Appointment> GetAppointmentsByDoctor(int doctorId)
@@ -79,7 +105,12 @@ namespace HealthApp.ConsoleApp.Services
             if (doctorId <= 0)
                 throw new ArgumentException("Invalid doctor ID.");
 
-            return _appointmentRepository.GetAppointmentsByDoctor(doctorId);
+            var list = _appointmentRepository.GetAppointmentsByDoctor(doctorId);
+
+            if (list == null || list.Count == 0)
+                throw new AppointmentNotFoundException("No appointments found for this doctor.");
+
+            return list;
         }
 
         public Appointment GetAppointmentById(int appointmentId)
@@ -87,17 +118,26 @@ namespace HealthApp.ConsoleApp.Services
             if (appointmentId <= 0)
                 throw new ArgumentException("Invalid appointment ID.");
 
-            return _appointmentRepository.GetAppointmentById(appointmentId);
+            var appointment = _appointmentRepository.GetAppointmentById(appointmentId);
+
+            if (appointment == null)
+                throw new AppointmentNotFoundException($"Appointment with ID {appointmentId} not found.");
+
+            return appointment;
         }
 
         public List<Appointment> GetUpcomingAppointments()
         {
-            return _appointmentRepository
-                .GetAllAppointments()
+            var list = _appointmentRepository.GetAllAppointments()
                 .Where(a => a.ScheduledDate > DateTime.Now &&
                             a.Status == AppointmentStatus.Confirmed)
                 .OrderBy(a => a.ScheduledDate)
                 .ToList();
+
+            if (list.Count == 0)
+                throw new AppointmentNotFoundException("No upcoming appointments.");
+
+            return list;
         }
     }
 }

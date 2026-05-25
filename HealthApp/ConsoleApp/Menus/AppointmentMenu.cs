@@ -2,6 +2,7 @@ using System;
 using HealthApp.ConsoleApp.Interfaces;
 using HealthApp.ConsoleApp.Helpers;
 using HealthApp.ConsoleApp.Models;
+using HealthApp.ConsoleApp.Exceptions;
 
 namespace HealthApp.ConsoleApp.Menus
 {
@@ -33,30 +34,43 @@ namespace HealthApp.ConsoleApp.Menus
                 Console.WriteLine("2. View Appointments");
                 Console.WriteLine("3. Cancel Appointment");
                 Console.WriteLine("4. Back");
-                Console.WriteLine("===================================");
 
                 Console.Write("Enter choice: ");
 
                 if (!int.TryParse(Console.ReadLine(), out int choice))
                 {
                     Console.WriteLine("Invalid input");
-                    Console.ReadKey();
+                    InputValidator.Pause();
                     continue;
                 }
 
-                switch (choice)
+                try
                 {
-                    case 1:
-                        BookAppointment();
-                        break;
-                    case 2:
-                        ViewPatientAppointments();
-                        break;
-                    case 3:
-                        CancelAppointment();
-                        break;
-                    case 4:
-                        return;
+                    switch (choice)
+                    {
+                        case 1:
+                            BookAppointment();
+                            break;
+
+                        case 2:
+                            ViewPatientAppointments();
+                            break;
+
+                        case 3:
+                            CancelAppointment();
+                            break;
+
+                        case 4:
+                            return;
+
+                        default:
+                            Console.WriteLine("Invalid choice");
+                            break;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
                 }
 
                 InputValidator.Pause();
@@ -68,30 +82,12 @@ namespace HealthApp.ConsoleApp.Menus
             if (!InputValidator.TryReadPositiveInt("Patient ID: ", out int patientId))
                 return;
 
-            Patient patient;
-            try
-            {
-                patient = _patientService.GetPatientById(patientId);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                return;
-            }
+            var patient = _patientService.GetPatientById(patientId);
 
             if (!InputValidator.TryReadPositiveInt("Doctor ID: ", out int doctorId))
                 return;
 
-            Doctor doctor;
-            try
-            {
-                doctor = _doctorService.GetDoctorById(doctorId);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                return;
-            }
+            var doctor = _doctorService.GetDoctorById(doctorId);
 
             if (!doctor.IsActive)
             {
@@ -102,22 +98,38 @@ namespace HealthApp.ConsoleApp.Menus
             if (!InputValidator.TryReadFutureDate("Date (dd/MM/yyyy): ", out DateTime date))
                 return;
 
-            Console.WriteLine("  Available time slots:");
-            Console.WriteLine("    [1] 09:00 AM    [2] 10:00 AM    [3] 11:00 AM");
-            Console.WriteLine("    [4] 02:00 PM    [5] 03:00 PM    [6] 04:00 PM");
-            Console.Write("Enter Time Slot: ");
-            string slot = Console.ReadLine();
+            Console.WriteLine("Available slots:");
+            Console.WriteLine("1. 09:00 AM");
+            Console.WriteLine("2. 10:00 AM");
+            Console.WriteLine("3. 11:00 AM");
+            Console.WriteLine("4. 02:00 PM");
+            Console.WriteLine("5. 03:00 PM");
+            Console.WriteLine("6. 04:00 PM");
 
-            try
+            Console.Write("Select slot (1-6): ");
+            string input = Console.ReadLine();
+
+            string slot = input switch
             {
-                var appt = _appointmentService.BookAppointment(patient, doctor, date, slot);
-                Console.WriteLine("Appointment booked successfully");
-                Console.WriteLine(appt.GetDetails());
-            }
-            catch (Exception ex)
+                "1" => "09:00 AM",
+                "2" => "10:00 AM",
+                "3" => "11:00 AM",
+                "4" => "02:00 PM",
+                "5" => "03:00 PM",
+                "6" => "04:00 PM",
+                _ => null
+            };
+
+            if (slot == null)
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine("Invalid slot selection");
+                return;
             }
+
+            var appt = _appointmentService.BookAppointment(patient, doctor, date, slot);
+
+            Console.WriteLine("Appointment booked successfully");
+            Console.WriteLine(appt.GetDetails());
         }
 
         public void ViewPatientAppointments()
@@ -125,24 +137,17 @@ namespace HealthApp.ConsoleApp.Menus
             if (!InputValidator.TryReadPositiveInt("Patient ID: ", out int patientId))
                 return;
 
-            try
+            var list = _appointmentService.GetAppointmentsByPatient(patientId);
+
+            if (list.Count == 0)
             {
-                var list = _appointmentService.GetAppointmentsByPatient(patientId);
-
-                if (list.Count == 0)
-                {
-                    Console.WriteLine("No appointments found");
-                    return;
-                }
-
-                foreach (var a in list)
-                {
-                    Console.WriteLine(a.GetDetails());
-                }
+                Console.WriteLine("No appointments found");
+                return;
             }
-            catch (Exception ex)
+
+            foreach (var a in list)
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine(a.GetDetails());
             }
         }
 
@@ -154,15 +159,9 @@ namespace HealthApp.ConsoleApp.Menus
             if (!InputValidator.TryReadString("Enter reason: ", out string reason))
                 return;
 
-            try
-            {
-                _appointmentService.CancelAppointment(id, reason);
-                Console.WriteLine("Appointment cancelled successfully");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
+            _appointmentService.CancelAppointment(id, reason);
+
+            Console.WriteLine("Appointment cancelled successfully");
         }
     }
 }
