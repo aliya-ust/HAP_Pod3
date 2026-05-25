@@ -1,8 +1,5 @@
 ﻿using HealthApp.ConsoleApp.Models;
-using HealthApp.ConsoleApp.Services;
 using HealthApp.ConsoleApp.Interfaces;
-using System;
-using System.Globalization;
 using HealthApp.ConsoleApp.Exceptions;
 using HealthApp.ConsoleApp.Helpers;
 
@@ -11,240 +8,341 @@ namespace HealthApp.ConsoleApp.Menus
     public class HealthRecordMenu
     {
         private readonly IHealthRecordService _healthRecordService;
-        private readonly IAppointmentService _appointmentService;
-
-        public const string Continue = "\nPress any key to continue...";
-        public const string HealthRecordCancelled = "Health record creation cancelled.";
-
+        private readonly IAppointmentService  _appointmentService;
 
         public HealthRecordMenu(IHealthRecordService healthRecordService,
                                 IAppointmentService appointmentService)
         {
             _healthRecordService = healthRecordService;
-            _appointmentService = appointmentService;
+            _appointmentService  = appointmentService;
         }
 
-        public string AddHealthRecord()
+        // Add a health record linked to a completed appointment
+        public void AddHealthRecord()
         {
             try
             {
                 Console.Clear();
+                PrintHeader("ADD HEALTH RECORD");
+                Console.WriteLine("Type 'q' or 'back' to return.\n");
 
-                var appointmentIdInput = InputValidator.GetValidatedInput(
-                    "Enter Appointment ID (or 'q' to quit): ",
+                // Show all completed appointments so user knows valid IDs
+                var completed = _appointmentService
+                    .GetUpcomingAppointments()
+                    .Where(a => a.Status == AppointmentStatus.Completed)
+                    .ToList();
+
+                // Also check ALL appointments (including past) for completed ones
+                // GetUpcomingAppointments only returns future — completed ones are past
+                // so we need to get all and filter
+                var allCompleted = _appointmentService
+                    .GetAllAppointments()
+                    .Where(a => a.Status == AppointmentStatus.Completed)
+                    .ToList();
+
+                if (allCompleted.Count == 0)
+                {
+                    PrintError("No completed appointments found. " +
+                               "Please complete an appointment first (option 7).");
+                    Pause();
+                    return;
+                }
+
+                Console.WriteLine("COMPLETED APPOINTMENTS");
+                Console.WriteLine(new string('-', 40));
+                foreach (var a in allCompleted)
+                {
+                    Console.WriteLine($"  ID: {a.AppointmentId} | " +
+                                      $"Patient: {a.Patient?.Name} | " +
+                                      $"Doctor: {a.Doctor?.Name} | " +
+                                      $"Date: {a.ScheduledDate:dd MMM yyyy}");
+                }
+                Console.WriteLine(new string('-', 40) + "\n");
+
+                // Get and validate appointment ID
+                string rawId = InputValidator.GetValidatedInput(
+                    "Enter Appointment ID : ",
                     InputValidator.IsValidId,
-                    "Invalid Appointment ID.");
+                    "Please enter a valid positive number.")!;
 
-                int appointmentId = int.Parse(appointmentIdInput!);
+                int appointmentId = int.Parse(rawId);
 
-                var appointment = _appointmentService.GetAppointmentById(appointmentId);
-                if (appointment == null)
-                    return "Appointment not found";
+                // Fetch appointment — catches AppointmentNotFoundException
+                Appointment? appointment;
+                try
+                {
+                    appointment = _appointmentService.GetAppointmentById(appointmentId);
+                }
+                catch (AppointmentNotFoundException)
+                {
+                    PrintError($"No appointment found with ID {appointmentId}.");
+                    Pause();
+                    return;
+                }
 
-                appointment.Complete();
+                // FIX: Do NOT call Complete() here — appointment must already be Completed
+                // Complete() is called from AppointmentMenu.CompleteAppointment() (option 7)
+                // Calling it here throws InvalidOperationException if already Completed
+                if (appointment?.Status != AppointmentStatus.Completed)
+                {
+                    PrintError($"Appointment {appointmentId} is not completed yet. " +
+                               $"Current status: {appointment?.Status}. " +
+                               "Please use option 6 to mark it as completed first.");
+                    Pause();
+                    return;
+                }
 
-                var diagnosis = InputValidator.GetValidatedInput(
-                    "Enter Diagnosis: ",
+                // Get diagnosis
+                string diagnosis = InputValidator.GetValidatedInput(
+                    "Diagnosis    : ",
                     InputValidator.IsNonEmpty,
-                    "Diagnosis cannot be empty.");
+                    "Diagnosis cannot be empty.")!;
 
-                var prescription = InputValidator.GetValidatedInput(
-                    "Enter Prescription: ",
+                // Get prescription
+                string prescription = InputValidator.GetValidatedInput(
+                    "Prescription : ",
                     InputValidator.IsNonEmpty,
-                    "Prescription cannot be empty.");
+                    "Prescription cannot be empty.")!;
 
-                var doctorNotes = InputValidator.GetValidatedInput(
-                    "Enter Doctor Notes: ",
+                // Get doctor notes
+                string doctorNotes = InputValidator.GetValidatedInput(
+                    "Doctor Notes : ",
                     InputValidator.IsNonEmpty,
-                    "Doctor Notes cannot be empty.");
+                    "Doctor notes cannot be empty.")!;
 
+                // Build and save the health record
                 var record = new HealthRecord
                 {
-                    Patient = appointment.Patient,
-                    Doctor = appointment.Doctor,
-                    VisitDate = appointment.ScheduledDate,
-                    Diagnosis = diagnosis!,
-                    Prescription = prescription!,
-                    DoctorNotes = doctorNotes!
+                    Patient      = appointment.Patient,
+                    Doctor       = appointment.Doctor,
+                    VisitDate    = appointment.ScheduledDate,
+                    Diagnosis    = diagnosis,
+                    Prescription = prescription,
+                    DoctorNotes  = doctorNotes
                 };
 
-                return _healthRecordService.AddHealthRecord(record);
+                string result = _healthRecordService.AddHealthRecord(record);
+                PrintSuccess(result);
             }
             catch (OperationCanceledException)
             {
-                return "Operation Canceled";
+                Console.WriteLine("\nReturning to Main Menu...");
             }
-            catch (InvalidOperationException)
+            catch (Exception ex)
             {
-                return "Cannot add health record for an appointment that's not been confirmed";
+                PrintError(ex.Message);
             }
+
+            Pause();
         }
 
+        // View health records by patient, doctor, or record ID
         public void ViewRecord()
         {
-            Console.Clear();
-
-            Console.WriteLine("1. By Patient Id");
-            Console.WriteLine("2. By Doctor Id");
-            Console.WriteLine("3. By Record Id");
-            Console.Write("Enter choice: ");
-
-            var choice = Console.ReadLine();
-
-            switch (choice)
+            try
             {
-                case "1":
-                    HandleViewById("Patient", _healthRecordService.GetByPatientIdOrderByVisitDateDesc);
-                    break;
+                Console.Clear();
+                PrintHeader("VIEW HEALTH RECORDS");
+                Console.WriteLine("Type 'q' or 'back' to return.\n");
 
-                case "2":
-                    HandleViewById("Doctor", _healthRecordService.GetByDoctorIdOrderByVisitDateDesc);
-                    break;
+                Console.WriteLine("  1. By Patient ID");
+                Console.WriteLine("  2. By Doctor ID");
+                Console.WriteLine("  3. By Record ID");
+                Console.Write("\nEnter choice : ");
 
-                case "3":
-                    HandleViewSingleRecord();
-                    break;
+                string choice = Console.ReadLine()?.Trim() ?? "";
 
-                default:
-                    Console.WriteLine("Invalid choice.");
-                    Console.ReadKey();
-                    break;
+                switch (choice)
+                {
+                    case "1":
+                        ViewByEntity("Patient",
+                            _healthRecordService.GetByPatientIdOrderByVisitDateDesc);
+                        break;
+
+                    case "2":
+                        ViewByEntity("Doctor",
+                            _healthRecordService.GetByDoctorIdOrderByVisitDateDesc);
+                        break;
+
+                    case "3":
+                        ViewSingleRecord();
+                        break;
+
+                    default:
+                        PrintError("Invalid choice.");
+                        break;
+                }
             }
+            catch (OperationCanceledException)
+            {
+                Console.WriteLine("\nReturning to Main Menu...");
+            }
+
+            Pause();
         }
 
-        private static void HandleViewById(
-            string entityName,
+        // Update an existing health record's fields
+        public void UpdateHealthRecord()
+        {
+            try
+            {
+                Console.Clear();
+                PrintHeader("UPDATE HEALTH RECORD");
+                Console.WriteLine("Type 'q' or 'back' to return.\n");
+
+                // Get and validate record ID
+                string rawId = InputValidator.GetValidatedInput(
+                    "Enter Record ID : ",
+                    InputValidator.IsValidId,
+                    "Please enter a valid positive number.")!;
+
+                HealthRecord existing;
+                try
+                {
+                    existing = _healthRecordService.GetRecordById(int.Parse(rawId))!;
+                }
+                catch (HealthRecordNotFoundException ex)
+                {
+                    PrintError(ex.Message);
+                    Pause();
+                    return;
+                }
+
+                // Show current record before editing
+                Console.WriteLine("\nCurrent Record:");
+                Console.WriteLine(existing.GetSummary());
+                Console.WriteLine("\nPress ENTER to keep existing value.\n");
+
+                // Get optional updated visit date
+                DateTime? dateInput = InputValidator.GetOptionalDate(
+                    "Visit Date (dd/MM/yyyy) : ");
+
+                // Get optional updated diagnosis
+                string? diagnosis = InputValidator.GetValidatedInput(
+                    "Diagnosis    : ",
+                    InputValidator.IsNonEmpty,
+                    "Invalid input.",
+                    allowEmpty: true);
+
+                // Get optional updated prescription
+                string? prescription = InputValidator.GetValidatedInput(
+                    "Prescription : ",
+                    InputValidator.IsNonEmpty,
+                    "Invalid input.",
+                    allowEmpty: true);
+
+                // Get optional updated doctor notes
+                string? doctorNotes = InputValidator.GetValidatedInput(
+                    "Doctor Notes : ",
+                    InputValidator.IsNonEmpty,
+                    "Invalid input.",
+                    allowEmpty: true);
+
+                // Build updated record keeping old values where user pressed Enter
+                var updated = new HealthRecord
+                {
+                    RecordId     = existing.RecordId,
+                    Patient      = existing.Patient,
+                    Doctor       = existing.Doctor,
+                    VisitDate    = dateInput     ?? existing.VisitDate,
+                    Diagnosis    = diagnosis     ?? existing.Diagnosis,
+                    Prescription = prescription  ?? existing.Prescription,
+                    DoctorNotes  = doctorNotes   ?? existing.DoctorNotes
+                };
+
+                string result = _healthRecordService.UpdateHealthRecord(updated).GetSummary();
+                PrintSuccess("Record updated successfully!");
+                Console.WriteLine(result);
+            }
+            catch (OperationCanceledException)
+            {
+                Console.WriteLine("\nReturning to Main Menu...");
+            }
+            catch (Exception ex)
+            {
+                PrintError(ex.Message);
+            }
+
+            Pause();
+        }
+
+        // ── Private helpers ───────────────────────────────────────────────────────
+
+        // Fetch and display a list of records by patient or doctor ID
+        private static void ViewByEntity(string entityName,
             Func<int, List<HealthRecord>> fetchFunc)
         {
             try
             {
-                var idInput = InputValidator.GetValidatedInput(
-                    $"Enter {entityName} Id: ",
+                string rawId = InputValidator.GetValidatedInput(
+                    $"Enter {entityName} ID : ",
                     InputValidator.IsValidId,
-                    $"Invalid {entityName} Id.");
+                    "Please enter a valid positive number.")!;
 
-                int id = int.Parse(idInput!);
+                var records = fetchFunc(int.Parse(rawId));
 
-                var records = fetchFunc(id);
-
-                Console.Clear();
-                Console.WriteLine("Health Records:");
-
-                foreach (var r in records)
-                    Console.WriteLine(r);
-            }
-            catch (PatientNotFoundException ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-            catch (HealthRecordNotFoundException ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-        }
-
-        private void HandleViewSingleRecord()
-        {
-            try
-            {
-                var idInput = InputValidator.GetValidatedInput(
-                    "Enter Record Id: ",
-                    InputValidator.IsValidId,
-                    "Invalid Record Id.");
-
-                int recordId = int.Parse(idInput!);
-
-                var record = _healthRecordService.GetRecordById(recordId);
-
-                Console.Clear();
-                Console.WriteLine(record);
-            }
-            catch (HealthRecordNotFoundException ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-        }
-
-        public string UpdateHealthRecord()
-        {
-            try
-            {
-                Console.Write("Enter Record ID (or 'q' to quit): ");
-                var input = Console.ReadLine();
-
-                if (input?.ToLower() == "q")
-                    return HandleCancel();
-
-                if (!int.TryParse(input, out int recordId) || recordId <= 0)
-                    return "Invalid Record ID";
-
-                var existing = _healthRecordService.GetRecordById(recordId);
-                if (existing == null)
-                    return "Record not found";
-
-                Console.WriteLine("\nCurrent Record:");
-                Console.WriteLine(existing);
-
-                var dateInput = InputValidator.GetOptionalDate(
-                    "Enter Visit Date (dd/MM/yyyy): ");
-
-                var diagnosisInput = InputValidator.GetValidatedInput(
-                    "Enter Diagnosis (Press ENTER to keep): ",
-                    InputValidator.IsNonEmpty,
-                    "Invalid diagnosis.",
-                    allowEmpty: true);
-
-                var prescriptionInput = InputValidator.GetValidatedInput(
-                    "Enter Prescription (Press ENTER to keep): ",
-                    InputValidator.IsNonEmpty,
-                    "Invalid prescription.",
-                    allowEmpty: true);
-
-                var notesInput = InputValidator.GetValidatedInput(
-                    "Enter Doctor Notes (Press ENTER to keep): ",
-                    InputValidator.IsNonEmpty,
-                    "Invalid notes.",
-                    allowEmpty: true);
-
-                var updated = new HealthRecord
+                if (records.Count == 0)
                 {
-                    RecordId = existing.RecordId,
-                    Patient = existing.Patient,
-                    Doctor = existing.Doctor,
-                    VisitDate = dateInput ?? existing.VisitDate,
-                    Diagnosis = diagnosisInput ?? existing.Diagnosis,
-                    Prescription = prescriptionInput ?? existing.Prescription,
-                    DoctorNotes = notesInput ?? existing.DoctorNotes
-                };
+                    Console.WriteLine($"No records found for {entityName} ID {rawId}.");
+                    return;
+                }
 
-                Console.Clear();
-                return _healthRecordService.UpdateHealthRecord(updated).ToString();
+                Console.WriteLine($"\n  {records.Count} record(s) found:\n");
+                foreach (var r in records)
+                {
+                    Console.WriteLine(r.GetSummary());
+                    Console.WriteLine(new string('-', 50));
+                }
             }
-            catch (OperationCanceledException)
-            {
-                return HandleCancel();
-            }
-            catch (HealthRecordNotFoundException ex)
-            {
-                return ex.Message;
-            }
+            catch (PatientNotFoundException ex)      { Console.WriteLine(ex.Message); }
+            catch (DoctorNotFoundException ex)       { Console.WriteLine(ex.Message); }
+            catch (HealthRecordNotFoundException ex) { Console.WriteLine(ex.Message); }
         }
 
-        
-        private static string HandleCancel()
+        // Fetch and display a single record by record ID
+        private void ViewSingleRecord()
         {
-            Console.WriteLine(HealthRecordCancelled);
-            Console.WriteLine(Continue);
-            Console.ReadKey();
-            return "";
+            try
+            {
+                string rawId = InputValidator.GetValidatedInput(
+                    "Enter Record ID : ",
+                    InputValidator.IsValidId,
+                    "Please enter a valid positive number.")!;
+
+                var record = _healthRecordService.GetRecordById(int.Parse(rawId));
+
+                Console.WriteLine();
+                Console.WriteLine(record!.GetSummary());
+            }
+            catch (HealthRecordNotFoundException ex) { Console.WriteLine(ex.Message); }
+        }
+
+        private static void PrintHeader(string title)
+        {
+            Console.WriteLine(new string('=', 40));
+            Console.WriteLine(title);
+            Console.WriteLine(new string('=', 40));
+            Console.WriteLine();
+        }
+
+        private static void PrintSuccess(string msg)
+        {
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine($"\nSUCCESS : {msg}");
+            Console.ResetColor();
+        }
+
+        private static void PrintError(string msg)
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine($"\nERROR : {msg}");
+            Console.ResetColor();
+        }
+
+        private static void Pause()
+        {
+            Console.WriteLine("\nPress any key to continue...");
+            Console.ReadKey(intercept: true);
         }
     }
 }

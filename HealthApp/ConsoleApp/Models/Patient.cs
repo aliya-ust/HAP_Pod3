@@ -4,13 +4,13 @@ namespace HealthApp.ConsoleApp.Models
     public class Patient
     {
         public int PatientId { get; set; }
-        public string Name { get; set; }
+        public required string Name { get; set; }
         public DateTime Dob { get; set; }
         public GenderType Gender { get; set; }
-        public string PhoneNumber { get; set; }
-        public string Email { get; set; }
-        public string InsuranceId { get; set; }
-        public DateTime CreatedAt { get; set; }
+        public required string PhoneNumber { get; set; }
+        public required string Email { get; set; }
+        public string InsuranceId { get; set; }="";
+        public DateTime ?CreatedAt { get; set; }
 
         // Constructor to initialize CreatedAt
         public Patient()

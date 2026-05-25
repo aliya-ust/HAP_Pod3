@@ -15,7 +15,10 @@ namespace HealthApp.ConsoleApp.Services
         {
             _appointmentRepo = appointmentRepository;
         }
-
+        public List<Appointment> GetAllAppointments()
+        {
+            return _appointmentRepo.GetAllAppointments();
+        }
         // Book an appointment with date and time slot
         public string BookAppointment(Patient patient, Doctor doctor, DateTime date, string slot)
         {
@@ -32,7 +35,7 @@ namespace HealthApp.ConsoleApp.Services
             var appointments = _appointmentRepo.GetAllAppointments();
 
             bool isSlotTaken = appointments.Any(a =>
-                a.Doctor.DoctorId == doctor.DoctorId &&
+                a.Doctor?.DoctorId == doctor.DoctorId &&
                 a.ScheduledDate.Date == date.Date &&
                 a.TimeSlot == slot &&
                 a.Status != AppointmentStatus.Cancelled);
@@ -75,12 +78,12 @@ namespace HealthApp.ConsoleApp.Services
             {
                 throw new AppointmentNotFoundException($"No appointments found for doctor ID {doctorId}.");
             }
-            
+
             return appointments;
         }
 
         // Get appointment by id
-        public Appointment? GetAppointmentById(int appointmentId)
+        public Appointment GetAppointmentById(int appointmentId)
         {
             Appointment? appointment = _appointmentRepo.GetAppointmentById(appointmentId);
 
@@ -96,7 +99,7 @@ namespace HealthApp.ConsoleApp.Services
         {
             return appointments.Any()
                 ? appointments.Max(a => a.AppointmentId) + 1
-                : 101;
+                : 301;
         }
 
         //  Cancel an appointment and update reason
@@ -122,13 +125,13 @@ namespace HealthApp.ConsoleApp.Services
                 throw new AppointmentNotFoundException($"Appointment of ID {appointmentId} does not exist");
             }
             appointment.Confirm();
-            return $"Appointment of ID {appointmentId} has been cancelled successfully";
+            return $"Appointment of ID {appointmentId} has been confirmed successfully";
         }
 
         //  Get list of confirmed (upcoming) appointments
         public List<Appointment> GetUpcomingAppointments()
         {
-            List<Appointment> upcomingAppointments =  _appointmentRepo
+            List<Appointment> upcomingAppointments = _appointmentRepo
                 .GetAllAppointments()
                 .Where(a => a.ScheduledDate > DateTime.Now &&
                             a.Status == AppointmentStatus.Confirmed)

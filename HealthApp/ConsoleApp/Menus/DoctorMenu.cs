@@ -264,7 +264,7 @@ namespace HealthApp.ConsoleApp.Menus
                     InputValidator.IsValidId,
                     "Please enter a valid positive number.")!;
 
-                Doctor doctor = _doctorService.GetDoctorById(int.Parse(raw));
+                Doctor? doctor = _doctorService.GetDoctorById(int.Parse(raw));
 
                 if (doctor == null)
                 {
@@ -332,7 +332,7 @@ namespace HealthApp.ConsoleApp.Menus
                     InputValidator.IsValidId,
                     "Please enter a valid positive number.")!;
 
-                Doctor doctor = _doctorService.GetDoctorById(int.Parse(raw));
+                Doctor? doctor = _doctorService.GetDoctorById(int.Parse(raw));
 
                 if (doctor == null)
                 {

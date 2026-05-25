@@ -41,12 +41,12 @@ namespace HealthApp.ConsoleApp.Repositories
 
         public List<Appointment> GetAppointmentsByPatientId(int patientId)
         {
-            return _appointmentDb.Appointments.Where(a => a.Patient.PatientId == patientId).ToList();
+            return _appointmentDb.Appointments.Where(a => a.Patient?.PatientId == patientId).ToList();
         }
 
         public List<Appointment> GetAppointmentsByDoctorId(int doctorId)
         {
-            return _appointmentDb.Appointments.Where(a => a.Doctor.DoctorId == doctorId).ToList();
+            return _appointmentDb.Appointments.Where(a => a.Doctor?.DoctorId == doctorId).ToList();
         }
     }
 }

@@ -7,10 +7,10 @@ namespace HealthApp.ConsoleApp.Models
     public class Doctor
     {
         public int DoctorId { get; set; }
-        public required string Name { get; set; }
-        public required string Specialisation { get; set; }
-        public int YearsOfExperience { get; set; }
-        public decimal ConsultationFee { get; set; }
+        public string Name { get; set; }="";
+        public  string Specialisation { get; set; }="";
+        public  int YearsOfExperience { get; set; }=0;
+        public  decimal ConsultationFee { get; set; }=0;
         public bool IsActive { get; set; }
         public List<string> AvailableSlots { get; set; } = new List<string>();
 
@@ -26,7 +26,7 @@ namespace HealthApp.ConsoleApp.Models
 
             int count = AvailableDates.Count(d => d.Date == date.Date);
 
-            if (count >= 5)
+            if (count >= 8)
             {
                 return false;
             }
@@ -44,7 +44,7 @@ namespace HealthApp.ConsoleApp.Models
                 return "No available slots";
             }
 
-            return $"Available slots  count: {count}";
+            return $"Available slots count: {count}";
         }
 
         //Upcoming list

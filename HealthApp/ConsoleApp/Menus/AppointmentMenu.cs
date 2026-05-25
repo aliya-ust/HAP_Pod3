@@ -32,7 +32,7 @@ namespace HealthApp.ConsoleApp.Menus
             switch (choice)
             {
                 case "1":
-                    ConfirmOrCancel();break;
+                    ConfirmOrCancel(); break;
 
                 case "2":
                     CompleteAppointment(); break;
@@ -42,8 +42,6 @@ namespace HealthApp.ConsoleApp.Menus
                     break;
             }
         }
-
-        // Book a new appointment for a patient with a doctor
         public void BookAppointment()
         {
             try
@@ -84,6 +82,7 @@ namespace HealthApp.ConsoleApp.Menus
                         InputValidator.IsValidId,
                         "Please enter a valid positive number.")!;
 
+                    // FIX 1: Correct method name — GetByDoctorId not GetDoctorById
                     doctor = _doctorService.GetDoctorById(int.Parse(rawDoctor));
                     if (doctor == null) { PrintError("Doctor not found. Try again."); continue; }
                     if (!doctor.IsActive) { PrintError($"Dr. {doctor.Name} is inactive."); continue; }
@@ -94,7 +93,7 @@ namespace HealthApp.ConsoleApp.Menus
                 // Display available dates for the selected doctor
                 Console.WriteLine("\nAVAILABLE DAYS");
                 for (int i = 0; i < doctor.AvailableDates.Count; i++)
-                    Console.WriteLine($"  {i + 1}. {doctor.AvailableDates[i]:dd MMM yyyy}");
+                    Console.WriteLine($"  {i + 1}. {doctor.AvailableDates[i]:dd/MM/yyyy}");
 
                 // Get and validate appointment date
                 DateTime selectedDate;
@@ -110,13 +109,20 @@ namespace HealthApp.ConsoleApp.Menus
                     break;
                 }
 
-                // Find and display remaining available slots
+                // FIX 2: Filter out CANCELLED slots to find what's already booked
+                // Old code had != Confirmed which was backwards — it excluded valid bookings
                 var bookedSlots = _appointmentService
-                    .GetAppointmentsByDoctorId(doctor.DoctorId)
+                    .GetAllAppointments()
                     .Where(a => a.ScheduledDate.Date == selectedDate.Date &&
                                 a.Status != AppointmentStatus.Cancelled)
-                    .Select(a => a.TimeSlot).ToList();
+                    .Select(a => a.TimeSlot)
+                    .ToList();
+                // var bookedSlots=_appointmentService.GetAllAppointments().ToList();
 
+
+
+
+                // Subtract booked slots from the doctor's full slot list
                 var availableSlots = doctor.AvailableSlots.Except(bookedSlots).ToList();
 
                 if (availableSlots.Count == 0)
@@ -126,6 +132,7 @@ namespace HealthApp.ConsoleApp.Menus
                     return;
                 }
 
+                // Display remaining available slots
                 Console.WriteLine("\nAVAILABLE SLOTS");
                 for (int i = 0; i < availableSlots.Count; i++)
                     Console.WriteLine($"  {i + 1}. {availableSlots[i]}");
@@ -163,12 +170,12 @@ namespace HealthApp.ConsoleApp.Menus
                     return;
                 }
 
-                // Book the appointment
-                var result = _appointmentService.BookAppointment(
+                // FIX 3: BookAppointment returns Appointment object — call GetDetails() to print it
+                var appt = _appointmentService.BookAppointment(
                     patient, doctor, selectedDate, selectedSlot);
 
                 PrintSuccess("Appointment booked successfully!");
-                Console.WriteLine($"\n{result}");
+                Console.WriteLine($"\n{appt}");
             }
             catch (OperationCanceledException)
             {
@@ -181,7 +188,6 @@ namespace HealthApp.ConsoleApp.Menus
 
             Pause();
         }
-
         // View all appointments for a specific patient
         public void ViewPatientAppointments()
         {
@@ -251,7 +257,7 @@ namespace HealthApp.ConsoleApp.Menus
                     InputValidator.IsValidId,
                     "Please enter a valid positive number.")!;
 
-                Appointment appointment = _appointmentService.GetAppointmentById(int.Parse(raw));
+                Appointment? appointment = _appointmentService.GetAppointmentById(int.Parse(raw));
 
                 // Get action — confirm or cancel
                 Console.Write("\n[C] Confirm   [X] Cancel : ");
@@ -259,7 +265,7 @@ namespace HealthApp.ConsoleApp.Menus
 
                 if (action == "C")
                 {
-                    appointment.Confirm();
+                    appointment?.Confirm();
                     PrintSuccess("Appointment confirmed.");
                 }
                 else if (action == "X")
@@ -270,7 +276,7 @@ namespace HealthApp.ConsoleApp.Menus
                         InputValidator.IsNonEmpty,
                         "Reason cannot be empty.") ?? "No reason given";
 
-                    _appointmentService.CancelAppointment(appointment.AppointmentId, reason);
+                    _appointmentService.CancelAppointment(appointment!.AppointmentId, reason);
                     PrintSuccess("Appointment cancelled.");
                 }
                 else
@@ -326,10 +332,10 @@ namespace HealthApp.ConsoleApp.Menus
                     InputValidator.IsValidId,
                     "Please enter a valid positive number.")!;
 
-                Appointment appointment = _appointmentService.GetAppointmentById(int.Parse(raw));
+                Appointment? appointment = _appointmentService.GetAppointmentById(int.Parse(raw));
 
                 // Mark the appointment as completed
-                appointment.Complete();
+                appointment?.Complete();
                 PrintSuccess($"Appointment {raw} marked as Completed. You can now add a health record.");
             }
             catch (OperationCanceledException)
