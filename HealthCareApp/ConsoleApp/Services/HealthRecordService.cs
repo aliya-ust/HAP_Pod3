@@ -1,4 +1,6 @@
-﻿using HealthApp.ConsoleApp.Models;
+﻿using HealthApp.ConsoleApp.Services;
+using HealthApp.ConsoleApp.Repositories;
+using HealthApp.ConsoleApp.Models;
 using HealthApp.ConsoleApp.Interfaces;
 using HealthApp.ConsoleApp.Exceptions;
 namespace HealthApp.ConsoleApp.Services
@@ -29,11 +31,11 @@ namespace HealthApp.ConsoleApp.Services
 
         public List<HealthRecord> GetByPatientIdOrderByVisitDateDesc(int id)
         {
-            var patient = _patientRepository.GetById(id);
+            var patient = _patientRepository.GetPatientById(id);
 
             if (patient == null)
             {
-                throw new PatientNotFoundException(id);
+                throw new PatientNotFoundException("Patient of this id has not been found.");
             }
 
             var records = _healthRecordRepository
@@ -49,7 +51,7 @@ namespace HealthApp.ConsoleApp.Services
 
         public List<HealthRecord> GetByDoctorIdOrderByVisitDateDesc(int id)
         {
-            var doctor = _doctorRepository.GetByDoctorId(id);
+            var doctor = _doctorRepository.GetDoctorById(id);
 
             if (doctor == null)
             {
@@ -67,7 +69,7 @@ namespace HealthApp.ConsoleApp.Services
             return records;
         }
 
-        public HealthRecord? UpdateHealthRecord(HealthRecord record)
+        public HealthRecord UpdateHealthRecord(HealthRecord record)
         {
             HealthRecord? existingHealthRecord = GetRecordById(record.RecordId);
 
@@ -78,7 +80,7 @@ namespace HealthApp.ConsoleApp.Services
             return _healthRecordRepository.UpdateHealthRecord(existingHealthRecord, record);
         }
 
-        public HealthRecord GetRecordById(int recordId)
+        public HealthRecord? GetRecordById(int recordId)
         {
             HealthRecord? record = _healthRecordRepository.GetRecordById(recordId);
             if (record is null)
@@ -88,15 +90,11 @@ namespace HealthApp.ConsoleApp.Services
             return record;
         }
 
-        public int RecordIdGenerator(List<HealthRecord> records)
+        public static int RecordIdGenerator(List<HealthRecord> records)
         {
             return records.Any()
                 ? records.Max(r => r.RecordId) + 1
-                : 101;
-        }
-        public List<HealthRecord> GetAllRecords()
-        {
-            return _healthRecordRepository.GetAllRecords();
+                : 401;
         }
     }
 }

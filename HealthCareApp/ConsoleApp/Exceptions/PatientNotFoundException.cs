@@ -1,16 +1,12 @@
-﻿namespace HealthApp.ConsoleApp.Exceptions
+﻿using System;
 
+namespace HealthApp.ConsoleApp.Exceptions
 {
-
     public class PatientNotFoundException : Exception
     {
-
-        public PatientNotFoundException(int patientId)
-
-            : base($"Patient with ID {patientId} not found.")
-
-        { }
-
+        public PatientNotFoundException(string message)
+            : base(message)
+        {
+        }
     }
-
 }

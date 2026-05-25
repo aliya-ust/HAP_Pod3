@@ -1,15 +1,17 @@
-﻿using HealthApp.ConsoleApp.Models;
+﻿using System;
+using HealthApp.ConsoleApp.Models;
 
 namespace HealthApp.ConsoleApp.Interfaces
 {
     public interface IAppointmentService
     {
-        Appointment? BookAppointment(Patient patient, Doctor doctor, DateTime date, string slot);
-        void CancelAppointment(int appointmentId, string reason);
-        List<Appointment> GetAppointmentsByPatient(int patientId);
-        List<Appointment> GetAppointmentsByDoctor(int doctorId);
-        List<Appointment> GetUpcomingAppointments();
+        string BookAppointment(Patient patient, Doctor doctor, DateTime date, string slot);
+        string CancelAppointment(int appointmentId, string reason);
+        List<Appointment> GetAppointmentsByPatientId(int patientId);
+        List<Appointment> GetAppointmentsByDoctorId(int doctorId);
         Appointment? GetAppointmentById(int appointmentId);
-        bool IsAppointmentCompleted(int appointmentId);
+        List<Appointment> GetUpcomingAppointments();
+        Appointment UpdateAppointment(Appointment appointment);
+        List<Appointment> GetAllAppointments();
     }
 }

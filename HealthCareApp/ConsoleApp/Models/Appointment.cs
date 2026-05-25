@@ -1,4 +1,7 @@
-﻿using System.Text;
+﻿using System;
+using System.Numerics;
+using System.Text;
+using HealthApp.ConsoleApp.Models;
 
 namespace HealthApp.ConsoleApp.Models
 {
@@ -6,12 +9,12 @@ namespace HealthApp.ConsoleApp.Models
     {
         //  Properties
         public int AppointmentId { get; set; }
-        public required Patient? Patient { get; set; }
-        public required Doctor? Doctor { get; set; }
+        public Patient Patient { get; set; }
+        public Doctor Doctor { get; set; }
         public DateTime ScheduledDate { get; set; }
-        public required string TimeSlot { get; set; }
+        public string TimeSlot { get; set; }
         public AppointmentStatus Status { get; set; }
-        public string? CancellationReason { get; set; }
+        public string CancellationReason { get; set; }
 
 
         public Appointment()
@@ -59,8 +62,8 @@ namespace HealthApp.ConsoleApp.Models
             StringBuilder details = new StringBuilder();
 
             details.AppendLine($"Appointment ID: {AppointmentId}");
-            details.AppendLine($"Patient: {Patient?.Name}");
-            details.AppendLine($"Doctor: {Doctor?.FullName} ({Doctor?.Specialisation})");
+            details.AppendLine($"Patient: {Patient.Name}");
+            details.AppendLine($"Doctor: {Doctor.Name} ({Doctor.Specialisation})");
             details.AppendLine($"Date: {ScheduledDate.ToShortDateString()}");
             details.AppendLine($"Time Slot: {TimeSlot}");
             details.AppendLine($"Status: {Status}");

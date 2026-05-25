@@ -10,3 +10,9 @@
 *.sln.docstates
 
 *.lscache
+
+# Test coverage reports
+coverage.xml
+
+# .NET tool configuration
+dotnet-tools.json

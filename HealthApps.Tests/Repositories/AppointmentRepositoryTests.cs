@@ -1,74 +1,198 @@
-﻿using Xunit;
+﻿using System;
+using System.Collections.Generic;
+using Xunit;
 using HealthApp.ConsoleApp.Repositories;
-using HealthApp.ConsoleApp.Databases;
 using HealthApp.ConsoleApp.Models;
+using HealthApp.ConsoleApp.Databases;
 
-namespace HealthApp.Tests
+namespace HealthApp.Tests.Repositories
 {
     public class AppointmentRepositoryTests
     {
-        private readonly AppointmentRepository _repo;
+        private readonly AppointmentDb _appointmentDb;
+        private readonly AppointmentRepository _repository;
 
         public AppointmentRepositoryTests()
         {
-            var doctorDb = new DoctorDb();
-            var patientDb = new PatientDb();
-            var appointmentDb = new AppointmentDb(doctorDb, patientDb);
+            _appointmentDb = new AppointmentDb
+            {
+                Appointments = new List<Appointment>()
+            };
 
-            _repo = new AppointmentRepository(appointmentDb);
+            _repository = new AppointmentRepository(_appointmentDb);
         }
 
-        [Fact]
-        public void GetAllAppointments_ShouldReturnList()
+        private static Patient GetSamplePatient(int id)
         {
-            // Act
-            var result = _repo.GetAllAppointments();
-
-            // Assert
-            Assert.NotNull(result);
-            Assert.NotEmpty(result);
+            return new Patient
+            {
+                PatientId = id,
+                Name = "Patient " + id,
+                PhoneNumber = "9999999999",
+                Email = "patient@test.com"
+            };
         }
 
+        private static Doctor GetSampleDoctor(int id)
+        {
+            return new Doctor
+            {
+                DoctorId = id,
+                Name = "Doctor " + id,
+                Specialisation = "General"
+            };
+        }
+
+        // AddAppointment
+        [Fact]
+        public void AddAppointment_ShouldAddAppointment()
+        {
+            var appointment = new Appointment
+            {
+                AppointmentId = 1,
+                Patient = GetSamplePatient(1),
+                Doctor = GetSampleDoctor(1),
+                ScheduledDate = DateTime.Now.Date,
+                TimeSlot = "10:00 AM"
+            };
+
+            var result = _repository.AddAppointment(appointment);
+
+            Assert.Single(_appointmentDb.Appointments);
+            Assert.Contains("created successfully", result);
+        }
+
+        // GetAllAppointments
+        [Fact]
+        public void GetAllAppointments_ShouldReturnAllAppointments()
+        {
+            _appointmentDb.Appointments.Add(new Appointment
+            {
+                AppointmentId = 1,
+                Patient = GetSamplePatient(1),
+                Doctor = GetSampleDoctor(1),
+                ScheduledDate = DateTime.Now,
+                TimeSlot = "9:00 AM"
+            });
+
+            _appointmentDb.Appointments.Add(new Appointment
+            {
+                AppointmentId = 2,
+                Patient = GetSamplePatient(2),
+                Doctor = GetSampleDoctor(2),
+                ScheduledDate = DateTime.Now,
+                TimeSlot = "11:00 AM"
+            });
+
+            var result = _repository.GetAllAppointments();
+
+            Assert.Equal(2, result.Count);
+        }
+
+        // GetAppointmentById
         [Fact]
         public void GetAppointmentById_ShouldReturnAppointment()
         {
-            // Arrange
-            int id = 301;
+            _appointmentDb.Appointments.Add(new Appointment
+            {
+                AppointmentId = 1,
+                Patient = GetSamplePatient(1),
+                Doctor = GetSampleDoctor(1),
+                ScheduledDate = DateTime.Now,
+                TimeSlot = "10:00 AM"
+            });
 
-            // Act
-            var result = _repo.GetAppointmentById(id);
+            var result = _repository.GetAppointmentById(1);
 
-            // Assert
             Assert.NotNull(result);
+            Assert.Equal(1, result.AppointmentId);
         }
 
+        // UpdateAppointment
         [Fact]
-        public void DeleteAppointment_ShouldRemove()
+        public void UpdateAppointment_ShouldUpdateAppointmentDetails()
         {
-            // Arrange
-            int id = 301;
+            var existing = new Appointment
+            {
+                AppointmentId = 1,
+                Patient = GetSamplePatient(1),
+                Doctor = GetSampleDoctor(1),
+                ScheduledDate = DateTime.Now.AddDays(-1),
+                TimeSlot = "9:00 AM"
+            };
 
-            // Act
-            _repo.DeleteAppointment(id);
-            var result = _repo.GetAppointmentById(id);
+            var updated = new Appointment
+            {
+                AppointmentId = 1,
+                Patient = GetSamplePatient(2),
+                Doctor = GetSampleDoctor(2),
+                ScheduledDate = DateTime.Now,
+                TimeSlot = "2:00 PM"
+            };
 
-            // Assert
-            Assert.Null(result);
+            var result = _repository.UpdateAppointment(existing, updated);
+
+            Assert.Equal("Patient 2", result.Patient.Name);
+            Assert.Equal("Doctor 2", result.Doctor.Name);
+            Assert.Equal("2:00 PM", result.TimeSlot);
         }
 
+        // GetAppointmentsByPatientId
         [Fact]
-        public void UpdateAppointment_ShouldUpdate()
+        public void GetAppointmentsByPatientId_ShouldReturnMatchingAppointments()
         {
-            // Arrange
-            var appt = _repo.GetAppointmentById(301);
-            appt.TimeSlot = "05:00 PM";
+            var patient = GetSamplePatient(1);
 
-            // Act
-            _repo.UpdateAppointment(appt);
-            var updated = _repo.GetAppointmentById(301);
+            _appointmentDb.Appointments.Add(new Appointment
+            {
+                AppointmentId = 1,
+                Patient = patient,
+                Doctor = GetSampleDoctor(1),
+                ScheduledDate = DateTime.Now,
+                TimeSlot = "10:00 AM"
+            });
 
-            // Assert
-            Assert.Equal("05:00 PM", updated.TimeSlot);
+            _appointmentDb.Appointments.Add(new Appointment
+            {
+                AppointmentId = 2,
+                Patient = GetSamplePatient(2),
+                Doctor = GetSampleDoctor(2),
+                ScheduledDate = DateTime.Now,
+                TimeSlot = "11:00 AM"
+            });
+
+            var result = _repository.GetAppointmentsByPatientId(1);
+
+            Assert.Single(result);
+        }
+
+        // GetAppointmentsByDoctorId
+        [Fact]
+        public void GetAppointmentsByDoctorId_ShouldReturnMatchingAppointments()
+        {
+            var doctor = GetSampleDoctor(1);
+
+            _appointmentDb.Appointments.Add(new Appointment
+            {
+                AppointmentId = 1,
+                Patient = GetSamplePatient(1),
+                Doctor = doctor,
+                ScheduledDate = DateTime.Now,
+                TimeSlot = "10:00 AM"
+            });
+
+            _appointmentDb.Appointments.Add(new Appointment
+            {
+                AppointmentId = 2,
+                Patient = GetSamplePatient(2),
+                Doctor = GetSampleDoctor(2),
+                ScheduledDate = DateTime.Now,
+                TimeSlot = "11:00 AM"
+            });
+
+            var result = _repository.GetAppointmentsByDoctorId(1);
+
+            Assert.Single(result);
         }
     }
 }

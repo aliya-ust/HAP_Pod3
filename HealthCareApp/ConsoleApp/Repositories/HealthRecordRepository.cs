@@ -1,4 +1,5 @@
 ﻿using HealthApp.ConsoleApp.Models;
+using HealthApp.ConsoleApp.Exceptions;
 using HealthApp.ConsoleApp.Databases;
 using HealthApp.ConsoleApp.Interfaces;
 
@@ -9,9 +10,9 @@ namespace HealthApp.ConsoleApp.Repositories
     {
         private readonly HealthRecordDb _healthRecordDb;
 
-        public HealthRecordRepository(HealthRecordDb healthRecordDB)
+        public HealthRecordRepository(HealthRecordDb healthRecordDb)
         {
-            _healthRecordDb = healthRecordDB;
+            _healthRecordDb = healthRecordDb;
         }
 
         public string AddHealthRecord(HealthRecord record)
@@ -22,9 +23,7 @@ namespace HealthApp.ConsoleApp.Repositories
 
         public List<HealthRecord> GetAllRecords()
         {
-            return _healthRecordDb.Records
-                .OrderByDescending(r => r.VisitDate)   
-                .ToList();
+            return _healthRecordDb.Records.ToList();
         }
 
         public List<HealthRecord> GetByPatientIdOrderByVisitDateDesc(int id)

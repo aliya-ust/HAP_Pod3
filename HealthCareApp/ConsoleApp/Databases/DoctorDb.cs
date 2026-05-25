@@ -12,127 +12,136 @@ namespace HealthApp.ConsoleApp.Databases
                 new Doctor
                 {
                     DoctorId = 201,
-                    FullName = "Dr. John Smith",
+                    Name = "John Smith",
                     Specialisation = "Cardiology",
                     YearsOfExperience = 15,
                     ConsultationFee = 500,
                     IsActive = true,
 
-                    AvailableSlots = new List<string>
+                    AvailableSlots = new()
                     {
+                        "09:00 AM",
                         "10:00 AM",
-                        "11:00 AM",
-                        "03:00 PM"
+                        "11:00 AM"
                     },
-                    AvailableDates = new List<DateTime>
+
+                    AvailableDates = new()
                     {
                         DateTime.Today,
                         DateTime.Today.AddDays(1),
-
+                        DateTime.Today.AddDays(2)
                     }
                 },
 
                 new Doctor
                 {
                     DoctorId = 202,
-                    FullName = "Dr. Emily Davis",
+                    Name = "Emily Davis",
                     Specialisation = "Dermatology",
                     YearsOfExperience = 10,
                     ConsultationFee = 400,
                     IsActive = true,
 
-                    AvailableSlots =
-                    [
-                        "09:00 AM",
+                    AvailableSlots = new()
+                    {
                         "12:00 PM",
+                        "02:00 PM",
                         "04:00 PM"
-                    ],
-                    AvailableDates =
-                    [
+                    },
+
+                    AvailableDates = new()
+                    {
                         DateTime.Today.AddDays(1),
                         DateTime.Today.AddDays(2),
                         DateTime.Today.AddDays(3)
-                    ]
+                    }
                 },
+
                 new Doctor
                 {
                     DoctorId = 203,
-                    FullName = "Dr. Michael Brown",
+                    Name = "Michael Brown",
                     Specialisation = "Orthopedics",
                     YearsOfExperience = 20,
                     ConsultationFee = 600,
                     IsActive = false,
-                    AvailableSlots =
-                    [
-                        
-                    ],
-                    AvailableDates =
-                    [
-                    ]
+
+                    AvailableSlots = new()
+                    {
+                    },
+
+                    AvailableDates = new()
+                    {
+
+                    }
                 },
 
                 new Doctor
                 {
                     DoctorId = 204,
-                    FullName = "Dr. Sarah Johnson",
+                    Name = "Sarah Johnson",
                     Specialisation = "Pediatrics",
                     YearsOfExperience = 8,
-                    ConsultationFee = 300,
+                    ConsultationFee = 350,
                     IsActive = true,
-                    AvailableSlots =
-                    [
+
+                    AvailableSlots = new()
+                    {
                         "10:00 AM",
                         "01:00 PM",
                         "03:00 PM"
-                    ],
-                    AvailableDates =
-                    [
-                        DateTime.Today.AddDays(2),
-                        DateTime.Today.AddDays(4)
-                    ]
+                    },
+
+                    AvailableDates = new()
+                    {
+                        DateTime.Today,
+                        DateTime.Today.AddDays(2)
+                    }
                 },
 
                 new Doctor
                 {
                     DoctorId = 205,
-                    FullName = "Dr. David Wilson",
+                    Name = "David Wilson",
                     Specialisation = "Neurology",
                     YearsOfExperience = 12,
-                    ConsultationFee = 550,
+                    ConsultationFee = 700,
                     IsActive = true,
-                   AvailableSlots =
-                    [
-                        "09:00 AM",
+
+                    AvailableSlots = new()
+                    {
                         "11:00 AM",
                         "02:00 PM"
-                    ],
-                    AvailableDates =
-                    [
-                        DateTime.Today.AddDays(5),
-                        DateTime.Today.AddDays(7)
-                    ]
+                    },
+
+                    AvailableDates = new()
+                    {
+                        DateTime.Today.AddDays(4),
+                        DateTime.Today.AddDays(5)
+                    }
                 },
 
                 new Doctor
                 {
                     DoctorId = 206,
-                    FullName = "Dr. Loki",
+                    Name = "Loki",
                     Specialisation = "Skin",
                     YearsOfExperience = 3,
-                    ConsultationFee = 400,
+                    ConsultationFee = 300,
                     IsActive = true,
-                    AvailableSlots =
-                    [
+
+                    AvailableSlots = new()
+                    {
                         "09:00 AM",
                         "12:00 PM",
                         "04:00 PM"
-                    ],
-                    AvailableDates =
-                    [
+                    },
+
+                    AvailableDates = new()
+                    {
                         DateTime.Today,
-                        DateTime.Today.AddDays(1),
-                        DateTime.Today.AddDays(3)
-                    ]
+                        DateTime.Today.AddDays(1)
+                    }
                 }
             };
         }

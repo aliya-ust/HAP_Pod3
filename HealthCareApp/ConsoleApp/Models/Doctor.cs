@@ -7,8 +7,8 @@ namespace HealthApp.ConsoleApp.Models
     public class Doctor
     {
         public int DoctorId { get; set; }
-        public string FullName { get; set; } = "";
-        public string Specialisation { get; set; } = "";
+        public required string Name { get; set; }
+        public required string Specialisation { get; set; }
         public int YearsOfExperience { get; set; }
         public decimal ConsultationFee { get; set; }
         public bool IsActive { get; set; }
@@ -17,7 +17,7 @@ namespace HealthApp.ConsoleApp.Models
         public List<DateTime> AvailableDates { get; set; } = new List<DateTime>();
 
         //Availability method
-        public bool IsAvailable(DateTime date)
+        public virtual bool IsAvailable(DateTime date)
         {
             if (!IsActive)
             {
@@ -58,7 +58,7 @@ namespace HealthApp.ConsoleApp.Models
 
         public string GetDoctorDetails()
         {
-            return $"Doctor ID: {DoctorId}, Full Name: {FullName}, Specialisation: {Specialisation}, Experience: {YearsOfExperience} years, Consultation Fee: Rs. {ConsultationFee}, Active: {(IsActive ? "Yes" : "No")}";
+            return $"Doctor ID: {DoctorId}, Full Name: {Name}, Specialisation: {Specialisation}, Experience: {YearsOfExperience} years, Consultation Fee: Rs. {ConsultationFee}, Active: {(IsActive ? "Yes" : "No")}";
         }
     }
 }

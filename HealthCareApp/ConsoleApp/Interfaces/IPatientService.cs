@@ -1,14 +1,15 @@
-﻿using HealthApp.ConsoleApp.Models;
+﻿using System;
+using HealthApp.ConsoleApp.Models;
+using System.Collections.Generic;
 
 namespace HealthApp.ConsoleApp.Interfaces
 {
     public interface IPatientService
     {
-        bool Register(Patient patient);
-        bool Update(Patient patient);
+        string RegisterPatient(Patient patient);
+        Patient UpdatePatient(Patient patient);
+        Patient GetPatientById(int id);
         List<Patient> GetAllPatients();
-        string GetPatientProfileSummaryById(int patientId);
-        Patient? GetPatientById(int id);
 
     }
 }

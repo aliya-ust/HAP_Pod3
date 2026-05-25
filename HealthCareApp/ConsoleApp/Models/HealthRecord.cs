@@ -12,12 +12,12 @@
 
         public string GetSummary()
         {
-            return $"Record Id: {RecordId} | Patient: {Patient.Name} | Doctor: {Doctor.FullName} | Date: {VisitDate.ToShortDateString()} | Diagnosis: {Diagnosis} | Prescription: {Prescription} | Notes: {DoctorNotes}";
+            return $"Record Id: {RecordId} | Patient: {Patient.Name} | Doctor: {Doctor.Name} | Date: {VisitDate.ToShortDateString()} | Diagnosis: {Diagnosis} | Prescription: {Prescription} | Notes: {DoctorNotes}";
         }
 
         public override string ToString()
         {
-            return $"\nVisit Date: {VisitDate.ToShortDateString()} | Patient: {Patient.Name} | Doctor: {Doctor.FullName} \nDiagnosis: {Diagnosis} \nPrescription: {Prescription} \nDoctor Notes: {DoctorNotes}";
+            return $"Record Id: {RecordId} | Patient: {Patient.Name} | Doctor: {Doctor.Name} | Visit Date: {VisitDate.ToShortDateString()} | Diagnosis: {Diagnosis} | Prescription: {Prescription} | Doctor Notes: {DoctorNotes}";
         }
     }
 }

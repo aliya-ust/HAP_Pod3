@@ -1,13 +1,13 @@
-﻿using HealthApp.ConsoleApp.Interfaces;
-using HealthApp.ConsoleApp.Models;
-using HealthApp.ConsoleApp.Repositories;
-using HealthApp.ConsoleApp.Services;
-using Moq;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Xunit;
+using Moq;
+using HealthApp.ConsoleApp.Services;
+using HealthApp.ConsoleApp.Interfaces;
+using HealthApp.ConsoleApp.Models;
+using HealthApp.ConsoleApp.Exceptions;
 
-namespace HealthApp.Tests
+namespace HealthApp.Tests.Services
 {
     public class PatientServiceTests
     {
@@ -17,93 +17,119 @@ namespace HealthApp.Tests
         public PatientServiceTests()
         {
             _mockRepo = new Mock<IPatientRepository>();
-
             _service = new PatientService(_mockRepo.Object);
         }
 
-        [Fact]
-        public void Register_ShouldSucceed()
+        private static Patient GetSamplePatient(int id)
         {
-            // Arrange
-            var patient = new Patient
+            return new Patient
             {
-                Name = "Test",
-                Gender = "Male",
+                PatientId = id,
+                Name = "Patient " + id,
                 PhoneNumber = "9999999999",
-                Email = "test@gmail.com",
-                InsuranceId = "INS222",
-                Dob = DateTime.Now.AddYears(-25)
+                Email = "patient@test.com"
             };
-
-            _mockRepo
-                .Setup(r => r.Add(It.IsAny<Patient>()))
-                .Returns(true);
-
-            // Act
-            var result = _service.Register(patient);
-
-            // Assert
-            Assert.True(result);
         }
 
+        // RegisterPatient
+        [Fact]
+        public void RegisterPatient_ShouldAssignIdAndAddPatient()
+        {
+            // Arrange
+            var patients = new List<Patient>
+            {
+                GetSamplePatient(101),
+                GetSamplePatient(102)
+            };
+
+            var newPatient = GetSamplePatient(0);
+
+            _mockRepo.Setup(r => r.GetAllPatients()).Returns(patients);
+            _mockRepo.Setup(r => r.RegisterPatient(It.IsAny<Patient>()))
+                     .Returns("Patient added successfully");
+
+            // Act
+            var result = _service.RegisterPatient(newPatient);
+
+            // Assert
+            Assert.Equal(103, newPatient.PatientId);
+            Assert.Contains("successfully", result);
+        }
+
+        // GetPatientById
         [Fact]
         public void GetPatientById_ShouldReturnPatient()
         {
-            // Arrange
-            int id = 101;
+            var patient = GetSamplePatient(101);
 
-            var patient = new Patient
+            _mockRepo.Setup(r => r.GetPatientById(101)).Returns(patient);
+
+            var result = _service.GetPatientById(101);
+
+            Assert.NotNull(result);
+            Assert.Equal(101, result.PatientId);
+        }
+
+        // GetPatientById - Exception
+        [Fact]
+        public void GetPatientById_ShouldThrowException_WhenNotFound()
+        {
+            _mockRepo.Setup(r => r.GetPatientById(999)).Returns((Patient?)null);
+
+            Assert.Throws<PatientNotFoundException>(() => _service.GetPatientById(999));
+        }
+
+        // UpdatePatient
+        [Fact]
+        public void UpdatePatient_ShouldUpdateExistingPatient()
+        {
+            var existing = GetSamplePatient(101);
+            var updated = GetSamplePatient(101);
+            updated.Name = "Updated Name";
+
+            _mockRepo.Setup(r => r.GetPatientById(101)).Returns(existing);
+            _mockRepo.Setup(r => r.UpdatePatient(existing, updated)).Returns(updated);
+
+            var result = _service.UpdatePatient(updated);
+
+            Assert.Equal("Updated Name", result.Name);
+        }
+
+        // UpdatePatient - Exception
+        [Fact]
+        public void UpdatePatient_ShouldThrowException_WhenPatientNotFound()
+        {
+            var patient = GetSamplePatient(999);
+
+            _mockRepo.Setup(r => r.GetPatientById(999)).Returns((Patient?)null);
+
+            Assert.Throws<PatientNotFoundException>(() => _service.UpdatePatient(patient));
+        }
+
+        // PatientIdGenerator
+        [Fact]
+        public void PatientIdGenerator_ShouldReturnNextId()
+        {
+            var patients = new List<Patient>
             {
-                PatientId = 101,
-                Name = "Arjun",
-                Dob = new DateTime(1995, 5, 20),
-                Gender = "Male",
-                PhoneNumber = "9876543210",
-                Email = "arjun@gmail.com",
-                InsuranceId = "INS101",
-                CreatedAt = DateTime.Now
+                GetSamplePatient(101),
+                GetSamplePatient(102)
             };
 
-            _mockRepo
-                .Setup(r => r.GetById(id))
-                .Returns(patient);
+            var result = PatientService.PatientIdGenerator(patients);
 
-            // Act
-            var result = _service.GetPatientById(id);
-
-            // Assert
-            Assert.NotNull(result);
-            Assert.Equal("Arjun", result.Name);
+            Assert.Equal(103, result);
         }
 
+        // PatientIdGenerator - Empty List
         [Fact]
-        public void Update_InvalidPatient_ShouldReturnFalse()
+        public void PatientIdGenerator_ShouldReturn101_WhenEmpty()
         {
-            // Arrange
-            Patient patient = null;
+            var patients = new List<Patient>();
 
-            // Act
-            var result = _service.Update(patient);
+            var result = PatientService.PatientIdGenerator(patients);
 
-            // Assert
-            Assert.False(result);
-        }
-
-        [Fact]
-        public void GetPatientProfileSummaryById_NotFound_ShouldReturnEmpty()
-        {
-            // Arrange
-            int id = 999;
-
-            _mockRepo
-                .Setup(r => r.GetById(id))
-                .Returns((Patient)null);
-
-            // Act
-            var result = _service.GetPatientProfileSummaryById(id);
-
-            // Assert
-            Assert.Equal(string.Empty, result);
+            Assert.Equal(101, result);
         }
     }
 }
