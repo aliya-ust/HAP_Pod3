@@ -6,79 +6,47 @@ namespace HealthApp.ConsoleApp.Repositories
 {
     public class AppointmentRepository : IAppointmentRepository
     {
-        private readonly List<Appointment> _appointments;
+        private readonly AppointmentDb _appointmentDb;
+
         public AppointmentRepository(AppointmentDb appointmentDb)
         {
-            _appointments = appointmentDb.appointments;
+            _appointmentDb = appointmentDb;
         }
 
-        public void AddAppointment(Appointment appointment)
+        public string AddAppointment(Appointment appointment)
         {
-
-            _appointments.Add(appointment);
+            _appointmentDb.Appointments.Add(appointment);
+            return $"Appointment of ID {appointment.AppointmentId} has been created successfully";
         }
 
         public List<Appointment> GetAllAppointments()
         {
-            return _appointments;
+            return _appointmentDb.Appointments;
         }
 
-        public Appointment GetAppointmentById(int id)
+        public Appointment? GetAppointmentById(int id)
         {
-            return _appointments.FirstOrDefault(a => a.AppointmentId == id);
+            return _appointmentDb.Appointments.FirstOrDefault(a => a.AppointmentId == id);
         }
 
-        public void UpdateAppointment(Appointment appointment)
+        public Appointment UpdateAppointment(Appointment existingAppointment, Appointment appointment)
         {
-            var existing = GetAppointmentById(appointment.AppointmentId);
-            if (existing is null)
-            {
+            existingAppointment.Patient = appointment.Patient;
+            existingAppointment.Doctor = appointment.Doctor;
+            existingAppointment.ScheduledDate = appointment.ScheduledDate;
+            existingAppointment.TimeSlot = appointment.TimeSlot;
 
-                throw new AppointmentNotFoundException($"Appointment with ID {appointment.AppointmentId} not found.");
-            }
-            existing.Patient = appointment.Patient;
-            existing.Doctor = appointment.Doctor;
-            existing.ScheduledDate = appointment.ScheduledDate;
-            existing.TimeSlot = appointment.TimeSlot;
-            existing.Status = appointment.Status;
-            //existing.CancellationReason = appointment.CancellationReason;
+            return existingAppointment;
         }
 
-        public void CancelAppointment(int id, string reason)
+        public List<Appointment> GetAppointmentsByPatientId(int patientId)
         {
-            var appointment = GetAppointmentById(id);
-            if (appointment != null)
-            {
-                appointment.Status = AppointmentStatus.Cancelled;
-                appointment.CancellationReason = reason;
-            }
+            return _appointmentDb.Appointments.Where(a => a.Patient.PatientId == patientId).ToList();
         }
 
-        public void DeleteAppointment(int id)
+        public List<Appointment> GetAppointmentsByDoctorId(int doctorId)
         {
-            var appointment = GetAppointmentById(id);
-            if (appointment != null)
-            {
-                _appointments.Remove(appointment);
-            }
-        }
-        public List<Appointment> GetAppointmentsByPatient(int patientId)
-        {
-            var appointments = _appointments.Where(a => a.Patient.Id == patientId).ToList();
-            if (appointments.Count == 0)
-            {
-                throw new AppointmentNotFoundException($"No appointments found for patient ID {patientId}.");
-            }
-            return appointments;
-        }
-        public List<Appointment> GetAppointmentsByDoctor(int doctorId)
-        {
-            var appointments = _appointments.Where(a => a.Doctor.DoctorId == doctorId).ToList();
-            if (appointments.Count == 0)
-            {
-                throw new AppointmentNotFoundException($"No appointments found for doctor ID {doctorId}.");
-            }
-            return appointments;
+            return _appointmentDb.Appointments.Where(a => a.Doctor.DoctorId == doctorId).ToList();
         }
     }
 }

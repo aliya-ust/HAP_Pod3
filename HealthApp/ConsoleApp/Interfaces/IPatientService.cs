@@ -6,13 +6,10 @@ namespace HealthApp.ConsoleApp.Interfaces
 {
     public interface IPatientService
     {
-        void AddPatient(Patient patient);
-        void UpdatePatient(Patient patient);
-        void DeletePatient(int id);
+        string  RegisterPatient(Patient patient);
+        Patient  UpdatePatient(Patient patient);
         Patient GetPatientById(int id);
         List<Patient> GetAllPatients();
-        int GetPatientAge(int patienId);
-        string GetPatientProfileSummary(int patientId);
         
     }
 }

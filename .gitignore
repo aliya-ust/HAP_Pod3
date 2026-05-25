@@ -2,7 +2,7 @@
 .vs/
 **/bin/
 **/obj/
-
+**/.sonarqube/
 # Optional project-specific ignores
 *.user
 *.suo
