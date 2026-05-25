@@ -1,5 +1,6 @@
 using System.Globalization;
 using HealthApp.ConsoleApp.Models;
+using System.Text.RegularExpressions;
 
 namespace HealthApp.ConsoleApp.Helpers
 {
@@ -16,7 +17,7 @@ namespace HealthApp.ConsoleApp.Helpers
                 Console.Write(prompt);
                 string? input = Console.ReadLine();
 
-                if (input?.ToLower() == "q")
+                if (input?.ToLower() == "q" || input?.ToLower() == "back")
                     throw new OperationCanceledException();
 
                 if (allowEmpty && string.IsNullOrWhiteSpace(input))
@@ -120,11 +121,17 @@ namespace HealthApp.ConsoleApp.Helpers
         public static bool IsValidName(string input) =>
         !string.IsNullOrWhiteSpace(input) && !input.Any(char.IsDigit);
 
-        public static bool IsValidPhone(string input) =>
-            input.Length == 10 && input.All(char.IsDigit);
+        public static bool IsValidPhone(string input)
+        {
+            string pattern = @"^[6-9]\d{9}$";
+            return Regex.IsMatch(input, pattern);
+        }
 
-        public static bool IsValidEmail(string input) =>
-            input.Contains('@');
+        public static bool IsValidEmail(string input)
+        {
+            string pattern = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
+            return Regex.IsMatch(input, pattern);
+        }
 
         public static bool IsValidInsuranceId(string input) =>
             int.TryParse(input, out int id) && id >= 0;
