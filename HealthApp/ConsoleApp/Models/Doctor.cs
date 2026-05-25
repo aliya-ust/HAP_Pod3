@@ -7,23 +7,24 @@ namespace HealthApp.ConsoleApp.Models
     public class Doctor
     {
         public int DoctorId { get; set; }
-        public string FullName { get; set; } = "";
-        public string Specialisation { get; set; } = "";
+        public required string Name { get; set; }
+        public required string Specialisation { get; set; }
         public int YearsOfExperience { get; set; }
         public decimal ConsultationFee { get; set; }
         public bool IsActive { get; set; }
+        public List<string> AvailableSlots { get; set; } = new List<string>();
 
-        public List<DateTime> Appointments { get; set; } = new List<DateTime>();
+        public List<DateTime> AvailableDates { get; set; } = new List<DateTime>();
 
         //Availability method
-        public bool IsAvailable(DateTime date)
+        public virtual bool IsAvailable(DateTime date)
         {
             if (!IsActive)
             {
                 return false;
             }
 
-            int count = Appointments.Count(a => a.Date == date.Date);
+            int count = AvailableDates.Count(d => d.Date == date.Date);
 
             if (count >= 5)
             {
@@ -36,28 +37,28 @@ namespace HealthApp.ConsoleApp.Models
         //Upcoming count
         public string GetScheduleSummary()
         {
-            int count = Appointments.Count(a => a.Date >= DateTime.Today);
+            int count = AvailableDates.Count(d => d.Date >= DateTime.Today);
 
             if (count == 0)
             {
-                return "No upcoming appointments";
+                return "No available slots";
             }
 
-            return $"Upcoming appointments count: {count}";
+            return $"Available slots  count: {count}";
         }
 
         //Upcoming list
         public List<DateTime> GetUpcomingAppointments()
         {
-            return Appointments
-                .Where(a => a.Date >= DateTime.Today)
-                .OrderBy(a => a)
+            return AvailableDates
+                .Where(d => d.Date >= DateTime.Today)
+                .OrderBy(d => d)
                 .ToList();
         }
 
         public string GetDoctorDetails()
         {
-            return $"Doctor ID: {DoctorId}, Full Name: {FullName}, Specialisation: {Specialisation}, Experience: {YearsOfExperience} years, Consultation Fee: Rs. {ConsultationFee}, Active: {(IsActive ? "Yes" : "No")}";
+            return $"Doctor ID: {DoctorId}, Full Name: {Name}, Specialisation: {Specialisation}, Experience: {YearsOfExperience} years, Consultation Fee: Rs. {ConsultationFee}, Active: {(IsActive ? "Yes" : "No")}";
         }
     }
 }

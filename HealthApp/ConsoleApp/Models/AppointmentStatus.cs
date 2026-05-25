@@ -1,6 +1,7 @@
-namespace  HealthApp.ConsoleApp.Models
-{   
-public enum AppointmentStatus
+using HealthApp.ConsoleApp.Models;
+namespace HealthApp.ConsoleApp.Models
+{
+    public enum AppointmentStatus
     {
         Pending,
         Confirmed,
@@ -8,4 +9,3 @@ public enum AppointmentStatus
         Cancelled
     }
 }
-

@@ -1,0 +1,9 @@
+r
+gC:\Users\310508\source\repos\HAP_Pod3\HealthApp.Tests\obj\Debug\net10.0\HealthApp.Tests.AssemblyInfo.csutf-8‚
+wC:\Users\310508\source\repos\HAP_Pod3\HealthApp.Tests\obj\Debug\net10.0\.NETCoreApp,Version=v10.0.AssemblyAttributes.csutf-8t
+iC:\Users\310508\source\repos\HAP_Pod3\HealthApp.Tests\obj\Debug\net10.0\HealthApp.Tests.GlobalUsings.g.csutf-8x
+mC:\Users\310508\.nuget\packages\microsoft.net.test.sdk\17.14.1\build\net8.0\Microsoft.NET.Test.Sdk.Program.csutf-8e
+\C:\Users\310508\source\repos\HAP_Pod3\HealthApp.Tests\Repositories\PatientRepositoryTests.csutf-8j
+aC:\Users\310508\source\repos\HAP_Pod3\HealthApp.Tests\Repositories\HealthRecordRepositoryTests.csutf-8d
+[C:\Users\310508\source\repos\HAP_Pod3\HealthApp.Tests\Repositories\DoctorRepositoryTests.csutf-8i
+`C:\Users\310508\source\repos\HAP_Pod3\HealthApp.Tests\Repositories\AppointmentRepositoryTests.csutf-8

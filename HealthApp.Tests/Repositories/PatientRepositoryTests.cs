@@ -1,91 +1,187 @@
-﻿using HealthApp.ConsoleApp.Repositories;
+﻿using System;
+using Xunit;
+using HealthApp.ConsoleApp.Repositories;
 using HealthApp.ConsoleApp.Databases;
 using HealthApp.ConsoleApp.Models;
 
-namespace HealthApp_Testing
+namespace HealthApp.Tests.Repositories
 {
     public class PatientRepositoryTests
     {
-     
-        private PatientDb _db;
-        private PatientRepository _repository;
-
+        private readonly PatientDb _patientDb;
+        private readonly PatientRepository _repository;
 
         public PatientRepositoryTests()
         {
-
-            _db = new();
-            _repository = new ();
-
-        }
-        [Fact]
-        public void GetAll_WhenCalled_ShouldReturnAllPatients()
-        {
-            var patients = _repository.GetAll();
-            Assert.NotNull(patients);
-            Assert.Equal(3, patients.Count);
-            Assert.Equal("Arjun", patients[0].Name);
+            _patientDb = new PatientDb();
+            _repository = new PatientRepository(_patientDb);
         }
 
         [Fact]
-        public void GetById_ExistingId_ShouldReturnPatient()
+        public void RegisterPatient_ShouldAddPatient_ToDatabase()
         {
-            var patient = _repository.GetById(1);
-            Assert.NotNull(patient);
-            Assert.Equal("Arjun", patient.Name);
-        }
-
-        [Fact]
-        public void GetById_NonExistingId_ShouldReturnNull()
-        {
-            var patient = _repository.GetById(999);
-            Assert.Null(patient);
-        }
-
-        [Fact]
-        public void Add_ValidPatient_ShouldAddPatient()
-        {
-            var newPatient = new Patient
+            var patient = new Patient
             {
-                Id = 4,
-                Name = "Test",
-                Dob = new DateTime(2000, 1, 1),
-                Gender = "Other",
-                InsuranceId = 1
+                PatientId = 1,
+                Name = "John Doe",
+                PhoneNumber = "9876543210",
+                Email = "john.doe@email.com"
             };
-            var initialCount = _repository.GetAll().Count;
-            Assert.True("Patient added successfully", _repository.Add(newPatient));
-        }
-        [Fact]
-        public void Update_ExistingPatient_ShouldUpdatePatient()
-        {
-            var patient = _repository.GetById(1);
-            patient.Name = "Aarick";
-            var result = _repository.Update(patient);
-            Assert.True(result);
-            var updatedPatient = _repository.GetById(1);
-            Assert.Equal("Updated Name", updatedPatient.Name);
-        }
-        [Fact]
-        public void Update_NonExistingPatient_ShouldReturnFalse()
-        {
-            var nonExistingPatient = new Patient
-            {
-                Id = 999,
-                Name = "Non Existing",
-                Dob = new DateTime(1990, 1, 1),
-            };
-            Assert.False(_repository.Update(nonExistingPatient));
-        }
-        [Fact]
-        public void delete_ExistingPatient_ShouldDeletePatient()
-        {
-            var result = _repository.Delete(1);
-            Assert.True(result);
-            var deletedPatient = _repository.GetById(1);
-            Assert.Null(deletedPatient);
-            Assert.Equal(2, _repository.GetAll().Count);
 
+            var result = _repository.RegisterPatient(patient);
+
+            Assert.Equal(patient, _patientDb.Patients[5]);
+            Assert.Equal("Patient ID 1 added successfully!", result);
+        }
+
+        [Fact]
+        public void RegisterPatient_ShouldAllow_MultiplePatients()
+        {
+            var patient1 = new Patient
+            {
+                PatientId = 1,
+                Name = "John Doe",
+                PhoneNumber = "9876543210",
+                Email = "john@email.com"
+            };
+
+            var patient2 = new Patient
+            {
+                PatientId = 2,
+                Name = "Jane Smith",
+                PhoneNumber = "9123456780",
+                Email = "jane@email.com"
+            };
+
+            _repository.RegisterPatient(patient1);
+            _repository.RegisterPatient(patient2);
+
+            Assert.Equal(7, _patientDb.Patients.Count);
+        }
+
+        [Fact]
+        public void GetPatientById_ShouldReturnPatient_WhenExists()
+        {
+            var patient = new Patient
+            {
+                PatientId = 1,
+                Name = "John Doe",
+                PhoneNumber = "9876543210",
+                Email = "john@email.com"
+            };
+
+            _patientDb.Patients.Add(patient);
+
+            var result = _repository.GetPatientById(1);
+
+            Assert.NotNull(result);
+            Assert.Equal(1, result.PatientId);
+            Assert.Equal("John Doe", result.Name);
+            Assert.Equal("9876543210", result.PhoneNumber);
+            Assert.Equal("john@email.com", result.Email);
+        }
+
+        [Fact]
+        public void GetPatientById_ShouldReturnNull_WhenNotFound()
+        {
+            _patientDb.Patients.Add(new Patient
+            {
+                PatientId = 1,
+                Name = "Existing User",
+                PhoneNumber = "9999999999",
+                Email = "existing@email.com"
+            });
+
+            var result = _repository.GetPatientById(999);
+
+            Assert.Null(result);
+        }
+
+        [Fact]
+        public void GetPatientById_ShouldReturnFirstMatch_WhenDuplicateIdsExist()
+        {
+            var patient1 = new Patient
+            {
+                PatientId = 1,
+                Name = "First Entry",
+                PhoneNumber = "1111111111",
+                Email = "first@email.com"
+            };
+
+            var patient2 = new Patient
+            {
+                PatientId = 1,
+                Name = "Second Entry",
+                PhoneNumber = "2222222222",
+                Email = "second@email.com"
+            };
+
+            _patientDb.Patients.Add(patient1);
+            _patientDb.Patients.Add(patient2);
+
+            var result = _repository.GetPatientById(1);
+
+            Assert.NotNull(result);
+            Assert.Equal("First Entry", result.Name);
+        }
+
+        [Fact]
+        public void GetAllPatients_ShouldReturnAllPatients()
+        {
+            var patient1 = new Patient
+            {
+                PatientId = 1,
+                Name = "John Doe",
+                PhoneNumber = "9876543210",
+                Email = "john@email.com"
+            };
+
+            var patient2 = new Patient
+            {
+                PatientId = 2,
+                Name = "Jane Smith",
+                PhoneNumber = "9123456780",
+                Email = "jane@email.com"
+            };
+
+            _patientDb.Patients.Add(patient1);
+            _patientDb.Patients.Add(patient2);
+
+            var result = _repository.GetAllPatients();
+
+            Assert.NotNull(result);
+            Assert.Equal(7, result.Count);
+            Assert.Contains(result, p => p.PatientId == 1);
+            Assert.Contains(result, p => p.PatientId == 2);
+        }
+
+        [Fact]
+        public void UpdatePatient_ShouldUpdateExistingPatient()
+        {
+            var patient = new Patient
+            {
+                PatientId = 1,
+                Name = "Old Name",
+                PhoneNumber = "1111111111",
+                Email = "old@email.com"
+            };
+
+            _patientDb.Patients.Add(patient);
+
+            var updatedPatient = new Patient
+            {
+                PatientId = 1,
+                Name = "New Name",
+                PhoneNumber = "9999999999",
+                Email = "new@email.com"
+            };
+
+            var result = _repository.UpdatePatient(patient, updatedPatient);
+
+            var storedPatient = _patientDb.Patients[5];
+            Assert.Equal(result.Name, storedPatient.Name);
+            Assert.Equal(result.PhoneNumber, storedPatient.PhoneNumber);
+            Assert.Equal(result.Email, storedPatient.Email);
         }
     }
 }

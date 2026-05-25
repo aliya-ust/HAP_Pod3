@@ -1,64 +1,64 @@
 using System;
 using System.Collections.Generic;
+using System.Net.NetworkInformation;
+using HealthApp.ConsoleApp.Exceptions;
 using HealthApp.ConsoleApp.Interfaces;
 using HealthApp.ConsoleApp.Models;
 using HealthApp.ConsoleApp.Repositories;
-using HealthApp.ConsoleApp.Exceptions;
 
 
 namespace HealthApp.ConsoleApp.Services
 {
     public class PatientService : IPatientService
     {
-        private readonly IPatientRepository patientRepo;
+        private readonly IPatientRepository _patientRepo;
 
         public PatientService(IPatientRepository patientRepo)
         {
-            this.patientRepo = patientRepo;
+            _patientRepo = patientRepo;
         }
 
-        public void Register(Patient patient)
+        public string RegisterPatient(Patient patient)
         {
-            if (patient == null)
-                throw new PatientInvalidException();
+            List<Patient> patients = _patientRepo.GetAllPatients();
 
-            patientRepo.Add(patient);
+            patient.PatientId = PatientIdGenerator(patients);
+
+            return _patientRepo.RegisterPatient(patient);
         }
 
-        public void Update(Patient patient)
+        public Patient UpdatePatient(Patient patient)
         {
-            if (patient == null)
-                throw new PatientInvalidException();
+            Patient? existingPatient = GetPatientById(patient.PatientId);
 
-             patientRepo.Update(patient);
+            if (existingPatient is null)
+            {
+                throw new PatientNotFoundException($"Patient of ID {patient.PatientId} does not exist");
+            }
+            return _patientRepo.UpdatePatient(existingPatient, patient);
         }
 
-        // public void Delete(int id)
-        // {
-        //     if(id<0)
-        //       throw new PatientInvalidException();
-        //     return patientRepo.Delete(id);
-        // }
-
-        public Patient GetPatientById(int id)
+        public Patient? GetPatientById(int id)
         {
-            return patientRepo.GetById(id);
+            Patient? patient = _patientRepo.GetPatientById(id);
+
+            if (patient is null)
+            {
+                throw new PatientNotFoundException($"Patient of ID {id} does not exist");
+            }
+            return patient;
         }
 
+        public static int PatientIdGenerator(List<Patient> patients)
+        {
+            return patients.Any()
+                ? patients.Max(p => p.PatientId) + 1
+                : 101;
+        }
         public List<Patient> GetAllPatients()
         {
-            return patientRepo.GetAll();
+            return _patientRepo.GetAllPatients();
         }
 
-        public int GetPatientAge(int patientId)
-        {
-            var patient = GetPatientById(patientId);
-            return patient.GetAge();
-        }
-        public string GetPatientProfileSummary(int patientId)
-        {
-            var patient = GetPatientById(patientId);
-            return patient.GetProfileSummary();
-        }
     }
 }

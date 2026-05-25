@@ -63,7 +63,7 @@ namespace HealthApp.ConsoleApp.Models
 
             details.AppendLine($"Appointment ID: {AppointmentId}");
             details.AppendLine($"Patient: {Patient.Name}");
-            details.AppendLine($"Doctor: {Doctor.FullName} ({Doctor.Specialisation})");
+            details.AppendLine($"Doctor: {Doctor.Name} ({Doctor.Specialisation})");
             details.AppendLine($"Date: {ScheduledDate.ToShortDateString()}");
             details.AppendLine($"Time Slot: {TimeSlot}");
             details.AppendLine($"Status: {Status}");

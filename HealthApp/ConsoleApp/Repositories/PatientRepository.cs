@@ -10,68 +10,39 @@ namespace HealthApp.ConsoleApp.Repositories
 {
     public class PatientRepository : IPatientRepository
     {
-        private readonly List<Patient> _patients;
+        private readonly PatientDb _patientsDb;
 
-        public PatientRepository()
+        public PatientRepository(PatientDb patientDb)
         {
-            _patients = PatientDb.Patients;
+            _patientsDb = patientDb;
         }
 
-        public void Add(Patient patient)
+        public string RegisterPatient(Patient patient)
         {
-            if (patient == null)
-               
-            throw new PatientInvalidException();
-
-
-            patient.PatientId = _patients.Count > 0 ? _patients.Max(p => p.PatientId) + 1 : 1;
-            patient.CreatedAt = DateTime.Now;
-
-            _patients.Add(patient);
-        
+            _patientsDb.Patients.Add(patient);
+            return $"Patient ID {patient.PatientId} added successfully!";
         }
 
-        public void Update(Patient patient)
+        public List<Patient> GetAllPatients()
         {
-            if (patient == null)
-                throw new PatientInvalidException();
+            return _patientsDb.Patients.ToList();
+        }
 
-            var existingPatient = _patients.FirstOrDefault(p => p.PatientId == patient.PatientId);
-
-            if (existingPatient == null)
-                throw new PatientNotFoundException(patient.PatientId);
-
-
+        public Patient UpdatePatient(Patient existingPatient, Patient patient)
+        {
             existingPatient.Name = patient.Name;
             existingPatient.Dob = patient.Dob;
             existingPatient.Gender = patient.Gender;
             existingPatient.PhoneNumber = patient.PhoneNumber;
             existingPatient.Email = patient.Email;
             existingPatient.InsuranceId = patient.InsuranceId;
+
+            return existingPatient;
         }
 
-        // public void Delete(int id)
-        // {
-        //     var patient = _patients.FirstOrDefault(p => p.PatientId == id);
-        //     if (patient == null)
-        //         throw new PatientNotFoundException(id);
-
-        //     _patients.Remove(patient);
-        // }
-
-        public Patient GetById(int id)
+        public Patient? GetPatientById(int id)
         {
-            var patient = _patients.FirstOrDefault(p => p.PatientId == id);
-
-            if (patient == null)
-                throw new PatientNotFoundException(id);
-
-            return patient;
-        }
-
-        public List<Patient> GetAll()
-        {
-            return _patients; 
+            return _patientsDb.Patients.FirstOrDefault(p => p.PatientId == id);
         }
     }
 }

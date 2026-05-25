@@ -1,8 +1,5 @@
-using System;
-using System.Collections.Generic;
 using HealthApp.ConsoleApp.Models;
-
-namespace HealthApp.ConsoleApp.Database
+namespace HealthApp.ConsoleApp.Databases
 {
     public class DoctorDb
     {
@@ -14,31 +11,45 @@ namespace HealthApp.ConsoleApp.Database
             {
                 new Doctor
                 {
-                    DoctorId = 1,
-                    FullName = "Dr. John Smith",
+                    DoctorId = 201,
+                    Name = "John Smith",
                     Specialisation = "Cardiology",
                     YearsOfExperience = 15,
                     ConsultationFee = 500,
                     IsActive = true,
-                    Appointments = new List<DateTime>
+
+                    AvailableSlots = new()
+                    {
+                        "09:00 AM",
+                        "10:00 AM",
+                        "11:00 AM"
+                    },
+
+                    AvailableDates = new()
                     {
                         DateTime.Today,
-                        DateTime.Today,
-                        DateTime.Today,
-                        DateTime.Today,
-                        DateTime.Today
+                        DateTime.Today.AddDays(1),
+                        DateTime.Today.AddDays(2)
                     }
                 },
 
                 new Doctor
                 {
-                    DoctorId = 2,
-                    FullName = "Dr. Emily Davis",
+                    DoctorId = 202,
+                    Name = "Emily Davis",
                     Specialisation = "Dermatology",
                     YearsOfExperience = 10,
                     ConsultationFee = 400,
                     IsActive = true,
-                    Appointments = new List<DateTime>
+
+                    AvailableSlots = new()
+                    {
+                        "12:00 PM",
+                        "02:00 PM",
+                        "04:00 PM"
+                    },
+
+                    AvailableDates = new()
                     {
                         DateTime.Today.AddDays(1),
                         DateTime.Today.AddDays(2),
@@ -48,63 +59,88 @@ namespace HealthApp.ConsoleApp.Database
 
                 new Doctor
                 {
-                    DoctorId = 3,
-                    FullName = "Dr. Michael Brown",
+                    DoctorId = 203,
+                    Name = "Michael Brown",
                     Specialisation = "Orthopedics",
                     YearsOfExperience = 20,
                     ConsultationFee = 600,
                     IsActive = false,
-                    Appointments = new List<DateTime>
+
+                    AvailableSlots = new()
                     {
-                        DateTime.Today,
-                        DateTime.Today,
-                        DateTime.Today,
-                        DateTime.Today,
-                        DateTime.Today,
-                        DateTime.Today,
-                        DateTime.Today.AddDays(3)
+                    },
+
+                    AvailableDates = new()
+                    {
+
                     }
                 },
 
                 new Doctor
                 {
-                    DoctorId = 4,
-                    FullName = "Dr. Sarah Johnson",
+                    DoctorId = 204,
+                    Name = "Sarah Johnson",
                     Specialisation = "Pediatrics",
                     YearsOfExperience = 8,
-                    ConsultationFee = 300,
+                    ConsultationFee = 350,
                     IsActive = true,
-                    Appointments = new List<DateTime>()
-                },
 
-                new Doctor
-                {
-                    DoctorId = 5,
-                    FullName = "Dr. David Wilson",
-                    Specialisation = "Neurology",
-                    YearsOfExperience = 12,
-                    ConsultationFee = 550,
-                    IsActive = true,
-                    Appointments = new List<DateTime>
+                    AvailableSlots = new()
                     {
-                        DateTime.Today.AddDays(5),
-                        DateTime.Today.AddDays(7)
+                        "10:00 AM",
+                        "01:00 PM",
+                        "03:00 PM"
+                    },
+
+                    AvailableDates = new()
+                    {
+                        DateTime.Today,
+                        DateTime.Today.AddDays(2)
                     }
                 },
 
                 new Doctor
                 {
-                    DoctorId = 6,
-                    FullName = "Loki",
+                    DoctorId = 205,
+                    Name = "David Wilson",
+                    Specialisation = "Neurology",
+                    YearsOfExperience = 12,
+                    ConsultationFee = 700,
+                    IsActive = true,
+
+                    AvailableSlots = new()
+                    {
+                        "11:00 AM",
+                        "02:00 PM"
+                    },
+
+                    AvailableDates = new()
+                    {
+                        DateTime.Today.AddDays(4),
+                        DateTime.Today.AddDays(5)
+                    }
+                },
+
+                new Doctor
+                {
+                    DoctorId = 206,
+                    Name = "Loki",
                     Specialisation = "Skin",
                     YearsOfExperience = 3,
-                    ConsultationFee = 400,
+                    ConsultationFee = 300,
                     IsActive = true,
-                    Appointments = new List<DateTime>
+
+                    AvailableSlots = new()
+                    {
+                        "09:00 AM",
+                        "12:00 PM",
+                        "04:00 PM"
+                    },
+
+                    AvailableDates = new()
                     {
                         DateTime.Today,
-                        DateTime.Today.AddDays(1),
-                        DateTime.Today.AddDays(3)
+                        DateTime.Today.AddDays(1)
                     }
                 }
             };

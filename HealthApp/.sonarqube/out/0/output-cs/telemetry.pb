@@ -1,0 +1,1 @@
+WR@C:\Users\310508\source\repos\HAP_Pod3\HealthApp\HealthApp.csproj¢net10.0òCSharp14
