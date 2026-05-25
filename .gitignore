@@ -1,5 +1,6 @@
 # Ignore Visual Studio workspace files and build artifacts
 .vs/
+.sonarqube/
 **/bin/
 **/obj/
 
