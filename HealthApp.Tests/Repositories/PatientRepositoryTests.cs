@@ -125,5 +125,64 @@ namespace HealthApp.Tests.Repositories
             Assert.NotNull(result);
             Assert.Equal("First Entry", result.FullName);
         }
+
+        [Fact]
+        public void GetAllPatients_ShouldReturnAllPatients()
+        {
+            var patient1 = new Patient
+            {
+                PatientId = 1,
+                FullName = "John Doe",
+                PhoneNumber = "9876543210",
+                Email = "john@email.com"
+            };
+
+            var patient2 = new Patient
+            {
+                PatientId = 2,
+                FullName = "Jane Smith",
+                PhoneNumber = "9123456780",
+                Email = "jane@email.com"
+            };
+
+            _patientDb.Patients.Add(patient1);
+            _patientDb.Patients.Add(patient2);
+
+            var result = _repository.GetAllPatients();
+
+            Assert.NotNull(result);
+            Assert.Equal(2, result.Count);
+            Assert.Contains(result, p => p.PatientId == 1);
+            Assert.Contains(result, p => p.PatientId == 2);
+        }
+
+        [Fact]
+        public void UpdatePatient_ShouldUpdateExistingPatient()
+        {
+            var patient = new Patient
+            {
+                PatientId = 1,
+                FullName = "Old Name",
+                PhoneNumber = "1111111111",
+                Email = "old@email.com"
+            };
+
+            _patientDb.Patients.Add(patient);
+
+            var updatedPatient = new Patient
+            {
+                PatientId = 1,
+                FullName = "New Name",
+                PhoneNumber = "9999999999",
+                Email = "new@email.com"
+            };
+
+            var result = _repository.UpdatePatient(patient, updatedPatient);
+
+            var storedPatient = _patientDb.Patients[0];
+            Assert.Equal(result.FullName, storedPatient.FullName);
+            Assert.Equal(result.PhoneNumber, storedPatient.PhoneNumber);
+            Assert.Equal(result.Email, storedPatient.Email);
+        }
     }
 }
