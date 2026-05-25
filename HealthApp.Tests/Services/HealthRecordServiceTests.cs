@@ -51,7 +51,7 @@ namespace HealthApp.Tests.Services
             };
         }
 
-        private HealthRecord GetSampleRecord(int id)
+        private static HealthRecord GetSampleRecord(int id)
         {
             return new HealthRecord
             {

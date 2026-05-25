@@ -52,7 +52,7 @@ namespace HealthApp.Tests.Services
             return mockDoctor.Object;
         }
 
-        private Appointment GetSampleAppointment(int id)
+        private static Appointment GetSampleAppointment(int id)
         {
             return new Appointment
             {

@@ -133,6 +133,14 @@ namespace HealthApp.ConsoleApp.Menus
                 foreach (var r in records)
                     Console.WriteLine(r);
             }
+            catch (PatientNotFoundException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            catch (HealthRecordNotFoundException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
@@ -154,6 +162,10 @@ namespace HealthApp.ConsoleApp.Menus
 
                 Console.Clear();
                 Console.WriteLine(record);
+            }
+            catch (HealthRecordNotFoundException ex)
+            {
+                Console.WriteLine(ex.Message);
             }
             catch (Exception ex)
             {
