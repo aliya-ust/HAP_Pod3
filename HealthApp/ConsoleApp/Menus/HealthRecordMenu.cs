@@ -125,16 +125,13 @@ namespace HealthApp.ConsoleApp.Menus
             {
                 Console.Clear();
                 PrintHeader("VIEW HEALTH RECORDS");
-                Console.WriteLine("  Type 'q' or 'back' to return.\n");
-
-                Console.ForegroundColor = ConsoleColor.Cyan;
+                Console.WriteLine("  Type 'q' or 'back' to return.\n");             
                 Console.WriteLine("  ╔══════════════════════════════╗");
                 Console.WriteLine("  ║  1.  By Patient ID           ║");
                 Console.WriteLine("  ║  2.  By Doctor ID            ║");
                 Console.WriteLine("  ║  3.  By Record ID            ║");
                 Console.WriteLine("  ║  4.  Back                    ║");
                 Console.WriteLine("  ╚══════════════════════════════╝");
-                Console.ResetColor();
                 Console.Write("\n  Choose an option : ");
 
                 switch (Console.ReadLine()?.Trim() ?? "")
@@ -303,7 +300,7 @@ namespace HealthApp.ConsoleApp.Menus
         // Helpers
         private static void PrintHeader(string title)
         {
-            Console.ForegroundColor = ConsoleColor.Cyan;
+             
             Console.WriteLine($"\n  ╔══════════════════════════════════════════════════╗");
             Console.WriteLine($"  ║  {title,-48}║");
             Console.WriteLine($"  ╚══════════════════════════════════════════════════╝");

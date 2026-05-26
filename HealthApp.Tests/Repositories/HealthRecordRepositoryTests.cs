@@ -22,7 +22,7 @@ namespace HealthApp.Tests.Repositories
 
             _repository = new HealthRecordRepository(_healthRecordDb);
         }
-
+        // Helper methods to create sample patients and doctors for testing
         private static Patient GetSamplePatient(int id)
         {
             return new Patient

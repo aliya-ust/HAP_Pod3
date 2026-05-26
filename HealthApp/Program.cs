@@ -55,7 +55,6 @@ while (running)
         case "9": ShowDetailedMenus(); break;
         case "0":
             Console.Clear();
-            Console.ForegroundColor = ConsoleColor.Cyan;
             Console.WriteLine("\n  Thank you for using HealthAxis. Goodbye!\n");
             Console.ResetColor();
             running = false;
@@ -72,11 +71,9 @@ while (running)
 // Print the main portal banner
 void PrintBanner()
 {
-    Console.ForegroundColor = ConsoleColor.Cyan;
     Console.WriteLine("  ╔══════════════════════════════════════════════════╗");
     Console.WriteLine("  ║           HealthAxis Patient Portal              ║");
     Console.WriteLine("  ╠══════════════════════════════════════════════════╣");
-    Console.ResetColor();
     Console.WriteLine("  ║  1.  Register a new patient                      ║");
     Console.WriteLine("  ║  2.  Add a new doctor                            ║");
     Console.WriteLine("  ║  3.  Search doctors by specialisation            ║");
@@ -87,9 +84,7 @@ void PrintBanner()
     Console.WriteLine("  ║  8.  View health history                         ║");
     Console.WriteLine("  ║  9.  Patient / Doctor detailed menus             ║");
     Console.WriteLine("  ║  0.  Exit                                        ║");
-    Console.ForegroundColor = ConsoleColor.Cyan;
     Console.WriteLine("  ╚══════════════════════════════════════════════════╝");
-    Console.ResetColor();
     Console.WriteLine("  Type 'q' or 'back' at any prompt to return here.\n");
 }
 
@@ -99,17 +94,13 @@ void ShowDetailedMenus()
     while (true)
     {
         Console.Clear();
-        Console.ForegroundColor = ConsoleColor.Cyan;
         Console.WriteLine("  ╔══════════════════════════════╗");
         Console.WriteLine("  ║        DETAILED MENUS        ║");
         Console.WriteLine("  ╠══════════════════════════════╣");
-        Console.ResetColor();
         Console.WriteLine("  ║  1.  Patient Menu            ║");
         Console.WriteLine("  ║  2.  Doctor Menu             ║");
         Console.WriteLine("  ║  3.  Back                    ║");
-        Console.ForegroundColor = ConsoleColor.Cyan;
         Console.WriteLine("  ╚══════════════════════════════╝");
-        Console.ResetColor();
         Console.Write("\n  Choose an option : ");
 
         switch (Console.ReadLine()?.Trim() ?? "")

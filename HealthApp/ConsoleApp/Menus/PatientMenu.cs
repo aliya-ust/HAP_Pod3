@@ -20,19 +20,15 @@ namespace HealthApp.ConsoleApp.Menus
             while (true)
             {
                 Console.Clear();
-                Console.ForegroundColor = ConsoleColor.Cyan;
                 Console.WriteLine("  ╔══════════════════════════════╗");
                 Console.WriteLine("  ║        PATIENT MENU          ║");
                 Console.WriteLine("  ╠══════════════════════════════╣");
-                Console.ResetColor();
                 Console.WriteLine("  ║  1.  Register Patient        ║");
                 Console.WriteLine("  ║  2.  View All Patients       ║");
                 Console.WriteLine("  ║  3.  Search Patient by ID    ║");
                 Console.WriteLine("  ║  4.  Update Patient          ║");
                 Console.WriteLine("  ║  5.  Back                    ║");
-                Console.ForegroundColor = ConsoleColor.Cyan;
                 Console.WriteLine("  ╚══════════════════════════════╝");
-                Console.ResetColor();
                 Console.Write("\n  Choose an option : ");
 
                 switch (Console.ReadLine()?.Trim() ?? "")
@@ -274,7 +270,7 @@ namespace HealthApp.ConsoleApp.Menus
 
         private static void PrintHeader(string title)
         {
-            Console.ForegroundColor = ConsoleColor.Cyan;
+             
             Console.WriteLine($"\n  ╔══════════════════════════════════════════════════╗");
             Console.WriteLine($"  ║  {title,-48}║");
             Console.WriteLine($"  ╚══════════════════════════════════════════════════╝");

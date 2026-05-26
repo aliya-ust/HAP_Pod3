@@ -25,17 +25,13 @@ namespace HealthApp.ConsoleApp.Menus
         public void UpdateAppointmentMenu()
         {
             Console.Clear();
-            Console.ForegroundColor = ConsoleColor.Cyan;
             Console.WriteLine("  ╔══════════════════════════════════╗");
             Console.WriteLine("  ║     UPDATE APPOINTMENT STATUS    ║");
             Console.WriteLine("  ╠══════════════════════════════════╣");
-            Console.ResetColor();
             Console.WriteLine("  ║  1.  Confirm / Cancel            ║");
             Console.WriteLine("  ║  2.  Mark as Completed           ║");
             Console.WriteLine("  ║  3.  Back                        ║");
-            Console.ForegroundColor = ConsoleColor.Cyan;
             Console.WriteLine("  ╚══════════════════════════════════╝");
-            Console.ResetColor();
             Console.Write("\n  Choose an option : ");
 
             switch (Console.ReadLine()?.Trim() ?? "")
@@ -174,7 +170,7 @@ namespace HealthApp.ConsoleApp.Menus
                 Console.WriteLine("  " + new string('─', 40));
                 Console.WriteLine($"  Patient : {patient.Name}");
                 Console.WriteLine($"  Doctor  : {doctor.Name}  ({doctor.Specialisation})");
-                Console.WriteLine($"  Date    : {selectedDate:dd MMM yyyy}");
+                Console.WriteLine($"  Date    : {selectedDate:dd/MM/yyyy}");
                 Console.WriteLine($"  Slot    : {selectedSlot}");
                 Console.WriteLine("  " + new string('─', 40));
                 Console.Write("\n  Confirm booking? (Y/N) : ");
@@ -382,7 +378,6 @@ namespace HealthApp.ConsoleApp.Menus
 
         private static void PrintHeader(string title)
         {
-            Console.ForegroundColor = ConsoleColor.Cyan;
             Console.WriteLine($"\n  ╔══════════════════════════════════════════════════╗");
             Console.WriteLine($"  ║  {title,-48}║");
             Console.WriteLine($"  ╚══════════════════════════════════════════════════╝");

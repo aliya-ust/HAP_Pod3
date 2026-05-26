@@ -39,7 +39,7 @@ namespace HealthApp.ConsoleApp.Helpers
                 Console.Write(prompt);
                 var input = Console.ReadLine();
 
-                if (input?.ToLower() == "q")
+                if (input?.ToLower() == "q" || input?.ToLower() == "back")
                     throw new OperationCanceledException();
 
                 if (DateTime.TryParseExact(
@@ -66,7 +66,7 @@ namespace HealthApp.ConsoleApp.Helpers
                 if (string.IsNullOrWhiteSpace(input))
                     return null;
 
-                if (input?.ToLower() == "q")
+                if (input?.ToLower() == "q" || input?.ToLower() == "back")
                     throw new OperationCanceledException();
 
                 if (DateTime.TryParseExact(
@@ -94,7 +94,7 @@ namespace HealthApp.ConsoleApp.Helpers
                 if (string.IsNullOrWhiteSpace(input))
                     return null;
 
-                if (input?.ToLower() == "q")
+                if (input?.ToLower() == "q" || input?.ToLower() == "back")
                     throw new OperationCanceledException();
 
                 if (Enum.TryParse<GenderType>(input, true, out var gender))
@@ -111,7 +111,7 @@ namespace HealthApp.ConsoleApp.Helpers
                 Console.Write(prompt);
                 var input = Console.ReadLine();
 
-                if (input?.ToLower() == "q")
+                if (input?.ToLower() == "q" || input?.ToLower() == "back")
                     throw new OperationCanceledException();
 
                 if (Enum.TryParse<GenderType>(input, true, out var gender))
