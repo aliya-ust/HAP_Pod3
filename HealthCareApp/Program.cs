@@ -93,8 +93,7 @@ while (running)
         while (true)
         {
             try
-            {
-                Console.Clear();
+            { 
                 Console.WriteLine("1.Patient Menu");
                 Console.WriteLine("2.Doctor Menu ");
                 Console.WriteLine("3.Back ");
@@ -137,3 +136,6 @@ while (running)
         }
     }
 }
+
+[ExclueCodeFromCoverage]
+public partial class program { }

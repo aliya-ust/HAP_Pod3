@@ -28,7 +28,6 @@ namespace HealthApp.ConsoleApp.Menus
         {
             try
             {
-                Console.Clear();
 
                 var appointmentIdInput = InputValidator.GetValidatedInput(
                     "Enter Appointment ID (or 'q' to quit): ",
@@ -68,7 +67,10 @@ namespace HealthApp.ConsoleApp.Menus
                     DoctorNotes = doctorNotes!
                 };
 
-                return _healthRecordService.AddHealthRecord(record);
+                string result = _healthRecordService.AddHealthRecord(record);
+
+                // ✅ Return formatted SUCCESS message
+                return $"SUCCESS : {result}";
             }
             catch (OperationCanceledException)
             {
@@ -82,7 +84,6 @@ namespace HealthApp.ConsoleApp.Menus
 
         public void ViewRecord()
         {
-            Console.Clear();
 
             Console.WriteLine("1. By Patient Id");
             Console.WriteLine("2. By Doctor Id");
@@ -127,7 +128,6 @@ namespace HealthApp.ConsoleApp.Menus
 
                 var records = fetchFunc(id);
 
-                Console.Clear();
                 Console.WriteLine("Health Records:");
 
                 foreach (var r in records)
@@ -160,7 +160,6 @@ namespace HealthApp.ConsoleApp.Menus
 
                 var record = _healthRecordService.GetRecordById(recordId);
 
-                Console.Clear();
                 Console.WriteLine(record);
             }
             catch (HealthRecordNotFoundException ex)
@@ -225,7 +224,6 @@ namespace HealthApp.ConsoleApp.Menus
                     DoctorNotes = notesInput ?? existing.DoctorNotes
                 };
 
-                Console.Clear();
                 return _healthRecordService.UpdateHealthRecord(updated).ToString();
             }
             catch (OperationCanceledException)
