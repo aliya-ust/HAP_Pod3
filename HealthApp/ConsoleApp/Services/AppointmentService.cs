@@ -53,7 +53,8 @@ namespace HealthApp.ConsoleApp.Services
                 Status = AppointmentStatus.Pending
             };
 
-            return _appointmentRepo.AddAppointment(appointment);
+            _appointmentRepo.AddAppointment(appointment);
+            return $"Appointment of ID {appointment.AppointmentId} has been created successfully";
         }
 
         // Get appointment by patient id

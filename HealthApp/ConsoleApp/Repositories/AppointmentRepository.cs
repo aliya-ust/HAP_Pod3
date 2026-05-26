@@ -16,7 +16,7 @@ namespace HealthApp.ConsoleApp.Repositories
         public string AddAppointment(Appointment appointment)
         {
             _appointmentDb.Appointments.Add(appointment);
-            return $"Appointment of ID {appointment.AppointmentId} has been created successfully";
+            return $"Appointment ID {appointment.AppointmentId} added successfully!";
         }
 
         public List<Appointment> GetAllAppointments()

@@ -19,6 +19,52 @@ namespace HealthApp.ConsoleApp.Menus
             _patientService = patientService;
         }
 
+        public void ViewPatientMenu()
+        {
+            while (true)
+            {
+                Console.Clear();
+                Console.WriteLine("=================================");
+                Console.WriteLine("PATIENT MENU");
+                Console.WriteLine("=================================");
+                Console.WriteLine("1. Register Patient");
+                Console.WriteLine("2. View All Patients");
+                Console.WriteLine("3. Get Patient Summary by ID");
+                Console.WriteLine("4. Update Patient");
+                Console.WriteLine("5. Back");
+                Console.WriteLine("=================================");
+
+                Console.Write("Enter choice: ");
+                string choice = Console.ReadLine() ?? "";
+
+                switch (choice)
+                {
+                    case "1":
+                        RegisterPatient();
+                        break;
+
+                    // case "2":
+                    //     ViewAllPatients();
+                    //     break;
+
+                    // case "3":
+                    //     GetPatientById();
+                    //     break;
+
+                    case "4":
+                        UpdatePatient();
+                        break;
+
+                    case "5":
+                        return;
+
+                    default:
+                        Console.WriteLine("Invalid choice.");
+                        break;
+                }
+            }
+        }
+
         public string RegisterPatient()
         {
             try
@@ -48,7 +94,7 @@ namespace HealthApp.ConsoleApp.Menus
                     InputValidator.IsValidInsuranceId,
                     "Invalid insurance ID");
 
-                int insuranceId = int.Parse(insuranceInput!);
+                string insuranceId = insuranceInput!;
 
                 var patient = new Patient
                 {
@@ -130,7 +176,7 @@ namespace HealthApp.ConsoleApp.Menus
                     PhoneNumber = phoneInput ?? existingPatient.PhoneNumber,
                     Email = emailInput ?? existingPatient.Email,
                     InsuranceId = insuranceInput != null
-                        ? int.Parse(insuranceInput)
+                        ? insuranceInput
                         : existingPatient.InsuranceId
                 };
 

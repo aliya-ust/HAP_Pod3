@@ -22,7 +22,7 @@ namespace HealthApp
             _doctorService = doctorService;
         }
 
-        public string BookAppointment()
+        public void BookAppointment()
         {
             try
             {
@@ -35,47 +35,159 @@ namespace HealthApp
 
                 int patientId = int.Parse(patientIdInput!);
                 var patient = _patientService.GetPatientById(patientId);
-                if (patient == null) return "Patient not found";
 
-                var doctorIdInput = InputValidator.GetValidatedInput(
-                    "Enter Doctor ID (or 'q' to quit): ",
-                    InputValidator.IsValidId,
-                    "Invalid Doctor ID.");
+                Console.WriteLine($"\nPatient Found: {patient.FullName}");
 
-                int doctorId = int.Parse(doctorIdInput!);
-                var doctor = _doctorService.GetDoctorById(doctorId);
-                if (doctor == null) return "Doctor not found";
+                Console.WriteLine("\nAvailable Doctors:");
+                Console.WriteLine(new string('-', 50));
 
-                var date = InputValidator.GetValidDate("Enter Appointment Date (dd/MM/yyyy): ");
+                var doctors = _doctorService.GetAllDoctors();
+
+                foreach (var doc in doctors.Where(d => d.IsActive))
+                {
+                    Console.WriteLine(
+                        $"ID: {doc.DoctorId} | {doc.FullName} | {doc.Specialisation} | " +
+                        $"Fee: Rs.{doc.ConsultationFee}"
+                    );
+                }
+
+                Console.WriteLine(new string('-', 50));
+
+                Doctor doctor;
+                while (true)
+                {
+                    var doctorIdInput = InputValidator.GetValidatedInput(
+                        "\nEnter Doctor ID: ",
+                        InputValidator.IsValidId,
+                        "Invalid Doctor ID.");
+
+                    int doctorId = int.Parse(doctorIdInput!);
+
+                    doctor = _doctorService.GetDoctorById(doctorId);
+
+                    if (!doctor.IsActive)
+                    {
+                        Console.WriteLine($"Doctor {doctor.FullName} is inactive.");
+                        continue;
+                    }
+
+                    Console.WriteLine($"\nDoctor Selected: {doctor.FullName}");
+                    break;
+                }
+
+                Console.WriteLine("\n=== Available Dates ===\n");
+
+                for (int i = 0; i < doctor.AvailableDates.Count; i++)
+                {
+                    Console.WriteLine($"  [{i + 1}] {doctor.AvailableDates[i]:ddd, dd MMM yyyy}");
+                }
+
+                DateTime selectedDate;
+
+                while (true)
+                {
+                    selectedDate = InputValidator.GetValidDate(
+                        "\nEnter Appointment Date (dd/MM/yyyy): ");
+
+                    if (selectedDate.Date < DateTime.Today)
+                    {
+                        Console.WriteLine("Date cannot be in the past.");
+                        continue;
+                    }
+
+                    if (!doctor.AvailableDates.Any(d => d.Date == selectedDate.Date))
+                    {
+                        Console.WriteLine("Doctor is not available on this date.");
+                        continue;
+                    }
+
+                    break;
+                }
+
+                List<string> bookedSlots = new();
+
+                try
+                {
+                    var appointments = _appointmentService.GetAppointmentsByDoctorId(doctor.DoctorId);
+
+                    bookedSlots = appointments
+                        .Where(a => a.ScheduledDate.Date == selectedDate.Date &&
+                                    a.Status != AppointmentStatus.Cancelled)
+                        .Select(a => a.TimeSlot)
+                        .ToList();
+                }
+                catch (AppointmentNotFoundException) {}
+
+                var availableSlots = doctor.AvailableSlots
+                    .Except(bookedSlots)
+                    .ToList();
+
+                if (availableSlots.Count == 0)
+                    Console.WriteLine("No slots available on selected date.");
 
                 Console.WriteLine("\nAvailable Slots:");
-                Console.WriteLine("[1] 09:00 AM  [2] 10:00 AM  [3] 11:00 AM");
-                Console.WriteLine("[4] 02:00 PM  [5] 03:00 PM  [6] 04:00 PM");
 
-                var slotChoiceInput = InputValidator.GetValidatedInput(
-                    "Choose slot (1-6): ",
-                    input => int.TryParse(input, out int s) && s >= 1 && s <= 6,
-                    "Invalid slot.");
-
-                int slotChoice = int.Parse(slotChoiceInput!);
-
-                string[] slots =
+                for (int i = 0; i < availableSlots.Count; i++)
                 {
-                    "09:00 AM", "10:00 AM", "11:00 AM",
-                    "02:00 PM", "03:00 PM", "04:00 PM"
-                };
+                    Console.WriteLine($"[{i + 1}] {availableSlots[i]}");
+                }
 
-                string slot = slots[slotChoice - 1];
+                string selectedSlot;
 
-                return _appointmentService.BookAppointment(patient, doctor, date, slot);
+                while (true)
+                {
+                    var slotInput = InputValidator.GetValidatedInput(
+                        "\nChoose slot number: ",
+                        InputValidator.IsValidId,
+                        "Invalid input.");
+
+                    int choice = int.Parse(slotInput!);
+
+                    if (choice < 1 || choice > availableSlots.Count)
+                    {
+                        Console.WriteLine($"Enter a number between 1 and {availableSlots.Count}");
+                        continue;
+                    }
+
+                    selectedSlot = availableSlots[choice - 1];
+                    break;
+                }
+
+                Console.WriteLine("\n--- Confirm Appointment ---");
+                Console.WriteLine($"Patient : {patient.FullName}");
+                Console.WriteLine($"Doctor  : {doctor.FullName}");
+                Console.WriteLine($"Date    : {selectedDate:dd MMM yyyy}");
+                Console.WriteLine($"Slot    : {selectedSlot}");
+
+                Console.Write("\nProceed? (Y/N): ");
+                if (Console.ReadLine()?.Trim().ToUpper() != "Y")
+                    Console.WriteLine("Booking cancelled.");
+
+                Console.WriteLine(_appointmentService.BookAppointment(
+                    patient,
+                    doctor,
+                    selectedDate,
+                    selectedSlot
+                ));
+            }
+            catch (PatientNotFoundException ex)
+            {
+                Console.WriteLine(ex.Message);
+                return; 
+            }
+            catch (DoctorNotFoundException ex)
+            {
+                Console.WriteLine(ex.Message);
+                return;
             }
             catch (OperationCanceledException)
             {
-                return HandleCancel("Booking cancelled.");
+                return;
             }
             catch (Exception ex)
             {
-                return ex.Message;
+                Console.WriteLine(ex.Message);
+                return;
             }
         }
 
@@ -165,6 +277,47 @@ namespace HealthApp
             }
         }
 
+        private Appointment? SelectAppointment()
+        {
+            try
+            {
+                Console.Clear();
+
+                var appointments = _appointmentService.GetUpcomingAppointments();
+
+                if (appointments.Count == 0)
+                {
+                    Console.WriteLine("No upcoming appointments.");
+                    Console.WriteLine("Press any key to continue...");
+                    Console.ReadKey();
+                    return null;
+                }
+
+                Console.WriteLine("\nUpcoming Appointments:\n");
+
+                foreach (var appt in appointments)
+                {
+                    Console.WriteLine(appt.GetDetails());
+                    Console.WriteLine(new string('-', 32));
+                }
+
+                var input = InputValidator.GetValidatedInput(
+                    "\nEnter Appointment ID: ",
+                    InputValidator.IsValidId,
+                    "Invalid Appointment ID.");
+
+                int id = int.Parse(input!);
+
+                return _appointmentService.GetAppointmentById(id);
+            }
+            catch (AppointmentNotFoundException ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.ReadKey();
+                return null;
+            }
+        }
+
         public string ConfirmCancelAppointment()
         {
             Console.Clear();
@@ -188,16 +341,10 @@ namespace HealthApp
         {
             try
             {
-                var input = InputValidator.GetValidatedInput(
-                    "Enter Appointment Id: ",
-                    InputValidator.IsValidId,
-                    "Invalid Appointment Id.");
+                var appointment = SelectAppointment();
 
-                int id = int.Parse(input!);
-
-                var appointment = _appointmentService.GetAppointmentById(id);
                 if (appointment == null)
-                    return "Appointment not found.";
+                    return "No appointment selected.";
 
                 appointment.Confirm();
 
@@ -213,19 +360,20 @@ namespace HealthApp
         {
             try
             {
-                var idInput = InputValidator.GetValidatedInput(
-                    "Enter Appointment Id: ",
-                    InputValidator.IsValidId,
-                    "Invalid Appointment Id.");
+                var appointment = SelectAppointment();
 
-                int id = int.Parse(idInput!);
+                if (appointment == null)
+                    return "No appointment selected.";
 
                 var reason = InputValidator.GetValidatedInput(
                     "Enter cancellation reason: ",
                     InputValidator.IsNonEmpty,
                     "Reason cannot be empty.");
 
-                return _appointmentService.CancelAppointment(id, reason!);
+                return _appointmentService.CancelAppointment(
+                    appointment.AppointmentId,
+                    reason!
+                );
             }
             catch (Exception ex)
             {

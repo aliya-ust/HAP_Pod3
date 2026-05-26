@@ -34,7 +34,8 @@ namespace HealthApp.Tests.Services
                 PatientId = id,
                 FullName = "Patient " + id,
                 PhoneNumber = "9999999999",
-                Email = "patient@test.com"
+                Email = "patient@test.com",
+                InsuranceId = "sdfsd3242"
             };
         }
 
@@ -80,7 +81,7 @@ namespace HealthApp.Tests.Services
 
             var result = _service.BookAppointment(patient, doctor, DateTime.Now.AddDays(1), "10:00 AM");
 
-            Assert.Contains("added", result);
+            Assert.Contains("created", result);
         }
 
         // BookAppointment - Past Date

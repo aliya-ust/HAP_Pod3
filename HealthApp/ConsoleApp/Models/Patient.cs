@@ -10,7 +10,7 @@ namespace HealthApp.ConsoleApp.Models
         public GenderType Gender { get; set; }
         public required string PhoneNumber { get; set; }
         public required string Email { get; set; }
-        public int InsuranceId { get; set; }
+        public required string InsuranceId { get; set; }
         public DateTime CreatedDate { get; set; } = DateTime.Now;
 
         // Calculate age based on Date of Birth

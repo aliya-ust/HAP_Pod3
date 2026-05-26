@@ -14,7 +14,8 @@ namespace HealthApp.ConsoleApp.Databases
                     PatientId = 101,
                     FullName = "John Doe",
                     Email = "john.doe@email.com",
-                    PhoneNumber = "9876543210"
+                    PhoneNumber = "9876543210",
+                    InsuranceId = "sdfasd234324"
                 },
                 Doctor = new Doctor
                 {
@@ -35,7 +36,8 @@ namespace HealthApp.ConsoleApp.Databases
                     PatientId = 2,
                     FullName = "Jane Doe",
                     Email = "jane.doe@email.com",
-                    PhoneNumber = "9123456780"
+                    PhoneNumber = "9123456780",
+                    InsuranceId = "sdf234"
                 },
                 Doctor = new Doctor
                 {
@@ -56,7 +58,8 @@ namespace HealthApp.ConsoleApp.Databases
                     PatientId = 3,
                     FullName = "Alice Smith",
                     Email = "alice.smith@email.com",
-                    PhoneNumber = "9988776655"
+                    PhoneNumber = "9988776655",
+                    InsuranceId = "sdf234"
                 },
                 Doctor = new Doctor
                 {
@@ -78,7 +81,8 @@ namespace HealthApp.ConsoleApp.Databases
                     PatientId = 4,
                     FullName = "Bob Johnson",
                     Email = "bob.johnson@email.com",
-                    PhoneNumber = "9012345678"
+                    PhoneNumber = "9012345678",
+                    InsuranceId = "sdf234"
                 },
                 Doctor = new Doctor
                 {

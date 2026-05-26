@@ -70,6 +70,10 @@ namespace HealthApp.ConsoleApp.Menus
 
                 return _healthRecordService.AddHealthRecord(record);
             }
+            catch (AppointmentNotFoundException ex)
+            {
+                return ex.Message;
+            }
             catch (OperationCanceledException)
             {
                 return "Operation Canceled";

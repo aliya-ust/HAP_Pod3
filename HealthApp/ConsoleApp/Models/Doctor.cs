@@ -9,7 +9,7 @@ namespace HealthApp.ConsoleApp.Models
         public decimal ConsultationFee { get; set; }
         public bool IsActive { get; set; }
         public List<string> AvailableSlots { get; set; } = new List<string>();
-        public List<DateTime> LeaveDates { get; set; } = new List<DateTime>();
+        public List<DateTime> AvailableDates { get; set; } = new List<DateTime>();
 
         // Check if doctor is available based on leaves, and number of confirmed appointments
         public virtual bool IsAvailable(DateTime date)
@@ -19,10 +19,10 @@ namespace HealthApp.ConsoleApp.Models
                 return false;
             }
 
-            if (LeaveDates.Any(d => d.Date == date.Date))
-            {
-                return false;
-            }
+            // if (LeaveDates.Any(d => d.Date == date.Date))
+            // {
+            //     return false;
+            // }
 
             return true;
         }
@@ -47,7 +47,7 @@ namespace HealthApp.ConsoleApp.Models
         // Formatted string of doctor details
         public override string ToString()
         {
-            return $"Doctor ID: {DoctorId} \nFull Name: {FullName} \nSpecialisation: {Specialisation} \nExperience: {YearsOfExperience} years \nConsultation Fee: Rs. {ConsultationFee} \nActive: {(IsActive ? "Yes" : "No")}";
+            return $"Doctor ID: {DoctorId} \nFull Name: {FullName} \nSpecialisation: {Specialisation} \nExperience: {YearsOfExperience} years \nConsultation Fee: Rs. {ConsultationFee}";
         }
     }
 }

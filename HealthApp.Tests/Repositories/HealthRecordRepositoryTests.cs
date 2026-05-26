@@ -29,7 +29,8 @@ namespace HealthApp.Tests.Repositories
                 PatientId = id,
                 FullName = "Patient " + id,
                 PhoneNumber = "9999999999",
-                Email = "patient@test.com"
+                Email = "patient@test.com",
+                InsuranceId = "sadf23423"
             };
         }
 

@@ -118,23 +118,55 @@ namespace HealthApp.ConsoleApp.Helpers
             }
         }
 
+        public static bool? GetOptionalBool(string prompt)
+        {
+            while (true)
+            {
+                Console.Write(prompt);
+                var input = Console.ReadLine()?.Trim().ToLower();
+
+                if (string.IsNullOrWhiteSpace(input))
+                    return null;
+
+                if (input == "q")
+                    throw new OperationCanceledException();
+
+                if (input == "y") return true;
+                if (input == "n") return false;
+
+                Console.WriteLine("Enter Y or N.");
+            }
+        }
+
         public static bool IsValidName(string input) =>
         !string.IsNullOrWhiteSpace(input) && !input.Any(char.IsDigit);
 
         public static bool IsValidPhone(string input)
         {
             string pattern = @"^[6-9]\d{9}$";
-            return Regex.IsMatch(input, pattern);
+            return Regex.IsMatch(
+                input,
+                pattern,
+                RegexOptions.None,
+                TimeSpan.FromMilliseconds(200)
+            );
         }
 
         public static bool IsValidEmail(string input)
         {
             string pattern = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
-            return Regex.IsMatch(input, pattern);
+
+            return Regex.IsMatch(
+                input,
+                pattern,
+                RegexOptions.None,
+                TimeSpan.FromMilliseconds(200)
+            );
         }
 
         public static bool IsValidInsuranceId(string input) =>
-            int.TryParse(input, out int id) && id >= 0;
+            !string.IsNullOrWhiteSpace(input) &&
+            input.All(char.IsLetterOrDigit);
 
         public static bool IsValidExperience(string input) =>
             int.TryParse(input, out int val) && val >= 0;

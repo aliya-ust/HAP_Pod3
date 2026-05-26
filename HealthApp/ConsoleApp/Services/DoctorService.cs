@@ -34,6 +34,18 @@ namespace HealthApp.ConsoleApp.Services
             return doctor;
         }
 
+        public List<Doctor> GetAllDoctors()
+        {
+            var doctors = _doctorRepo.GetAllDoctors();
+
+            if (doctors == null || doctors.Count == 0)
+            {
+                throw new DoctorNotFoundException("No doctors found.");
+            }
+
+            return doctors;
+        }
+
         public List<Doctor> GetDoctorsBySpecialisation(string specialisation)
         {
             var result = _doctorRepo.GetDoctorsBySpecialisation(specialisation);

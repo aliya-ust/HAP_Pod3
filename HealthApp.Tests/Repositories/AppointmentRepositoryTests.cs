@@ -29,7 +29,8 @@ namespace HealthApp.Tests.Repositories
                 PatientId = id,
                 FullName = "Patient " + id,
                 PhoneNumber = "9999999999",
-                Email = "patient@test.com"
+                Email = "patient@test.com",
+                InsuranceId = "sadf23423"
             };
         }
 
@@ -56,10 +57,11 @@ namespace HealthApp.Tests.Repositories
                 TimeSlot = "10:00 AM"
             };
 
-            var result = _repository.AddAppointment(appointment);
+            _repository.AddAppointment(appointment);
 
+            
             Assert.Single(_appointmentDb.Appointments);
-            Assert.Contains("created successfully", result);
+            Assert.Equal(appointment, _appointmentDb.Appointments[0]);
         }
 
         // GetAllAppointments

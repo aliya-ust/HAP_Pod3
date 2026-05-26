@@ -82,16 +82,12 @@ while (!exit)
             Console.ReadKey();
             break;
         case 3:
-            List<Doctor> doctors = doctorMenu.SearchDoctorBySpecialisation();
-            foreach (Doctor d in doctors)
-            {
-                Console.WriteLine(d);
-            }
+            doctorMenu.SearchDoctorBySpecialisation();
             Console.Write(ContinueMessage);
             Console.ReadKey();
             break;
         case 4:
-            Console.WriteLine($"\n{appointmentMenu.BookAppointment()}");
+            appointmentMenu.BookAppointment();
             Console.Write(ContinueMessage);
             Console.ReadKey();
             break;
@@ -114,12 +110,13 @@ while (!exit)
             healthRecordMenu.ViewRecord();
             break;
         case 9:
-            Console.WriteLine($"\nPatient details:\n{patientMenu.UpdatePatient()}");
-            Console.Write(ContinueMessage);
-            Console.ReadKey();
+            doctorMenu.ShowMenu();
+            // Console.WriteLine($"\nPatient details:\n{patientMenu.UpdatePatient()}");
+            // Console.Write(ContinueMessage);
+            // Console.ReadKey();
             break;
         case 10:
-            Console.WriteLine($"\nDoctor details:\n{doctorMenu.UpdateDoctor()}");
+            doctorMenu.UpdateDoctor();
             Console.Write(ContinueMessage);
             Console.ReadKey();
             break;

@@ -25,7 +25,8 @@ namespace HealthApp.Tests.Repositories
                 PatientId = 1,
                 FullName = "John Doe",
                 PhoneNumber = "9876543210",
-                Email = "john.doe@email.com"
+                Email = "john.doe@email.com",
+                InsuranceId = "sadf23423"
             };
 
             var result = _repository.RegisterPatient(patient);
@@ -43,7 +44,8 @@ namespace HealthApp.Tests.Repositories
                 PatientId = 1,
                 FullName = "John Doe",
                 PhoneNumber = "9876543210",
-                Email = "john@email.com"
+                Email = "john@email.com",
+                InsuranceId = "sadf23423"
             };
 
             var patient2 = new Patient
@@ -51,7 +53,8 @@ namespace HealthApp.Tests.Repositories
                 PatientId = 2,
                 FullName = "Jane Smith",
                 PhoneNumber = "9123456780",
-                Email = "jane@email.com"
+                Email = "jane@email.com",
+                InsuranceId = "sadf23423"
             };
 
             _repository.RegisterPatient(patient1);
@@ -68,7 +71,8 @@ namespace HealthApp.Tests.Repositories
                 PatientId = 1,
                 FullName = "John Doe",
                 PhoneNumber = "9876543210",
-                Email = "john@email.com"
+                Email = "john@email.com",
+                InsuranceId = "sadf23423"
             };
 
             _patientDb.Patients.Add(patient);
@@ -90,7 +94,8 @@ namespace HealthApp.Tests.Repositories
                 PatientId = 1,
                 FullName = "Existing User",
                 PhoneNumber = "9999999999",
-                Email = "existing@email.com"
+                Email = "existing@email.com",
+                InsuranceId = "sadf23423"
             });
 
             var result = _repository.GetPatientById(999);
@@ -106,7 +111,8 @@ namespace HealthApp.Tests.Repositories
                 PatientId = 1,
                 FullName = "First Entry",
                 PhoneNumber = "1111111111",
-                Email = "first@email.com"
+                Email = "first@email.com",
+                InsuranceId = "sadf23423"
             };
 
             var patient2 = new Patient
@@ -114,7 +120,8 @@ namespace HealthApp.Tests.Repositories
                 PatientId = 1,
                 FullName = "Second Entry",
                 PhoneNumber = "2222222222",
-                Email = "second@email.com"
+                Email = "second@email.com",
+                InsuranceId = "sadf23423"
             };
 
             _patientDb.Patients.Add(patient1);
@@ -134,7 +141,8 @@ namespace HealthApp.Tests.Repositories
                 PatientId = 1,
                 FullName = "John Doe",
                 PhoneNumber = "9876543210",
-                Email = "john@email.com"
+                Email = "john@email.com",
+                InsuranceId = "sadf23423"
             };
 
             var patient2 = new Patient
@@ -142,7 +150,8 @@ namespace HealthApp.Tests.Repositories
                 PatientId = 2,
                 FullName = "Jane Smith",
                 PhoneNumber = "9123456780",
-                Email = "jane@email.com"
+                Email = "jane@email.com",
+                InsuranceId = "sadf23423"
             };
 
             _patientDb.Patients.Add(patient1);
@@ -164,7 +173,8 @@ namespace HealthApp.Tests.Repositories
                 PatientId = 1,
                 FullName = "Old Name",
                 PhoneNumber = "1111111111",
-                Email = "old@email.com"
+                Email = "old@email.com",
+                InsuranceId = "sadf23423"
             };
 
             _patientDb.Patients.Add(patient);
@@ -174,7 +184,8 @@ namespace HealthApp.Tests.Repositories
                 PatientId = 1,
                 FullName = "New Name",
                 PhoneNumber = "9999999999",
-                Email = "new@email.com"
+                Email = "new@email.com",
+                InsuranceId = "sadf23423"
             };
 
             var result = _repository.UpdatePatient(patient, updatedPatient);
