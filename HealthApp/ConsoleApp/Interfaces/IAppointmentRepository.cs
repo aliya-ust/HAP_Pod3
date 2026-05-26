@@ -3,13 +3,11 @@ namespace HealthApp.ConsoleApp.Interfaces
 {
     public interface IAppointmentRepository
     {
-        void AddAppointment(Appointment appointment);
+        string AddAppointment(Appointment appointment);
         List<Appointment> GetAllAppointments();
-        Appointment GetAppointmentById(int id);
-        void UpdateAppointment(Appointment appointment);
-        void DeleteAppointment(int id);
-        void CancelAppointment(int appointmentId, string reason);
-        List<Appointment> GetAppointmentsByDoctor(int doctorId);
-        List<Appointment> GetAppointmentsByPatient(int patientId);
+        Appointment? GetAppointmentById(int id);
+        Appointment UpdateAppointment(Appointment existingAppointment, Appointment appointment);
+        List<Appointment> GetAppointmentsByDoctorId(int doctorId);
+        List<Appointment> GetAppointmentsByPatientId(int patientId);
     }
 }

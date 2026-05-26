@@ -1,178 +1,145 @@
+using HealthApp.ConsoleApp.Models;
+using HealthApp.ConsoleApp.Services;
+using HealthApp.ConsoleApp.Interfaces;
 using System;
 using System.Globalization;
-using HealthApp.ConsoleApp.Interfaces;
-using HealthApp.ConsoleApp.Models;
+using HealthApp.ConsoleApp.Exceptions;
+using HealthApp.ConsoleApp.Helpers;
 
 namespace HealthApp.ConsoleApp.Menus
 {
     public class HealthRecordMenu
     {
         private readonly IHealthRecordService _healthRecordService;
+        private readonly IAppointmentService _appointmentService;
 
-        public HealthRecordMenu(IHealthRecordService healthRecordService)
+        public const string Continue = "\nPress any key to continue...";
+        public const string HealthRecordCancelled = "Health record creation cancelled.";
+
+
+        public HealthRecordMenu(IHealthRecordService healthRecordService,
+                                IAppointmentService appointmentService)
         {
             _healthRecordService = healthRecordService;
+            _appointmentService = appointmentService;
         }
 
-        public void Show()
-        {
-            while (true)
-            {
-                Console.Clear();
-                Console.WriteLine("===================================");
-                Console.WriteLine("Health Record Menu");
-                Console.WriteLine("===================================");
-                Console.WriteLine("1. Add Record");
-                Console.WriteLine("2. View Records");
-                Console.WriteLine("3. Get Summary");
-                Console.WriteLine("4. Update Record");
-                Console.WriteLine("5. Back");
-
-                Console.Write("Enter choice: ");
-
-                if (!int.TryParse(Console.ReadLine(), out int choice))
-                {
-                    Console.WriteLine("Invalid input");
-                    Console.ReadKey();
-                    continue;
-                }
-
-                switch (choice)
-                {
-                    case 1:
-                        Console.WriteLine(AddRecord());
-                        break;
-
-                    case 2:
-                        ViewRecord();
-                        break;
-
-                    case 3:
-                        Console.WriteLine(GetSummary());
-                        break;
-
-                    case 4:
-                        Console.WriteLine(Update());
-                        break;
-
-                    case 5:
-                        return;
-                }
-
-                Console.WriteLine("Press any key...");
-                Console.ReadKey();
-            }
-        }
-
-        public string AddRecord()
+        public string AddHealthRecord()
         {
             try
             {
-                HealthRecord record = new HealthRecord
+                Console.Clear();
+
+                var appointmentIdInput = InputValidator.GetValidatedInput(
+                    "Enter Appointment ID (or 'q' to quit): ",
+                    InputValidator.IsValidId,
+                    "Invalid Appointment ID.");
+
+                int appointmentId = int.Parse(appointmentIdInput!);
+
+                var appointment = _appointmentService.GetAppointmentById(appointmentId);
+                if (appointment == null)
+                    return "Appointment not found";
+
+                appointment.Complete();
+
+                var diagnosis = InputValidator.GetValidatedInput(
+                    "Enter Diagnosis: ",
+                    InputValidator.IsNonEmpty,
+                    "Diagnosis cannot be empty.");
+
+                var prescription = InputValidator.GetValidatedInput(
+                    "Enter Prescription: ",
+                    InputValidator.IsNonEmpty,
+                    "Prescription cannot be empty.");
+
+                var doctorNotes = InputValidator.GetValidatedInput(
+                    "Enter Doctor Notes: ",
+                    InputValidator.IsNonEmpty,
+                    "Doctor Notes cannot be empty.");
+
+                var record = new HealthRecord
                 {
-                    Patient = new Patient(),
-                    Doctor = new Doctor()
+                    Patient = appointment.Patient,
+                    Doctor = appointment.Doctor,
+                    VisitDate = appointment.ScheduledDate,
+                    Diagnosis = diagnosis!,
+                    Prescription = prescription!,
+                    DoctorNotes = doctorNotes!
                 };
 
-                Console.Write("Enter Record Id: ");
-                if (!int.TryParse(Console.ReadLine(), out int recordId) || recordId <= 0)
-                    return "Invalid Record Id";
-                record.RecordId = recordId;
-
-                Console.Write("Enter Patient Id: ");
-                if (!int.TryParse(Console.ReadLine(), out int patientId) || patientId <= 0)
-                    return "Invalid Patient Id";
-                record.Patient.Id = patientId;
-
-                Console.Write("Enter Doctor Id: ");
-                if (!int.TryParse(Console.ReadLine(), out int doctorId) || doctorId <= 0)
-                    return "Invalid Doctor Id";
-                record.Doctor.DoctorId = doctorId;
-
-                Console.Write("Enter Visit Date (dd-MM-yyyy): ");
-                if (!TryParseVisitDate(Console.ReadLine(), out DateTime visitDate, out string error))
-                    return error;
-                record.VisitDate = visitDate;
-
-                Console.Write("Enter Diagnosis: ");
-                string diagnosis = Console.ReadLine()?.Trim() ?? "";
-                if (!IsValidTextInput(diagnosis))
-                    return "Invalid diagnosis. Must contain letters.";
-                record.Diagnosis = diagnosis;
-
-                Console.Write("Enter Prescription: ");
-                string prescription = Console.ReadLine()?.Trim() ?? "";
-                if (!IsValidTextInput(prescription))
-                    return "Invalid prescription. Must contain letters.";
-                record.Prescription = prescription;
-
-                Console.Write("Enter Doctor Notes: ");
-                string notes = Console.ReadLine()?.Trim() ?? "";
-                if (!IsValidTextInput(notes))
-                    return "Invalid doctor notes. Must contain letters.";
-                record.DoctorNotes = notes;
-
-                return _healthRecordService.AddRecord(record);
+                return _healthRecordService.AddHealthRecord(record);
             }
-            catch (Exception ex)
+            catch (OperationCanceledException)
             {
-                return ex.Message;
+                return "Operation Canceled";
+            }
+            catch (InvalidOperationException)
+            {
+                return "Cannot add health record for an appointment that's not been confirmed";
             }
         }
 
         public void ViewRecord()
         {
+            Console.Clear();
+
             Console.WriteLine("1. By Patient Id");
             Console.WriteLine("2. By Doctor Id");
+            Console.WriteLine("3. By Record Id");
+            Console.Write("Enter choice: ");
 
-            string choice = Console.ReadLine();
+            var choice = Console.ReadLine();
 
+            switch (choice)
+            {
+                case "1":
+                    HandleViewById("Patient", _healthRecordService.GetByPatientIdOrderByVisitDateDesc);
+                    break;
+
+                case "2":
+                    HandleViewById("Doctor", _healthRecordService.GetByDoctorIdOrderByVisitDateDesc);
+                    break;
+
+                case "3":
+                    HandleViewSingleRecord();
+                    break;
+
+                default:
+                    Console.WriteLine("Invalid choice.");
+                    Console.ReadKey();
+                    break;
+            }
+        }
+
+        private static void HandleViewById(
+            string entityName,
+            Func<int, List<HealthRecord>> fetchFunc)
+        {
             try
             {
-                if (choice == "1")
-                {
-                    Console.Write("Enter Patient Id: ");
-                    if (!int.TryParse(Console.ReadLine(), out int patientId) || patientId <= 0)
-                    {
-                        Console.WriteLine("Invalid input");
-                        return;
-                    }
+                var idInput = InputValidator.GetValidatedInput(
+                    $"Enter {entityName} Id: ",
+                    InputValidator.IsValidId,
+                    $"Invalid {entityName} Id.");
 
-                    var records = _healthRecordService.GetByPatientIdOrderByVisitDateDesc(patientId);
+                int id = int.Parse(idInput!);
 
-                    if (records.Count == 0)
-                    {
-                        Console.WriteLine("No records found");
-                        return;
-                    }
+                var records = fetchFunc(id);
 
-                    foreach (var r in records)
-                        Console.WriteLine(r);
-                }
-                else if (choice == "2")
-                {
-                    Console.Write("Enter Doctor Id: ");
-                    if (!int.TryParse(Console.ReadLine(), out int doctorId) || doctorId <= 0)
-                    {
-                        Console.WriteLine("Invalid input");
-                        return;
-                    }
+                Console.Clear();
+                Console.WriteLine("Health Records:");
 
-                    var records = _healthRecordService.GetByDoctorIdOrderByVisitDateDesc(doctorId);
-
-                    if (records.Count == 0)
-                    {
-                        Console.WriteLine("No records found");
-                        return;
-                    }
-
-                    foreach (var r in records)
-                        Console.WriteLine(r);
-                }
-                else
-                {
-                    Console.WriteLine("Invalid choice");
-                }
+                foreach (var r in records)
+                    Console.WriteLine(r);
+            }
+            catch (PatientNotFoundException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            catch (HealthRecordNotFoundException ex)
+            {
+                Console.WriteLine(ex.Message);
             }
             catch (Exception ex)
             {
@@ -180,113 +147,104 @@ namespace HealthApp.ConsoleApp.Menus
             }
         }
 
-        public string GetSummary()
-        {
-            Console.Write("Enter Record Id: ");
-
-            if (!int.TryParse(Console.ReadLine(), out int id) || id <= 0)
-                return "Invalid Record Id";
-
-            return _healthRecordService.GetByRecordId(id).GetSummary();
-        }
-
-        public string Update()
+        private void HandleViewSingleRecord()
         {
             try
             {
-                Console.Write("Enter Record Id: ");
-                if (!int.TryParse(Console.ReadLine(), out int id) || id <= 0)
-                    return "Invalid Record Id";
+                var idInput = InputValidator.GetValidatedInput(
+                    "Enter Record Id: ",
+                    InputValidator.IsValidId,
+                    "Invalid Record Id.");
 
-                var existing = _healthRecordService.GetByRecordId(id);
+                int recordId = int.Parse(idInput!);
 
-                HealthRecord record = new HealthRecord
-                {
-                    RecordId = id,
-                    Patient = new Patient(),
-                    Doctor = new Doctor(),
-                    VisitDate = existing.VisitDate
-                };
+                var record = _healthRecordService.GetRecordById(recordId);
 
-                Console.Write("New Patient Id: ");
-                if (!int.TryParse(Console.ReadLine(), out int pid) || pid <= 0)
-                    pid = existing.Patient.Id;
-                record.Patient.Id = pid;
-
-                Console.Write("New Doctor Id: ");
-                if (!int.TryParse(Console.ReadLine(), out int did) || did <= 0)
-                    did = existing.Doctor.DoctorId;
-                record.Doctor.DoctorId = did;
-
-                Console.Write("New Diagnosis: ");
-                string diagnosis = Console.ReadLine();
-                if (string.IsNullOrWhiteSpace(diagnosis))
-                    record.Diagnosis = existing.Diagnosis;
-                else if (IsValidTextInput(diagnosis))
-                    record.Diagnosis = diagnosis;
-                else
-                    return "Invalid diagnosis input";
-
-                Console.Write("New Prescription: ");
-                string prescription = Console.ReadLine();
-                if (string.IsNullOrWhiteSpace(prescription))
-                    record.Prescription = existing.Prescription;
-                else if (IsValidTextInput(prescription))
-                    record.Prescription = prescription;
-                else
-                    return "Invalid prescription input";
-
-                Console.Write("New Doctor Notes: ");
-                string notes = Console.ReadLine();
-                if (string.IsNullOrWhiteSpace(notes))
-                    record.DoctorNotes = existing.DoctorNotes;
-                else if (IsValidTextInput(notes))
-                    record.DoctorNotes = notes;
-                else
-                    return "Invalid doctor notes input";
-
-                return _healthRecordService.Update(record);
+                Console.Clear();
+                Console.WriteLine(record);
+            }
+            catch (HealthRecordNotFoundException ex)
+            {
+                Console.WriteLine(ex.Message);
             }
             catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
+
+        public string UpdateHealthRecord()
+        {
+            try
+            {
+                Console.Write("Enter Record ID (or 'q' to quit): ");
+                var input = Console.ReadLine();
+
+                if (input?.ToLower() == "q")
+                    return HandleCancel();
+
+                if (!int.TryParse(input, out int recordId) || recordId <= 0)
+                    return "Invalid Record ID";
+
+                var existing = _healthRecordService.GetRecordById(recordId);
+                if (existing == null)
+                    return "Record not found";
+
+                Console.WriteLine("\nCurrent Record:");
+                Console.WriteLine(existing);
+
+                var dateInput = InputValidator.GetOptionalDate(
+                    "Enter Visit Date (dd/MM/yyyy): ");
+
+                var diagnosisInput = InputValidator.GetValidatedInput(
+                    "Enter Diagnosis (Press ENTER to keep): ",
+                    InputValidator.IsNonEmpty,
+                    "Invalid diagnosis.",
+                    allowEmpty: true);
+
+                var prescriptionInput = InputValidator.GetValidatedInput(
+                    "Enter Prescription (Press ENTER to keep): ",
+                    InputValidator.IsNonEmpty,
+                    "Invalid prescription.",
+                    allowEmpty: true);
+
+                var notesInput = InputValidator.GetValidatedInput(
+                    "Enter Doctor Notes (Press ENTER to keep): ",
+                    InputValidator.IsNonEmpty,
+                    "Invalid notes.",
+                    allowEmpty: true);
+
+                var updated = new HealthRecord
+                {
+                    RecordId = existing.RecordId,
+                    Patient = existing.Patient,
+                    Doctor = existing.Doctor,
+                    VisitDate = dateInput ?? existing.VisitDate,
+                    Diagnosis = diagnosisInput ?? existing.Diagnosis,
+                    Prescription = prescriptionInput ?? existing.Prescription,
+                    DoctorNotes = notesInput ?? existing.DoctorNotes
+                };
+
+                Console.Clear();
+                return _healthRecordService.UpdateHealthRecord(updated).ToString();
+            }
+            catch (OperationCanceledException)
+            {
+                return HandleCancel();
+            }
+            catch (HealthRecordNotFoundException ex)
             {
                 return ex.Message;
             }
         }
 
-        public bool TryParseVisitDate(string input, out DateTime result, out string error)
+
+        private static string HandleCancel()
         {
-            result = default;
-            error = "";
-
-            if (!DateTime.TryParseExact(input, "dd-MM-yyyy", CultureInfo.InvariantCulture,
-                DateTimeStyles.None, out DateTime parsed))
-            {
-                error = "Invalid date format";
-                return false;
-            }
-
-            if (parsed > DateTime.Today)
-            {
-                error = "Future date not allowed";
-                return false;
-            }
-
-            result = parsed;
-            return true;
-        }
-
-        private bool IsValidTextInput(string value)
-        {
-            if (string.IsNullOrWhiteSpace(value))
-                return false;
-
-            foreach (char c in value)
-            {
-                if (char.IsLetter(c))
-                    return true;
-            }
-
-            return false;
+            Console.WriteLine(HealthRecordCancelled);
+            Console.WriteLine(Continue);
+            Console.ReadKey();
+            return "";
         }
     }
 }

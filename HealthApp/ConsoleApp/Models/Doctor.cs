@@ -7,70 +7,58 @@ namespace HealthApp.ConsoleApp.Models
     public class Doctor
     {
         public int DoctorId { get; set; }
-
-        public string FullName { get; set; } = string.Empty;
-
-        public string Specialisation { get; set; } = string.Empty;
-
+        public required string Name { get; set; }
+        public required string Specialisation { get; set; }
         public int YearsOfExperience { get; set; }
-
         public decimal ConsultationFee { get; set; }
+        public bool IsActive { get; set; }
+        public List<string> AvailableSlots { get; set; } = new List<string>();
 
-        public bool IsActive { get; set; } = true;
+        public List<DateTime> AvailableDates { get; set; } = new List<DateTime>();
 
-        public List<DateTime> Appointments { get; set; } = new List<DateTime>();
-
-        public bool IsAvailable(DateTime date)
+        //Availability method
+        public virtual bool IsAvailable(DateTime date)
         {
             if (!IsActive)
             {
                 return false;
             }
- 
-            int count = Appointments.Count(a => a.Date == date.Date);
- 
-            if (count >= 8)
+
+            int count = AvailableDates.Count(d => d.Date == date.Date);
+
+            if (count >= 5)
             {
                 return false;
             }
- 
+
             return true;
         }
 
-
-        public string CheckAvailability(DateTime date)
-        {
-            if (!IsActive)
-                return "Doctor is not active.";
-
-            int count = Appointments.Count(a => a.Date == date.Date);
-
-            if (count >= 5)
-                return "Appointment limit reached for the day.";
-
-            return "Doctor is available.";
-        }
-
+        //Upcoming count
         public string GetScheduleSummary()
         {
-            int count = Appointments.Count(a => a.Date >= DateTime.Today);
+            int count = AvailableDates.Count(d => d.Date >= DateTime.Today);
 
-            return count == 0
-                ? "No upcoming appointments."
-                : $"Upcoming appointments count: {count}";
+            if (count == 0)
+            {
+                return "No available slots";
+            }
+
+            return $"Available slots  count: {count}";
         }
 
+        //Upcoming list
         public List<DateTime> GetUpcomingAppointments()
         {
-            return Appointments
-                .Where(a => a.Date >= DateTime.Today)
-                .OrderBy(a => a)
+            return AvailableDates
+                .Where(d => d.Date >= DateTime.Today)
+                .OrderBy(d => d)
                 .ToList();
         }
 
         public string GetDoctorDetails()
         {
-            return $"Doctor ID: {DoctorId} | Name: {FullName} | Specialisation: {Specialisation} | Experience: {YearsOfExperience} years | Fee: ₹{ConsultationFee} | Active: {(IsActive ? "Yes" : "No")}";
+            return $"Doctor ID: {DoctorId}, Full Name: {Name}, Specialisation: {Specialisation}, Experience: {YearsOfExperience} years, Consultation Fee: Rs. {ConsultationFee}, Active: {(IsActive ? "Yes" : "No")}";
         }
     }
 }

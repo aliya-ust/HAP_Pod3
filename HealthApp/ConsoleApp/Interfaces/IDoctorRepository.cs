@@ -1,18 +1,13 @@
-using System.Collections.Generic;
 using HealthApp.ConsoleApp.Models;
 
 namespace HealthApp.ConsoleApp.Interfaces
 {
     public interface IDoctorRepository
     {
-        void AddDoctor(Doctor doctor);
-
-        void UpdateDoctor(Doctor doctor);
-
-        Doctor GetDoctorById(int id);
-
-        List<Doctor> GetAllDoctors();
-
+        string AddDoctor(Doctor doctor);
+        Doctor? GetDoctorById(int id);
         List<Doctor> GetDoctorsBySpecialisation(string specialisation);
+        Doctor UpdateDoctor(Doctor existingDoctor, Doctor doctor);
+        List<Doctor> GetAllDoctors();
     }
 }

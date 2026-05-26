@@ -1,5 +1,5 @@
-using System;
 using System.Collections.Generic;
+using System.Linq;
 using HealthApp.ConsoleApp.Interfaces;
 using HealthApp.ConsoleApp.Models;
 using HealthApp.ConsoleApp.Exceptions;
@@ -8,101 +8,65 @@ namespace HealthApp.ConsoleApp.Services
 {
     public class DoctorService : IDoctorService
     {
-        private readonly IDoctorRepository _doctorRepository;
+        private readonly IDoctorRepository _doctorRepo;
 
         public DoctorService(IDoctorRepository doctorRepository)
         {
-            _doctorRepository = doctorRepository;
+            _doctorRepo = doctorRepository;
         }
 
-        public void AddDoctor(Doctor doctor)
+        public string AddDoctor(Doctor doctor)
         {
-            if (doctor == null)
-                throw new DoctorInvalidException("Doctor data is invalid.");
+            List<Doctor> doctors = _doctorRepo.GetAllDoctors();
+            doctor.DoctorId = DoctorIdGenerator(doctors);
 
-            if (string.IsNullOrWhiteSpace(doctor.FullName))
-                throw new DoctorInvalidException("Doctor name required.");
+            return _doctorRepo.AddDoctor(doctor);
+        }
 
-            if (string.IsNullOrWhiteSpace(doctor.Specialisation))
-                throw new DoctorInvalidException("Specialisation required.");
+        public Doctor? GetDoctorById(int id)
+        {
+            Doctor? doctor = _doctorRepo.GetDoctorById(id);
 
-            if (doctor.YearsOfExperience < 0)
-                throw new DoctorInvalidException("Invalid experience.");
-
-            if (doctor.ConsultationFee < 0)
-                throw new DoctorInvalidException("Invalid fee.");
-
-            var doctors = _doctorRepository.GetAllDoctors();
-
-            foreach (var d in doctors)
+            if (doctor is null)
             {
-                if (d.FullName.Equals(doctor.FullName, StringComparison.OrdinalIgnoreCase) &&
-                    d.Specialisation.Equals(doctor.Specialisation, StringComparison.OrdinalIgnoreCase))
-                {
-                    throw new DoctorAlreadyExistsException("Doctor already exists with same name & specialisation!");
-                }
+                throw new DoctorNotFoundException($"Doctor of ID {id} does not exist");
             }
-
-            _doctorRepository.AddDoctor(doctor);
-        }
-
-        public List<Doctor> GetAllDoctors()
-        {
-            return _doctorRepository.GetAllDoctors();
-        }
-
-        public Doctor GetDoctorById(int id)
-        {
-            if (id <= 0)
-                throw new DoctorInvalidException("Invalid Doctor ID.");
-
-            var doctor = _doctorRepository.GetDoctorById(id);
-
-            if (doctor == null)
-                throw new DoctorNotFoundException($"Doctor with ID {id} not found.");
-
             return doctor;
         }
 
-        public List<Doctor> SearchBySpecialisation(string specialisation)
+        public List<Doctor> GetDoctorsBySpecialisation(string specialisation)
         {
-            if (string.IsNullOrWhiteSpace(specialisation))
-                throw new DoctorInvalidException("Specialisation cannot be empty.");
+            var result = _doctorRepo.GetDoctorsBySpecialisation(specialisation);
 
-            var doctors = _doctorRepository.GetDoctorsBySpecialisation(specialisation);
+            if (result == null || result.Count == 0)
+            {
+                throw new SpecialisationNotFoundException($"Doctor with specialisation in {specialisation} does not exist");
+            }
 
-            if (doctors == null || doctors.Count == 0)
-                throw new SpecialisationNotFoundException("No doctors found for this specialisation.");
-
-            return doctors;
+            return result;
         }
 
-        public void UpdateDoctor(Doctor doctor)
+        public Doctor UpdateDoctor(Doctor doctor)
         {
-            if (doctor == null)
-                throw new DoctorInvalidException("Invalid doctor data.");
+            Doctor? existingDoctor = GetDoctorById(doctor.DoctorId);
 
-            if (doctor.DoctorId <= 0)
-                throw new DoctorInvalidException("Invalid Doctor ID.");
+            if (existingDoctor is null)
+            {
+                throw new DoctorNotFoundException($"Doctor of ID {doctor.DoctorId} does not exist");
+            }
+            return _doctorRepo.UpdateDoctor(existingDoctor, doctor);
+        }
 
-            var existing = _doctorRepository.GetDoctorById(doctor.DoctorId);
 
-            if (existing == null)
-                throw new DoctorNotFoundException($"Doctor with ID {doctor.DoctorId} not found.");
-
-            if (string.IsNullOrWhiteSpace(doctor.FullName))
-                throw new DoctorInvalidException("Doctor name cannot be empty.");
-
-            if (string.IsNullOrWhiteSpace(doctor.Specialisation))
-                throw new DoctorInvalidException("Specialisation cannot be empty.");
-
-            if (doctor.YearsOfExperience < 0)
-                throw new DoctorInvalidException("Invalid experience.");
-
-            if (doctor.ConsultationFee < 0)
-                throw new DoctorInvalidException("Invalid fee.");
-
-            _doctorRepository.UpdateDoctor(doctor);
+        public static int DoctorIdGenerator(List<Doctor> doctors)
+        {
+            return doctors.Any()
+                ? doctors.Max(d => d.DoctorId) + 1
+                : 201;
+        }
+        public List<Doctor> GetAllDoctors()
+        {
+            return _doctorRepo.GetAllDoctors();
         }
     }
 }

@@ -1,132 +1,100 @@
-using System;
-using System.Collections.Generic;
+using HealthApp.ConsoleApp.Services;
+using HealthApp.ConsoleApp.Repositories;
 using HealthApp.ConsoleApp.Models;
 using HealthApp.ConsoleApp.Interfaces;
 using HealthApp.ConsoleApp.Exceptions;
-
 namespace HealthApp.ConsoleApp.Services
 {
     public class HealthRecordService : IHealthRecordService
     {
+        //Injecting HealthRecord, Doctor and Patient dependencies
         private readonly IHealthRecordRepository _healthRecordRepository;
         private readonly IDoctorRepository _doctorRepository;
         private readonly IPatientRepository _patientRepository;
 
-        public HealthRecordService(
-            IHealthRecordRepository healthRecordRepository,
-            IDoctorRepository doctorRepository,
-            IPatientRepository patientRepository)
+        public HealthRecordService(IHealthRecordRepository healthRecordRepository,
+                                    IDoctorRepository doctorRepository,
+                                    IPatientRepository patientRepository)
         {
             _healthRecordRepository = healthRecordRepository;
             _doctorRepository = doctorRepository;
             _patientRepository = patientRepository;
         }
 
-        public string AddRecord(HealthRecord record)
+        public string AddHealthRecord(HealthRecord record)
         {
-            if (record == null)
-                throw new ArgumentException("Record cannot be null");
+            List<HealthRecord> records = _healthRecordRepository.GetAllRecords();
+            record.RecordId = RecordIdGenerator(records);
 
-            if (record.RecordId <= 0)
-                throw new ArgumentException("Invalid Record ID");
+            return _healthRecordRepository.AddHealthRecord(record);
+        }
 
-            var existingRecord = _healthRecordRepository.GetByRecordId(record.RecordId);
-            if (existingRecord != null)
-                throw new HealthRecordExistsException("Record already exists");
+        public List<HealthRecord> GetByPatientIdOrderByVisitDateDesc(int id)
+        {
+            var patient = _patientRepository.GetPatientById(id);
 
-            var patient = _patientRepository.GetById(record.Patient.Id);
             if (patient == null)
-                throw new ArgumentException("Patient not found");
+            {
+                throw new PatientNotFoundException("Patient of this id has not been found.");
+            }
 
-            var doctor = _doctorRepository.GetDoctorById(record.Doctor.DoctorId);
+            var records = _healthRecordRepository
+                .GetByPatientIdOrderByVisitDateDesc(id);
+
+            if (records == null || records.Count == 0)
+            {
+                throw new HealthRecordNotFoundException("No health records found for this patient ID.");
+            }
+
+            return records;
+        }
+
+        public List<HealthRecord> GetByDoctorIdOrderByVisitDateDesc(int id)
+        {
+            var doctor = _doctorRepository.GetDoctorById(id);
+
             if (doctor == null)
-                throw new ArgumentException("Doctor not found");
+            {
+                throw new DoctorNotFoundException("Doctor of this id has not been found.");
+            }
 
-            if (record.VisitDate > DateTime.Today)
-                throw new ArgumentException("Visit date cannot be future");
+            var records = _healthRecordRepository
+                .GetByDoctorIdOrderByVisitDateDesc(id);
 
-            if (string.IsNullOrWhiteSpace(record.Diagnosis))
-                throw new ArgumentException("Diagnosis required");
+            if (records == null || records.Count == 0)
+            {
+                throw new HealthRecordNotFoundException("No health records found for this doctor ID.");
+            }
 
-            if (string.IsNullOrWhiteSpace(record.Prescription))
-                throw new ArgumentException("Prescription required");
-
-            if (string.IsNullOrWhiteSpace(record.DoctorNotes))
-                throw new ArgumentException("Doctor notes required");
-
-            record.Patient = patient;
-            record.Doctor = doctor;
-
-            return _healthRecordRepository.Add(record);
+            return records;
         }
 
-        public List<HealthRecord> GetByPatientIdOrderByVisitDateDesc(int patientId)
+        public HealthRecord UpdateHealthRecord(HealthRecord record)
         {
-            if (patientId <= 0)
-                throw new ArgumentException("Invalid Patient ID");
+            HealthRecord? existingHealthRecord = GetRecordById(record.RecordId);
 
-            var patient = _patientRepository.GetById(patientId);
-            if (patient == null)
-                throw new ArgumentException("Patient not found");
-
-            return _healthRecordRepository.GetByPatientIdOrderByVisitDateDesc(patientId);
+            if (existingHealthRecord is null)
+            {
+                throw new HealthRecordNotFoundException($"Health Record of ID {record.RecordId} does not exist");
+            }
+            return _healthRecordRepository.UpdateHealthRecord(existingHealthRecord, record);
         }
 
-        public List<HealthRecord> GetByDoctorIdOrderByVisitDateDesc(int doctorId)
+        public HealthRecord? GetRecordById(int recordId)
         {
-            if (doctorId <= 0)
-                throw new ArgumentException("Invalid Doctor ID");
-
-            var doctor = _doctorRepository.GetDoctorById(doctorId);
-            if (doctor == null)
-                throw new ArgumentException("Doctor not found");
-
-            return _healthRecordRepository.GetByDoctorIdOrderByVisitDateDesc(doctorId);
-        }
-
-        public string Update(HealthRecord updatedRecord)
-        {
-            if (updatedRecord == null)
-                throw new ArgumentException("Invalid record data");
-
-            var existing = _healthRecordRepository.GetByRecordId(updatedRecord.RecordId);
-            if (existing == null)
-                throw new HealthRecordNotFoundException("Record not found");
-
-            var patient = _patientRepository.GetById(updatedRecord.Patient.Id);
-            if (patient == null)
-                throw new ArgumentException("Patient not found");
-
-            var doctor = _doctorRepository.GetDoctorById(updatedRecord.Doctor.DoctorId);
-            if (doctor == null)
-                throw new ArgumentException("Doctor not found");
-
-            if (string.IsNullOrWhiteSpace(updatedRecord.Diagnosis))
-                throw new ArgumentException("Diagnosis required");
-
-            if (string.IsNullOrWhiteSpace(updatedRecord.Prescription))
-                throw new ArgumentException("Prescription required");
-
-            if (string.IsNullOrWhiteSpace(updatedRecord.DoctorNotes))
-                throw new ArgumentException("Doctor notes required");
-
-            updatedRecord.Patient = patient;
-            updatedRecord.Doctor = doctor;
-
-            return _healthRecordRepository.Update(updatedRecord);
-        }
-
-        public HealthRecord GetByRecordId(int recordId)
-        {
-            if (recordId <= 0)
-                throw new ArgumentException("Invalid Record ID");
-
-            var record = _healthRecordRepository.GetByRecordId(recordId);
-
-            if (record == null)
-                throw new HealthRecordNotFoundException("Record not found");
-
+            HealthRecord? record = _healthRecordRepository.GetRecordById(recordId);
+            if (record is null)
+            {
+                throw new HealthRecordNotFoundException($"Health Record of ID {recordId} does not exist");
+            }
             return record;
+        }
+
+        public static int RecordIdGenerator(List<HealthRecord> records)
+        {
+            return records.Any()
+                ? records.Max(r => r.RecordId) + 1
+                : 401;
         }
     }
 }

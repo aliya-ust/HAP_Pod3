@@ -1,96 +1,52 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using HealthApp.ConsoleApp.Models;
 using HealthApp.ConsoleApp.Interfaces;
+using HealthApp.ConsoleApp.Exceptions;
 using HealthApp.ConsoleApp.Databases;
-
 namespace HealthApp.ConsoleApp.Repositories
 {
     public class AppointmentRepository : IAppointmentRepository
     {
-        private readonly List<Appointment> _appointments;
+        private readonly AppointmentDb _appointmentDb;
 
         public AppointmentRepository(AppointmentDb appointmentDb)
         {
-            _appointments = appointmentDb.Appointments;
+            _appointmentDb = appointmentDb;
         }
 
-        public void AddAppointment(Appointment appointment)
+        public string AddAppointment(Appointment appointment)
         {
-            if (appointment == null)
-                return;
-
-            _appointments.Add(appointment);
+            _appointmentDb.Appointments.Add(appointment);
+            return $"Appointment of ID {appointment.AppointmentId} has been created successfully";
         }
 
         public List<Appointment> GetAllAppointments()
         {
-            return new List<Appointment>(_appointments);
+            return _appointmentDb.Appointments;
         }
 
-        public Appointment GetAppointmentById(int id)
+        public Appointment? GetAppointmentById(int id)
         {
-            return _appointments
-                .FirstOrDefault(a => a.AppointmentId == id);
+            return _appointmentDb.Appointments.FirstOrDefault(a => a.AppointmentId == id);
         }
 
-        public void UpdateAppointment(Appointment appointment)
+        public Appointment UpdateAppointment(Appointment existingAppointment, Appointment appointment)
         {
-            if (appointment == null)
-                return;
+            existingAppointment.Patient = appointment.Patient;
+            existingAppointment.Doctor = appointment.Doctor;
+            existingAppointment.ScheduledDate = appointment.ScheduledDate;
+            existingAppointment.TimeSlot = appointment.TimeSlot;
 
-            var existing = _appointments
-                .FirstOrDefault(a => a.AppointmentId == appointment.AppointmentId);
-
-            if (existing == null)
-                return;
-
-            existing.Patient = appointment.Patient;
-            existing.Doctor = appointment.Doctor;
-            existing.ScheduledDate = appointment.ScheduledDate;
-            existing.TimeSlot = appointment.TimeSlot;
-            existing.Status = appointment.Status;
-            existing.CancellationReason = appointment.CancellationReason;
+            return existingAppointment;
         }
 
-        public void CancelAppointment(int id, string reason)
+        public List<Appointment> GetAppointmentsByPatientId(int patientId)
         {
-            if (string.IsNullOrWhiteSpace(reason))
-                return;
-
-            var appointment = _appointments
-                .FirstOrDefault(a => a.AppointmentId == id);
-
-            if (appointment == null)
-                return;
-
-            appointment.Cancel(reason);
+            return _appointmentDb.Appointments.Where(a => a.Patient.PatientId == patientId).ToList();
         }
 
-        public void DeleteAppointment(int id)
+        public List<Appointment> GetAppointmentsByDoctorId(int doctorId)
         {
-            var appointment = _appointments
-                .FirstOrDefault(a => a.AppointmentId == id);
-
-            if (appointment == null)
-                return;
-
-            _appointments.Remove(appointment);
-        }
-
-        public List<Appointment> GetAppointmentsByPatient(int patientId)
-        {
-            return _appointments
-                .Where(a => a.Patient != null && a.Patient.Id == patientId)
-                .ToList();
-        }
-
-        public List<Appointment> GetAppointmentsByDoctor(int doctorId)
-        {
-            return _appointments
-                .Where(a => a.Doctor != null && a.Doctor.DoctorId == doctorId)
-                .ToList();
+            return _appointmentDb.Appointments.Where(a => a.Doctor.DoctorId == doctorId).ToList();
         }
     }
 }
