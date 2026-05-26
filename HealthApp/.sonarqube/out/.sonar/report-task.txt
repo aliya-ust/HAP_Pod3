@@ -1,0 +1,6 @@
+projectKey=HealthApp
+serverUrl=http://localhost:9000
+serverVersion=26.1.0.118079
+dashboardUrl=http://localhost:9000/dashboard?id=HealthApp
+ceTaskId=9a2d0e09-e023-4567-950c-1b8f932b712e
+ceTaskUrl=http://localhost:9000/api/ce/task?id=9a2d0e09-e023-4567-950c-1b8f932b712e
