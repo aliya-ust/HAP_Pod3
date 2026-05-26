@@ -7,6 +7,7 @@ using HealthApp.ConsoleApp.Models;
 
 namespace HealthApp.ConsoleApp.Services
 {
+    // Service class to manage appointments in the healthcare system
     public class AppointmentService : IAppointmentService
     {
         private readonly IAppointmentRepository _appointmentRepo;
@@ -15,7 +16,11 @@ namespace HealthApp.ConsoleApp.Services
         {
             _appointmentRepo = appointmentRepository;
         }
-
+        // Method to get all appointments from the database
+        public List<Appointment> GetAllAppointments()
+        {
+            return _appointmentRepo.GetAllAppointments();
+        }
         // Book an appointment with date and time slot
         public string BookAppointment(Patient patient, Doctor doctor, DateTime date, string slot)
         {
@@ -32,7 +37,7 @@ namespace HealthApp.ConsoleApp.Services
             var appointments = _appointmentRepo.GetAllAppointments();
 
             bool isSlotTaken = appointments.Any(a =>
-                a.Doctor.DoctorId == doctor.DoctorId &&
+                a.Doctor?.DoctorId == doctor.DoctorId &&
                 a.ScheduledDate.Date == date.Date &&
                 a.TimeSlot == slot &&
                 a.Status != AppointmentStatus.Cancelled);
@@ -80,7 +85,7 @@ namespace HealthApp.ConsoleApp.Services
         }
 
         // Get appointment by id
-        public Appointment? GetAppointmentById(int appointmentId)
+        public Appointment GetAppointmentById(int appointmentId)
         {
             Appointment? appointment = _appointmentRepo.GetAppointmentById(appointmentId);
 
@@ -96,7 +101,7 @@ namespace HealthApp.ConsoleApp.Services
         {
             return appointments.Any()
                 ? appointments.Max(a => a.AppointmentId) + 1
-                : 101;
+                : 301;
         }
 
         //  Cancel an appointment and update reason
@@ -122,7 +127,7 @@ namespace HealthApp.ConsoleApp.Services
                 throw new AppointmentNotFoundException($"Appointment of ID {appointmentId} does not exist");
             }
             appointment.Confirm();
-            return $"Appointment of ID {appointmentId} has been cancelled successfully";
+            return $"Appointment of ID {appointmentId} has been confirmed successfully";
         }
 
         //  Get list of confirmed (upcoming) appointments
@@ -141,7 +146,7 @@ namespace HealthApp.ConsoleApp.Services
             }
             return upcomingAppointments;
         }
-
+        // Method to update an existing appointment in the database
         public Appointment UpdateAppointment(Appointment appointment)
         {
             Appointment? existingAppointment = GetAppointmentById(appointment.AppointmentId);

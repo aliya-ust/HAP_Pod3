@@ -118,13 +118,13 @@ namespace HealthApp.ConsoleApp.Helpers
             }
         }
 
-        public static bool IsValidName(string input) =>
-        !string.IsNullOrWhiteSpace(input) && !input.Any(char.IsDigit);
-
-        public static bool IsValidPhone(string input)
+        public static bool IsValidName(string input)
         {
-            string pattern = @"^[6-9]\d{9}$";
-            return Regex.IsMatch(input, pattern);
+            if (string.IsNullOrWhiteSpace(input))
+                return false;
+
+            string pattern = @"^[A-Za-z]+([.\s]?[A-Za-z]+)*$";
+            return Regex.IsMatch(input.Trim(), pattern);
         }
 
         public static bool IsValidEmail(string input)
@@ -134,7 +134,8 @@ namespace HealthApp.ConsoleApp.Helpers
         }
 
         public static bool IsValidInsuranceId(string input) =>
-            int.TryParse(input, out int id) && id >= 0;
+            !string.IsNullOrWhiteSpace(input) &&
+            System.Text.RegularExpressions.Regex.IsMatch(input, @"^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]+$");
 
         public static bool IsValidExperience(string input) =>
             int.TryParse(input, out int val) && val >= 0;
