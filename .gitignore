@@ -3,8 +3,8 @@
 **/bin/
 **/obj/
 **/.sonarqube/
-\ncoverage.xml\n
 **/TestResults/
+**/coverage.xml/
 # Optional project-specific ignores
 *.user
 *.suo
