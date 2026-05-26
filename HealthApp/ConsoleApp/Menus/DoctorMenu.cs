@@ -214,18 +214,10 @@ namespace HealthApp.ConsoleApp.Menus
                     "  Please enter a valid positive number.")!;
 
                 var existing = _doctorService.GetDoctorById(int.Parse(rawId));
-
-                if (existing == null)
-                {
-                    PrintError($"No doctor found with ID {rawId}.");
-                    Pause();
-                    return;
-                }
-
                 // Show current details before editing
                 Console.WriteLine("\n  Current Details:");
                 Console.WriteLine("  " + new string('─', 50));
-                Console.WriteLine($"  ID             : {existing.DoctorId}");
+                Console.WriteLine($"  ID             : {existing!.DoctorId}");
                 Console.WriteLine($"  Name           : {existing.Name}");
                 Console.WriteLine($"  Specialisation : {existing.Specialisation}");
                 Console.WriteLine($"  Experience     : {existing.YearsOfExperience} years");
@@ -340,10 +332,6 @@ namespace HealthApp.ConsoleApp.Menus
             {
                 Console.WriteLine("\n  Returning to menu...");
             }
-            catch (DoctorNotFoundException ex)
-            {
-                PrintError(ex.Message);
-            }
             catch (Exception ex)
             {
                 PrintError(ex.Message);
@@ -396,7 +384,7 @@ namespace HealthApp.ConsoleApp.Menus
             {
                 Console.WriteLine("\n  Returning to menu...");
             }
-            catch (SpecialisationNotFoundException ex)
+            catch (Exception ex)
             {
                 PrintError(ex.Message);
             }
@@ -421,15 +409,8 @@ namespace HealthApp.ConsoleApp.Menus
 
                 var doctor = _doctorService.GetDoctorById(int.Parse(raw));
 
-                if (doctor == null)
-                {
-                    PrintError($"No doctor found with ID {raw}.");
-                    Pause();
-                    return;
-                }
-
                 Console.WriteLine("  " + new string('─', 40));
-                Console.WriteLine($"  ID             : {doctor.DoctorId}");
+                Console.WriteLine($"  ID             : {doctor!.DoctorId}");
                 Console.WriteLine($"  Name           : {doctor.Name}");
                 Console.WriteLine($"  Specialisation : {doctor.Specialisation}");
                 Console.WriteLine($"  Experience     : {doctor.YearsOfExperience} years");
@@ -457,7 +438,6 @@ namespace HealthApp.ConsoleApp.Menus
             PrintHeader("ALL DOCTORS");
 
             var doctors = _doctorService.GetAllDoctors();
-
             if (doctors == null || doctors.Count == 0)
             {
                 PrintError("No doctors available.");
@@ -496,25 +476,10 @@ namespace HealthApp.ConsoleApp.Menus
 
                 // Verify doctor exists before fetching appointments
                 var doctor = _doctorService.GetDoctorById(doctorId);
-                if (doctor == null)
-                {
-                    PrintError($"No doctor found with ID {doctorId}.");
-                    Pause();
-                    return;
-                }
-
-                Console.WriteLine($"\n  Dr. {doctor.Name}  —  {doctor.Specialisation}\n");
+                Console.WriteLine($"\n  Dr. {doctor!.Name}  —  {doctor.Specialisation}\n");
 
                 // Fetch all appointments for this doctor
                 var appointments = _appointmentService.GetAppointmentsByDoctorId(doctorId);
-
-                if (appointments.Count == 0)
-                {
-                    PrintError("No appointments found for this doctor.");
-                    Pause();
-                    return;
-                }
-
                 Console.WriteLine($"  {appointments.Count} appointment(s) found:\n");
 
                 // Group by status for better readability

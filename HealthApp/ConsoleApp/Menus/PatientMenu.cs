@@ -124,19 +124,17 @@ namespace HealthApp.ConsoleApp.Menus
 
         // Display all registered patients
         public void ViewAllPatients()
-        {
+        { 
             Console.Clear();
             PrintHeader("ALL PATIENTS");
 
             var patients = _patientService.GetAllPatients();
-
             if (patients.Count == 0)
             {
                 PrintError("No patients registered yet.");
                 Pause();
                 return;
             }
-
             foreach (var p in patients)
             {
                 Console.WriteLine($"  {p.GetProfileSummary()}");
@@ -162,15 +160,7 @@ namespace HealthApp.ConsoleApp.Menus
                     "  Please enter a valid positive number.")!;
 
                 var patient = _patientService.GetPatientById(int.Parse(raw));
-
-                if (patient == null)
-                {
-                    PrintError($"No patient found with ID {raw}.");
-                    Pause();
-                    return;
-                }
-
-                Console.WriteLine($"\n  {patient.GetProfileSummary()}");
+                Console.WriteLine($"\n  {patient!.GetProfileSummary()}");
             }
             catch (OperationCanceledException)
             {
@@ -200,17 +190,9 @@ namespace HealthApp.ConsoleApp.Menus
                     "  Please enter a valid positive number.")!;
  
                 var patient = _patientService.GetPatientById(int.Parse(rawId));
- 
-                if (patient == null)
-                {
-                    PrintError($"No patient found with ID {rawId}.");
-                    Pause();
-                    return;
-                }
- 
                 Console.WriteLine("\n  Current Details:");
                 Console.WriteLine("  " + new string('─', 70));
-                Console.WriteLine($"  {patient.GetProfileSummary()}");
+                Console.WriteLine($"  {patient!.GetProfileSummary()}");
                 Console.WriteLine("  " + new string('─', 70));
                 Console.WriteLine("\n  Enter new details below (Press ENTER to keep existing value):\n");
  

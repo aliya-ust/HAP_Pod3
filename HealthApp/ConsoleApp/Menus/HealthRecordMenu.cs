@@ -52,18 +52,8 @@ namespace HealthApp.ConsoleApp.Menus
                     InputValidator.IsValidId,
                     "  Please enter a valid positive number.")!;
 
-                // Fetch appointment and handle not found
                 Appointment appointment;
-                try
-                {
-                    appointment = _appointmentService.GetAppointmentById(int.Parse(rawId));
-                }
-                catch (AppointmentNotFoundException)
-                {
-                    PrintError($"No appointment found with ID {rawId}.");
-                    Pause();
-                    return;
-                }
+                appointment = _appointmentService.GetAppointmentById(int.Parse(rawId));
 
                 // Validate the appointment is actually completed
                 if (appointment.Status != AppointmentStatus.Completed)
@@ -125,7 +115,7 @@ namespace HealthApp.ConsoleApp.Menus
             {
                 Console.Clear();
                 PrintHeader("VIEW HEALTH RECORDS");
-                Console.WriteLine("  Type 'q' or 'back' to return.\n");             
+                Console.WriteLine("  Type 'q' or 'back' to return.\n");
                 Console.WriteLine("  ╔══════════════════════════════╗");
                 Console.WriteLine("  ║  1.  By Patient ID           ║");
                 Console.WriteLine("  ║  2.  By Doctor ID            ║");
@@ -156,6 +146,10 @@ namespace HealthApp.ConsoleApp.Menus
             {
                 Console.WriteLine("\n  Returning to menu...");
             }
+            catch (Exception ex)
+            {
+                PrintError(ex.Message);
+            }
 
             Pause();
         }
@@ -176,17 +170,7 @@ namespace HealthApp.ConsoleApp.Menus
                     "  Please enter a valid positive number.")!;
 
                 HealthRecord existing;
-                try
-                {
-                    existing = _healthRecordService.GetRecordById(int.Parse(rawId))!;
-                }
-                catch (HealthRecordNotFoundException ex)
-                {
-                    PrintError(ex.Message);
-                    Pause();
-                    return;
-                }
-
+                existing = _healthRecordService.GetRecordById(int.Parse(rawId))!;
                 // Show current record before editing
                 Console.WriteLine("\n  Current Record:");
                 Console.WriteLine("  " + new string('─', 55));
@@ -264,10 +248,7 @@ namespace HealthApp.ConsoleApp.Menus
 
                 Console.WriteLine("  " + new string('─', 55));
             }
-            catch (PatientNotFoundException ex) { PrintError(ex.Message); }
-            catch (DoctorNotFoundException ex) { PrintError(ex.Message); }
-            catch (HealthRecordNotFoundException ex) { PrintError(ex.Message); }
-            catch(Exception ex){PrintError(ex.Message);}
+            catch (Exception ex) { PrintError(ex.Message); }
 
             static void PrintError(string m)
             {
@@ -293,11 +274,7 @@ namespace HealthApp.ConsoleApp.Menus
                 Console.WriteLine($"  {record!.GetSummary()}");
                 Console.WriteLine("  " + new string('─', 55));
             }
-            catch (HealthRecordNotFoundException ex)
-            {
-                PrintError(ex.Message);
-            }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 PrintError(ex.Message);
             }
@@ -305,7 +282,7 @@ namespace HealthApp.ConsoleApp.Menus
         // Helpers
         private static void PrintHeader(string title)
         {
-             
+
             Console.WriteLine($"\n  ╔══════════════════════════════════════════════════╗");
             Console.WriteLine($"  ║  {title,-48}║");
             Console.WriteLine($"  ╚══════════════════════════════════════════════════╝");

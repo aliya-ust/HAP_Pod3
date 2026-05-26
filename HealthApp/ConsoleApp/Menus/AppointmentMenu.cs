@@ -62,15 +62,8 @@ namespace HealthApp.ConsoleApp.Menus
                     "  Please enter a valid positive number.")!;
 
                 var patient = _patientService.GetPatientById(int.Parse(rawPatient));
-                if (patient == null)
-                {
-                    PrintError($"No patient found with ID {rawPatient}.");
-                    Pause();
-                    return;
-                }
-
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine($"\n     Patient : {patient.Name}");
+                Console.WriteLine($"\n     Patient : {patient?.Name}");
                 Console.ResetColor();
 
                 // Display all doctors for selection
@@ -92,8 +85,7 @@ namespace HealthApp.ConsoleApp.Menus
                         "  Please enter a valid positive number.")!;
 
                     doctor = _doctorService.GetDoctorById(int.Parse(rawDoctor));
-                    if (doctor == null) { PrintError("Doctor not found. Try again."); continue; }
-                    if (!doctor.IsActive) { PrintError($"Dr. {doctor.Name} is inactive."); continue; }
+                    if (!doctor!.IsActive) { PrintError($"Dr. {doctor.Name} is inactive."); continue; }
 
                     Console.ForegroundColor = ConsoleColor.Green;
                     Console.WriteLine($"\n     Doctor : {doctor.Name}  ({doctor.Specialisation})");
@@ -105,7 +97,7 @@ namespace HealthApp.ConsoleApp.Menus
                 Console.WriteLine("\n  AVAILABLE DAYS");
                 Console.WriteLine("  " + new string('─', 30));
                 for (int i = 0; i < doctor.AvailableDates.Count; i++)
-                    Console.WriteLine($"    {i + 1}.  {doctor.AvailableDates[i]:dd/MM/yyyy  ddd}");
+                    Console.WriteLine($"    {i + 1}.  {doctor.AvailableDates[i]:dd/MM/yyyy}");
                 Console.WriteLine("  " + new string('─', 30));
 
                 // Get and validate appointment date
@@ -168,7 +160,7 @@ namespace HealthApp.ConsoleApp.Menus
                 Console.WriteLine("\n  " + new string('─', 40));
                 Console.WriteLine("  BOOKING SUMMARY");
                 Console.WriteLine("  " + new string('─', 40));
-                Console.WriteLine($"  Patient : {patient.Name}");
+                Console.WriteLine($"  Patient : {patient?.Name}");
                 Console.WriteLine($"  Doctor  : {doctor.Name}  ({doctor.Specialisation})");
                 Console.WriteLine($"  Date    : {selectedDate:dd/MM/yyyy}");
                 Console.WriteLine($"  Slot    : {selectedSlot}");
@@ -184,7 +176,7 @@ namespace HealthApp.ConsoleApp.Menus
 
                 // Save the appointment
                 var appt = _appointmentService.BookAppointment(
-                    patient, doctor, selectedDate, selectedSlot);
+                    patient!, doctor, selectedDate, selectedSlot);
 
                 PrintSuccess("Appointment booked successfully!");
                 Console.WriteLine($"\n{appt}");
@@ -217,14 +209,6 @@ namespace HealthApp.ConsoleApp.Menus
                     "  Please enter a valid positive number.")!;
 
                 var appointments = _appointmentService.GetAppointmentsByPatientId(int.Parse(raw));
-
-                if (appointments.Count == 0)
-                {
-                    PrintError($"No appointments found for patient ID {raw}.");
-                    Pause();
-                    return;
-                }
-
                 Console.WriteLine($"\n  {appointments.Count} appointment(s) found:\n");
 
                 foreach (var appt in appointments)
@@ -310,15 +294,10 @@ namespace HealthApp.ConsoleApp.Menus
             {
                 Console.WriteLine("\n  Returning to menu...");
             }
-            catch (AppointmentNotFoundException ex)
-            {
-                PrintError(ex.Message);
-            }
             catch (Exception ex)
             {
                 PrintError(ex.Message);
             }
-
             Pause();
         }
 
