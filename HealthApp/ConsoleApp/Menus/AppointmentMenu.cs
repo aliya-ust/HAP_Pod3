@@ -230,7 +230,7 @@ namespace HealthApp.ConsoleApp.Menus
                 foreach (var appt in appointments)
                 {
                     Console.WriteLine("  " + new string('─', 50));
-                    Console.WriteLine(appt);
+                    Console.WriteLine(appt.GetDetails());
                 }
 
                 Console.WriteLine("  " + new string('─', 50));
@@ -238,6 +238,10 @@ namespace HealthApp.ConsoleApp.Menus
             catch (OperationCanceledException)
             {
                 Console.WriteLine("\n  Returning to menu...");
+            }
+            catch(Exception ex)
+            {
+                PrintError(ex.Message);
             }
 
             Pause();
@@ -291,7 +295,7 @@ namespace HealthApp.ConsoleApp.Menus
                     // Get cancellation reason
                     string reason = InputValidator.GetValidatedInput(
                         "  Reason for cancellation : ",
-                        InputValidator.IsNonEmpty,
+                        InputValidator.IsValidCancellationReason,
                         "  Reason cannot be empty.")!;
 
                     _appointmentService.CancelAppointment(appointment.AppointmentId, reason);

@@ -24,16 +24,17 @@ namespace HealthApp.ConsoleApp.Menus
             while (true)
             {
                 Console.Clear();
-                Console.WriteLine("  ╔══════════════════════════════╗");
-                Console.WriteLine("  ║         DOCTOR MENU          ║");
-                Console.WriteLine("  ╠══════════════════════════════╣");
-                Console.WriteLine("  ║  1.  Add Doctor              ║");
-                Console.WriteLine("  ║  2.  Search by Specialisation║");
-                Console.WriteLine("  ║  3.  Get Doctor by ID        ║");
-                Console.WriteLine("  ║  4.  View All Doctors        ║");
-                Console.WriteLine("  ║  5.  Update Doctor           ║");
-                Console.WriteLine("  ║  6.  Back                    ║");
-                Console.WriteLine("  ╚══════════════════════════════╝");
+                Console.WriteLine("  ╔══════════════════════════════════╗");
+                Console.WriteLine("  ║         DOCTOR MENU              ║");
+                Console.WriteLine("  ╠══════════════════════════════════╣");
+                Console.WriteLine("  ║  1.  Add Doctor                  ║");
+                Console.WriteLine("  ║  2.  Search by Specialisation    ║");
+                Console.WriteLine("  ║  3.  Get Doctor by ID            ║");
+                Console.WriteLine("  ║  4.  View All Doctors            ║");
+                Console.WriteLine("  ║  5.  Update Doctor               ║");
+                Console.WriteLine("  ║  6.  View Appointments by Doctor ║");
+                Console.WriteLine("  ║  7.  Back                        ║");
+                Console.WriteLine("  ╚══════════════════════════════════╝");
                 Console.Write("\n  Choose an option : ");
 
                 switch (Console.ReadLine()?.Trim() ?? "")
@@ -43,7 +44,8 @@ namespace HealthApp.ConsoleApp.Menus
                     case "3": GetDoctorById(); break;
                     case "4": ViewAllDoctors(); break;
                     case "5": UpdateDoctor(); break;
-                    case "6": return;
+                    case "6": GetAppointmentsByDoctorId(); break;
+                    case "7": return;
                     default:
                         PrintError("Invalid choice.");
                         Thread.Sleep(800);
@@ -440,6 +442,10 @@ namespace HealthApp.ConsoleApp.Menus
             {
                 Console.WriteLine("\n  Returning to menu...");
             }
+            catch (Exception ex)
+            {
+                PrintError(ex.Message);
+            }
 
             Pause();
         }
@@ -471,6 +477,80 @@ namespace HealthApp.ConsoleApp.Menus
             Pause();
         }
 
+        // Fetch and display all appointments for a specific doctor
+        public void GetAppointmentsByDoctorId()
+        {
+            try
+            {
+                Console.Clear();
+                PrintHeader("APPOINTMENTS BY DOCTOR");
+                Console.WriteLine("  Type 'q' or 'back' to return.\n");
+
+                // Get and validate doctor ID
+                string raw = InputValidator.GetValidatedInput(
+                    "  Enter Doctor ID : ",
+                    InputValidator.IsValidId,
+                    "  Please enter a valid positive number.")!;
+
+                int doctorId = int.Parse(raw);
+
+                // Verify doctor exists before fetching appointments
+                var doctor = _doctorService.GetDoctorById(doctorId);
+                if (doctor == null)
+                {
+                    PrintError($"No doctor found with ID {doctorId}.");
+                    Pause();
+                    return;
+                }
+
+                Console.WriteLine($"\n  Dr. {doctor.Name}  —  {doctor.Specialisation}\n");
+
+                // Fetch all appointments for this doctor
+                var appointments = _appointmentService.GetAppointmentsByDoctorId(doctorId);
+
+                if (appointments.Count == 0)
+                {
+                    PrintError("No appointments found for this doctor.");
+                    Pause();
+                    return;
+                }
+
+                Console.WriteLine($"  {appointments.Count} appointment(s) found:\n");
+
+                // Group by status for better readability
+                foreach (var status in new[] {
+            AppointmentStatus.Confirmed,
+            AppointmentStatus.Pending,
+            AppointmentStatus.Completed,
+            AppointmentStatus.Cancelled })
+                {
+                    var group = appointments.Where(a => a.Status == status).ToList();
+                    if (group.Count == 0) continue;
+                    Console.WriteLine($"  ── {status} ({group.Count}) ──────────────────────");
+                    foreach (var appt in group)
+                    {
+                        Console.WriteLine($"  [{appt.AppointmentId}]  " +
+                                          $"{appt.Patient.Name,-15}  |  " +
+                                          $"{appt.ScheduledDate:dd/MM/yyyy}  |  " +
+                                          $"{appt.TimeSlot}");
+                    }
+
+                    Console.WriteLine();
+                }
+
+                Console.WriteLine("  " + new string('─', 50));
+            }
+            catch (OperationCanceledException)
+            {
+                Console.WriteLine("\n  Returning to menu...");
+            }
+            catch (Exception ex)
+            {
+                PrintError(ex.Message);
+            }
+
+            Pause();
+        }
         //  Helpers 
 
         private static void PrintHeader(string title)

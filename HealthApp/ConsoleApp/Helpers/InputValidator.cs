@@ -109,17 +109,36 @@ namespace HealthApp.ConsoleApp.Helpers
             while (true)
             {
                 Console.Write(prompt);
-                var input = Console.ReadLine();
+                var input = Console.ReadLine()?.Trim();
 
                 if (input?.ToLower() == "q" || input?.ToLower() == "back")
                     throw new OperationCanceledException();
 
-                if (Enum.TryParse<GenderType>(input, true, out var gender))
-                    return gender;
+                if (Enum.GetNames(typeof(GenderType))
+                        .Any(n => n.Equals(input, StringComparison.OrdinalIgnoreCase)))
+                {
+                    return Enum.Parse<GenderType>(input!, true);
+                }
 
                 Console.WriteLine("Invalid gender.");
             }
         }
+        public static bool IsValidText(string input) =>
+            !string.IsNullOrWhiteSpace(input) &&
+            input.Length >= 5 &&
+            input.Any(char.IsLetter);
+
+        public static bool IsValidCancellationReason(string input) =>
+            IsValidText(input);
+
+        public static bool IsValidDiagnosis(string input) =>
+            IsValidText(input);
+
+        public static bool IsValidPrescription(string input) =>
+            IsValidText(input);
+
+        public static bool IsValidDoctorNotes(string input) =>
+            IsValidText(input);
         //Validates all the input fields for doctor and patient details.
         public static bool IsValidName(string input) =>
         !string.IsNullOrWhiteSpace(input) && !input.Any(char.IsDigit);
@@ -140,11 +159,12 @@ namespace HealthApp.ConsoleApp.Helpers
 
         //Assuming insurance ID is a non-negative integer. Adjust validation as needed based on actual format.
         public static bool IsValidInsuranceId(string input) =>
-            int.TryParse(input, out int id) && id >= 0;
+             !string.IsNullOrWhiteSpace(input) &&
+             Regex.IsMatch(input, @"^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]+$");
 
         //Assuming experience is a non-negative integer representing years of experience. Adjust validation as needed based on actual requirements.
         public static bool IsValidExperience(string input) =>
-            int.TryParse(input, out int val) && val >= 0;
+            int.TryParse(input, out int val) && val >= 0 && val <= 50;
 
         //Assuming fee is a non-negative decimal value. Adjust validation as needed based on actual requirements.
         public static bool IsValidFee(string input) =>
@@ -152,7 +172,7 @@ namespace HealthApp.ConsoleApp.Helpers
 
         //Assuming IDs are positive integers. Adjust validation as needed based on actual format.
         public static bool IsValidId(string input) =>
-            int.TryParse(input, out int id) && id > 0;
+            int.TryParse(input, out int id) && id > 0 && id <= 999;
 
         // Validates that the input is not null, empty, or whitespace.
         public static bool IsNonEmpty(string input) =>

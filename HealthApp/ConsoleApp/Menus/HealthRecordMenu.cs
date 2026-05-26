@@ -77,19 +77,19 @@ namespace HealthApp.ConsoleApp.Menus
                 // Get diagnosis
                 string diagnosis = InputValidator.GetValidatedInput(
                     "  Diagnosis    : ",
-                    InputValidator.IsNonEmpty,
+                    InputValidator.IsValidDiagnosis,
                     "  Diagnosis cannot be empty.")!;
 
                 // Get prescription
                 string prescription = InputValidator.GetValidatedInput(
                     "  Prescription : ",
-                    InputValidator.IsNonEmpty,
+                    InputValidator.IsValidPrescription,
                     "  Prescription cannot be empty.")!;
 
                 // Get doctor notes
                 string doctorNotes = InputValidator.GetValidatedInput(
                     "  Doctor Notes : ",
-                    InputValidator.IsNonEmpty,
+                    InputValidator.IsValidDoctorNotes,
                     "  Doctor notes cannot be empty.")!;
 
                 // Build and persist the health record
@@ -200,17 +200,17 @@ namespace HealthApp.ConsoleApp.Menus
 
                 string? newDiagnosis = InputValidator.GetValidatedInput(
                     "  Diagnosis    : ",
-                    InputValidator.IsNonEmpty,
+                    InputValidator.IsValidDiagnosis,
                     "  Invalid input.", allowEmpty: true);
 
                 string? newPrescription = InputValidator.GetValidatedInput(
                     "  Prescription : ",
-                    InputValidator.IsNonEmpty,
+                    InputValidator.IsValidPrescription,
                     "  Invalid input.", allowEmpty: true);
 
                 string? newNotes = InputValidator.GetValidatedInput(
                     "  Doctor Notes : ",
-                    InputValidator.IsNonEmpty,
+                    InputValidator.IsValidDoctorNotes,
                     "  Invalid input.", allowEmpty: true);
 
                 // Build updated record — fall back to existing values where unchanged
@@ -267,6 +267,7 @@ namespace HealthApp.ConsoleApp.Menus
             catch (PatientNotFoundException ex) { PrintError(ex.Message); }
             catch (DoctorNotFoundException ex) { PrintError(ex.Message); }
             catch (HealthRecordNotFoundException ex) { PrintError(ex.Message); }
+            catch(Exception ex){PrintError(ex.Message);}
 
             static void PrintError(string m)
             {
@@ -293,6 +294,10 @@ namespace HealthApp.ConsoleApp.Menus
                 Console.WriteLine("  " + new string('─', 55));
             }
             catch (HealthRecordNotFoundException ex)
+            {
+                PrintError(ex.Message);
+            }
+            catch(Exception ex)
             {
                 PrintError(ex.Message);
             }

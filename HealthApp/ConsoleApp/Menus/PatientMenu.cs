@@ -176,6 +176,10 @@ namespace HealthApp.ConsoleApp.Menus
             {
                 Console.WriteLine("\n  Returning to menu...");
             }
+            catch(Exception ex)
+            {
+                PrintError(ex.Message);
+            }
 
             Pause();
         }
@@ -188,69 +192,70 @@ namespace HealthApp.ConsoleApp.Menus
                 Console.Clear();
                 PrintHeader("UPDATE PATIENT");
                 Console.WriteLine("  Type 'q' or 'back' anytime to return.\n");
-
+ 
                 // Get validated patient ID
                 string rawId = InputValidator.GetValidatedInput(
                     "  Enter Patient ID : ",
                     InputValidator.IsValidId,
                     "  Please enter a valid positive number.")!;
-
+ 
                 var patient = _patientService.GetPatientById(int.Parse(rawId));
-
+ 
                 if (patient == null)
                 {
                     PrintError($"No patient found with ID {rawId}.");
                     Pause();
                     return;
                 }
-
+ 
                 Console.WriteLine("\n  Current Details:");
-                Console.WriteLine("  " + new string('─', 55));
+                Console.WriteLine("  " + new string('─', 70));
                 Console.WriteLine($"  {patient.GetProfileSummary()}");
-                Console.WriteLine("  " + new string('─', 55));
-                Console.WriteLine("\n  Enter new details below:\n");
-
+                Console.WriteLine("  " + new string('─', 70));
+                Console.WriteLine("\n  Enter new details below (Press ENTER to keep existing value):\n");
+ 
                 // Get each updated field with validation
                 string name = InputValidator.GetValidatedInput(
-                    "  Full Name              : ",
+                    "  Full Name             : ",
                     InputValidator.IsValidName,
-                    "  Name cannot be empty or contain numbers.")!;
-
-                DateTime dob;
-                while (true)
+                    "  Name cannot be empty or contain numbers.",
+                    allowEmpty: true)!;
+ 
+                DateTime? dob = InputValidator.GetOptionalDate("  Date of Birth (dd/MM/yyyy) : ");
+                if (dob < DateTime.Today)
                 {
-                    dob = InputValidator.GetValidDate("  Date of Birth (dd/MM/yyyy) : ");
-                    if (dob.Date < DateTime.Today) break;
                     PrintError("Date of birth cannot be today or in the future.");
                 }
-
-                GenderType gender = InputValidator.GetValidGender(
+ 
+                GenderType? gender = InputValidator.GetOptionalGender(
                     "  Gender (Male/Female/Other) : ");
-
+ 
                 string phone = InputValidator.GetValidatedInput(
                     "  Phone Number           : ",
                     InputValidator.IsValidPhone,
-                    "  Must be 10 digits starting with 6-9.")!;
-
+                    "  Must be 10 digits starting with 6-9.",
+                    allowEmpty: true)!;
+ 
                 string email = InputValidator.GetValidatedInput(
                     "  Email                  : ",
                     InputValidator.IsValidEmail,
-                    "  Invalid email. Example: john@email.com")!;
-
+                    "  Invalid email. Example: john@email.com",
+                    allowEmpty: true)!;
+ 
                 string? insurance = InputValidator.GetValidatedInput(
                     "  Insurance ID (optional) : ",
                     InputValidator.IsValidInsuranceId,
                     "  Must be a positive number.",
                     allowEmpty: true);
-
+ 
                 // Apply all updates to the patient object
-                patient.Name = name;
-                patient.Dob = dob;
-                patient.Gender = gender;
-                patient.PhoneNumber = phone;
-                patient.Email = email;
-                patient.InsuranceId = insurance ?? "";
-
+                patient.Name = name ?? patient.Name;
+                patient.Dob = dob ?? patient.Dob;
+                patient.Gender = gender ?? patient.Gender;
+                patient.PhoneNumber = phone ?? patient.PhoneNumber;
+                patient.Email = email ?? patient.Email;
+                patient.InsuranceId = insurance ?? patient.InsuranceId;
+ 
                 PrintSuccess("Patient Updated Successfully!");
                 Console.WriteLine($"\n  {patient.GetProfileSummary()}");
             }
@@ -262,10 +267,9 @@ namespace HealthApp.ConsoleApp.Menus
             {
                 PrintError(ex.Message);
             }
-
+ 
             Pause();
         }
-
         //  Helpers
 
         private static void PrintHeader(string title)
