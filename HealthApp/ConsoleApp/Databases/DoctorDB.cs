@@ -9,6 +9,8 @@ namespace HealthApp.ConsoleApp.Databases
         {
             Doctors = new List<Doctor>
             {
+                // Pre-populated doctors with available slots and dates
+                //DoctorId starts from 201 to avoid conflict with test data
                 new Doctor
                 {
                     DoctorId = 201,
@@ -56,7 +58,7 @@ namespace HealthApp.ConsoleApp.Databases
                         DateTime.Today.AddDays(3)
                     }
                 },
-
+                //Doctor with no available slots
                 new Doctor
                 {
                     DoctorId = 203,
