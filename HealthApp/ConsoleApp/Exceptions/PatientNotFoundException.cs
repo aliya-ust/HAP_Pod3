@@ -4,7 +4,7 @@ namespace HealthApp.ConsoleApp.Exceptions
     {
         public PatientNotFoundException(string message) : base(message)
         {
-            
+            Console.WriteLine("Patient not found: " + message);
         }
     }
 }

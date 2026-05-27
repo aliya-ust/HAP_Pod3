@@ -6,6 +6,7 @@ namespace HealthApp.ConsoleApp.Exceptions
     {
         public SpecialisationNotFoundException(string message) : base(message)
         {
+            Console.WriteLine("Specialisation not found: " + message);
         }
     }
 }

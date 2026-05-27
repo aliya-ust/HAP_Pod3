@@ -8,6 +8,7 @@ using HealthApp.ConsoleApp.Exceptions;
 
 namespace HealthApp.Tests.Repositories
 {
+    // Test class for DoctorRepository to validate doctor management functionalities
     public class DoctorRepositoryTests
     {
         private readonly DoctorDb _doctorDb;

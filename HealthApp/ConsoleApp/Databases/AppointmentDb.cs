@@ -6,16 +6,13 @@ namespace HealthApp.ConsoleApp.Databases
         PatientDb patientDb = new();
         DoctorDb doctorDb = new();
 
-        public List<Appointment> Appointments;
+        public List<Appointment> Appointments; //AppointmentId starts from 301 to avoid conflict with test data
 
         public AppointmentDb()
         {
             Appointments = new List<Appointment>
             {
-                // ============================================
                 // CONFIRMED
-                // ============================================
-
                 new Appointment
                 {
                     AppointmentId = 301,
@@ -32,11 +29,7 @@ namespace HealthApp.ConsoleApp.Databases
 
                     Status = AppointmentStatus.Confirmed
                 },
-
-                // ============================================
                 // PENDING
-                // ============================================
-
                 new Appointment
                 {
                     AppointmentId = 302,
@@ -53,11 +46,7 @@ namespace HealthApp.ConsoleApp.Databases
 
                     Status = AppointmentStatus.Pending
                 },
-
-                // ============================================
                 // COMPLETED
-                // ============================================
-
                 new Appointment
                 {
                     AppointmentId = 303,
@@ -74,11 +63,7 @@ namespace HealthApp.ConsoleApp.Databases
 
                     Status = AppointmentStatus.Completed
                 },
-
-                // ============================================
                 // CANCELLED
-                // ============================================
-
                 new Appointment
                 {
                     AppointmentId = 304,
@@ -98,11 +83,7 @@ namespace HealthApp.ConsoleApp.Databases
                     CancellationReason =
                         "Patient unavailable"
                 },
-
-                // ============================================
                 // SLOT CONFLICT TEST
-                // ============================================
-
                 new Appointment
                 {
                     AppointmentId = 305,
@@ -119,11 +100,7 @@ namespace HealthApp.ConsoleApp.Databases
 
                     Status = AppointmentStatus.Confirmed
                 },
-
-                // ============================================
                 // SAME DOCTOR DIFFERENT SLOT
-                // ============================================
-
                 new Appointment
                 {
                     AppointmentId = 306,

@@ -4,7 +4,7 @@ namespace HealthApp.ConsoleApp.Exceptions
     {
         public PastDateException(string message) : base(message)
         {
-            
+            Console.WriteLine("Invalid date: " + message);
         }
     }
 }

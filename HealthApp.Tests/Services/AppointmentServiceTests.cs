@@ -9,6 +9,7 @@ using HealthApp.ConsoleApp.Exceptions;
 
 namespace HealthApp.Tests.Services
 {
+    // Test class for AppointmentService to validate appointment management functionalities
     public class AppointmentServiceTests
     {
         private readonly Mock<IAppointmentRepository> _mockRepo;
@@ -19,7 +20,7 @@ namespace HealthApp.Tests.Services
             _mockRepo = new Mock<IAppointmentRepository>();
             _service = new AppointmentService(_mockRepo.Object);
         }
-
+        // MockDoctor class to simulate doctor availability for testing
         public bool IsAvailableOverride { get; set; } = true;
 
         public bool IsAvailable(DateTime date)
