@@ -61,6 +61,17 @@ namespace HealthApp.ConsoleApp.Services
         {
             return _patientRepo.GetAllPatients();
         }
+         public List<Patient> GetPatientByName(string name)
+        {
+            var result = _patientRepo.GetPatientByName(name);
+
+            if (result == null || result.Count == 0)
+            {
+                throw new PatientNotFoundException($"Patient with name {name} does not exist");
+            }
+
+            return result;
+        }
 
     }
 }

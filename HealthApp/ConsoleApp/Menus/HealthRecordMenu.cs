@@ -24,7 +24,7 @@ namespace HealthApp.ConsoleApp.Menus
             try
             {
                 Console.Clear();
-                PrintHeader("ADD HEALTH RECORD");
+                ConsoleHelper.PrintHeader("ADD HEALTH RECORD");
                 Console.WriteLine("  Type 'q' or 'back' to return.\n");
 
                 // Show all completed appointments to help user find the right ID
@@ -33,9 +33,9 @@ namespace HealthApp.ConsoleApp.Menus
 
                 if (allCompleted.Count == 0)
                 {
-                    PrintError("No completed appointments found.");
+                    ConsoleHelper.PrintError("No completed appointments found.");
                     Console.WriteLine("  Use option 6 → Mark as Completed first.");
-                    Pause();
+                    ConsoleHelper.Pause();
                     return;
                 }
 
@@ -58,9 +58,9 @@ namespace HealthApp.ConsoleApp.Menus
                 // Validate the appointment is actually completed
                 if (appointment.Status != AppointmentStatus.Completed)
                 {
-                    PrintError($"Appointment {rawId} status is '{appointment.Status}'.");
+                    ConsoleHelper.PrintError($"Appointment {rawId} status is '{appointment.Status}'.");
                     Console.WriteLine("  Use option 6 → Mark as Completed before adding a record.");
-                    Pause();
+                    ConsoleHelper.Pause();
                     return;
                 }
 
@@ -94,7 +94,7 @@ namespace HealthApp.ConsoleApp.Menus
                 };
 
                 string result = _healthRecordService.AddHealthRecord(record);
-                PrintSuccess(result);
+                ConsoleHelper.PrintSuccess(result);
             }
             catch (OperationCanceledException)
             {
@@ -102,10 +102,10 @@ namespace HealthApp.ConsoleApp.Menus
             }
             catch (Exception ex)
             {
-                PrintError(ex.Message);
+                ConsoleHelper.PrintError(ex.Message);
             }
 
-            Pause();
+            ConsoleHelper.Pause();
         }
 
         // View health records by patient, doctor, or record ID
@@ -114,7 +114,7 @@ namespace HealthApp.ConsoleApp.Menus
             try
             {
                 Console.Clear();
-                PrintHeader("VIEW HEALTH RECORDS");
+                ConsoleHelper.PrintHeader("VIEW HEALTH RECORDS");
                 Console.WriteLine("  Type 'q' or 'back' to return.\n");
                 Console.WriteLine("  ╔══════════════════════════════╗");
                 Console.WriteLine("  ║  1.  By Patient ID           ║");
@@ -138,7 +138,7 @@ namespace HealthApp.ConsoleApp.Menus
                     case "4":
                         return;
                     default:
-                        PrintError("Invalid choice.");
+                        ConsoleHelper.PrintError("Invalid choice.");
                         break;
                 }
             }
@@ -148,10 +148,10 @@ namespace HealthApp.ConsoleApp.Menus
             }
             catch (Exception ex)
             {
-                PrintError(ex.Message);
+                ConsoleHelper.PrintError(ex.Message);
             }
 
-            Pause();
+            ConsoleHelper.Pause();
         }
 
         // Update an existing health record keeping old values where not changed
@@ -160,7 +160,7 @@ namespace HealthApp.ConsoleApp.Menus
             try
             {
                 Console.Clear();
-                PrintHeader("UPDATE HEALTH RECORD");
+                ConsoleHelper.PrintHeader("UPDATE HEALTH RECORD");
                 Console.WriteLine("  Type 'q' or 'back' to return.\n");
 
                 // Get and validate record ID
@@ -210,7 +210,7 @@ namespace HealthApp.ConsoleApp.Menus
                 };
 
                 var result = _healthRecordService.UpdateHealthRecord(updated);
-                PrintSuccess("Record updated successfully!");
+                ConsoleHelper.PrintSuccess("Record updated successfully!");
                 Console.WriteLine($"  {result.GetSummary()}");
             }
             catch (OperationCanceledException)
@@ -219,10 +219,10 @@ namespace HealthApp.ConsoleApp.Menus
             }
             catch (Exception ex)
             {
-                PrintError(ex.Message);
+                ConsoleHelper.PrintError(ex.Message);
             }
 
-            Pause();
+            ConsoleHelper.Pause();
         }
 
 
@@ -248,14 +248,9 @@ namespace HealthApp.ConsoleApp.Menus
 
                 Console.WriteLine("  " + new string('─', 55));
             }
-            catch (Exception ex) { PrintError(ex.Message); }
+            catch (Exception ex) { ConsoleHelper.PrintError(ex.Message); }
 
-            static void PrintError(string m)
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine($"\n {m}");
-                Console.ResetColor();
-            }
+
         }
 
         // Fetch and display a single record by record ID
@@ -276,40 +271,8 @@ namespace HealthApp.ConsoleApp.Menus
             }
             catch (Exception ex)
             {
-                PrintError(ex.Message);
+                ConsoleHelper.PrintError(ex.Message);
             }
-        }
-        // Helpers
-        private static void PrintHeader(string title)
-        {
-
-            Console.WriteLine($"\n  ╔══════════════════════════════════════════════════╗");
-            Console.WriteLine($"  ║  {title,-48}║");
-            Console.WriteLine($"  ╚══════════════════════════════════════════════════╝");
-            Console.ResetColor();
-            Console.WriteLine();
-        }
-
-        private static void PrintSuccess(string msg)
-        {
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine($"\n{msg}");
-            Console.ResetColor();
-        }
-
-        private static void PrintError(string msg)
-        {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine($"\n{msg}");
-            Console.ResetColor();
-        }
-
-        private static void Pause()
-        {
-            Console.ForegroundColor = ConsoleColor.DarkGray;
-            Console.WriteLine("\n  Press any key to continue...");
-            Console.ResetColor();
-            Console.ReadKey(intercept: true);
         }
     }
 }

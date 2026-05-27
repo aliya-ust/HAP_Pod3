@@ -9,5 +9,6 @@ namespace HealthApp.ConsoleApp.Interfaces
         Patient UpdatePatient(Patient existingPatient, Patient patient);
         Patient? GetPatientById(int id);
         List<Patient> GetAllPatients();
+        List<Patient> GetPatientByName(string name);
     }
 }

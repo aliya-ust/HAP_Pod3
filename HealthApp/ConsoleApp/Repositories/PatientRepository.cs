@@ -46,5 +46,11 @@ namespace HealthApp.ConsoleApp.Repositories
         {
             return _patientsDb.Patients.FirstOrDefault(p => p.PatientId == id);
         }
+        public List<Patient> GetPatientByName(string name)
+        {
+            return _patientsDb.Patients
+                .Where(d => d.Name.Contains(name, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+        }
     }
 }

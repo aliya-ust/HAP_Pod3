@@ -18,49 +18,31 @@ namespace HealthApp.ConsoleApp.Models
 
         public List<DateTime> AvailableDates { get; set; } = new List<DateTime>();
 
-        //Availability method
+        // Check if doctor is available based on leaves
         public virtual bool IsAvailable(DateTime date)
         {
-            if (!IsActive)
-            {
-                return false;
-            }
-
-            int count = AvailableDates.Count(d => d.Date == date.Date);
-
-            if (count >= 8)
-            {
-                return false;
-            }
-
-            return true;
+            return IsActive && AvailableDates.Any(d => d.Date == date.Date);
         }
 
-        //Upcoming count
-        public string GetScheduleSummary()
+        // Count of upcoming confirmed appointments for this doctor
+        public string GetScheduleSummary(List<Appointment> appointments)
         {
-            int count = AvailableDates.Count(d => d.Date >= DateTime.Today);
+            int count = appointments.Count(a =>
+                a.Doctor.DoctorId == DoctorId &&
+                a.ScheduledDate.Date >= DateTime.Today &&
+                a.Status == AppointmentStatus.Confirmed
+            );
 
             if (count == 0)
             {
-                return "No available slots";
+                return $"Dr. {Name} has no upcoming confirmed appointments.";
             }
 
-            return $"Available slots count: {count}";
+            return $"Dr. {Name} has {count} upcoming confirmed appointments.";
         }
-
-        //Upcoming list
-        public List<DateTime> GetUpcomingAppointments()
+        public override string ToString()
         {
-            return AvailableDates
-                .Where(d => d.Date >= DateTime.Today)
-                .OrderBy(d => d)
-                .ToList();
-        }
-
-        public string GetDoctorDetails()
-        {
-            return $"Doctor ID: {DoctorId}, Full Name: {Name}, Specialisation: {Specialisation}, Experience: {YearsOfExperience} years, Consultation Fee: Rs. {ConsultationFee}, Active: {(IsActive ? "Yes" : "No")}";
+            return $"Doctor ID: {DoctorId} \nFull Name: {Name} \nSpecialisation: {Specialisation} \nExperience: {YearsOfExperience} years \nConsultation Fee: Rs. {ConsultationFee} \nActive Status: {(IsActive ? "Yes" : "No")}";
         }
     }
 }
