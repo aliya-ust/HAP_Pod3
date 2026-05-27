@@ -28,20 +28,42 @@ namespace HealthApp.ConsoleApp.Menus
                 Console.WriteLine("  Type 'q' or 'back' to return.\n");
 
                 // Show all completed appointments to help user find the right ID
-                var allCompleted = _appointmentService.GetAllAppointments()
-                    .Where(a => a.Status == AppointmentStatus.Completed).ToList();
-
-                if (allCompleted.Count == 0)
+                var completedAppointments = _appointmentService.GetAllAppointments()
+                    .Where(a => a.Status == AppointmentStatus.Completed)
+                    .ToList();
+ 
+                List<HealthRecord> healthRecords;
+ 
+                try
+                {
+                    healthRecords = _healthRecordService.GetAllHealthRecords().ToList();
+                }
+                catch
+                {
+                    // No records → treat as empty list
+                    healthRecords = new List<HealthRecord>();
+                }
+ 
+                // Extract appointment IDs
+                var existingAppointmentIds = healthRecords
+                    .Select(hr => hr.AppointmentId)
+                    .ToHashSet();
+ 
+                // Filter
+                var filteredAppointments = completedAppointments
+                    .Where(a => !existingAppointmentIds.Contains(a.AppointmentId))
+                    .ToList();
+ 
+                if (filteredAppointments.Count == 0)
                 {
                     ConsoleHelper.PrintError("No completed appointments found.");
                     Console.WriteLine("  Use option 6 → Mark as Completed first.");
                     ConsoleHelper.Pause();
                     return;
                 }
-
                 Console.WriteLine("  COMPLETED APPOINTMENTS");
                 Console.WriteLine("  " + new string('─', 60));
-                foreach (var a in allCompleted)
+                foreach (var a in filteredAppointments)
                     Console.WriteLine($"  [{a.AppointmentId}]  {a.Patient.Name}  →  " +
                                       $"Dr. {a.Doctor.Name}  |  {a.ScheduledDate:dd MMM yyyy}");
                 Console.WriteLine("  " + new string('─', 60) + "\n");
@@ -85,6 +107,7 @@ namespace HealthApp.ConsoleApp.Menus
                 // Build and persist the health record
                 var record = new HealthRecord
                 {
+                    AppointmentId = appointment.AppointmentId,
                     Patient = appointment.Patient,
                     Doctor = appointment.Doctor,
                     VisitDate = appointment.ScheduledDate,

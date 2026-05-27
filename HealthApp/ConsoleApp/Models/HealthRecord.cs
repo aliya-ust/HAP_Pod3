@@ -10,6 +10,7 @@ namespace HealthApp.ConsoleApp.Models
         public required string Diagnosis { get; set; }
         public required string Prescription { get; set; }
         public required string DoctorNotes { get; set; }
+        public int AppointmentId { get; set; }
 
         // Method to get a summary of the health record
         public string GetSummary()

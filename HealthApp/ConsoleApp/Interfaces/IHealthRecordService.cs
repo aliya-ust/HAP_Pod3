@@ -10,5 +10,7 @@ namespace HealthApp.ConsoleApp.Interfaces
         HealthRecord? GetRecordById(int recordId);
         List<HealthRecord> GetByPatientIdOrderByVisitDateDesc(int id);
         List<HealthRecord> GetByDoctorIdOrderByVisitDateDesc(int id);
+        List<HealthRecord> GetAllHealthRecords();
+
     }
 }
