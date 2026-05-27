@@ -3,27 +3,14 @@
 **/bin/
 **/obj/
 **/.sonarqube/
-<<<<<<< HEAD
-=======
 **/TestResults/
 **/coverage.xml/
 coverage.xml
 \ncoverage.xml\n
->>>>>>> 4d8a0e3f027eb90749388ec6177e69d6c9a087fb
 # Optional project-specific ignores
 *.user
 *.suo
 *.userosscache
 *.sln.docstates
 
-<<<<<<< HEAD
 *.lscache
-
-# Test coverage reports
-coverage.xml
-
-# .NET tool configuration
-dotnet-tools.json
-=======
-*.lscache
->>>>>>> 4d8a0e3f027eb90749388ec6177e69d6c9a087fb
