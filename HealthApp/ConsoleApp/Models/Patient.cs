@@ -4,19 +4,14 @@ namespace HealthApp.ConsoleApp.Models
     public class Patient
     {
         public int PatientId { get; set; }
-        public string Name { get; set; }
+        public required string Name { get; set; }=string.Empty;
         public DateTime Dob { get; set; }
         public GenderType Gender { get; set; }
-        public string PhoneNumber { get; set; }
-        public string Email { get; set; }
-        public string InsuranceId { get; set; }
-        public DateTime CreatedAt { get; set; }
+        public required string PhoneNumber { get; set; }=string.Empty;
+        public required string Email { get; set; }= string.Empty;
+        public string InsuranceId { get; set; } =string.Empty;
+        public DateTime? CreatedAt { get; set; } = DateTime.Now;
 
-        // Constructor to initialize CreatedAt
-        public Patient()
-        {
-            CreatedAt = DateTime.Now;
-        }
 
         // Method to calculate age based on Dob
         public int GetAge()

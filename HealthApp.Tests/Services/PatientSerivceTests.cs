@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Xunit;
-using Moq;
+﻿using Moq;
 using HealthApp.ConsoleApp.Services;
 using HealthApp.ConsoleApp.Interfaces;
 using HealthApp.ConsoleApp.Models;
@@ -27,7 +24,8 @@ namespace HealthApp.Tests.Services
                 PatientId = id,
                 Name = "Patient " + id,
                 PhoneNumber = "9999999999",
-                Email = "patient@test.com"
+                Email = "patient@test.com",
+                InsuranceId = "hugyt56"
             };
         }
 

@@ -38,7 +38,7 @@ namespace HealthApp.ConsoleApp.Services
             return _patientRepo.UpdatePatient(existingPatient, patient);
         }
 
-        public Patient? GetPatientById(int id)
+        public Patient GetPatientById(int id)
         {
             Patient? patient = _patientRepo.GetPatientById(id);
 

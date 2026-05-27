@@ -7,8 +7,8 @@ namespace HealthApp.ConsoleApp.Models
     public class Doctor
     {
         public int DoctorId { get; set; }
-        public required string Name { get; set; }
-        public required string Specialisation { get; set; }
+        public required string Name { get; set; }=string.Empty;
+        public required string Specialisation { get; set; } = string.Empty;
         public int YearsOfExperience { get; set; }
         public decimal ConsultationFee { get; set; }
         public bool IsActive { get; set; }

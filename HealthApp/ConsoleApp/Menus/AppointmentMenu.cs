@@ -295,7 +295,7 @@ namespace HealthApp.ConsoleApp.Menus
                     // Get cancellation reason
                     string reason = InputValidator.GetValidatedInput(
                         "  Reason for cancellation : ",
-                        InputValidator.IsNonEmpty,
+                        InputValidator.IsValidCancellationReason,
                         "  Reason cannot be empty.")!;
 
                     _appointmentService.CancelAppointment(appointment.AppointmentId, reason);

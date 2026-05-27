@@ -42,8 +42,8 @@ namespace HealthApp.ConsoleApp.Menus
                 Console.WriteLine("  COMPLETED APPOINTMENTS");
                 Console.WriteLine("  " + new string('─', 60));
                 foreach (var a in allCompleted)
-                    Console.WriteLine($"  [{a.AppointmentId}]  {a.Patient.Name}  →  " +
-                                      $"Dr. {a.Doctor.Name}  |  {a.ScheduledDate:dd MMM yyyy}");
+                    Console.WriteLine($"  [{a.AppointmentId}]  {a.Patient?.Name}   " +
+                                      $"Dr. {a.Doctor?.Name}  |  {a.ScheduledDate:dd MMM yyyy}");
                 Console.WriteLine("  " + new string('─', 60) + "\n");
 
                 // Get and validate appointment ID
@@ -77,20 +77,20 @@ namespace HealthApp.ConsoleApp.Menus
                 // Get diagnosis
                 string diagnosis = InputValidator.GetValidatedInput(
                     "  Diagnosis    : ",
-                    InputValidator.IsNonEmpty,
-                    "  Diagnosis cannot be empty.")!;
+                    InputValidator.IsValidDiagnosis,
+                    "  Diagnosis cannot be empty or only numbers.")!;
 
                 // Get prescription
                 string prescription = InputValidator.GetValidatedInput(
                     "  Prescription : ",
-                    InputValidator.IsNonEmpty,
-                    "  Prescription cannot be empty.")!;
+                    InputValidator.IsValidPrescription,
+                    "  Prescription cannot be empty or only numbers.")!;
 
                 // Get doctor notes
                 string doctorNotes = InputValidator.GetValidatedInput(
                     "  Doctor Notes : ",
-                    InputValidator.IsNonEmpty,
-                    "  Doctor notes cannot be empty.")!;
+                    InputValidator.IsValidDoctorNotes,
+                    "  Doctor notes cannot be empty or only numbers.")!;
 
                 // Build and persist the health record
                 var record = new HealthRecord

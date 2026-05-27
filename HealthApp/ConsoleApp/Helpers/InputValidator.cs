@@ -111,8 +111,11 @@ namespace HealthApp.ConsoleApp.Helpers
                 if (input?.ToLower() == "q")
                     throw new OperationCanceledException();
 
-                if (Enum.TryParse<GenderType>(input, true, out var gender))
-                    return gender;
+                if (Enum.GetNames(typeof(GenderType))
+                        .Any(n => n.Equals(input, StringComparison.OrdinalIgnoreCase)))
+                {
+                    return Enum.Parse<GenderType>(input!, true);
+                }
 
                 Console.WriteLine("Invalid gender.");
             }
@@ -133,12 +136,21 @@ namespace HealthApp.ConsoleApp.Helpers
             return Regex.IsMatch(input, pattern);
         }
 
+        public static bool IsValidPhone(string input)
+        {
+            string pattern = @"^[6-9]\d{9}$";
+            return Regex.IsMatch(input, pattern);
+        }
+
+
         public static bool IsValidInsuranceId(string input) =>
             !string.IsNullOrWhiteSpace(input) &&
             System.Text.RegularExpressions.Regex.IsMatch(input, @"^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]+$");
 
-        public static bool IsValidExperience(string input) =>
-            int.TryParse(input, out int val) && val >= 0;
+        public static bool IsValidExperience(string input)
+        {
+            return int.TryParse(input, out int val) && val >= 0 && val <= 50;
+        }
 
         public static bool IsValidFee(string input) =>
             decimal.TryParse(input, out decimal val) && val >= 0;
@@ -148,5 +160,22 @@ namespace HealthApp.ConsoleApp.Helpers
 
         public static bool IsNonEmpty(string input) =>
             !string.IsNullOrWhiteSpace(input);
+
+        public static bool IsValidText(string input) =>
+            !string.IsNullOrWhiteSpace(input) &&
+            input.Length >= 5 &&
+            input.Any(char.IsLetter);
+
+        public static bool IsValidCancellationReason(string input) =>
+            IsValidText(input);
+
+        public static bool IsValidDiagnosis(string input) =>
+            IsValidText(input);
+
+        public static bool IsValidPrescription(string input) =>
+            IsValidText(input);
+
+        public static bool IsValidDoctorNotes(string input) =>
+            IsValidText(input);
     }
 }

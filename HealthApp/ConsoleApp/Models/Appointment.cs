@@ -9,12 +9,12 @@ namespace HealthApp.ConsoleApp.Models
     {
         //  Properties
         public int AppointmentId { get; set; }
-        public Patient Patient { get; set; }
-        public Doctor Doctor { get; set; }
+        public Patient? Patient { get; set; }
+        public Doctor? Doctor { get; set; }
         public DateTime ScheduledDate { get; set; }
-        public string TimeSlot { get; set; }
+        public string TimeSlot { get; set; }=string.Empty;
         public AppointmentStatus Status { get; set; }
-        public string CancellationReason { get; set; }
+        public string CancellationReason { get; set; }= string.Empty;
 
 
         public Appointment()

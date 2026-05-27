@@ -71,13 +71,13 @@ namespace HealthApp.ConsoleApp.Menus
                 string spec = InputValidator.GetValidatedInput(
                     "  Specialisation         : ",
                     InputValidator.IsValidName,
-                    "  Specialisation cannot be empty.")!;
+                    "  Specialisation cannot be empty or only numbers.")!;
 
                 // Get validated years of experience
                 string yearsRaw = InputValidator.GetValidatedInput(
                     "  Years of Experience    : ",
                     InputValidator.IsValidExperience,
-                    "  Please enter a valid non-negative number.")!;
+                    "Experience must be between 0 and 50 years.")!;
 
                 // Get validated consultation fee
                 string feeRaw = InputValidator.GetValidatedInput(
@@ -244,7 +244,7 @@ namespace HealthApp.ConsoleApp.Menus
                 string? spec = InputValidator.GetValidatedInput(
                     "  Specialisation         : ",
                     InputValidator.IsValidName,
-                    "  Specialisation cannot be empty.",
+                    "  Specialisation cannot be empty or only numbers.",
                     allowEmpty: true);
 
                 // Get optional updated years of experience
@@ -363,7 +363,7 @@ namespace HealthApp.ConsoleApp.Menus
                 string query = InputValidator.GetValidatedInput(
                     "  Specialisation : ",
                     InputValidator.IsValidName,
-                    "  Specialisation cannot be empty.")!;
+                    "  Specialisation cannot be empty or only numbers.")!;
 
                 var results = _doctorService.GetDoctorsBySpecialisation(query);
 
@@ -468,6 +468,81 @@ namespace HealthApp.ConsoleApp.Menus
             }
 
             Console.WriteLine("  " + new string('─', 50));
+            Pause();
+        }
+
+        // Fetch and display all appointments for a specific doctor
+        public void GetAppointmentsByDoctorId()
+        {
+            try
+            {
+                Console.Clear();
+                PrintHeader("APPOINTMENTS BY DOCTOR");
+                Console.WriteLine("  Type 'q' or 'back' to return.\n");
+
+                // Get and validate doctor ID
+                string raw = InputValidator.GetValidatedInput(
+                    "  Enter Doctor ID : ",
+                    InputValidator.IsValidId,
+                    "  Please enter a valid positive number.")!;
+
+                int doctorId = int.Parse(raw);
+
+                // Verify doctor exists before fetching appointments
+                var doctor = _doctorService.GetDoctorById(doctorId);
+                if (doctor == null)
+                {
+                    PrintError($"No doctor found with ID {doctorId}.");
+                    Pause();
+                    return;
+                }
+
+                Console.WriteLine($"\n  Dr. {doctor.Name}  —  {doctor.Specialisation}\n");
+
+                // Fetch all appointments for this doctor
+                var appointments = _appointmentService.GetAppointmentsByDoctorId(doctorId);
+
+                if (appointments.Count == 0)
+                {
+                    PrintError("No appointments found for this doctor.");
+                    Pause();
+                    return;
+                }
+
+                Console.WriteLine($"  {appointments.Count} appointment(s) found:\n");
+
+                // Group by status for better readability
+                foreach (var status in new[] {
+            AppointmentStatus.Confirmed,
+            AppointmentStatus.Pending,
+            AppointmentStatus.Completed,
+            AppointmentStatus.Cancelled })
+                {
+                    var group = appointments.Where(a => a.Status == status).ToList();
+                    if (group.Count == 0) continue;
+                    Console.WriteLine($"  ── {status} ({group.Count}) ──────────────────────");
+                    foreach (var appt in group)
+                    {
+                        Console.WriteLine($"  [{appt.AppointmentId}]  " +
+                                          $"{appt.Patient?.Name,-15}  |  " +
+                                          $"{appt.ScheduledDate:dd/MM/yyyy}  |  " +
+                                          $"{appt.TimeSlot}");
+                    }
+
+                    Console.WriteLine();
+                }
+
+                Console.WriteLine("  " + new string('─', 50));
+            }
+            catch (OperationCanceledException)
+            {
+                Console.WriteLine("\n  Returning to menu...");
+            }
+            catch (Exception ex)
+            {
+                PrintError(ex.Message);
+            }
+
             Pause();
         }
 
