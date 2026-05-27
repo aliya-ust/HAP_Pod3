@@ -1,134 +1,120 @@
-using System;
 using Microsoft.Extensions.DependencyInjection;
-using HealthApp;
 using HealthApp.ConsoleApp.Interfaces;
 using HealthApp.ConsoleApp.Services;
-using HealthApp.ConsoleApp.Menus;
 using HealthApp.ConsoleApp.Repositories;
-using HealthApp.ConsoleApp.Models;
+using HealthApp.ConsoleApp.Menus;
 using HealthApp.ConsoleApp.Databases;
+using HealthApp;
 
+// Register all dependencies
 var services = new ServiceCollection();
-
-services.AddSingleton<PatientDb>();
+// Register databases as singletons
 services.AddSingleton<DoctorDb>();
-services.AddSingleton<HealthRecordDB>();
 services.AddSingleton<AppointmentDb>();
-
-services.AddScoped<IPatientRepository, PatientRepository>();
-services.AddScoped<IDoctorRepository, DoctorRepository>();
-services.AddScoped<IHealthRecordRepository, HealthRecordRepository>();
-services.AddScoped<IAppointmentRepository, AppointmentRepository>();
-
+services.AddSingleton<HealthRecordDB>();
+services.AddSingleton<PatientDb>();
+// Register repositories as singletons for shared in-memory data access
+services.AddSingleton<IPatientRepository, PatientRepository>();
+services.AddSingleton<IDoctorRepository, DoctorRepository>();
+services.AddSingleton<IAppointmentRepository, AppointmentRepository>();
+services.AddSingleton<IHealthRecordRepository, HealthRecordRepository>();
+// Register services as scoped for business logic operations
 services.AddScoped<IPatientService, PatientService>();
 services.AddScoped<IDoctorService, DoctorService>();
-services.AddScoped<IHealthRecordService, HealthRecordService>();
 services.AddScoped<IAppointmentService, AppointmentService>();
-
+services.AddScoped<IHealthRecordService, HealthRecordService>();
+// Register menus as scoped for user interaction handling
 services.AddScoped<PatientMenu>();
 services.AddScoped<DoctorMenu>();
-services.AddScoped<HealthRecordMenu>();
 services.AddScoped<AppointmentMenu>();
-
+services.AddScoped<HealthRecordMenu>();
+// Build the service provider and resolve the main menus
 var provider = services.BuildServiceProvider();
-
 var patientMenu = provider.GetRequiredService<PatientMenu>();
 var doctorMenu = provider.GetRequiredService<DoctorMenu>();
-var healthRecordMenu = provider.GetRequiredService<HealthRecordMenu>();
 var appointmentMenu = provider.GetRequiredService<AppointmentMenu>();
+var healthRecordMenu = provider.GetRequiredService<HealthRecordMenu>();
 
-const string ContinueMessage = "\nPress any key to continue...";
-
-bool exit = false;
-while (!exit)
+// Main application loop
+bool running = true;
+while (running)
 {
     Console.Clear();
-    Console.WriteLine("\n==== Hospital Management System ====");
-    Console.WriteLine("1. Register a new patient");
-    Console.WriteLine("2. Add a new doctor");
-    Console.WriteLine("3. Search doctors by specialisation");
-    Console.WriteLine("4. Book an appointment");
-    Console.WriteLine("5. View all appointments for a patient");
-    Console.WriteLine("6. Update appointment status");
-    Console.WriteLine("7. Add a health record after a completed appointment");
-    Console.WriteLine("8. View health history for a patient");
-    Console.WriteLine("9. Go to detailed menus (Patient / Doctor)");
-    Console.WriteLine("0. Exit");
-    Console.Write("Enter your choice: ");
-    string ?input = Console.ReadLine();
+    PrintBanner();
+    Console.Write("  Choose an option : ");
 
-    if (!int.TryParse(input, out int choice))
+    switch (Console.ReadLine()?.Trim() ?? "")
     {
-        Console.WriteLine("Invalid input. Please enter a number between 0 and 9.");
-        continue;
-    }
-
-    if (choice < 0 || choice > 9)
-    {
-        Console.WriteLine("Invalid choice. Please select a valid option (0-9).");
-        continue;
-    }
-    
-    switch (choice)
-    {
-        case 1:
-            Console.WriteLine($"\n{patientMenu.RegisterPatient()}");
-            Console.Write(ContinueMessage);
-            Console.ReadKey();
+        case "1": patientMenu.RegisterPatient(); break;
+        case "2": doctorMenu.AddDoctor(); break;
+        case "3": doctorMenu.SearchBySpecialisation(); break;
+        case "4": appointmentMenu.BookAppointment(); break;
+        case "5": appointmentMenu.ViewPatientAppointments(); break;
+        case "6": appointmentMenu.UpdateAppointmentMenu(); break;
+        case "7": healthRecordMenu.AddHealthRecord(); break;
+        case "8": healthRecordMenu.ViewRecord(); break;
+        case "9": ShowDetailedMenus(); break;
+        case "0":
+            Console.Clear();
+            Console.WriteLine("\n  Thank you for using HealthAxis. Goodbye!\n");
+            Console.ResetColor();
+            running = false;
             break;
-        case 2:
-            Console.WriteLine($"\n{doctorMenu.AddDoctor()}");
-            Console.Write(ContinueMessage);
-            Console.ReadKey();
-            break;
-        case 3:
-            doctorMenu.SearchDoctorBySpecialisation();
-            Console.Write(ContinueMessage);
-            Console.ReadKey();
-            break;
-        case 4:
-            appointmentMenu.BookAppointment();
-            Console.Write(ContinueMessage);
-            Console.ReadKey();
-            break;
-        case 5:
-            appointmentMenu.ViewAppointments();
-            Console.Write(ContinueMessage);
-            Console.ReadKey();
-            break;
-        case 6:
-            appointmentMenu.ConfirmCancelAppointment();
-            Console.Write(ContinueMessage);
-            Console.ReadKey();
-            break;
-        case 7:
-            Console.WriteLine($"\n{healthRecordMenu.AddHealthRecord()}");
-            Console.Write(ContinueMessage);
-            Console.ReadKey();
-            break;
-        case 8:
-            healthRecordMenu.ViewRecord();
-            break;
-        case 9:
-            doctorMenu.ShowMenu();
-            // Console.WriteLine($"\nPatient details:\n{patientMenu.UpdatePatient()}");
-            // Console.Write(ContinueMessage);
-            // Console.ReadKey();
-            break;
-        case 10:
-            doctorMenu.UpdateDoctor();
-            Console.Write(ContinueMessage);
-            Console.ReadKey();
-            break;
-        case 11:
-            Console.WriteLine($"\nHealth record details:\n{healthRecordMenu.UpdateHealthRecord()}");
-            Console.Write(ContinueMessage);
-            Console.ReadKey();
-            break;
-        case 0:
-            exit = true;
-            Console.WriteLine("Exiting program...");
+        default:
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("\n  Invalid option. Enter a number between 0 and 9.");
+            Console.ResetColor();
+            Thread.Sleep(1000);
             break;
     }
 }
 
+// Print the main portal banner
+void PrintBanner()
+{
+    Console.WriteLine("  ╔══════════════════════════════════════════════════╗");
+    Console.WriteLine("  ║           HealthAxis Patient Portal              ║");
+    Console.WriteLine("  ╠══════════════════════════════════════════════════╣");
+    Console.WriteLine("  ║  1.  Register a new patient                      ║");
+    Console.WriteLine("  ║  2.  Add a new doctor                            ║");
+    Console.WriteLine("  ║  3.  Search doctors by specialisation            ║");
+    Console.WriteLine("  ║  4.  Book an appointment                         ║");
+    Console.WriteLine("  ║  5.  View appointments for a patient             ║");
+    Console.WriteLine("  ║  6.  Update appointment status                   ║");
+    Console.WriteLine("  ║  7.  Add a health record                         ║");
+    Console.WriteLine("  ║  8.  View health history                         ║");
+    Console.WriteLine("  ║  9.  Patient / Doctor detailed menus             ║");
+    Console.WriteLine("  ║  0.  Exit                                        ║");
+    Console.WriteLine("  ╚══════════════════════════════════════════════════╝");
+    Console.WriteLine("  Type 'q' or 'back' at any prompt to return here.\n");
+}
+
+// Sub-menu to navigate into Patient or Doctor detailed menus
+void ShowDetailedMenus()
+{
+    while (true)
+    {
+        Console.Clear();
+        Console.WriteLine("  ╔══════════════════════════════╗");
+        Console.WriteLine("  ║        DETAILED MENUS        ║");
+        Console.WriteLine("  ╠══════════════════════════════╣");
+        Console.WriteLine("  ║  1.  Patient Menu            ║");
+        Console.WriteLine("  ║  2.  Doctor Menu             ║");
+        Console.WriteLine("  ║  3.  Back                    ║");
+        Console.WriteLine("  ╚══════════════════════════════╝");
+        Console.Write("\n  Choose an option : ");
+
+        switch (Console.ReadLine()?.Trim() ?? "")
+        {
+            case "1": patientMenu.ShowPatientMenu(); break;
+            case "2": doctorMenu.ShowDoctorMenu(); break;
+            case "3": return;
+            default:
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("\n  Invalid choice.");
+                Console.ResetColor();
+                Thread.Sleep(800);
+                break;
+        }
+    }
+}

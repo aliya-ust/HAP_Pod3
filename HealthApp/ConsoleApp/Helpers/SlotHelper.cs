@@ -4,10 +4,10 @@ using System.Linq;
 
 namespace HealthApp.ConsoleApp.Helpers
 {
-    public static class SlotHelper
+    public class SlotHelper
     {
-        // Fixed clinic slots — single source of truth
-        private static readonly List<string> AvailableSlots = new List<string>
+        // Fixed clinic slots
+        public List<string> AvailableSlots { get; set; }= new List<string>
         {
             "09:00 AM",
             "10:00 AM",
@@ -19,35 +19,22 @@ namespace HealthApp.ConsoleApp.Helpers
             "05:00 PM"
         };
 
-        public static void PrintSlots()
+        // Displays slots and returns the one the user picks
+        public string PickSlot()
         {
+            Console.WriteLine("\nAvailable Time Slots:");
             for (int i = 0; i < AvailableSlots.Count; i++)
             {
-                Console.WriteLine($"{i + 1}. {AvailableSlots[i]}");
+                Console.WriteLine($"  {i + 1}. {AvailableSlots[i]}");
             }
-        }
-
-        public static List<string>? SimpleParseSlots(string input)
-        {
-            var result = new List<string>();
-
-            var parts = input.Split(',');
-
-            foreach (var part in parts)
+            if (!int.TryParse("  Choose slot (1-8): ", out int slotChoice)   // Validate choice is in range
+                || slotChoice < 1 || slotChoice > 8)
             {
-                if (int.TryParse(part.Trim(), out int index) &&
-                    index >= 1 && index <= AvailableSlots.Count)
-                {
-                    var slot = AvailableSlots[index - 1];
-
-                    if (!result.Contains(slot))
-                    {
-                        result.Add(slot);
-                    }
-                }
+                ConsoleHelper.PrintError("Please enter a number between 1 and 8.");
+                ConsoleHelper.Pause(); 
+                return "";
             }
-
-            return result.Count > 0 ? result : null;
+            return AvailableSlots[slotChoice - 1]; // return the actual string
         }
     }
 }

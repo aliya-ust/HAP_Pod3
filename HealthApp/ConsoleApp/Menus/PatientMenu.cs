@@ -1,196 +1,310 @@
-﻿using System;
-using HealthApp.ConsoleApp.Exceptions;
+﻿using HealthApp.ConsoleApp.Exceptions;
 using HealthApp.ConsoleApp.Helpers;
 using HealthApp.ConsoleApp.Interfaces;
 using HealthApp.ConsoleApp.Models;
 
 namespace HealthApp.ConsoleApp.Menus
 {
+    // Menu class to handle all patient-related user interactions
     public class PatientMenu
     {
         private readonly IPatientService _patientService;
-        
-        public const string Continue = "\nPress any key to continue...";
-        public const string PatientRegistrationCancelled = "Patient registration cancelled.";
-
-
+        private const string ReturnToMenu = "\n  Returning to menu...";
+        // Constructor to inject required service for patient management
         public PatientMenu(IPatientService patientService)
         {
             _patientService = patientService;
         }
 
-        public void ViewPatientMenu()
+        // Patient sub-menu with full CRUD options
+        public void ShowPatientMenu()
         {
             while (true)
             {
                 Console.Clear();
-                Console.WriteLine("=================================");
-                Console.WriteLine("PATIENT MENU");
-                Console.WriteLine("=================================");
-                Console.WriteLine("1. Register Patient");
-                Console.WriteLine("2. View All Patients");
-                Console.WriteLine("3. Get Patient Summary by ID");
-                Console.WriteLine("4. Update Patient");
-                Console.WriteLine("5. Back");
-                Console.WriteLine("=================================");
+                Console.WriteLine("  ╔══════════════════════════════╗");
+                Console.WriteLine("  ║        PATIENT MENU          ║");
+                Console.WriteLine("  ╠══════════════════════════════╣");
+                Console.WriteLine("  ║  1.  Register Patient        ║");
+                Console.WriteLine("  ║  2.  View All Patients       ║");
+                Console.WriteLine("  ║  3.  Search Patient by ID    ║");
+                Console.WriteLine("  ║  4.  Update Patient          ║");
+                Console.WriteLine("  ║  5.  Search Patient by Name  ║");
+                Console.WriteLine("  ║  6.  Back                    ║");
+                Console.WriteLine("  ╚══════════════════════════════╝");
+                Console.Write("\n  Choose an option : ");
 
-                Console.Write("Enter choice: ");
-                string choice = Console.ReadLine() ?? "";
-
-                switch (choice)
+                switch (Console.ReadLine()?.Trim() ?? "")
                 {
-                    case "1":
-                        RegisterPatient();
-                        break;
-
-                    // case "2":
-                    //     ViewAllPatients();
-                    //     break;
-
-                    // case "3":
-                    //     GetPatientById();
-                    //     break;
-
-                    case "4":
-                        UpdatePatient();
-                        break;
-
-                    case "5":
-                        return;
-
+                    case "1": RegisterPatient(); break;
+                    case "2": ViewAllPatients(); break;
+                    case "3": GetPatientById(); break;
+                    case "4": UpdatePatient(); break;
+                    case "5": SearchByName(); break;
+                    case "6": return;
                     default:
-                        Console.WriteLine("Invalid choice.");
+                        ConsoleHelper.PrintError("Invalid choice.");
+                        Thread.Sleep(800);
                         break;
                 }
             }
         }
 
-        public string RegisterPatient()
+        // Register a new patient with full validation
+        public void RegisterPatient()
         {
             try
             {
                 Console.Clear();
+                ConsoleHelper.PrintHeader("REGISTER NEW PATIENT");
+                Console.WriteLine("  Type 'q' or 'back' anytime to return.\n");
 
-                var fullName = InputValidator.GetValidatedInput(
-                    "Enter Full Name (or 'q' to quit): ",
+                // Get validated full name
+                string name = InputValidator.GetValidatedInput(
+                    "  Full Name              : ",
                     InputValidator.IsValidName,
-                    "Name must not contain numbers");
+                    "  Name cannot be empty or contain numbers.")!;
 
-                var dob = InputValidator.GetValidDate("Enter DOB (dd/MM/yyyy): ");
-                var gender = InputValidator.GetValidGender("Enter Gender (M/F/Other): ");
-
-                var phone = InputValidator.GetValidatedInput(
-                    "Enter Phone: ",
-                    InputValidator.IsValidPhone,
-                    "Phone must be 10 digits");
-
-                var email = InputValidator.GetValidatedInput(
-                    "Enter Email: ",
-                    InputValidator.IsValidEmail,
-                    "Invalid email");
-
-                var insuranceInput = InputValidator.GetValidatedInput(
-                    "Enter Insurance ID: ",
-                    InputValidator.IsValidInsuranceId,
-                    "Invalid insurance ID");
-
-                string insuranceId = insuranceInput!;
-
-                var patient = new Patient
+                // Get validated date of birth
+                DateTime dob;
+                while (true)
                 {
-                    FullName = fullName!,
+                    dob = InputValidator.GetValidDate("  Date of Birth (dd/MM/yyyy) : ");
+                    if (dob.Date < DateTime.Today) break;
+                    ConsoleHelper.PrintError("Date of birth cannot be today or in the future.");
+                }
+
+                // Get validated gender
+                GenderType gender = InputValidator.GetValidGender(
+                    "  Gender (Male/Female/Other) : ");
+
+                // Get validated phone number
+                string phone = InputValidator.GetValidatedInput(
+                    "  Phone Number           : ",
+                    InputValidator.IsValidPhone,
+                    "  Must be 10 digits starting with 6-9.")!;
+
+                // Get validated email address
+                string email = InputValidator.GetValidatedInput(
+                    "  Email                  : ",
+                    InputValidator.IsValidEmail,
+                    "  Invalid email. Example: john@email.com",
+                    allowEmpty: true)!;
+
+                // Get optional insurance ID
+                string? insurance = InputValidator.GetValidatedInput(
+                    "  Insurance ID (optional) : ",
+                    InputValidator.IsValidInsuranceId,
+                    "  Must be alphanumerical value.",
+                    allowEmpty: true);
+
+                // Build and persist the patient
+                Patient patient = new()
+                {
+                    FullName = name,
                     DateOfBirth = dob,
                     Gender = gender,
-                    PhoneNumber = phone!,
-                    Email = email!,
-                    InsuranceId = insuranceId
+                    PhoneNumber = phone,
+                    Email = email,
+                    InsuranceId = insurance ?? "",
                 };
 
-                return _patientService.RegisterPatient(patient);
+                _patientService.RegisterPatient(patient);
+
+                ConsoleHelper.PrintSuccess("Patient Registered Successfully!");
+                Console.WriteLine($"\n  {patient.GetProfileSummary()}");
             }
             catch (OperationCanceledException)
             {
-                return "Operation Canceled";
+                Console.WriteLine(ReturnToMenu);
+            }
+            catch (Exception ex)
+            {
+                ConsoleHelper.PrintError(ex.Message);
+            }
+
+            ConsoleHelper.Pause();
+        }
+
+        // Display all registered patients
+        public void ViewAllPatients()
+        {
+            try
+            {
+                Console.Clear();
+                ConsoleHelper.PrintHeader("ALL PATIENTS");
+
+                var patients = _patientService.GetAllPatients();
+
+                foreach (var p in patients)
+                {
+                    Console.WriteLine($"  {p.GetProfileSummary()}");
+                    Console.WriteLine("  " + new string('─', 70));
+                }
+
+                ConsoleHelper.Pause(); 
+            } catch (PatientNotFoundException ex) {
+                Console.WriteLine(ex.Message);
+                ConsoleHelper.Pause();
             }
         }
 
-        public string UpdatePatient()
+        // Search and display a patient by their ID
+        public void GetPatientById()
         {
             try
             {
                 Console.Clear();
+                ConsoleHelper.PrintHeader("SEARCH PATIENT BY ID");
+                Console.WriteLine("  Type 'q' or 'back' to return.\n");
 
-                Console.Write("Enter ID of patient you wish to update (or 'q' to quit): ");
-                string? input = Console.ReadLine();
+                // Get validated patient ID
+                string raw = InputValidator.GetValidatedInput(
+                    "  Enter Patient ID : ",
+                    InputValidator.IsValidId,
+                    "  Please enter a valid positive number.")!;
 
-                if (input?.ToLower() == "q")
-                    return "Update cancelled.";
+                var patient = _patientService.GetPatientById(int.Parse(raw));
 
-                if (!int.TryParse(input, out int patientId) || patientId <= 0)
-                    return "Invalid Patient ID";
-
-                var existingPatient = _patientService.GetPatientById(patientId);
-                if (existingPatient == null)
-                    return "Patient not found";
-
-                Console.WriteLine("\nCurrent Patient Details:");
-                Console.WriteLine(existingPatient);
-
-                var fullNameInput = InputValidator.GetValidatedInput(
-                    "\nEnter Full Name (Press ENTER to keep existing value): ",
-                    InputValidator.IsValidName,
-                    "Full Name must not contain numbers.",
-                    allowEmpty: true);
-
-                var dobInput = InputValidator.GetOptionalDate(
-                    "Enter DOB (dd/MM/yyyy) (Press ENTER to keep existing): ");
-
-                var genderInput = InputValidator.GetOptionalGender(
-                    "Enter Gender (M/F/Other) (Press ENTER to keep existing): ");
-
-
-                var phoneInput = InputValidator.GetValidatedInput(
-                    "Enter Phone (Press ENTER to keep existing value): ",
-                    InputValidator.IsValidPhone,
-                    "Phone must be 10 digits.",
-                    allowEmpty: true);
-
-                var emailInput = InputValidator.GetValidatedInput(
-                    "Enter Email (Press ENTER to keep existing value): ",
-                    InputValidator.IsValidEmail,
-                    "Invalid email.",
-                    allowEmpty: true);
-
-                var insuranceInput = InputValidator.GetValidatedInput(
-                    "Enter Insurance ID (Press ENTER to keep existing value): ",
-                    InputValidator.IsValidInsuranceId,
-                    "Invalid Insurance ID.",
-                    allowEmpty: true);
-                    
-                var updatedPatient = new Patient
+                if (patient is not null)
                 {
-                    PatientId = existingPatient.PatientId,
-                    FullName = fullNameInput ?? existingPatient.FullName,
-                    DateOfBirth = dobInput ?? existingPatient.DateOfBirth,
-                    Gender = genderInput ?? existingPatient.Gender,
-                    PhoneNumber = phoneInput ?? existingPatient.PhoneNumber,
-                    Email = emailInput ?? existingPatient.Email,
-                    InsuranceId = insuranceInput != null
-                        ? insuranceInput
-                        : existingPatient.InsuranceId
-                };
-
-                Console.Clear();
-                return _patientService.UpdatePatient(updatedPatient).GetProfileSummary();
-            }
-            catch (OperationCanceledException)
-            {
-                return "Update cancelled.";
+                    Console.WriteLine($"\n  {patient.GetProfileSummary()}");
+                }
             }
             catch (PatientNotFoundException ex)
             {
-                return ex.Message;
+                Console.WriteLine($"\n  {ex.Message}");
             }
+            catch (OperationCanceledException)
+            {
+                Console.WriteLine(ReturnToMenu);
+            }
+
+            ConsoleHelper.Pause();
+        }
+
+        // Update an existing patient's details
+        public void UpdatePatient()
+        {
+            try
+            {
+                Console.Clear();
+                ConsoleHelper.PrintHeader("UPDATE PATIENT");
+                Console.WriteLine("  Type 'q' or 'back' anytime to return.\n");
+
+                // Get validated patient ID
+                string rawId = InputValidator.GetValidatedInput(
+                    "  Enter Patient ID : ",
+                    InputValidator.IsValidId,
+                    "  Please enter a valid positive number.")!;
+
+                var patient = _patientService.GetPatientById(int.Parse(rawId));
+
+                if (patient == null)
+                {
+                    ConsoleHelper.PrintError($"No patient found with ID {rawId}.");
+                    ConsoleHelper.Pause();
+                    return;
+                }
+
+                Console.WriteLine("\n  Current Details:");
+                Console.WriteLine("  " + new string('─', 70));
+                Console.WriteLine($"  {patient.GetProfileSummary()}");
+                Console.WriteLine("  " + new string('─', 70));
+                Console.WriteLine("\n  Enter new details below (Press ENTER to keep existing value):\n");
+
+                // Get each updated field with validation
+                string name = InputValidator.GetValidatedInput(
+                    "  Full Name             : ",
+                    InputValidator.IsValidName,
+                    "  Name cannot be empty or contain numbers.",
+                    allowEmpty: true)!;
+
+                DateTime? dob = InputValidator.GetOptionalDate("  Date of Birth (dd/MM/yyyy) : ");
+                if (dob > DateTime.Today)
+                {
+                    ConsoleHelper.PrintError("Date of birth cannot be today or in the future.");
+                }
+
+                GenderType? gender = InputValidator.GetOptionalGender(
+                    "  Gender (Male/Female/Other) : ");
+
+                string phone = InputValidator.GetValidatedInput(
+                    "  Phone Number           : ",
+                    InputValidator.IsValidPhone,
+                    "  Must be 10 digits starting with 6-9.",
+                    allowEmpty: true)!;
+
+                string email = InputValidator.GetValidatedInput(
+                    "  Email                  : ",
+                    InputValidator.IsValidEmail,
+                    "  Invalid email. Example: john@email.com",
+                    allowEmpty: true)!;
+
+                string? insurance = InputValidator.GetValidatedInput(
+                    "  Insurance ID (optional) : ",
+                    InputValidator.IsValidInsuranceId,
+                    "  Must be a positive number.",
+                    allowEmpty: true);
+
+                // Apply all updates to the patient object
+                patient.FullName = name ?? patient.FullName;
+                patient.DateOfBirth = dob ?? patient.DateOfBirth;
+                patient.Gender = gender ?? patient.Gender;
+                patient.PhoneNumber = phone ?? patient.PhoneNumber;
+                patient.Email = email ?? patient.Email;
+                patient.InsuranceId = insurance ?? patient.InsuranceId;
+
+                ConsoleHelper.PrintSuccess("Patient Updated Successfully!");
+                Console.WriteLine($"\n  {patient.GetProfileSummary()}");
+            }
+            catch (OperationCanceledException)
+            {
+                Console.WriteLine(ReturnToMenu);
+            }
+            catch (Exception ex)
+            {
+                ConsoleHelper.PrintError(ex.Message);
+            }
+
+            ConsoleHelper.Pause();
+        }
+
+        public void SearchByName()
+        {
+            try
+            {
+                Console.Clear();
+                ConsoleHelper.PrintHeader("SEARCH BY NAME");
+                Console.WriteLine("  Type 'q' or 'back' to return.\n");
+
+                // Get validated name keyword
+                string query = InputValidator.GetValidatedInput(
+                    "  Name : ",
+                    InputValidator.IsValidName,
+                    "  Name cannot be empty.")!;
+
+                var results = _patientService.GetPatientByName(query);
+
+                Console.WriteLine($"\n  {results.Count} patient(s) found:\n");
+                Console.WriteLine("  " + new string('─', 55));
+
+                foreach (var d in results)
+                {
+                    Console.WriteLine(d.GetProfileSummary());
+                    Console.WriteLine("  " + new string('─', 70));
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                Console.WriteLine(ReturnToMenu);
+            }
+            catch (PatientNotFoundException ex)
+            {
+                ConsoleHelper.PrintError(ex.Message);
+            }
+
+            ConsoleHelper.Pause();
         }
     }
 }

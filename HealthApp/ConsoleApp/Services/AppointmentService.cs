@@ -82,7 +82,7 @@ namespace HealthApp.ConsoleApp.Services
         }
 
         // Get appointment by id
-        public Appointment? GetAppointmentById(int appointmentId)
+        public Appointment GetAppointmentById(int appointmentId)
         {
             Appointment? appointment = _appointmentRepo.GetAppointmentById(appointmentId);
 
@@ -95,8 +95,8 @@ namespace HealthApp.ConsoleApp.Services
 
         // Assign appointment id based on latest record id
         public static int AppointmentIdGenerator(List<Appointment> appointments)
-        {
-            return appointments.Any()
+        {       
+            return appointments.Count > 0
                 ? appointments.Max(a => a.AppointmentId) + 1
                 : 101;
         }
@@ -133,7 +133,8 @@ namespace HealthApp.ConsoleApp.Services
             List<Appointment> upcomingAppointments =  _appointmentRepo
                 .GetAllAppointments()
                 .Where(a => a.ScheduledDate > DateTime.Now &&
-                            a.Status == AppointmentStatus.Confirmed)
+                            a.Status != AppointmentStatus.Completed && 
+                            a.Status != AppointmentStatus.Cancelled)
                 .OrderBy(a => a.ScheduledDate)
                 .ToList();
 
@@ -153,6 +154,18 @@ namespace HealthApp.ConsoleApp.Services
                 throw new AppointmentNotFoundException($"Appointment of ID {appointment.AppointmentId} does not exist");
             }
             return _appointmentRepo.UpdateAppointment(existingAppointment, appointment);
+        }
+
+        public List<Appointment> GetAllAppointments()
+        {
+            var appointments = _appointmentRepo.GetAllAppointments();
+
+            if (appointments == null || appointments.Count == 0)
+            {
+                throw new AppointmentNotFoundException("No appointments found.");
+            }
+
+            return appointments;
         }
     }
 }

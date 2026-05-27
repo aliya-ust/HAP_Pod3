@@ -9,4 +9,6 @@
 *.userosscache
 *.sln.docstates
 
+.sonarqube/
+
 *.lscache

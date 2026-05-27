@@ -28,7 +28,7 @@ namespace HealthApp.ConsoleApp.Models
         // Return summary of the patient's profile
         public string GetProfileSummary()
         {
-            return  $"ID: {PatientId} \nName: {FullName} \nAge: {GetAge()} \nGender: {Gender} \nEmail: {Email} \nPhone: {PhoneNumber} \nInsurance Id: {InsuranceId}";
+            return $"ID: {PatientId} | Name: {FullName} | Age: {GetAge()} | Gender: {Gender} | Email: {Email} | Phone: {PhoneNumber}";
         }
     }
 }

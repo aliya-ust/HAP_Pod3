@@ -14,17 +14,7 @@ namespace HealthApp.ConsoleApp.Models
         // Check if doctor is available based on leaves, and number of confirmed appointments
         public virtual bool IsAvailable(DateTime date)
         {
-            if (!IsActive)
-            {
-                return false;
-            }
-
-            // if (LeaveDates.Any(d => d.Date == date.Date))
-            // {
-            //     return false;
-            // }
-
-            return true;
+            return IsActive && AvailableDates.Any(d => d.Date == date.Date);
         }
 
         // Count of upcoming confirmed appointments for this doctor
@@ -47,7 +37,7 @@ namespace HealthApp.ConsoleApp.Models
         // Formatted string of doctor details
         public override string ToString()
         {
-            return $"Doctor ID: {DoctorId} \nFull Name: {FullName} \nSpecialisation: {Specialisation} \nExperience: {YearsOfExperience} years \nConsultation Fee: Rs. {ConsultationFee}";
+            return $"Doctor ID: {DoctorId} \nFull Name: {FullName} \nSpecialisation: {Specialisation} \nExperience: {YearsOfExperience} years \nConsultation Fee: Rs. {ConsultationFee} \nActive Status: {(IsActive ? "Yes" : "No")}";
         }
     }
 }

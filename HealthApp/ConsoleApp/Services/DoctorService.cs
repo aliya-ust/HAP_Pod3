@@ -23,7 +23,7 @@ namespace HealthApp.ConsoleApp.Services
             return _doctorRepo.AddDoctor(doctor);
         }
 
-        public Doctor? GetDoctorById(int id)
+        public Doctor GetDoctorById(int id)
         {
             Doctor? doctor = _doctorRepo.GetDoctorById(id);
 
@@ -72,7 +72,7 @@ namespace HealthApp.ConsoleApp.Services
         
         public static int DoctorIdGenerator(List<Doctor> doctors)
         {
-            return doctors.Any()
+            return doctors.Count > 0
                 ? doctors.Max(d => d.DoctorId) + 1
                 : 101;
         }

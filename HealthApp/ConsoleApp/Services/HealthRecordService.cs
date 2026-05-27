@@ -85,7 +85,7 @@ namespace HealthApp.ConsoleApp.Services
         }
 
         // Get a health record by its id
-        public HealthRecord? GetRecordById(int recordId)
+        public HealthRecord GetRecordById(int recordId)
         {
             HealthRecord? record = _healthRecordRepository.GetRecordById(recordId);
             if (record is null)
@@ -98,7 +98,7 @@ namespace HealthApp.ConsoleApp.Services
         // Assign health record id based on latest record id
         public static int RecordIdGenerator(List<HealthRecord> records)
         {
-            return records.Any()
+            return records.Count > 0
                 ? records.Max(r => r.RecordId) + 1
                 : 101;
         }

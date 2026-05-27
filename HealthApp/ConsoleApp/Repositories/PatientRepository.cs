@@ -28,6 +28,13 @@ namespace HealthApp.ConsoleApp.Repositories
             return _patientsDb.Patients.ToList();
         }
 
+        public List<Patient> GetPatientByName(string name)
+        {
+            return _patientsDb.Patients
+                .Where(d => d.FullName.Contains(name, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+        }
+
         public Patient UpdatePatient(Patient existingPatient, Patient patient)
         {
             existingPatient.FullName = patient.FullName;
