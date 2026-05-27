@@ -97,19 +97,10 @@ namespace HealthApp.ConsoleApp.Helpers
                 if (input?.ToLower() == "q" || input?.ToLower() == "back")
                     throw new OperationCanceledException();
 
+                if (Enum.TryParse<GenderType>(input, true, out var gender))
+                    return gender;
 
-                if (!Enum.TryParse<GenderType>(input, true, out var gender))
-                    throw new ArgumentException("Invalid gender");
-
-
-                //if (Enum.GetNames(typeof(GenderType))
-                //        .Any(n => n.Equals(input, StringComparison.OrdinalIgnoreCase)))
-                {
-                    return Enum.Parse<GenderType>(input, true);
-                }
- 
-
-                //Console.WriteLine("Invalid gender.");
+                Console.WriteLine("Invalid gender.");
             }
         }
         // Prompts the user for a valid gender input. Continues to prompt until a valid input is received or the user chooses to quit.
@@ -137,11 +128,12 @@ namespace HealthApp.ConsoleApp.Helpers
             input.Length >= 5 &&
             input.Any(char.IsLetter);
 
-        public static bool TryValidatePastDate(string input, out DateTime value)
-        {
-            return DateTime.TryParseExact(
-                input,
-                "dd-MM-yyyy",
+        public static bool IsValidCancellationReason(string input) =>
+            IsValidText(input);
+
+        public static bool IsValidDiagnosis(string input) =>
+            IsValidText(input);
+
         public static bool IsValidPrescription(string input) =>
             IsValidText(input);
 
@@ -151,13 +143,6 @@ namespace HealthApp.ConsoleApp.Helpers
         public static bool IsValidName(string input) =>
         !string.IsNullOrWhiteSpace(input) && !input.Any(char.IsDigit);
 
-        public static bool IsValidName(string input)
-{
-    if (string.IsNullOrWhiteSpace(input))
-        return false;
-    string pattern = @"^[A-Za-z]+([.\s]?[A-Za-z]+)*$";
-    return Regex.IsMatch(input.Trim(), pattern);
-}
         public static bool IsValidPhone(string input)
         {
             //Regex pattern for validating Indian phone numbers (10 digits starting with 6-9)
@@ -192,23 +177,5 @@ namespace HealthApp.ConsoleApp.Helpers
         // Validates that the input is not null, empty, or whitespace.
         public static bool IsNonEmpty(string input) =>
             !string.IsNullOrWhiteSpace(input);
-
-        public static bool IsValidText(string input) =>
-            !string.IsNullOrWhiteSpace(input) &&
-            input.Length >= 5 &&
-            input.Any(char.IsLetter);
-        
-        //cancelation
-        public static bool IsValidCancellationReason(string input) =>
-            IsValidText(input);
- 
-        public static bool IsValidDiagnosis(string input) =>
-            IsValidText(input);
- 
-        public static bool IsValidPrescription(string input) =>
-            IsValidText(input);
- 
-        public static bool IsValidDoctorNotes(string input) =>
-            IsValidText(input);
     }
 }

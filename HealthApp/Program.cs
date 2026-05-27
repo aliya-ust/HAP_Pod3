@@ -1,5 +1,4 @@
 using Microsoft.Extensions.DependencyInjection;
-using HealthApp;
 using HealthApp.ConsoleApp.Interfaces;
 using HealthApp.ConsoleApp.Services;
 using HealthApp.ConsoleApp.Repositories;
@@ -43,7 +42,7 @@ while (running)
     PrintBanner();
     Console.Write("  Choose an option : ");
 
-    try
+    switch (Console.ReadLine()?.Trim() ?? "")
     {
         case "1": patientMenu.RegisterPatient(); break;
         case "2": doctorMenu.AddDoctor(); break;

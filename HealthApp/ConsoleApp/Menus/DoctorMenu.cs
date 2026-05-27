@@ -2,10 +2,6 @@
 using HealthApp.ConsoleApp.Helpers;
 using HealthApp.ConsoleApp.Interfaces;
 using HealthApp.ConsoleApp.Models;
-using HealthApp.ConsoleApp.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace HealthApp.ConsoleApp.Menus
 {
@@ -87,9 +83,15 @@ namespace HealthApp.ConsoleApp.Menus
                     "  Please enter a valid non-negative number.")!;
 
                 // Get validated consultation fee
+                string feeRaw = InputValidator.GetValidatedInput(
+                    "  Consultation Fee (Rs.) : ",
+                    InputValidator.IsValidFee,
+                    "  Please enter a valid non-negative amount.")!;
+
                 int years = int.Parse(yearsRaw);
                 decimal fee = decimal.Parse(feeRaw);
 
+                Console.WriteLine("\n  Doctor will be available for the next 30 days.");
                 Console.WriteLine("  Enter leave dates one by one. Type 'done' when finished.\n");
 
                 List<DateTime> availableDates = BuildAvailableDates();
