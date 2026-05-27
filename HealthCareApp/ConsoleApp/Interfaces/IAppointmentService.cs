@@ -3,6 +3,7 @@ using HealthApp.ConsoleApp.Models;
 
 namespace HealthApp.ConsoleApp.Interfaces
 {
+    // Service interface for appointment-related operations
     public interface IAppointmentService
     {
         string BookAppointment(Patient patient, Doctor doctor, DateTime date, string slot);

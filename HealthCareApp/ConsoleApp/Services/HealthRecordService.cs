@@ -5,6 +5,7 @@ using HealthApp.ConsoleApp.Interfaces;
 using HealthApp.ConsoleApp.Exceptions;
 namespace HealthApp.ConsoleApp.Services
 {
+    // Service class to manage health records in the healthcare system
     public class HealthRecordService : IHealthRecordService
     {
         //Injecting HealthRecord, Doctor and Patient dependencies
@@ -20,7 +21,7 @@ namespace HealthApp.ConsoleApp.Services
             _doctorRepository = doctorRepository;
             _patientRepository = patientRepository;
         }
-
+        // Method to add a new health record to the database
         public string AddHealthRecord(HealthRecord record)
         {
             List<HealthRecord> records = _healthRecordRepository.GetAllRecords();
@@ -28,7 +29,7 @@ namespace HealthApp.ConsoleApp.Services
 
             return _healthRecordRepository.AddHealthRecord(record);
         }
-
+        // Method to get health records by patient ID ordered by visit date in descending order
         public List<HealthRecord> GetByPatientIdOrderByVisitDateDesc(int id)
         {
             var patient = _patientRepository.GetPatientById(id);
@@ -48,7 +49,7 @@ namespace HealthApp.ConsoleApp.Services
 
             return records;
         }
-
+        // Method to get health records by doctor ID ordered by visit date in descending order
         public List<HealthRecord> GetByDoctorIdOrderByVisitDateDesc(int id)
         {
             var doctor = _doctorRepository.GetDoctorById(id);
@@ -68,7 +69,7 @@ namespace HealthApp.ConsoleApp.Services
 
             return records;
         }
-
+        // Method to update an existing health record in the database
         public HealthRecord UpdateHealthRecord(HealthRecord record)
         {
             HealthRecord? existingHealthRecord = GetRecordById(record.RecordId);
@@ -79,7 +80,7 @@ namespace HealthApp.ConsoleApp.Services
             }
             return _healthRecordRepository.UpdateHealthRecord(existingHealthRecord, record);
         }
-
+        // Method to get a health record by ID from the database
         public HealthRecord? GetRecordById(int recordId)
         {
             HealthRecord? record = _healthRecordRepository.GetRecordById(recordId);
@@ -89,7 +90,7 @@ namespace HealthApp.ConsoleApp.Services
             }
             return record;
         }
-
+        // Method to generate a unique health record ID based on existing health records in the database
         public static int RecordIdGenerator(List<HealthRecord> records)
         {
             return records.Any()

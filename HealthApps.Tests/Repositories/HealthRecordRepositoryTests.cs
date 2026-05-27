@@ -7,6 +7,7 @@ using HealthApp.ConsoleApp.Databases;
 
 namespace HealthApp.Tests.Repositories
 {
+    // Test class for HealthRecordRepository to validate health record management functionalities
     public class HealthRecordRepositoryTests
     {
         private readonly HealthRecordDb _healthRecordDb;
@@ -21,7 +22,7 @@ namespace HealthApp.Tests.Repositories
 
             _repository = new HealthRecordRepository(_healthRecordDb);
         }
-
+        // Helper methods to create sample patients and doctors for testing
         private static Patient GetSamplePatient(int id)
         {
             return new Patient

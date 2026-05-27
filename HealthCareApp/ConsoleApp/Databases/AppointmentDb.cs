@@ -3,18 +3,17 @@ namespace HealthApp.ConsoleApp.Databases
 {
     public class AppointmentDb
     {
-        PatientDb patientDb = new();
-        DoctorDb doctorDb = new();
+        private readonly PatientDb patientDb = new();
+        private readonly DoctorDb doctorDb = new();
 
-        public List<Appointment> Appointments;
+        public List<Appointment> Appointments { get; set; }
 
         public AppointmentDb()
         {
             Appointments = new List<Appointment>
             {
-                // ============================================
+               
                 // CONFIRMED
-                // ============================================
 
                 new Appointment
                 {
@@ -33,9 +32,7 @@ namespace HealthApp.ConsoleApp.Databases
                     Status = AppointmentStatus.Confirmed
                 },
 
-                // ============================================
                 // PENDING
-                // ============================================
 
                 new Appointment
                 {
@@ -54,9 +51,8 @@ namespace HealthApp.ConsoleApp.Databases
                     Status = AppointmentStatus.Pending
                 },
 
-                // ============================================
                 // COMPLETED
-                // ============================================
+                
 
                 new Appointment
                 {
@@ -75,9 +71,8 @@ namespace HealthApp.ConsoleApp.Databases
                     Status = AppointmentStatus.Completed
                 },
 
-                // ============================================
                 // CANCELLED
-                // ============================================
+               
 
                 new Appointment
                 {
@@ -99,9 +94,8 @@ namespace HealthApp.ConsoleApp.Databases
                         "Patient unavailable"
                 },
 
-                // ============================================
                 // SLOT CONFLICT TEST
-                // ============================================
+               
 
                 new Appointment
                 {
@@ -120,9 +114,9 @@ namespace HealthApp.ConsoleApp.Databases
                     Status = AppointmentStatus.Confirmed
                 },
 
-                // ============================================
+                
                 // SAME DOCTOR DIFFERENT SLOT
-                // ============================================
+                
 
                 new Appointment
                 {

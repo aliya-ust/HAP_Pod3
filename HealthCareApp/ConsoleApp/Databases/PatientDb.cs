@@ -1,15 +1,18 @@
 ﻿using HealthApp.ConsoleApp.Models;
+using System.Collections.Generic;
 namespace HealthApp.ConsoleApp.Databases
 {
     public class PatientDb
     {
         public List<Patient> Patients = new()
         {
+            // Pre-populated patients with unique IDs, contact details, and insurance information
+            // PatientId starts from 101 to avoid conflict with test data
             new Patient
             {
                 PatientId = 101,
                 Name = "Arjun Kumar",
-                Dob = new DateTime(1995, 5, 20),
+                Dob = new DateTime(1995, 5, 20,0, 0, 0, DateTimeKind.Local),
                 Gender = GenderType.Male,
                 PhoneNumber = "9876543210",
                 Email = "arjun@gmail.com",
@@ -21,7 +24,7 @@ namespace HealthApp.ConsoleApp.Databases
             {
                 PatientId = 102,
                 Name = "Kevin Raj",
-                Dob = new DateTime(1998, 8, 15),
+                Dob = new DateTime(1998, 8, 15,0, 0, 0, DateTimeKind.Local),
                 Gender = GenderType.Male,
                 PhoneNumber = "9123456789",
                 Email = "kevin@gmail.com",
@@ -33,7 +36,7 @@ namespace HealthApp.ConsoleApp.Databases
             {
                 PatientId = 103,
                 Name = "Abi Shankar",
-                Dob = new DateTime(1992, 3, 10),
+                Dob = new DateTime(1992, 3, 10, 0, 0, 0, DateTimeKind.Local),
                 Gender = GenderType.Male,
                 PhoneNumber = "9988776655",
                 Email = "abi@gmail.com",
@@ -45,7 +48,7 @@ namespace HealthApp.ConsoleApp.Databases
             {
                 PatientId = 104,
                 Name = "Sneha Reddy",
-                Dob = new DateTime(2000, 11, 5),
+                Dob = new DateTime(2000, 11, 5, 0, 0, 0, DateTimeKind.Local),
                 Gender = GenderType.Female,
                 PhoneNumber = "9001122334",
                 Email = "sneha@gmail.com",
@@ -57,7 +60,7 @@ namespace HealthApp.ConsoleApp.Databases
             {
                 PatientId = 105,
                 Name = "Rahul Verma",
-                Dob = new DateTime(1989, 1, 18),
+                Dob = new DateTime(1989, 1, 18, 0, 0, 0, DateTimeKind.Local),
                 Gender = GenderType.Male,
                 PhoneNumber = "9556677889",
                 Email = "rahul@gmail.com",

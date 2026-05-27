@@ -4,11 +4,9 @@ using System.Net.NetworkInformation;
 using HealthApp.ConsoleApp.Exceptions;
 using HealthApp.ConsoleApp.Interfaces;
 using HealthApp.ConsoleApp.Models;
-using HealthApp.ConsoleApp.Repositories;
-
-
 namespace HealthApp.ConsoleApp.Services
 {
+    // Service class to manage patients in the healthcare system
     public class PatientService : IPatientService
     {
         private readonly IPatientRepository _patientRepo;
@@ -18,6 +16,7 @@ namespace HealthApp.ConsoleApp.Services
             _patientRepo = patientRepo;
         }
 
+        // Method to register a new patient in the database
         public string RegisterPatient(Patient patient)
         {
             List<Patient> patients = _patientRepo.GetAllPatients();
@@ -27,6 +26,7 @@ namespace HealthApp.ConsoleApp.Services
             return _patientRepo.RegisterPatient(patient);
         }
 
+        // Method to update an existing patient in the database
         public Patient UpdatePatient(Patient patient)
         {
             Patient? existingPatient = GetPatientById(patient.PatientId);
@@ -38,6 +38,7 @@ namespace HealthApp.ConsoleApp.Services
             return _patientRepo.UpdatePatient(existingPatient, patient);
         }
 
+        // Method to get a patient by ID from the database
         public Patient? GetPatientById(int id)
         {
             Patient? patient = _patientRepo.GetPatientById(id);
@@ -48,13 +49,14 @@ namespace HealthApp.ConsoleApp.Services
             }
             return patient;
         }
-
+        // Method to generate a unique patient ID based on existing patients in the database
         public static int PatientIdGenerator(List<Patient> patients)
         {
             return patients.Any()
                 ? patients.Max(p => p.PatientId) + 1
                 : 101;
         }
+        // Method to get all patients from the database
         public List<Patient> GetAllPatients()
         {
             return _patientRepo.GetAllPatients();

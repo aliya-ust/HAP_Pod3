@@ -2,53 +2,58 @@
 using HealthApp.ConsoleApp.Helpers;
 using HealthApp.ConsoleApp.Interfaces;
 using HealthApp.ConsoleApp.Models;
+using HealthApp.ConsoleApp.Services;
 
 namespace HealthApp.ConsoleApp.Menus
 {
+    // Menu class to handle all doctor-related user interactions
     public class DoctorMenu
     {
         private readonly IDoctorService _doctorService;
         private readonly IAppointmentService _appointmentService;
-
+        // Constructor to inject required services for doctor management and appointments
         public DoctorMenu(IDoctorService doctorService, IAppointmentService appointmentService)
         {
             _doctorService = doctorService;
             _appointmentService = appointmentService;
         }
+        // Doctor sub-menu with full management options
         public void ShowMenu()
         {
             while (true)
             {
-                Console.Clear();
-                Console.WriteLine("=================================");
-                Console.WriteLine("DOCTOR MENU");
-                Console.WriteLine("=================================");
-                Console.WriteLine("1. Add Doctor");
-                Console.WriteLine("2. Search by Specialisation");
-                Console.WriteLine("3. Get Doctor By ID");
-                Console.WriteLine("4. View All Doctors");
-                Console.WriteLine("5. Back");
+                Console.WriteLine("  ╔══════════════════════════════════╗");
+                Console.WriteLine("  ║         DOCTOR MENU              ║");
+                Console.WriteLine("  ╠══════════════════════════════════╣");
+                Console.WriteLine("  ║  1.  Add Doctor                  ║");
+                Console.WriteLine("  ║  2.  Search by Specialisation    ║");
+                Console.WriteLine("  ║  3.  Get Doctor by ID            ║");
+                Console.WriteLine("  ║  4.  View All Doctors            ║");
+                Console.WriteLine("  ║  5.  Update Doctor               ║");
+                Console.WriteLine("  ║  6.  View Appointments by Doctor ║");
+                Console.WriteLine("  ║  7.  Back                        ║");
+                Console.WriteLine("  ╚══════════════════════════════════╝");
+                Console.Write("\n  Choose an option : ");
 
-                Console.Write("Enter choice: ");
-                string? choice = Console.ReadLine();
 
-                switch (choice)
+                switch (Console.ReadLine()?.Trim() ?? "")
                 {
                     case "1": AddDoctor(); break;
                     case "2": SearchBySpecialisation(); break;
                     case "3": GetDoctorById(); break;
                     case "4": ViewAllDoctors(); break;
-                    case "5": return;
+                    case "5": UpdateDoctor(); break;
+                    case "6": GetAppointmentsByDoctorId(); break;
+                    case "7": return;
                     default:
-                        Console.WriteLine("Invalid choice.");
-                        Pause();
+                        PrintError("Invalid choice.");
+                        Thread.Sleep(800);
                         break;
                 }
             }
         }
 
-
-        // Add a new doctor with schedule and available slots
+        // Add a new doctor with leave dates and available slots
         public void AddDoctor()
         {
             try
@@ -57,7 +62,7 @@ namespace HealthApp.ConsoleApp.Menus
                 Console.WriteLine("Type 'q' or 'back' anytime to return.\n");
 
                 // Get and validate doctor full name
-                string name = InputValidator.GetValidatedInput(
+                string fullname = InputValidator.GetValidatedInput(
                     "Full Name              : ",
                     InputValidator.IsValidName,
                     "Name cannot be empty or contain numbers.")!;
@@ -72,7 +77,8 @@ namespace HealthApp.ConsoleApp.Menus
                 string yearsRaw = InputValidator.GetValidatedInput(
                     "Years Of Experience    : ",
                     InputValidator.IsValidExperience,
-                    "Please enter a valid non-negative number.")!;
+                    "Experience must be between 0 and 50 years."
+)!;
 
                 // Get and validate consultation fee
                 string feeRaw = InputValidator.GetValidatedInput(
@@ -83,7 +89,7 @@ namespace HealthApp.ConsoleApp.Menus
                 int years = int.Parse(yearsRaw);
                 decimal fee = decimal.Parse(feeRaw);
 
-                // Collect leave dates within the next 30 days
+                // Collect leave dates to exclude from availability
                 List<DateTime> leaveDates = new();
                 DateTime startDate = DateTime.Today;
                 DateTime endDate = DateTime.Today.AddDays(30);
@@ -124,7 +130,8 @@ namespace HealthApp.ConsoleApp.Menus
                     }
 
                     leaveDates.Add(leaveDate);
-                    Console.WriteLine($"  Leave added : {leaveDate:dd/MM/yyyy}");
+                    Console.WriteLine($"     Leave added : {leaveDate:dd/MM/yyyy}");
+                    Console.ResetColor();
                 }
 
                 // Build available dates by excluding leave dates
@@ -136,58 +143,61 @@ namespace HealthApp.ConsoleApp.Menus
                 // Display and select available time slots
                 SlotHelper slotHelper = new();
                 List<string> allSlots = slotHelper.AvailableSlots;
-                List<string> defaultSlots = new();
+                List<string> selectedSlots = new();
 
                 while (true)
                 {
                     Console.WriteLine("\nAvailable Slots:");
+                    Console.WriteLine("  " + new string('─', 30));
                     for (int i = 0; i < allSlots.Count; i++)
                         Console.WriteLine($"  {i + 1}. {allSlots[i]}");
+                    Console.WriteLine("  " + new string('─', 30));
 
                     string slotInput = InputValidator.GetValidatedInput(
-                        "\nSelect Slots (e.g. 1,2,3) : ",
+                        "Select Slots (e.g. 1,2,3) : ",
                         InputValidator.IsNonEmpty,
-                        "Please enter at least one slot number.")!;
+                        "Please enter at least one slot.")!;
 
-                    List<string> selected = new();
+                    List<string> picked = new();
                     bool valid = true;
 
-                    foreach (string choice in slotInput.Split(','))
+                    foreach (string c in slotInput.Split(','))
                     {
-                        if (!int.TryParse(choice.Trim(), out int index) ||
+                        if (!int.TryParse(c.Trim(), out int index) ||
                             index < 1 || index > allSlots.Count)
                         {
-                            PrintError($"Invalid slot choice: {choice.Trim()}");
+                            PrintError($"Invalid slot choice: {c.Trim()}");
                             valid = false;
                             break;
                         }
 
                         string slot = allSlots[index - 1];
-                        if (!selected.Contains(slot)) selected.Add(slot);
+                        if (!picked.Contains(slot)) picked.Add(slot);
                     }
 
-                    if (!valid || selected.Count == 0) continue;
+                    if (!valid || picked.Count == 0) continue;
 
-                    defaultSlots = selected;
+                    selectedSlots = picked;
                     break;
                 }
 
                 // Build and save the doctor
                 Doctor doctor = new()
                 {
-                    Name = name,
+                    Name = fullname,
                     Specialisation = spec,
                     YearsOfExperience = years,
                     ConsultationFee = fee,
                     IsActive = true,
                     AvailableDates = availableDates,
-                    AvailableSlots = defaultSlots
+                    AvailableSlots = selectedSlots
                 };
 
                 _doctorService.AddDoctor(doctor);
 
                 PrintSuccess("Doctor Added Successfully!");
-                Console.WriteLine($"  {doctor.GetScheduleSummary()}");
+                Console.WriteLine($"\n  {doctor.GetScheduleSummary()}");
+                Console.WriteLine($"  Slots : {string.Join(", ", doctor.AvailableSlots)}");
             }
             catch (OperationCanceledException)
             {
@@ -201,7 +211,159 @@ namespace HealthApp.ConsoleApp.Menus
             Pause();
         }
 
-        // Search doctors by specialisation and show their details
+        // Update an existing doctor's details keeping old values where not changed
+        public void UpdateDoctor()
+        {
+            try
+            {
+                PrintHeader("UPDATE DOCTOR");
+                Console.WriteLine("  Type 'q' or 'back' anytime to return.\n");
+
+                // Get and validate doctor ID
+                string rawId = InputValidator.GetValidatedInput(
+                    "  Enter Doctor ID : ",
+                    InputValidator.IsValidId,
+                    "  Please enter a valid positive number.")!;
+
+                var existing = _doctorService.GetDoctorById(int.Parse(rawId));
+
+                if (existing == null)
+                {
+                    PrintError($"No doctor found with ID {rawId}.");
+                    Pause();
+                    return;
+                }
+
+                // Show current details before editing
+                Console.WriteLine("\n  Current Details:");
+                Console.WriteLine("  " + new string('─', 50));
+                Console.WriteLine($"  ID             : {existing.DoctorId}");
+                Console.WriteLine($"  Name           : {existing.Name}");
+                Console.WriteLine($"  Specialisation : {existing.Specialisation}");
+                Console.WriteLine($"  Experience     : {existing.YearsOfExperience} years");
+                Console.WriteLine($"  Fee            : Rs.{existing.ConsultationFee}");
+                Console.WriteLine($"  Active         : {(existing.IsActive ? "Yes" : "No")}");
+                Console.WriteLine($"  Slots          : {string.Join(", ", existing.AvailableSlots)}");
+                Console.WriteLine("  " + new string('─', 50));
+                Console.WriteLine("\n  Press ENTER to keep existing value.\n");
+
+                // Get optional updated name
+                string? name = InputValidator.GetValidatedInput(
+                    "  Full Name              : ",
+                    InputValidator.IsValidName,
+                    "  Name cannot be empty or contain numbers or special characters.",
+                    allowEmpty: true);
+
+                // Get optional updated specialisation
+                string? spec = InputValidator.GetValidatedInput(
+                    "  Specialisation         : ",
+                    InputValidator.IsValidName,
+                    "  Specialisation cannot be empty.",
+                    allowEmpty: true);
+
+                // Get optional updated years of experience
+                string yearsRaw = InputValidator.GetValidatedInput(
+                            "Years Of Experience    : ",
+                            InputValidator.IsValidExperience,
+                            "Experience must be between 0 and 50 years."
+                        )!;
+
+                // Get optional updated consultation fee
+                string? feeRaw = InputValidator.GetValidatedInput(
+                    "  Consultation Fee (Rs.) : ",
+                    InputValidator.IsValidFee,
+                    "  Please enter a valid non-negative amount.",
+                    allowEmpty: true);
+
+                // Get optional updated active status
+                Console.Write("  Is Active (true/false) : ");
+                string? activeRaw = Console.ReadLine()?.Trim();
+                bool isActive = string.IsNullOrWhiteSpace(activeRaw)
+                    ? existing.IsActive
+                    : activeRaw.Equals("true", StringComparison.OrdinalIgnoreCase);
+
+                // Get optional updated slots
+                List<string> updatedSlots = existing.AvailableSlots;
+
+                Console.Write("\n  Update available slots? (Y/N) : ");
+                if (Console.ReadLine()?.Trim().ToUpper() == "Y")
+                {
+                    SlotHelper slotHelper = new();
+                    List<string> allSlots = slotHelper.AvailableSlots;
+
+                    Console.WriteLine("\n  Available Slots:");
+                    Console.WriteLine("  " + new string('─', 30));
+                    for (int i = 0; i < allSlots.Count; i++)
+                        Console.WriteLine($"    {i + 1}.  {allSlots[i]}");
+                    Console.WriteLine("  " + new string('─', 30));
+
+                    while (true)
+                    {
+                        string slotInput = InputValidator.GetValidatedInput(
+                            "  Select slots (e.g. 1,2,3) : ",
+                            InputValidator.IsNonEmpty,
+                            "  Please select at least one slot.")!;
+
+                        List<string> picked = new();
+                        bool valid = true;
+
+                        foreach (string c in slotInput.Split(','))
+                        {
+                            if (!int.TryParse(c.Trim(), out int idx) ||
+                                idx < 1 || idx > allSlots.Count)
+                            { PrintError($"Invalid slot: {c.Trim()}"); valid = false; break; }
+
+                            string slot = allSlots[idx - 1];
+                            if (!picked.Contains(slot)) picked.Add(slot);
+                        }
+
+                        if (!valid || picked.Count == 0) continue;
+
+                        updatedSlots = picked;
+                        break;
+                    }
+                }
+
+                // Build updated doctor — fall back to existing values where unchanged
+                Doctor updated = new()
+                {
+                    DoctorId = existing.DoctorId,
+                    Name = name ?? existing.Name,
+                    Specialisation = spec ?? existing.Specialisation,
+                    YearsOfExperience = yearsRaw != null ? int.Parse(yearsRaw) : existing.YearsOfExperience,
+                    ConsultationFee = feeRaw != null ? decimal.Parse(feeRaw) : existing.ConsultationFee,
+                    IsActive = isActive,
+                    AvailableDates = existing.AvailableDates,
+                    AvailableSlots = updatedSlots
+                };
+
+                _doctorService.UpdateDoctor(updated);
+
+                PrintSuccess("Doctor Updated Successfully!");
+                Console.WriteLine($"\n  ID             : {updated.DoctorId}");
+                Console.WriteLine($"  Name           : {updated.Name}");
+                Console.WriteLine($"  Specialisation : {updated.Specialisation}");
+                Console.WriteLine($"  Experience     : {updated.YearsOfExperience} years");
+                Console.WriteLine($"  Fee            : Rs.{updated.ConsultationFee}");
+                Console.WriteLine($"  Active         : {(updated.IsActive ? "Yes" : "No")}");
+                Console.WriteLine($"  Slots          : {string.Join(", ", updated.AvailableSlots)}");
+            }
+            catch (OperationCanceledException)
+            {
+                Console.WriteLine("\n  Returning to menu...");
+            }
+            catch (DoctorNotFoundException ex)
+            {
+                PrintError(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                PrintError(ex.Message);
+            }
+
+            Pause();
+        }
+        // Search active doctors by specialisation and show their details
         public void SearchBySpecialisation()
         {
             try
@@ -217,6 +379,8 @@ namespace HealthApp.ConsoleApp.Menus
 
                 var results = _doctorService.GetDoctorsBySpecialisation(query);
                 Console.WriteLine($"\n  {results.Count} doctor(s) found:\n");
+                Console.WriteLine("  " + new string('─', 55));
+
 
                 foreach (var d in results)
                 {
@@ -227,13 +391,13 @@ namespace HealthApp.ConsoleApp.Menus
                         ? $"  Slots      : {string.Join(", ", d.AvailableSlots)}"
                         : "  Slots      : None configured");
 
-                    // Show availability using spec method IsAvailable()
-                    bool availableToday = d.IsAvailable(DateTime.Today);
-                    Console.ForegroundColor = availableToday ? ConsoleColor.Green : ConsoleColor.Yellow;
-                    Console.WriteLine($"  Available Today : {(availableToday ? "Yes" : "No")}");
+                    // Show IsAvailable() result — required spec method
+                    bool today = d.IsAvailable(DateTime.Today);
+                    Console.ForegroundColor = today ? ConsoleColor.Green : ConsoleColor.Yellow;
+                    Console.WriteLine($"  Available Today : {(today ? "Yes" : "No")}");
                     Console.ResetColor();
 
-                    // Show schedule summary using spec method GetScheduleSummary()
+                    // Show GetScheduleSummary() — required spec method
                     Console.WriteLine($"  {d.GetScheduleSummary()}");
                     Console.WriteLine(new string('-', 50));
                 }
@@ -245,6 +409,10 @@ namespace HealthApp.ConsoleApp.Menus
             catch (SpecialisationNotFoundException ex)
             {
                 Console.WriteLine($"\n  {ex.Message}");
+            }
+            catch(Exception ex)
+            {
+                PrintError(ex.Message);
             }
 
             Pause();
@@ -264,7 +432,7 @@ namespace HealthApp.ConsoleApp.Menus
                     InputValidator.IsValidId,
                     "Please enter a valid positive number.")!;
 
-                Doctor doctor = _doctorService.GetDoctorById(int.Parse(raw));
+                var doctor = _doctorService.GetDoctorById(int.Parse(raw));
 
                 if (doctor == null)
                 {
@@ -273,19 +441,23 @@ namespace HealthApp.ConsoleApp.Menus
                     return;
                 }
 
-                Console.WriteLine(new string('-', 36));
-                Console.WriteLine($"ID             : {doctor.DoctorId}");
-                Console.WriteLine($"Name           : {doctor.Name}");
-                Console.WriteLine($"Specialisation : {doctor.Specialisation}");
-                Console.WriteLine($"Experience     : {doctor.YearsOfExperience} years");
-                Console.WriteLine($"Fee            : Rs.{doctor.ConsultationFee}");
-                Console.WriteLine($"Active         : {(doctor.IsActive ? "Yes" : "No")}");
-                Console.WriteLine($"Slots          : {string.Join(", ", doctor.AvailableSlots)}");
-                Console.WriteLine(new string('-', 36));
+                Console.WriteLine("  " + new string('─', 40));
+                Console.WriteLine($"  ID             : {doctor.DoctorId}");
+                Console.WriteLine($"  Name           : {doctor.Name}");
+                Console.WriteLine($"  Specialisation : {doctor.Specialisation}");
+                Console.WriteLine($"  Experience     : {doctor.YearsOfExperience} years");
+                Console.WriteLine($"  Fee            : Rs.{doctor.ConsultationFee}");
+                Console.WriteLine($"  Active         : {(doctor.IsActive ? "Yes" : "No")}");
+                Console.WriteLine($"  Slots          : {string.Join(", ", doctor.AvailableSlots)}");
+                Console.WriteLine("  " + new string('─', 40));
             }
             catch (OperationCanceledException)
             {
                 Console.WriteLine("\nReturning to Main Menu...");
+            }
+            catch (Exception ex)
+            {
+                PrintError(ex.Message);
             }
 
             Pause();
@@ -305,76 +477,123 @@ namespace HealthApp.ConsoleApp.Menus
                 return;
             }
 
-            foreach (var doctor in doctors)
+            foreach (var d in doctors)
             {
-                Console.WriteLine(new string('-', 40));
-                Console.WriteLine($"ID             : {doctor.DoctorId}");
-                Console.WriteLine($"Name           : {doctor.Name}");
-                Console.WriteLine($"Specialisation : {doctor.Specialisation}");
-                Console.WriteLine($"Experience     : {doctor.YearsOfExperience} years");
-                Console.WriteLine($"Fee            : Rs.{doctor.ConsultationFee}");
-                Console.WriteLine($"Active         : {(doctor.IsActive ? "Yes" : "No")}");
+                Console.WriteLine("  " + new string('─', 50));
+                Console.WriteLine($"  [{d.DoctorId}]  {d.Name}  —  {d.Specialisation}");
+                Console.WriteLine($"       Experience : {d.YearsOfExperience} yrs  |  Fee : Rs.{d.ConsultationFee}");
+                Console.WriteLine($"       Status     : {(d.IsActive ? "Active" : "Inactive")}");
             }
 
             Console.WriteLine(new string('-', 40));
             Pause();
         }
-        public void UpdateDoctor()
+
+        public void GetAppointmentsByDoctorId()
         {
             try
             {
-                PrintHeader("Get Doctor by ID");
-                Console.WriteLine("Type 'q' or 'back' to return.\n");
+                PrintHeader("APPOINTMENTS BY DOCTOR");
+                Console.WriteLine("  Type 'q' or 'back' to return.\n");
 
                 // Get and validate doctor ID
                 string raw = InputValidator.GetValidatedInput(
-                    "Enter Doctor ID : ",
+                    "  Enter Doctor ID : ",
                     InputValidator.IsValidId,
-                    "Please enter a valid positive number.")!;
+                    "  Please enter a valid positive number.")!;
 
-                Doctor doctor = _doctorService.GetDoctorById(int.Parse(raw));
+                int doctorId = int.Parse(raw);
 
+                // Verify doctor exists before fetching appointments
+                var doctor = _doctorService.GetDoctorById(doctorId);
                 if (doctor == null)
                 {
-                    PrintError("Doctor not found.");
+                    PrintError($"No doctor found with ID {doctorId}.");
                     Pause();
                     return;
                 }
 
+                Console.WriteLine($"\n  Dr. {doctor.Name}  —  {doctor.Specialisation}\n");
+
+                // Fetch all appointments for this doctor
+                var appointments = _appointmentService.GetAppointmentsByDoctorId(doctorId);
+
+                if (appointments.Count == 0)
+                {
+                    PrintError("No appointments found for this doctor.");
+                    Pause();
+                    return;
+                }
+
+                Console.WriteLine($"  {appointments.Count} appointment(s) found:\n");
+
+                // Group by status for better readability
+                foreach (var status in new[] {
+            AppointmentStatus.Confirmed,
+            AppointmentStatus.Pending,
+            AppointmentStatus.Completed,
+            AppointmentStatus.Cancelled })
+                {
+                    var group = appointments.Where(a => a.Status == status).ToList();
+                    if (group.Count == 0) continue;
+                    Console.WriteLine($"  ── {status} ({group.Count}) ──────────────────────");
+                    foreach (var appt in group)
+                    {
+                        Console.WriteLine($"  [{appt.AppointmentId}]  " +
+                                          $"{appt.Patient.Name,-15}  |  " +
+                                          $"{appt.ScheduledDate:dd/MM/yyyy}  |  " +
+                                          $"{appt.TimeSlot}");
+                    }
+
+                    Console.WriteLine();
+                }
+
+                Console.WriteLine("  " + new string('─', 50));
             }
             catch (OperationCanceledException)
             {
-                Console.WriteLine("\nReturning to Main Menu...");
+                Console.WriteLine("\n  Returning to menu...");
+            }
+            catch (Exception ex)
+            {
+                PrintError(ex.Message);
             }
 
             Pause();
-
         }
+
 
         // ── Helpers ──────────────────────────────────────────────────────────────
 
         private static void PrintHeader(string title)
         {
-            Console.WriteLine($"\n--- {title} ---\n");
+            Console.WriteLine($"\n  ╔══════════════════════════════════════════════════╗");
+            Console.WriteLine($"  ║  {title,-48}║");
+            Console.WriteLine($"  ╚══════════════════════════════════════════════════╝");
+            Console.ResetColor();
+            Console.WriteLine();
         }
 
         private static void PrintSuccess(string msg)
         {
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine(msg);
+            Console.WriteLine($"\n{msg}");
             Console.ResetColor();
         }
 
-        private static void PrintError(string message)
+        private static void PrintError(string msg)
         {
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine($"\nERROR : {message}");
+            Console.WriteLine($"\n{msg}");
             Console.ResetColor();
         }
+
 
         private static void Pause()
         {
-            Console.WriteLine("\nPress any key to continue...");
+            Console.ForegroundColor = ConsoleColor.DarkGray;
+            Console.WriteLine("\n  Press any key to continue...");
+            Console.ResetColor();
             Console.ReadKey(intercept: true);
         }
     }

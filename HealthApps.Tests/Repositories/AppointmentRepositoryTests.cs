@@ -7,6 +7,7 @@ using HealthApp.ConsoleApp.Databases;
 
 namespace HealthApp.Tests.Repositories
 {
+    // Test class for AppointmentRepository to validate appointment management functionalities
     public class AppointmentRepositoryTests
     {
         private readonly AppointmentDb _appointmentDb;

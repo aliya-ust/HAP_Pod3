@@ -4,6 +4,7 @@ using HealthApp.ConsoleApp.Models;
 
 namespace HealthApp.ConsoleApp.Interfaces
 {
+    // Service interface for doctor-related operations
     public interface IDoctorService
     {
         string AddDoctor(Doctor doctor);

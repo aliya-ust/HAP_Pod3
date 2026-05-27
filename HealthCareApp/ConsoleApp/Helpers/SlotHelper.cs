@@ -6,7 +6,7 @@ namespace HealthApp.ConsoleApp.Helpers
 {
     public class SlotHelper
     {
-        // Fixed clinic slots — single source of truth
+        // Fixed clinic slots
         public readonly List<string> AvailableSlots = new List<string>
         {
             "09:00 AM",
@@ -27,21 +27,23 @@ namespace HealthApp.ConsoleApp.Helpers
             {
                 Console.WriteLine($"  {i + 1}. {AvailableSlots[i]}");
             }
+            Console.Write("\nChoose slot (1-8): ");
+            string? input = Console.ReadLine();
 
-            //  Console.Write("Pick a slot (1-8): ");
-            // int choice = int.Parse(Console.ReadLine());
-            if (!int.TryParse("  Choose slot (1-8): ", out int slotChoice)
+            if (!int.TryParse(input, out int slotChoice)
                 || slotChoice < 1 || slotChoice > 8)
             {
                 PrintError("Please enter a number between 1 and 8.");
-                Pause(); return "";
+                Pause();
+                return "";
+            }
+            {
+                PrintError("Please enter a number between 1 and 8.");
+                Pause(); 
+                return "";
             }
 
-            // // Validate choice is in range
-            // if (choice < 1 || choice > AvailableSlots.Count)
-            //     throw new ArgumentException("Invalid slot choice.");
-
-            return AvailableSlots[slotChoice - 1]; // return the actual string
+            return AvailableSlots[slotChoice - 1]; 
         }
         private static void PrintError(string msg)
         {

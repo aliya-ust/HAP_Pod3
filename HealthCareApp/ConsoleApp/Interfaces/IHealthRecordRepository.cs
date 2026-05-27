@@ -2,6 +2,7 @@
 
 namespace HealthApp.ConsoleApp.Interfaces
 {
+    // Repository interface for managing health records
     public interface IHealthRecordRepository
     {
         string AddHealthRecord(HealthRecord record);
