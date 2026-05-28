@@ -4,7 +4,7 @@
     {
         public DoctorNotFoundException(string message) : base(message)
         {
-
+            Console.WriteLine("Doctor not found: " + message);
         }
     }
 }

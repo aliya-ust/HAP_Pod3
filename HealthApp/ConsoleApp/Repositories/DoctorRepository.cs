@@ -43,8 +43,8 @@ namespace HealthApp.ConsoleApp.Repositories
             existingDoctor.YearsOfExperience = doctor.YearsOfExperience;
             existingDoctor.ConsultationFee = doctor.ConsultationFee;
             existingDoctor.IsActive = doctor.IsActive;
-            existingDoctor.AvailableDates = doctor.AvailableDates;
-            existingDoctor.AvailableSlots = doctor.AvailableSlots;
+            existingDoctor.AvailableDates=doctor.AvailableDates;
+            existingDoctor.AvailableSlots=doctor.AvailableSlots;
 
             return existingDoctor;
         }

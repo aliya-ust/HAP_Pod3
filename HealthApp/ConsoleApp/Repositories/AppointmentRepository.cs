@@ -36,7 +36,7 @@ namespace HealthApp.ConsoleApp.Repositories
             existingAppointment.Doctor = appointment.Doctor;
             existingAppointment.ScheduledDate = appointment.ScheduledDate;
             existingAppointment.TimeSlot = appointment.TimeSlot;
-            existingAppointment.CancellationReason = appointment.CancellationReason;
+            existingAppointment.CancellationReason=appointment.CancellationReason;
 
             return existingAppointment;
         }

@@ -90,6 +90,17 @@ namespace HealthApp.ConsoleApp.Services
             }
             return record;
         }
+        public List<HealthRecord> GetAllHealthRecords()
+        {
+            var records = _healthRecordRepository.GetAllRecords();
+ 
+            if (records == null || records.Count == 0)
+            {
+                throw new HealthRecordNotFoundException("No records found.");
+            }
+ 
+            return records;
+        }
         // Method to generate a unique health record ID based on existing health records in the database
         public static int RecordIdGenerator(List<HealthRecord> records)
         {

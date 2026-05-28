@@ -24,24 +24,46 @@ namespace HealthApp.ConsoleApp.Menus
             try
             {
                 Console.Clear();
-                PrintHeader("ADD HEALTH RECORD");
+                ConsoleHelper.PrintHeader("ADD HEALTH RECORD");
                 Console.WriteLine("  Type 'q' or 'back' to return.\n");
 
                 // Show all completed appointments to help user find the right ID
-                var allCompleted = _appointmentService.GetAllAppointments()
-                    .Where(a => a.Status == AppointmentStatus.Completed).ToList();
-
-                if (allCompleted.Count == 0)
+                var completedAppointments = _appointmentService.GetAllAppointments()
+                    .Where(a => a.Status == AppointmentStatus.Completed)
+                    .ToList();
+ 
+                List<HealthRecord> healthRecords;
+ 
+                try
                 {
-                    PrintError("No completed appointments found.");
+                    healthRecords = _healthRecordService.GetAllHealthRecords().ToList();
+                }
+                catch
+                {
+                    // No records → treat as empty list
+                    healthRecords = new List<HealthRecord>();
+                }
+ 
+                // Extract appointment IDs
+                var existingAppointmentIds = healthRecords
+                    .Select(hr => hr.AppointmentId)
+                    .ToHashSet();
+ 
+                // Filter
+                var filteredAppointments = completedAppointments
+                    .Where(a => !existingAppointmentIds.Contains(a.AppointmentId))
+                    .ToList();
+ 
+                if (filteredAppointments.Count == 0)
+                {
+                    ConsoleHelper.PrintError("No completed appointments found.");
                     Console.WriteLine("  Use option 6 → Mark as Completed first.");
-                    Pause();
+                    ConsoleHelper.Pause();
                     return;
                 }
-
                 Console.WriteLine("  COMPLETED APPOINTMENTS");
                 Console.WriteLine("  " + new string('─', 60));
-                foreach (var a in allCompleted)
+                foreach (var a in filteredAppointments)
                     Console.WriteLine($"  [{a.AppointmentId}]  {a.Patient.Name}  →  " +
                                       $"Dr. {a.Doctor.Name}  |  {a.ScheduledDate:dd MMM yyyy}");
                 Console.WriteLine("  " + new string('─', 60) + "\n");
@@ -52,25 +74,15 @@ namespace HealthApp.ConsoleApp.Menus
                     InputValidator.IsValidId,
                     "  Please enter a valid positive number.")!;
 
-                // Fetch appointment and handle not found
                 Appointment appointment;
-                try
-                {
-                    appointment = _appointmentService.GetAppointmentById(int.Parse(rawId));
-                }
-                catch (AppointmentNotFoundException)
-                {
-                    PrintError($"No appointment found with ID {rawId}.");
-                    Pause();
-                    return;
-                }
+                appointment = _appointmentService.GetAppointmentById(int.Parse(rawId));
 
                 // Validate the appointment is actually completed
                 if (appointment.Status != AppointmentStatus.Completed)
                 {
-                    PrintError($"Appointment {rawId} status is '{appointment.Status}'.");
+                    ConsoleHelper.PrintError($"Appointment {rawId} status is '{appointment.Status}'.");
                     Console.WriteLine("  Use option 6 → Mark as Completed before adding a record.");
-                    Pause();
+                    ConsoleHelper.Pause();
                     return;
                 }
 
@@ -95,6 +107,7 @@ namespace HealthApp.ConsoleApp.Menus
                 // Build and persist the health record
                 var record = new HealthRecord
                 {
+                    AppointmentId = appointment.AppointmentId,
                     Patient = appointment.Patient,
                     Doctor = appointment.Doctor,
                     VisitDate = appointment.ScheduledDate,
@@ -104,7 +117,7 @@ namespace HealthApp.ConsoleApp.Menus
                 };
 
                 string result = _healthRecordService.AddHealthRecord(record);
-                PrintSuccess(result);
+                ConsoleHelper.PrintSuccess(result);
             }
             catch (OperationCanceledException)
             {
@@ -112,10 +125,10 @@ namespace HealthApp.ConsoleApp.Menus
             }
             catch (Exception ex)
             {
-                PrintError(ex.Message);
+                ConsoleHelper.PrintError(ex.Message);
             }
 
-            Pause();
+            ConsoleHelper.Pause();
         }
 
         // View health records by patient, doctor, or record ID
@@ -124,7 +137,7 @@ namespace HealthApp.ConsoleApp.Menus
             try
             {
                 Console.Clear();
-                PrintHeader("VIEW HEALTH RECORDS");
+                ConsoleHelper.PrintHeader("VIEW HEALTH RECORDS");
                 Console.WriteLine("  Type 'q' or 'back' to return.\n");
                 Console.WriteLine("  ╔══════════════════════════════╗");
                 Console.WriteLine("  ║  1.  By Patient ID           ║");
@@ -148,7 +161,7 @@ namespace HealthApp.ConsoleApp.Menus
                     case "4":
                         return;
                     default:
-                        PrintError("Invalid choice.");
+                        ConsoleHelper.PrintError("Invalid choice.");
                         break;
                 }
             }
@@ -156,8 +169,12 @@ namespace HealthApp.ConsoleApp.Menus
             {
                 Console.WriteLine("\n  Returning to menu...");
             }
+            catch (Exception ex)
+            {
+                ConsoleHelper.PrintError(ex.Message);
+            }
 
-            Pause();
+            ConsoleHelper.Pause();
         }
 
         // Update an existing health record keeping old values where not changed
@@ -166,7 +183,7 @@ namespace HealthApp.ConsoleApp.Menus
             try
             {
                 Console.Clear();
-                PrintHeader("UPDATE HEALTH RECORD");
+                ConsoleHelper.PrintHeader("UPDATE HEALTH RECORD");
                 Console.WriteLine("  Type 'q' or 'back' to return.\n");
 
                 // Get and validate record ID
@@ -176,17 +193,7 @@ namespace HealthApp.ConsoleApp.Menus
                     "  Please enter a valid positive number.")!;
 
                 HealthRecord existing;
-                try
-                {
-                    existing = _healthRecordService.GetRecordById(int.Parse(rawId))!;
-                }
-                catch (HealthRecordNotFoundException ex)
-                {
-                    PrintError(ex.Message);
-                    Pause();
-                    return;
-                }
-
+                existing = _healthRecordService.GetRecordById(int.Parse(rawId))!;
                 // Show current record before editing
                 Console.WriteLine("\n  Current Record:");
                 Console.WriteLine("  " + new string('─', 55));
@@ -226,7 +233,7 @@ namespace HealthApp.ConsoleApp.Menus
                 };
 
                 var result = _healthRecordService.UpdateHealthRecord(updated);
-                PrintSuccess("Record updated successfully!");
+                ConsoleHelper.PrintSuccess("Record updated successfully!");
                 Console.WriteLine($"  {result.GetSummary()}");
             }
             catch (OperationCanceledException)
@@ -235,10 +242,10 @@ namespace HealthApp.ConsoleApp.Menus
             }
             catch (Exception ex)
             {
-                PrintError(ex.Message);
+                ConsoleHelper.PrintError(ex.Message);
             }
 
-            Pause();
+            ConsoleHelper.Pause();
         }
 
 
@@ -264,17 +271,9 @@ namespace HealthApp.ConsoleApp.Menus
 
                 Console.WriteLine("  " + new string('─', 55));
             }
-            catch (PatientNotFoundException ex) { PrintError(ex.Message); }
-            catch (DoctorNotFoundException ex) { PrintError(ex.Message); }
-            catch (HealthRecordNotFoundException ex) { PrintError(ex.Message); }
-            catch (Exception ex) { PrintError(ex.Message); }
+            catch (Exception ex) { ConsoleHelper.PrintError(ex.Message); }
 
-            static void PrintError(string m)
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine($"\n {m}");
-                Console.ResetColor();
-            }
+
         }
 
         // Fetch and display a single record by record ID
@@ -293,46 +292,10 @@ namespace HealthApp.ConsoleApp.Menus
                 Console.WriteLine($"  {record!.GetSummary()}");
                 Console.WriteLine("  " + new string('─', 55));
             }
-            catch (HealthRecordNotFoundException ex)
-            {
-                PrintError(ex.Message);
-            }
             catch (Exception ex)
             {
-                PrintError(ex.Message);
+                ConsoleHelper.PrintError(ex.Message);
             }
-        }
-        // Helpers
-        private static void PrintHeader(string title)
-        {
-
-            Console.WriteLine($"\n  ╔══════════════════════════════════════════════════╗");
-            Console.WriteLine($"  ║  {title,-48}║");
-            Console.WriteLine($"  ╚══════════════════════════════════════════════════╝");
-            Console.ResetColor();
-            Console.WriteLine();
-        }
-
-        private static void PrintSuccess(string msg)
-        {
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine($"\n{msg}");
-            Console.ResetColor();
-        }
-
-        private static void PrintError(string msg)
-        {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine($"\n{msg}");
-            Console.ResetColor();
-        }
-
-        private static void Pause()
-        {
-            Console.ForegroundColor = ConsoleColor.DarkGray;
-            Console.WriteLine("\n  Press any key to continue...");
-            Console.ResetColor();
-            Console.ReadKey(intercept: true);
         }
     }
 }

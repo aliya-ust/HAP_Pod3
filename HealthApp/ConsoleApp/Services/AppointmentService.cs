@@ -69,7 +69,7 @@ namespace HealthApp.ConsoleApp.Services
                 throw new AppointmentNotFoundException($"No appointments found for patient ID {patientId}.");
             }
 
-            return appointments.OrderByDescending(a => a.ScheduledDate).ToList();
+            return appointments.OrderByDescending(a=> a.ScheduledDate).ToList();
         }
 
         // Get appointment by doctor id
@@ -136,8 +136,8 @@ namespace HealthApp.ConsoleApp.Services
             List<Appointment> upcomingAppointments = _appointmentRepo
                 .GetAllAppointments()
                 .Where(a => a.ScheduledDate > DateTime.Now &&
-                            a.Status != AppointmentStatus.Completed &&
-                            a.Status != AppointmentStatus.Cancelled)
+                            a.Status != AppointmentStatus.Completed && 
+                            a.Status!= AppointmentStatus.Cancelled)
                 .OrderBy(a => a.ScheduledDate)
                 .ToList();
 

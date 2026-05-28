@@ -4,7 +4,7 @@
     {
         public UserExitException(string message) : base(message)
         {
-
+            Console.WriteLine("User exit: " + message);
         }
     }
 }

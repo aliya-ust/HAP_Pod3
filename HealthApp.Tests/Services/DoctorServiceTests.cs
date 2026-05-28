@@ -9,6 +9,7 @@ using HealthApp.ConsoleApp.Exceptions;
 
 namespace HealthApp.Tests.Services
 {
+    // Test class for DoctorService to validate doctor management functionalities
     public class DoctorServiceTests
     {
         private readonly Mock<IDoctorRepository> _mockRepo;

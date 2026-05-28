@@ -6,6 +6,7 @@ using HealthApp.ConsoleApp.Models;
 
 namespace HealthApp.Tests.Repositories
 {
+    // Test class for PatientRepository to validate patient management functionalities
     public class PatientRepositoryTests
     {
         private readonly PatientDb _patientDb;
@@ -16,8 +17,7 @@ namespace HealthApp.Tests.Repositories
             _patientDb = new PatientDb();
             _repository = new PatientRepository(_patientDb);
         }
-
-        [Fact]
+        [Fact]// RegisterPatient - Success
         public void RegisterPatient_ShouldAddPatient_ToDatabase()
         {
             var patient = new Patient
@@ -34,7 +34,7 @@ namespace HealthApp.Tests.Repositories
             Assert.Equal("Patient ID 1 added successfully!", result);
         }
 
-        [Fact]
+        [Fact]// RegisterPatient - Multiple Patients
         public void RegisterPatient_ShouldAllow_MultiplePatients()
         {
             var patient1 = new Patient
@@ -59,7 +59,7 @@ namespace HealthApp.Tests.Repositories
             Assert.Equal(7, _patientDb.Patients.Count);
         }
 
-        [Fact]
+        [Fact]// GetPatientById - Success
         public void GetPatientById_ShouldReturnPatient_WhenExists()
         {
             var patient = new Patient
@@ -81,7 +81,7 @@ namespace HealthApp.Tests.Repositories
             Assert.Equal("john@email.com", result.Email);
         }
 
-        [Fact]
+        [Fact]// GetPatientById - Not Found
         public void GetPatientById_ShouldReturnNull_WhenNotFound()
         {
             _patientDb.Patients.Add(new Patient
@@ -97,7 +97,7 @@ namespace HealthApp.Tests.Repositories
             Assert.Null(result);
         }
 
-        [Fact]
+        [Fact]// GetPatientById - Duplicate IDs
         public void GetPatientById_ShouldReturnFirstMatch_WhenDuplicateIdsExist()
         {
             var patient1 = new Patient
@@ -125,7 +125,7 @@ namespace HealthApp.Tests.Repositories
             Assert.Equal("First Entry", result.Name);
         }
 
-        [Fact]
+        [Fact]// GetAllPatients - Success
         public void GetAllPatients_ShouldReturnAllPatients()
         {
             var patient1 = new Patient
@@ -155,7 +155,7 @@ namespace HealthApp.Tests.Repositories
             Assert.Contains(result, p => p.PatientId == 2);
         }
 
-        [Fact]
+        [Fact]// UpdatePatient - Success
         public void UpdatePatient_ShouldUpdateExistingPatient()
         {
             var patient = new Patient
