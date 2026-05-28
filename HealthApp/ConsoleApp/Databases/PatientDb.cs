@@ -5,6 +5,8 @@ namespace HealthApp.ConsoleApp.Databases
     {
         public List<Patient> Patients = new()
         {
+            // Pre-populated patients with unique IDs, contact details, and insurance information
+            // PatientId starts from 101 to avoid conflict with test data
             new Patient
             {
                 PatientId = 101,

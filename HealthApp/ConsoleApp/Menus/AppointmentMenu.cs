@@ -5,12 +5,13 @@ using HealthApp.ConsoleApp.Models;
 
 namespace HealthApp.ConsoleApp.Menus
 {
+    // Menu class to handle all appointment-related user interactions
     public class AppointmentMenu
     {
         private readonly IAppointmentService _appointmentService;
         private readonly IPatientService _patientService;
         private readonly IDoctorService _doctorService;
-
+        // Constructor to inject required services for appointments, patients, and doctors
         public AppointmentMenu(IAppointmentService appointmentService,
                                IPatientService patientService,
                                IDoctorService doctorService)
@@ -19,142 +20,160 @@ namespace HealthApp.ConsoleApp.Menus
             _patientService = patientService;
             _doctorService = doctorService;
         }
+
+        // Sub-menu to choose between confirm/cancel or complete
         public void UpdateAppointmentMenu()
         {
             Console.Clear();
+            Console.WriteLine("  ╔══════════════════════════════════╗");
+            Console.WriteLine("  ║     UPDATE APPOINTMENT STATUS    ║");
+            Console.WriteLine("  ╠══════════════════════════════════╣");
+            Console.WriteLine("  ║  1.  Confirm / Cancel            ║");
+            Console.WriteLine("  ║  2.  Mark as Completed           ║");
+            Console.WriteLine("  ║  3.  Back                        ║");
+            Console.WriteLine("  ╚══════════════════════════════════╝");
+            Console.Write("\n  Choose an option : ");
 
-            Console.WriteLine("1.Confirm/Cancel Appointment  ");
-            Console.WriteLine("2.Complete Appointment        ");
-
-            Console.WriteLine("Enter choice :- ");
-            var choice = Console.ReadLine();
-
-            switch (choice)
+            switch (Console.ReadLine()?.Trim() ?? "")
             {
-                case "1":
-                    ConfirmOrCancel(); break;
-
-                case "2":
-                    CompleteAppointment(); break;
+                case "1": ConfirmOrCancel(); break;
+                case "2": CompleteAppointment(); break;
+                case "3": return;
                 default:
-                    Console.WriteLine("Invalid choice.");
-                    Console.ReadKey();
+                    PrintError("Invalid choice.");
+                    Thread.Sleep(800);
                     break;
             }
         }
 
-        // Book a new appointment for a patient with a doctor
+        // Book a new appointment for a patient with a chosen doctor and slot
         public void BookAppointment()
         {
             try
             {
                 Console.Clear();
                 PrintHeader("BOOK APPOINTMENT");
-                Console.WriteLine("Type 'q' or 'back' at any prompt to return.\n");
+                Console.WriteLine("  Type 'q' or 'back' at any prompt to return.\n");
 
                 // Get and validate patient ID
                 string rawPatient = InputValidator.GetValidatedInput(
-                    "Enter Patient ID : ",
+                    "  Enter Patient ID : ",
                     InputValidator.IsValidId,
-                    "Please enter a valid positive number.")!;
+                    "  Please enter a valid positive number.")!;
 
-                Patient? patient = _patientService.GetPatientById(int.Parse(rawPatient));
+                var patient = _patientService.GetPatientById(int.Parse(rawPatient));
                 if (patient == null)
                 {
-                    PrintError("Patient not found.");
+                    PrintError($"No patient found with ID {rawPatient}.");
                     Pause();
                     return;
                 }
-                Console.WriteLine($"\n  Patient Found : {patient.Name}");
 
-                // Display all available doctors
-                Console.WriteLine("\nAVAILABLE DOCTORS");
-                Console.WriteLine(new string('-', 60));
-                foreach (Doctor doc in _doctorService.GetAllDoctors())
-                    Console.WriteLine($"  ID: {doc.DoctorId} | {doc.Name} | {doc.Specialisation} | " +
-                                      $"Fee: Rs.{doc.ConsultationFee} | {(doc.IsActive ? "ACTIVE" : "INACTIVE")}");
-                Console.WriteLine(new string('-', 60));
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine($"\n     Patient : {patient.Name}");
+                Console.ResetColor();
 
-                // Get and validate doctor ID
+                // Display all doctors for selection
+                Console.WriteLine("\n  AVAILABLE DOCTORS");
+                Console.WriteLine("  " + new string('─', 65));
+                foreach (var doc in _doctorService.GetAllDoctors())
+                    Console.WriteLine($"  [{doc.DoctorId}]  {doc.Name}  |  {doc.Specialisation}  |  " +
+                                      $"Rs.{doc.ConsultationFee}  |  " +
+                                      $"{(doc.IsActive ? "ACTIVE" : "INACTIVE")}");
+                Console.WriteLine("  " + new string('─', 65));
+
+                // Get and validate doctor ID with active check
                 Doctor? doctor = null;
                 while (true)
                 {
                     string rawDoctor = InputValidator.GetValidatedInput(
-                        "\nEnter Doctor ID : ",
+                        "\n  Enter Doctor ID : ",
                         InputValidator.IsValidId,
-                        "Please enter a valid positive number.")!;
+                        "  Please enter a valid positive number.")!;
 
                     doctor = _doctorService.GetDoctorById(int.Parse(rawDoctor));
                     if (doctor == null) { PrintError("Doctor not found. Try again."); continue; }
                     if (!doctor.IsActive) { PrintError($"Dr. {doctor.Name} is inactive."); continue; }
-                    Console.WriteLine($"\n  Doctor Selected : {doctor.Name}");
+
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine($"\n     Doctor : {doctor.Name}  ({doctor.Specialisation})");
+                    Console.ResetColor();
                     break;
                 }
 
-                // Display available dates for the selected doctor
-                Console.WriteLine("\nAVAILABLE DAYS");
+                // Show doctor's available dates
+                Console.WriteLine("\n  AVAILABLE DAYS");
+                Console.WriteLine("  " + new string('─', 30));
                 for (int i = 0; i < doctor.AvailableDates.Count; i++)
-                    Console.WriteLine($"  {i + 1}. {doctor.AvailableDates[i]:dd MMM yyyy}");
+                    Console.WriteLine($"    {i + 1}.  {doctor.AvailableDates[i]:dd/MM/yyyy  ddd}");
+                Console.WriteLine("  " + new string('─', 30));
 
                 // Get and validate appointment date
                 DateTime selectedDate;
                 while (true)
                 {
                     selectedDate = InputValidator.GetValidDate(
-                        "\nEnter Appointment Date (dd/MM/yyyy) : ");
+                        "\n  Appointment Date (dd/MM/yyyy) : ");
 
                     if (selectedDate.Date < DateTime.Today)
                     { PrintError("Date cannot be in the past."); continue; }
+
                     if (!doctor.AvailableDates.Any(d => d.Date == selectedDate.Date))
-                    { PrintError("Doctor is not available on that date."); continue; }
+                    { PrintError("Doctor not available on that date. Choose from the list."); continue; }
+
                     break;
                 }
 
-                // Find and display remaining available slots
+                // Calculate which slots are still free
                 var bookedSlots = _appointmentService
-                    .GetAppointmentsByDoctorId(doctor.DoctorId)
+                    .GetAllAppointments()
                     .Where(a => a.ScheduledDate.Date == selectedDate.Date &&
                                 a.Status != AppointmentStatus.Cancelled)
                     .Select(a => a.TimeSlot).ToList();
 
-                var availableSlots = doctor.AvailableSlots.Except(bookedSlots).ToList();
+                var freeSlots = doctor.AvailableSlots.Except(bookedSlots).ToList();
 
-                if (availableSlots.Count == 0)
+                if (freeSlots.Count == 0)
                 {
                     PrintError("No slots available on that date. Try a different date.");
                     Pause();
                     return;
                 }
 
-                Console.WriteLine("\nAVAILABLE SLOTS");
-                for (int i = 0; i < availableSlots.Count; i++)
-                    Console.WriteLine($"  {i + 1}. {availableSlots[i]}");
+                // Display free slots for selection
+                Console.WriteLine("\n  AVAILABLE SLOTS");
+                Console.WriteLine("  " + new string('─', 25));
+                for (int i = 0; i < freeSlots.Count; i++)
+                    Console.WriteLine($"    {i + 1}.  {freeSlots[i]}");
+                Console.WriteLine("  " + new string('─', 25));
 
-                // Get and validate slot selection
+                // Get and validate slot choice
                 string selectedSlot = "";
                 while (true)
                 {
                     string rawSlot = InputValidator.GetValidatedInput(
-                        "\nChoose Slot number : ",
+                        "\n  Choose slot number : ",
                         InputValidator.IsValidId,
-                        "Please enter a valid positive number.")!;
+                        "  Please enter a valid positive number.")!;
 
-                    int slotChoice = int.Parse(rawSlot);
-                    if (slotChoice < 1 || slotChoice > availableSlots.Count)
-                    { PrintError($"Enter a number between 1 and {availableSlots.Count}."); continue; }
+                    int idx = int.Parse(rawSlot);
+                    if (idx < 1 || idx > freeSlots.Count)
+                    { PrintError($"Enter a number between 1 and {freeSlots.Count}."); continue; }
 
-                    selectedSlot = availableSlots[slotChoice - 1];
+                    selectedSlot = freeSlots[idx - 1];
                     break;
                 }
 
-                // Show confirmation summary before booking
-                Console.WriteLine("\n  CONFIRM APPOINTMENT");
-                Console.WriteLine(new string('-', 34));
+                // Show booking summary for confirmation
+                Console.WriteLine("\n  " + new string('─', 40));
+                Console.WriteLine("  BOOKING SUMMARY");
+                Console.WriteLine("  " + new string('─', 40));
                 Console.WriteLine($"  Patient : {patient.Name}");
-                Console.WriteLine($"  Doctor  : {doctor.Name}");
-                Console.WriteLine($"  Date    : {selectedDate:dd MMM yyyy}");
+                Console.WriteLine($"  Doctor  : {doctor.Name}  ({doctor.Specialisation})");
+                Console.WriteLine($"  Date    : {selectedDate:dd/MM/yyyy}");
                 Console.WriteLine($"  Slot    : {selectedSlot}");
-                Console.Write("\n  Proceed? (Y/N) : ");
+                Console.WriteLine("  " + new string('─', 40));
+                Console.Write("\n  Confirm booking? (Y/N) : ");
 
                 if (Console.ReadLine()?.Trim().ToUpper() != "Y")
                 {
@@ -163,16 +182,16 @@ namespace HealthApp.ConsoleApp.Menus
                     return;
                 }
 
-                // Book the appointment
-                var result = _appointmentService.BookAppointment(
+                // Save the appointment
+                var appt = _appointmentService.BookAppointment(
                     patient, doctor, selectedDate, selectedSlot);
 
                 PrintSuccess("Appointment booked successfully!");
-                Console.WriteLine($"\n{result}");
+                Console.WriteLine($"\n{appt}");
             }
             catch (OperationCanceledException)
             {
-                Console.WriteLine("\nReturning to Main Menu...");
+                Console.WriteLine("\n  Returning to menu...");
             }
             catch (Exception ex)
             {
@@ -188,14 +207,14 @@ namespace HealthApp.ConsoleApp.Menus
             try
             {
                 Console.Clear();
-                PrintHeader("VIEW PATIENT APPOINTMENTS");
-                Console.WriteLine("Type 'q' or 'back' to return.\n");
+                PrintHeader("PATIENT APPOINTMENTS");
+                Console.WriteLine("  Type 'q' or 'back' to return.\n");
 
                 // Get and validate patient ID
                 string raw = InputValidator.GetValidatedInput(
-                    "Enter Patient ID : ",
+                    "  Enter Patient ID : ",
                     InputValidator.IsValidId,
-                    "Please enter a valid positive number.")!;
+                    "  Please enter a valid positive number.")!;
 
                 var appointments = _appointmentService.GetAppointmentsByPatientId(int.Parse(raw));
 
@@ -206,22 +225,29 @@ namespace HealthApp.ConsoleApp.Menus
                     return;
                 }
 
-                Console.WriteLine();
+                Console.WriteLine($"\n  {appointments.Count} appointment(s) found:\n");
+
                 foreach (var appt in appointments)
                 {
+                    Console.WriteLine("  " + new string('─', 50));
                     Console.WriteLine(appt.GetDetails());
-                    Console.WriteLine(new string('-', 36));
                 }
+
+                Console.WriteLine("  " + new string('─', 50));
             }
             catch (OperationCanceledException)
             {
-                Console.WriteLine("\nReturning to Main Menu...");
+                Console.WriteLine("\n  Returning to menu...");
+            }
+            catch (Exception ex)
+            {
+                PrintError(ex.Message);
             }
 
             Pause();
         }
 
-        // Confirm or cancel an upcoming appointment
+        // Confirm or cancel a pending/confirmed upcoming appointment
         public void ConfirmOrCancel()
         {
             try
@@ -229,32 +255,34 @@ namespace HealthApp.ConsoleApp.Menus
                 Console.Clear();
                 PrintHeader("CONFIRM / CANCEL APPOINTMENT");
 
-                // Display all upcoming appointments
-                var appointments = _appointmentService.GetUpcomingAppointments();
-                if (appointments.Count == 0)
+                // Show all upcoming appointments
+                var upcoming = _appointmentService.GetUpcomingAppointments();
+
+                if (upcoming.Count == 0)
                 {
-                    PrintError("No upcoming appointments.");
+                    PrintError("No upcoming appointments found.");
                     Pause();
                     return;
                 }
 
-                Console.WriteLine();
-                foreach (var appt in appointments)
+                Console.WriteLine($"  {upcoming.Count} upcoming appointment(s):\n");
+                foreach (var a in upcoming)
                 {
-                    Console.WriteLine(appt.GetDetails());
-                    Console.WriteLine(new string('-', 32));
+                    Console.WriteLine("  " + new string('─', 50));
+                    Console.WriteLine(a.GetDetails());
                 }
+                Console.WriteLine("  " + new string('─', 50));
 
                 // Get and validate appointment ID
                 string raw = InputValidator.GetValidatedInput(
-                    "\nEnter Appointment ID : ",
+                    "\n  Enter Appointment ID : ",
                     InputValidator.IsValidId,
-                    "Please enter a valid positive number.")!;
+                    "  Please enter a valid positive number.")!;
 
-                Appointment appointment = _appointmentService.GetAppointmentById(int.Parse(raw));
+                var appointment = _appointmentService.GetAppointmentById(int.Parse(raw));
 
-                // Get action — confirm or cancel
-                Console.Write("\n[C] Confirm   [X] Cancel : ");
+                // Choose action
+                Console.Write("\n  [C] Confirm   [X] Cancel : ");
                 string action = Console.ReadLine()?.Trim().ToUpper() ?? "";
 
                 if (action == "C")
@@ -266,9 +294,9 @@ namespace HealthApp.ConsoleApp.Menus
                 {
                     // Get cancellation reason
                     string reason = InputValidator.GetValidatedInput(
-                        "Reason for cancellation : ",
-                        InputValidator.IsNonEmpty,
-                        "Reason cannot be empty.") ?? "No reason given";
+                        "  Reason for cancellation : ",
+                        InputValidator.IsValidCancellationReason,
+                        "  Reason cannot be empty.")!;
 
                     _appointmentService.CancelAppointment(appointment.AppointmentId, reason);
                     PrintSuccess("Appointment cancelled.");
@@ -280,7 +308,7 @@ namespace HealthApp.ConsoleApp.Menus
             }
             catch (OperationCanceledException)
             {
-                Console.WriteLine("\nReturning to Main Menu...");
+                Console.WriteLine("\n  Returning to menu...");
             }
             catch (AppointmentNotFoundException ex)
             {
@@ -302,7 +330,7 @@ namespace HealthApp.ConsoleApp.Menus
                 Console.Clear();
                 PrintHeader("COMPLETE APPOINTMENT");
 
-                // Display all confirmed upcoming appointments
+                // Show only confirmed appointments eligible for completion
                 var confirmed = _appointmentService.GetUpcomingAppointments()
                     .Where(a => a.Status == AppointmentStatus.Confirmed).ToList();
 
@@ -313,28 +341,30 @@ namespace HealthApp.ConsoleApp.Menus
                     return;
                 }
 
-                Console.WriteLine();
-                foreach (var appt in confirmed)
+                Console.WriteLine($"  {confirmed.Count} confirmed appointment(s):\n");
+                foreach (var a in confirmed)
                 {
-                    Console.WriteLine(appt.GetDetails());
-                    Console.WriteLine(new string('-', 32));
+                    Console.WriteLine("  " + new string('─', 50));
+                    Console.WriteLine(a.GetDetails());
                 }
+                Console.WriteLine("  " + new string('─', 50));
 
                 // Get and validate appointment ID
                 string raw = InputValidator.GetValidatedInput(
-                    "\nEnter Appointment ID to complete : ",
+                    "\n  Enter Appointment ID : ",
                     InputValidator.IsValidId,
-                    "Please enter a valid positive number.")!;
+                    "  Please enter a valid positive number.")!;
 
-                Appointment appointment = _appointmentService.GetAppointmentById(int.Parse(raw));
+                var appointment = _appointmentService.GetAppointmentById(int.Parse(raw));
 
-                // Mark the appointment as completed
+                // Mark as completed — enables health record creation
                 appointment.Complete();
-                PrintSuccess($"Appointment {raw} marked as Completed. You can now add a health record.");
+                PrintSuccess($"Appointment {raw} marked as Completed.");
+                Console.WriteLine("  You can now add a health record via option 7.");
             }
             catch (OperationCanceledException)
             {
-                Console.WriteLine("\nReturning to Main Menu...");
+                Console.WriteLine("\n  Returning to menu...");
             }
             catch (AppointmentNotFoundException ex)
             {
@@ -348,32 +378,36 @@ namespace HealthApp.ConsoleApp.Menus
             Pause();
         }
 
-        // ── Helpers ──────────────────────────────────────────────────────────────
+        //  Helpers
 
-        private static void PrintHeader(string t)
+        private static void PrintHeader(string title)
         {
-            Console.WriteLine(new string('=', 40));
-            Console.WriteLine(t);
-            Console.WriteLine(new string('=', 40));
+            Console.WriteLine($"\n  ╔══════════════════════════════════════════════════╗");
+            Console.WriteLine($"  ║  {title,-48}║");
+            Console.WriteLine($"  ╚══════════════════════════════════════════════════╝");
+            Console.ResetColor();
+            Console.WriteLine();
         }
 
-        private static void PrintError(string m)
+        private static void PrintSuccess(string msg)
         {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine($"\nERROR : {m}");
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine($"\n{msg}");
             Console.ResetColor();
         }
 
-        private static void PrintSuccess(string m)
+        private static void PrintError(string msg)
         {
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine($"\nSUCCESS : {m}");
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine($"\n{msg}");
             Console.ResetColor();
         }
 
         private static void Pause()
         {
-            Console.WriteLine("\nPress any key to continue...");
+            Console.ForegroundColor = ConsoleColor.DarkGray;
+            Console.WriteLine("\n  Press any key to continue...");
+            Console.ResetColor();
             Console.ReadKey(intercept: true);
         }
     }
