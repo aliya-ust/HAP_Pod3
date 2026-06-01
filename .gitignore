@@ -12,3 +12,4 @@
 .sonarqube/
 
 *.lscache
+coverage.xml
