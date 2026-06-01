@@ -72,6 +72,17 @@ namespace HealthApp.Tests.Services
             Assert.Equal(2, result.Count);
         }
 
+        [Fact]
+        public void GetAllDoctors_ShouldThrowException_WhenNoDoctorsExist()
+        {
+            // Arrange
+            _mockRepo.Setup(r => r.GetAllDoctors())
+                    .Returns(new List<Doctor>());
+
+            // Act & Assert
+            Assert.Throws<DoctorNotFoundException>(() => _service.GetAllDoctors());
+        }
+
 
         // GetDoctorById
         [Fact]

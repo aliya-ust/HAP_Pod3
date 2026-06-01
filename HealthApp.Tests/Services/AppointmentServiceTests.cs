@@ -86,6 +86,18 @@ namespace HealthApp.Tests.Services
             Assert.Equal(2, result.Count);
         }
 
+        [Fact]
+        public void GetAllAppointments_ShouldThrowException_WhenNoAppointmentsExist()
+        {
+            // Arrange
+            _mockRepo.Setup(r => r.GetAllAppointments())
+                    .Returns(new List<Appointment>());
+
+            // Act & Assert
+            Assert.Throws<AppointmentNotFoundException>(() => 
+                _service.GetAllAppointments());
+        }
+
         // BookAppointment - Success
         [Fact]
         public void BookAppointment_ShouldBookSuccessfully()

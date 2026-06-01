@@ -126,6 +126,28 @@ namespace HealthApp.Tests.Services
             Assert.Equal(2, result.Count);
         }
 
+        [Fact]
+        public void GetAllPatients_ShouldThrowException_WhenNoPatients()
+        {
+            // Arrange
+            _mockRepo.Setup(r => r.GetAllPatients())
+                    .Returns(new List<Patient>());
+
+            // Act & Assert
+            Assert.Throws<PatientNotFoundException>(() => _service.GetAllPatients());
+        }
+
+        [Fact]
+        public void GetPatientByName_ShouldThrowException_WhenNoMatchFound()
+        {
+            // Arrange
+            _mockRepo.Setup(r => r.GetPatientByName("unknown"))
+                    .Returns(new List<Patient>());
+
+            // Act & Assert
+            Assert.Throws<PatientNotFoundException>(() => 
+                _service.GetPatientByName("unknown"));
+        }
 
 
         // UpdatePatient
