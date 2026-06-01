@@ -1,4 +1,8 @@
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
 using HealthApp.ConsoleApp.Exceptions;
 using HealthApp.ConsoleApp.Helpers;
 using HealthApp.ConsoleApp.Interfaces;
@@ -105,20 +109,16 @@ namespace HealthApp.ConsoleApp.Menus
                 Console.WriteLine("  " + new string('─', 30));
 
                 // Get and validate appointment date
-                DateTime selectedDate;
-                while (true)
-                {
-                    selectedDate = InputValidator.GetValidDate("\n  Appointment Date (dd/MM/yyyy) : ");
-                
                 DateTime selectedDate = InputValidator.GetValidAppointmentDate(
                     "\n  Appointment Date (dd/MM/yyyy) : ",
                     doctor.AvailableDates
                 );
 
-                    if (!doctor.AvailableDates.Any(d => d.Date == selectedDate.Date))
-                    { ConsoleHelper.PrintError("Doctor not available on that date. Choose from the list."); continue; }
-
-                    break;
+                if (!doctor.AvailableDates.Any(d => d.Date == selectedDate.Date))
+                {
+                    ConsoleHelper.PrintError("Doctor not available on that date. Choose from the list.");
+                    ConsoleHelper.Pause();
+                    return;
                 }
                 // Calculate which slots are still free
                 var bookedSlots = _appointmentService
@@ -147,9 +147,6 @@ namespace HealthApp.ConsoleApp.Menus
                 // Get and validate slot choice
                 string selectedSlot = GetSlot(freeSlots);
 
-                    selectedSlot = freeSlots[idx - 1];
-                    break;
-
                 // Show booking summary for confirmation
                 Console.WriteLine("\n  " + new string('─', 40));
                 Console.WriteLine("  BOOKING SUMMARY");
@@ -174,7 +171,6 @@ namespace HealthApp.ConsoleApp.Menus
 
                 ConsoleHelper.PrintSuccess("Appointment booked successfully!");
                 Console.WriteLine($"\n{appt}");
-            }
             }
             catch (OperationCanceledException)
             {

@@ -58,9 +58,6 @@ namespace HealthApp.ConsoleApp.Services
                 ? patients.Max(p => p.PatientId) + 1
                 : 101;
         }
-
-            return patients.Max(p => p.PatientId) + 1;
-        }
         // Method to get all patients from the database
         public List<Patient> GetAllPatients()
         {

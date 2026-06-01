@@ -157,28 +157,12 @@ namespace HealthApp.ConsoleApp.Helpers
                 Console.WriteLine("Invalid gender.");
             }
         }
-        public static bool IsValidText(string input) =>
-            !string.IsNullOrWhiteSpace(input) &&
-            input.Length >= 5 &&
-            input.Any(char.IsLetter);
-
-        public static bool IsValidCancellationReason(string input) =>
-            IsValidText(input);
-
-        public static bool IsValidDiagnosis(string input) =>
-            IsValidText(input);
-
-        public static bool IsValidPrescription(string input) =>
-            IsValidText(input);
-
-        public static bool IsValidDoctorNotes(string input) =>
-            IsValidText(input);
         //Validates all the input fields for doctor and patient details.
         public static bool IsValidName(string input)
         {
             if (string.IsNullOrWhiteSpace(input))
                 return false;
-        
+
             string pattern = @"^[A-Za-z]+([.\s]?[A-Za-z]+)*$";
             return Regex.IsMatch(input.Trim(), pattern, RegexOptions.None, TimeSpan.FromMilliseconds(500));
         }

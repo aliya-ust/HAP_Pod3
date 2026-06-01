@@ -6,9 +6,6 @@ namespace HealthApp.ConsoleApp.Databases
     {
         public List<Appointment> Appointments { get; set; } = new List<Appointment>
         {
-            Appointments = new List<Appointment>
-            {
-                // CONFIRMED
             new Appointment
             {
                 AppointmentId = 1,
@@ -28,7 +25,6 @@ namespace HealthApp.ConsoleApp.Databases
                 },
                 ScheduledDate = DateTime.Now.AddDays(1),
                 TimeSlot = "10:00 AM",
-
                 Status = AppointmentStatus.Confirmed
             },
 
@@ -100,5 +96,4 @@ namespace HealthApp.ConsoleApp.Databases
             }
         };
     }
-}
 }

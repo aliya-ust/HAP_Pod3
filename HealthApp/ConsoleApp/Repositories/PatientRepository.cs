@@ -8,7 +8,6 @@ using HealthApp.ConsoleApp.Exceptions;
 
 namespace HealthApp.ConsoleApp.Repositories
 {
-    // Repository class to manage patients in the healthcare system
     public class PatientRepository : IPatientRepository
     {
         private readonly PatientDb _patientsDb;
@@ -18,7 +17,6 @@ namespace HealthApp.ConsoleApp.Repositories
             _patientsDb = patientDb;
         }
 
-        // Method to register a new patient in the database
         public string RegisterPatient(Patient patient)
         {
             _patientsDb.Patients.Add(patient);
@@ -52,12 +50,6 @@ namespace HealthApp.ConsoleApp.Repositories
         public Patient? GetPatientById(int id)
         {
             return _patientsDb.Patients.FirstOrDefault(p => p.PatientId == id);
-        }
-        public List<Patient> GetPatientByName(string name)
-        {
-            return _patientsDb.Patients
-                .Where(d => d.Name.Contains(name, StringComparison.OrdinalIgnoreCase))
-                .ToList();
         }
     }
 }

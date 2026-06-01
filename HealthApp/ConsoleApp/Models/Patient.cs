@@ -1,7 +1,5 @@
-using System;
 namespace HealthApp.ConsoleApp.Models
 {
-    public enum GenderType { Male, Female, Other };
 
     public class Patient
     {
@@ -31,6 +29,5 @@ namespace HealthApp.ConsoleApp.Models
         {
             return $"ID: {PatientId} | Name: {FullName} | Age: {GetAge()} | Gender: {Gender} | Email: {Email} | Phone: {PhoneNumber}";
         }
-
     }
 }

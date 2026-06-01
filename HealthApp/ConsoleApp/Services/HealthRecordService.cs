@@ -5,7 +5,6 @@ using HealthApp.ConsoleApp.Interfaces;
 using HealthApp.ConsoleApp.Exceptions;
 namespace HealthApp.ConsoleApp.Services
 {
-    // Service class to manage health records in the healthcare system
     public class HealthRecordService : IHealthRecordService
     {
         //Injecting HealthRecord, Doctor and Patient dependencies
@@ -95,14 +94,6 @@ namespace HealthApp.ConsoleApp.Services
             }
             return record;
         }
-        public List<HealthRecord> GetAllHealthRecords()
-        {
-            var records = _healthRecordRepository.GetAllRecords();
-
-            if (records == null || records.Count == 0)
-            {
-                throw new HealthRecordNotFoundException("No records found.");
-            }
 
         // Assign health record id based on latest record id
         public static int RecordIdGenerator(List<HealthRecord> records)

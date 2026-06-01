@@ -107,7 +107,6 @@ namespace HealthApp.ConsoleApp.Menus
                     PhoneNumber = phone,
                     Email = email,
                     InsuranceId = insurance ?? "",
-                    CreatedAt = DateTime.Now
                 };
 
                 _patientService.RegisterPatient(patient);
@@ -140,47 +139,13 @@ namespace HealthApp.ConsoleApp.Menus
                 foreach (var p in patients)
                 {
                     Console.WriteLine($"  {p.GetProfileSummary()}");
-                Console.WriteLine("  " + new string('─', 55));
-            }
-
-            ConsoleHelper.Pause();
-        }
-         public void SearchByName()
-        {
-            try
-            {
-                Console.Clear();
-                ConsoleHelper.PrintHeader("SEARCH BY NAME");
-                Console.WriteLine("  Type 'q' or 'back' to return.\n");
-
-                // Get validated name keyword
-                string query = InputValidator.GetValidatedInput(
-                    "  Name : ",
-                    InputValidator.IsValidName,
-                    "  Name cannot be empty.")!;
-
-                var results = _patientService.GetPatientByName(query);
-
-                Console.WriteLine($"\n  {results.Count} patient(s) found:\n");
-                Console.WriteLine("  " + new string('─', 55));
-
-                foreach (var d in results)
-                {
-                    Console.WriteLine(d.GetProfileSummary());
                     Console.WriteLine("  " + new string('─', 70));
                 }
-            }
-            catch (OperationCanceledException)
-            {
-                Console.WriteLine(ReturnToMenu);
-            }
-            catch (Exception ex)
-            {
-                ConsoleHelper.PrintError(ex.Message);
-            }
 
-                ConsoleHelper.Pause(); 
-            } catch (PatientNotFoundException ex) {
+                ConsoleHelper.Pause();
+            }
+            catch (PatientNotFoundException ex)
+            {
                 Console.WriteLine(ex.Message);
                 ConsoleHelper.Pause();
             }
