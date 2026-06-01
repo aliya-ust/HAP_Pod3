@@ -5,7 +5,6 @@ using HealthApp.ConsoleApp.Interfaces;
 using HealthApp.ConsoleApp.Exceptions;
 namespace HealthApp.ConsoleApp.Services
 {
-    // Service class to manage health records in the healthcare system
     public class HealthRecordService : IHealthRecordService
     {
         //Injecting HealthRecord, Doctor and Patient dependencies
@@ -21,7 +20,8 @@ namespace HealthApp.ConsoleApp.Services
             _doctorRepository = doctorRepository;
             _patientRepository = patientRepository;
         }
-        // Method to add a new health record to the database
+
+        // Add a health record to the database
         public string AddHealthRecord(HealthRecord record)
         {
             List<HealthRecord> records = _healthRecordRepository.GetAllRecords();
@@ -29,7 +29,8 @@ namespace HealthApp.ConsoleApp.Services
 
             return _healthRecordRepository.AddHealthRecord(record);
         }
-        // Method to get health records by patient ID ordered by visit date in descending order
+
+        // Get a health record by patient id and return in descending order of visit date
         public List<HealthRecord> GetByPatientIdOrderByVisitDateDesc(int id)
         {
             var patient = _patientRepository.GetPatientById(id);
@@ -49,7 +50,8 @@ namespace HealthApp.ConsoleApp.Services
 
             return records;
         }
-        // Method to get health records by doctor ID ordered by visit date in descending order
+
+        // Get a health record by doctor id and return in descending order of visit date
         public List<HealthRecord> GetByDoctorIdOrderByVisitDateDesc(int id)
         {
             var doctor = _doctorRepository.GetDoctorById(id);
@@ -69,15 +71,21 @@ namespace HealthApp.ConsoleApp.Services
 
             return records;
         }
-        // Method to update an existing health record in the database
+
+        // Update health record with new details
         public HealthRecord UpdateHealthRecord(HealthRecord record)
         {
-            return _healthRecordRepository.UpdateHealthRecord(
-                GetRecordById(record.RecordId)!,
-                record);
+            HealthRecord? existingHealthRecord = GetRecordById(record.RecordId);
+
+            if (existingHealthRecord is null)
+            {
+                throw new HealthRecordNotFoundException($"Health Record of ID {record.RecordId} does not exist");
+            }
+            return _healthRecordRepository.UpdateHealthRecord(existingHealthRecord, record);
         }
-        // Method to get a health record by ID from the database
-        public HealthRecord? GetRecordById(int recordId)
+
+        // Get a health record by its id
+        public HealthRecord GetRecordById(int recordId)
         {
             HealthRecord? record = _healthRecordRepository.GetRecordById(recordId);
             if (record is null)
@@ -86,26 +94,13 @@ namespace HealthApp.ConsoleApp.Services
             }
             return record;
         }
-        public List<HealthRecord> GetAllHealthRecords()
-        {
-            var records = _healthRecordRepository.GetAllRecords();
- 
-            if (records == null || records.Count == 0)
-            {
-                throw new HealthRecordNotFoundException("No records found.");
-            }
- 
-            return records;
-        }
-        // Method to generate a unique health record ID based on existing health records in the database
+
+        // Assign health record id based on latest record id
         public static int RecordIdGenerator(List<HealthRecord> records)
         {
-            if (records.Count == 0)
-            {
-                return 401;
-            }
-
-            return records.Max(r => r.RecordId) + 1;
+            return records.Count > 0
+                ? records.Max(r => r.RecordId) + 1
+                : 101;
         }
     }
 }

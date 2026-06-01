@@ -1,40 +1,34 @@
-using System;
 namespace HealthApp.ConsoleApp.Models
 {
-    // Represents a patient in the healthcare system
+    public enum GenderType { Male, Female, Other };
+
     public class Patient
     {
         public int PatientId { get; set; }
-        public required string Name { get; set; }
-        public DateTime Dob { get; set; }
+        public required string FullName { get; set; }
+        public DateTime DateOfBirth { get; set; }
         public GenderType Gender { get; set; }
         public required string PhoneNumber { get; set; }
         public required string Email { get; set; }
-        public string InsuranceId { get; set; } = "";
-        public DateTime? CreatedAt { get; set; }
+        public required string InsuranceId { get; set; }
+        public DateTime CreatedDate { get; set; } = DateTime.Now;
 
-        // Constructor to initialize CreatedAt
-        public Patient()
-        {
-            CreatedAt = DateTime.Now;
-        }
-
-        // Method to calculate age based on Dob
+        // Calculate age based on Date of Birth
         public int GetAge()
         {
             var today = DateTime.Today;
-            var age = today.Year - Dob.Year;
+            var age = today.Year - DateOfBirth.Year;
 
-            if (Dob.Date > today.AddYears(-age))
+            if (DateOfBirth.Date > today.AddYears(-age))
                 age--;
 
             return age;
         }
 
-        // Method to get a summary of the patient's profile
+        // Return summary of the patient's profile
         public string GetProfileSummary()
         {
-            return $"ID: {PatientId} | Name: {Name} | Age: {GetAge()} | Gender: {Gender} | Email: {Email} | Phone: {PhoneNumber}";
+            return $"ID: {PatientId} | Name: {FullName} | Age: {GetAge()} | Gender: {Gender} | Email: {Email} | Phone: {PhoneNumber}";
         }
     }
 }

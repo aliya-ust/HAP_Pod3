@@ -1,37 +1,36 @@
-﻿using HealthApp.ConsoleApp.Databases;
-using HealthApp.ConsoleApp.Models;
-using HealthApp.ConsoleApp.Repositories;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Numerics;
 using Xunit;
+using HealthApp.ConsoleApp.Repositories;
+using HealthApp.ConsoleApp.Models;
+using HealthApp.ConsoleApp.Databases;
 
 namespace HealthApp.Tests.Repositories
 {
-    // Test class for HealthRecordRepository to validate health record management functionalities
     public class HealthRecordRepositoryTests
     {
-        private readonly HealthRecordDb _healthRecordDb;
+        private readonly HealthRecordDB _healthRecordDb;
         private readonly HealthRecordRepository _repository;
 
         public HealthRecordRepositoryTests()
         {
-            _healthRecordDb = new HealthRecordDb
+            _healthRecordDb = new HealthRecordDB
             {
                 Records = new List<HealthRecord>()
             };
 
             _repository = new HealthRecordRepository(_healthRecordDb);
         }
-        // Helper methods to create sample patients and doctors for testing
+
         private static Patient GetSamplePatient(int id)
         {
             return new Patient
             {
                 PatientId = id,
-                Name = "Patient " + id,
+                FullName = "Patient " + id,
                 PhoneNumber = "9999999999",
-                Email = "patient@test.com"
+                Email = "patient@test.com",
+                InsuranceId = "sadf23423"
             };
         }
 
@@ -40,7 +39,7 @@ namespace HealthApp.Tests.Repositories
             return new Doctor
             {
                 DoctorId = id,
-                Name = "Doctor " + id,
+                FullName = "Doctor " + id,
                 Specialisation = "General"
             };
         }
