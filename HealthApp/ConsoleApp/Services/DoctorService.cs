@@ -41,7 +41,8 @@ namespace HealthApp.ConsoleApp.Services
 
             if (result == null || result.Count == 0)
             {
-                throw new SpecialisationNotFoundException($"Doctor with specialisation in {specialisation} does not exist");
+                throw new SpecialisationNotFoundException(
+                    $"Doctor with specialisation in {specialisation} does not exist");
             }
 
             return result;
@@ -49,19 +50,14 @@ namespace HealthApp.ConsoleApp.Services
 
         public Doctor UpdateDoctor(Doctor doctor)
         {
-            Doctor? existingDoctor = GetDoctorById(doctor.DoctorId);
-
-            if (existingDoctor is null)
-            {
-                throw new DoctorNotFoundException($"Doctor of ID {doctor.DoctorId} does not exist");
-            }
+            Doctor existingDoctor = GetDoctorById(doctor.DoctorId)!;
             return _doctorRepo.UpdateDoctor(existingDoctor, doctor);
         }
 
         // Method to generate a unique doctor ID based on existing doctors in the database        
         public static int DoctorIdGenerator(List<Doctor> doctors)
         {
-            return doctors.Any()
+            return doctors.Count > 0
                 ? doctors.Max(d => d.DoctorId) + 1
                 : 201;
         }
@@ -70,6 +66,5 @@ namespace HealthApp.ConsoleApp.Services
         {
             return _doctorRepo.GetAllDoctors();
         }
-
     }
 }

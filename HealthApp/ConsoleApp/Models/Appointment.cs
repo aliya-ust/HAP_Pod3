@@ -73,7 +73,6 @@ namespace HealthApp.ConsoleApp.Models
             {
                 details.AppendLine($"Cancellation Reason: {CancellationReason}");
             }
-
             return details.ToString();
         }
     }

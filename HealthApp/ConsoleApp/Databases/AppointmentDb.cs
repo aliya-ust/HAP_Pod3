@@ -3,10 +3,11 @@ namespace HealthApp.ConsoleApp.Databases
 {
     public class AppointmentDb
     {
-        PatientDb patientDb = new();
-        DoctorDb doctorDb = new();
 
-        public List<Appointment> Appointments; //AppointmentId starts from 301 to avoid conflict with test data
+        private readonly PatientDb patientDb = new();
+        private readonly DoctorDb doctorDb = new();
+
+        public List<Appointment> Appointments { get; private set; } //AppointmentId starts from 301 to avoid conflict with test data
 
         public AppointmentDb()
         {

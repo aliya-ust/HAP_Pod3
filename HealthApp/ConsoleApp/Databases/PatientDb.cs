@@ -3,7 +3,7 @@ namespace HealthApp.ConsoleApp.Databases
 {
     public class PatientDb
     {
-        public List<Patient> Patients = new()
+        private List<Patient> Patients = new()
         {
             // Pre-populated patients with unique IDs, contact details, and insurance information
             // PatientId starts from 101 to avoid conflict with test data

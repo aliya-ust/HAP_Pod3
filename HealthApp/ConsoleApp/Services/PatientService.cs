@@ -52,16 +52,19 @@ namespace HealthApp.ConsoleApp.Services
         // Method to generate a unique patient ID based on existing patients in the database
         public static int PatientIdGenerator(List<Patient> patients)
         {
-            return patients.Any()
-                ? patients.Max(p => p.PatientId) + 1
-                : 101;
+            if (patients.Count == 0)
+            {
+                return 101;
+            }
+
+            return patients.Max(p => p.PatientId) + 1;
         }
         // Method to get all patients from the database
         public List<Patient> GetAllPatients()
         {
             return _patientRepo.GetAllPatients();
         }
-         public List<Patient> GetPatientByName(string name)
+        public List<Patient> GetPatientByName(string name)
         {
             var result = _patientRepo.GetPatientByName(name);
 
