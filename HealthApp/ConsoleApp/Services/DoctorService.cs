@@ -6,7 +6,6 @@ using HealthApp.ConsoleApp.Exceptions;
 
 namespace HealthApp.ConsoleApp.Services
 {
-    // Service class to manage doctors in the healthcare system
     public class DoctorService : IDoctorService
     {
         private readonly IDoctorRepository _doctorRepo;
@@ -15,7 +14,6 @@ namespace HealthApp.ConsoleApp.Services
         {
             _doctorRepo = doctorRepository;
         }
-        // Method to add a new doctor to the database
         public string AddDoctor(Doctor doctor)
         {
             List<Doctor> doctors = _doctorRepo.GetAllDoctors();
@@ -23,8 +21,8 @@ namespace HealthApp.ConsoleApp.Services
 
             return _doctorRepo.AddDoctor(doctor);
         }
-        // Method to get a doctor by ID from the database
-        public Doctor? GetDoctorById(int id)
+
+        public Doctor GetDoctorById(int id)
         {
             Doctor? doctor = _doctorRepo.GetDoctorById(id);
 
@@ -34,7 +32,19 @@ namespace HealthApp.ConsoleApp.Services
             }
             return doctor;
         }
-        // Method to get doctors by specialisation from the database
+
+        public List<Doctor> GetAllDoctors()
+        {
+            var doctors = _doctorRepo.GetAllDoctors();
+
+            if (doctors == null || doctors.Count == 0)
+            {
+                throw new DoctorNotFoundException("No doctors found.");
+            }
+
+            return doctors;
+        }
+
         public List<Doctor> GetDoctorsBySpecialisation(string specialisation)
         {
             var result = _doctorRepo.GetDoctorsBySpecialisation(specialisation);
@@ -58,17 +68,12 @@ namespace HealthApp.ConsoleApp.Services
             return _doctorRepo.UpdateDoctor(existingDoctor, doctor);
         }
 
-        // Method to generate a unique doctor ID based on existing doctors in the database        
+        
         public static int DoctorIdGenerator(List<Doctor> doctors)
         {
-            return doctors.Any()
+            return doctors.Count > 0
                 ? doctors.Max(d => d.DoctorId) + 1
-                : 201;
-        }
-        // Method to get all doctors from the database
-        public List<Doctor> GetAllDoctors()
-        {
-            return _doctorRepo.GetAllDoctors();
+                : 101;
         }
     }
 }

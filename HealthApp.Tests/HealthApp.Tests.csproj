@@ -22,9 +22,9 @@
   <ItemGroup>
     <ProjectReference Include="..\HealthApp\HealthApp.csproj" />
   </ItemGroup>
+
   <PropertyGroup>
-<IsTestProject>true</IsTestProject>
- <SonarQubeTestProject>true</SonarQubeTestProject>
+  <IsTestProject>true</IsTestProject>
 </PropertyGroup>
 
 </Project>

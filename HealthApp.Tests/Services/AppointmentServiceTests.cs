@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Xunit;
 using Moq;
@@ -9,7 +9,6 @@ using HealthApp.ConsoleApp.Exceptions;
 
 namespace HealthApp.Tests.Services
 {
-    // Test class for AppointmentService to validate appointment management functionalities
     public class AppointmentServiceTests
     {
         private readonly Mock<IAppointmentRepository> _mockRepo;
@@ -20,7 +19,6 @@ namespace HealthApp.Tests.Services
             _mockRepo = new Mock<IAppointmentRepository>();
             _service = new AppointmentService(_mockRepo.Object);
         }
-        // MockDoctor class to simulate doctor availability for testing
         public bool IsAvailableOverride { get; set; } = true;
 
         public bool IsAvailable(DateTime date)
@@ -33,9 +31,10 @@ namespace HealthApp.Tests.Services
             return new Patient
             {
                 PatientId = id,
-                Name = "Patient " + id,
+                FullName = "Patient " + id,
                 PhoneNumber = "9999999999",
-                Email = "patient@test.com"
+                Email = "patient@test.com",
+                InsuranceId = "sdfsd3242"
             };
         }
 
@@ -44,7 +43,7 @@ namespace HealthApp.Tests.Services
             var mockDoctor = new Mock<Doctor>();
 
             mockDoctor.Object.DoctorId = id;
-            mockDoctor.Object.Name = "Doctor " + id;
+            mockDoctor.Object.FullName = "Doctor " + id;
             mockDoctor.Object.Specialisation = "General";
 
             mockDoctor.Setup(d => d.IsAvailable(It.IsAny<DateTime>()))
@@ -66,6 +65,38 @@ namespace HealthApp.Tests.Services
             };
         }
 
+        [Fact]
+        public void GetAllAppointments_ShouldReturnAppointments_WhenDataExists()
+        {
+            // Arrange
+            var appointments = new List<Appointment>
+            {
+                GetSampleAppointment(1),
+                GetSampleAppointment(2)
+            };
+
+            _mockRepo.Setup(r => r.GetAllAppointments()).Returns(appointments);
+
+            // Act
+            var result = _service.GetAllAppointments();
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(2, result.Count);
+        }
+
+        [Fact]
+        public void GetAllAppointments_ShouldThrowException_WhenNoAppointmentsExist()
+        {
+            // Arrange
+            _mockRepo.Setup(r => r.GetAllAppointments())
+                    .Returns(new List<Appointment>());
+
+            // Act & Assert
+            Assert.Throws<AppointmentNotFoundException>(() => 
+                _service.GetAllAppointments());
+        }
+
         // BookAppointment - Success
         [Fact]
         public void BookAppointment_ShouldBookSuccessfully()
@@ -81,7 +112,7 @@ namespace HealthApp.Tests.Services
 
             var result = _service.BookAppointment(patient, doctor, DateTime.Now.AddDays(1), "10:00 AM");
 
-            Assert.Contains("added", result);
+            Assert.Contains("created", result);
         }
 
         // BookAppointment - Past Date

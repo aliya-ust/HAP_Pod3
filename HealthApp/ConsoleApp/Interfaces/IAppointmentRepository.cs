@@ -1,7 +1,6 @@
 using HealthApp.ConsoleApp.Models;
 namespace HealthApp.ConsoleApp.Interfaces
 {
-    // Repository interface for managing appointments
     public interface IAppointmentRepository
     {
         string AddAppointment(Appointment appointment);

@@ -1,8 +1,12 @@
+using System;
+using System.Collections.Generic;
 using HealthApp.ConsoleApp.Models;
+
 namespace HealthApp.ConsoleApp.Databases
 {
     public class DoctorDb
     {
+<<<<<<< HEAD
         public List<Doctor> Doctors { get; set; }
 
         public DoctorDb()
@@ -147,5 +151,8 @@ namespace HealthApp.ConsoleApp.Databases
                 }
             };
         }
+=======
+        public List<Doctor> Doctors { get; set; } = new List<Doctor>();
+>>>>>>> 265a15b0d21d742ec56b9b7f2ef41b1eb07adfda
     }
 }

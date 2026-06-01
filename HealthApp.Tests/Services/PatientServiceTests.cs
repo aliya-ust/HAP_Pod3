@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Xunit;
 using Moq;
@@ -25,9 +25,10 @@ namespace HealthApp.Tests.Services
             return new Patient
             {
                 PatientId = id,
-                Name = "Patient " + id,
+                FullName = "Patient " + id,
                 PhoneNumber = "9999999999",
-                Email = "patient@test.com"
+                Email = "patient@test.com",
+                InsuranceId = "sdkjfh234"
             };
         }
 
@@ -79,20 +80,90 @@ namespace HealthApp.Tests.Services
             Assert.Throws<PatientNotFoundException>(() => _service.GetPatientById(999));
         }
 
+        [Fact]
+        public void GetAllPatients_ShouldReturnPatients_WhenDataExists()
+        {
+            // Arrange
+            var patients = new List<Patient>
+            {
+                GetSamplePatient(101),
+                GetSamplePatient(102)
+            };
+
+            _mockRepo.Setup(r => r.GetAllPatients()).Returns(patients);
+
+            // Act
+            var result = _service.GetAllPatients();
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(2, result.Count);
+        }
+
+        [Fact]
+        public void GetPatientByName_ShouldReturnMatchingPatients()
+        {
+            // Arrange
+            var patients = new List<Patient>
+            {
+                new Patient { PatientId = 1, FullName = "John Doe", PhoneNumber = "9999999999",
+                Email = "patient@test.com",
+                InsuranceId = "sdkjfh234" },
+                new Patient { PatientId = 2, FullName = "Jane Doe", PhoneNumber = "9999999999",
+                Email = "patient@test.com",
+                InsuranceId = "sdkjfh234" }
+            };
+
+            _mockRepo
+                .Setup(r => r.GetPatientByName("doe"))
+                .Returns(patients);
+
+            // Act
+            var result = _service.GetPatientByName("doe");
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(2, result.Count);
+        }
+
+        [Fact]
+        public void GetAllPatients_ShouldThrowException_WhenNoPatients()
+        {
+            // Arrange
+            _mockRepo.Setup(r => r.GetAllPatients())
+                    .Returns(new List<Patient>());
+
+            // Act & Assert
+            Assert.Throws<PatientNotFoundException>(() => _service.GetAllPatients());
+        }
+
+        [Fact]
+        public void GetPatientByName_ShouldThrowException_WhenNoMatchFound()
+        {
+            // Arrange
+            _mockRepo.Setup(r => r.GetPatientByName("unknown"))
+                    .Returns(new List<Patient>());
+
+            // Act & Assert
+            Assert.Throws<PatientNotFoundException>(() => 
+                _service.GetPatientByName("unknown"));
+        }
+
+
         // UpdatePatient
         [Fact]
         public void UpdatePatient_ShouldUpdateExistingPatient()
         {
             var existing = GetSamplePatient(101);
             var updated = GetSamplePatient(101);
-            updated.Name = "Updated Name";
+            updated.FullName = "Updated Name";
 
             _mockRepo.Setup(r => r.GetPatientById(101)).Returns(existing);
             _mockRepo.Setup(r => r.UpdatePatient(existing, updated)).Returns(updated);
 
             var result = _service.UpdatePatient(updated);
 
-            Assert.Equal("Updated Name", result.Name);
+            Assert.Equal("Updated Name", result.FullName);
         }
 
         // UpdatePatient - Exception

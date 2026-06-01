@@ -1,4 +1,4 @@
-﻿using HealthApp.ConsoleApp.Exceptions;
+using HealthApp.ConsoleApp.Exceptions;
 using HealthApp.ConsoleApp.Helpers;
 using HealthApp.ConsoleApp.Interfaces;
 using HealthApp.ConsoleApp.Models;
@@ -11,6 +11,8 @@ namespace HealthApp.ConsoleApp.Menus
         private readonly IAppointmentService _appointmentService;
         private readonly IPatientService _patientService;
         private readonly IDoctorService _doctorService;
+        private const string ValidPositiveNumber = "  Please enter a valid positive number.";
+        private const string ReturnToMenu = "\n  Returning to menu...";
         // Constructor to inject required services for appointments, patients, and doctors
         public AppointmentMenu(IAppointmentService appointmentService,
                                IPatientService patientService,
@@ -59,18 +61,19 @@ namespace HealthApp.ConsoleApp.Menus
                 string rawPatient = InputValidator.GetValidatedInput(
                     "  Enter Patient ID : ",
                     InputValidator.IsValidId,
-                    "  Please enter a valid positive number.")!;
+                    ValidPositiveNumber)!;
 
                 var patient = _patientService.GetPatientById(int.Parse(rawPatient));
+
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine($"\n     Patient : {patient?.Name}");
+                Console.WriteLine($"\n     Patient : {patient.FullName}");
                 Console.ResetColor();
 
                 // Display all doctors for selection
                 Console.WriteLine("\n  AVAILABLE DOCTORS");
                 Console.WriteLine("  " + new string('─', 65));
                 foreach (var doc in _doctorService.GetAllDoctors())
-                    Console.WriteLine($"  [{doc.DoctorId}]  {doc.Name}  |  {doc.Specialisation}  |  " +
+                    Console.WriteLine($"  [{doc.DoctorId}]  {doc.FullName}  |  {doc.Specialisation}  |  " +
                                       $"Rs.{doc.ConsultationFee}  |  " +
                                       $"{(doc.IsActive ? "ACTIVE" : "INACTIVE")}");
                 Console.WriteLine("  " + new string('─', 65));
@@ -82,13 +85,13 @@ namespace HealthApp.ConsoleApp.Menus
                     string rawDoctor = InputValidator.GetValidatedInput(
                         "\n  Enter Doctor ID : ",
                         InputValidator.IsValidId,
-                        "  Please enter a valid positive number.")!;
+                        ValidPositiveNumber)!;
 
                     doctor = _doctorService.GetDoctorById(int.Parse(rawDoctor));
-                    if (!doctor!.IsActive) { ConsoleHelper.PrintError($"Dr. {doctor.Name} is inactive."); continue; }
+                    if (!doctor.IsActive) { ConsoleHelper.PrintError($"Dr. {doctor.FullName} is inactive."); continue; }
 
                     Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine($"\n     Doctor : {doctor.Name}  ({doctor.Specialisation})");
+                    Console.WriteLine($"\n     Doctor : {doctor.FullName}  ({doctor.Specialisation})");
                     Console.ResetColor();
                     break;
                 }
@@ -101,20 +104,12 @@ namespace HealthApp.ConsoleApp.Menus
                 Console.WriteLine("  " + new string('─', 30));
 
                 // Get and validate appointment date
-                DateTime selectedDate;
-                while (true)
-                {
-                    selectedDate = InputValidator.GetValidDate(
-                        "\n  Appointment Date (dd/MM/yyyy) : ");
+                
+                DateTime selectedDate = InputValidator.GetValidAppointmentDate(
+                    "\n  Appointment Date (dd/MM/yyyy) : ",
+                    doctor.AvailableDates
+                );
 
-                    if (selectedDate.Date < DateTime.Today)
-                    { ConsoleHelper.PrintError("Date cannot be in the past."); continue; }
-
-                    if (!doctor.AvailableDates.Any(d => d.Date == selectedDate.Date))
-                    { ConsoleHelper.PrintError("Doctor not available on that date. Choose from the list."); continue; }
-
-                    break;
-                }
 
                 // Calculate which slots are still free
                 var bookedSlots = _appointmentService
@@ -139,29 +134,16 @@ namespace HealthApp.ConsoleApp.Menus
                     Console.WriteLine($"    {i + 1}.  {freeSlots[i]}");
                 Console.WriteLine("  " + new string('─', 25));
 
+
                 // Get and validate slot choice
-                string selectedSlot = "";
-                while (true)
-                {
-                    string rawSlot = InputValidator.GetValidatedInput(
-                        "\n  Choose slot number : ",
-                        InputValidator.IsValidId,
-                        "  Please enter a valid positive number.")!;
-
-                    int idx = int.Parse(rawSlot);
-                    if (idx < 1 || idx > freeSlots.Count)
-                    { ConsoleHelper.PrintError($"Enter a number between 1 and {freeSlots.Count}."); continue; }
-
-                    selectedSlot = freeSlots[idx - 1];
-                    break;
-                }
+                string selectedSlot = GetSlot(freeSlots);
 
                 // Show booking summary for confirmation
                 Console.WriteLine("\n  " + new string('─', 40));
                 Console.WriteLine("  BOOKING SUMMARY");
                 Console.WriteLine("  " + new string('─', 40));
-                Console.WriteLine($"  Patient : {patient?.Name}");
-                Console.WriteLine($"  Doctor  : {doctor.Name}  ({doctor.Specialisation})");
+                Console.WriteLine($"  Patient : {patient.FullName}");
+                Console.WriteLine($"  Doctor  : {doctor.FullName}  ({doctor.Specialisation})");
                 Console.WriteLine($"  Date    : {selectedDate:dd/MM/yyyy}");
                 Console.WriteLine($"  Slot    : {selectedSlot}");
                 Console.WriteLine("  " + new string('─', 40));
@@ -176,14 +158,14 @@ namespace HealthApp.ConsoleApp.Menus
 
                 // Save the appointment
                 var appt = _appointmentService.BookAppointment(
-                    patient!, doctor, selectedDate, selectedSlot);
+                    patient, doctor, selectedDate, selectedSlot);
 
                 ConsoleHelper.PrintSuccess("Appointment booked successfully!");
                 Console.WriteLine($"\n{appt}");
             }
             catch (OperationCanceledException)
             {
-                Console.WriteLine("\n  Returning to menu...");
+                Console.WriteLine(ReturnToMenu);
             }
             catch (Exception ex)
             {
@@ -191,6 +173,26 @@ namespace HealthApp.ConsoleApp.Menus
             }
 
             ConsoleHelper.Pause();
+        }
+
+        public static string GetSlot(List<string> freeSlots)
+        {
+            string selectedSlot = "";
+                while (true)
+                {
+                    string rawSlot = InputValidator.GetValidatedInput(
+                        "\n  Choose slot number : ",
+                        InputValidator.IsValidId,
+                        ValidPositiveNumber)!;
+
+                    int idx = int.Parse(rawSlot);
+                    if (idx < 1 || idx > freeSlots.Count)
+                    { ConsoleHelper.PrintError($"Enter a number between 1 and {freeSlots.Count}."); continue; }
+
+                    selectedSlot = freeSlots[idx - 1];
+                    break;
+                }
+            return selectedSlot;
         }
 
         // View all appointments for a specific patient
@@ -206,9 +208,10 @@ namespace HealthApp.ConsoleApp.Menus
                 string raw = InputValidator.GetValidatedInput(
                     "  Enter Patient ID : ",
                     InputValidator.IsValidId,
-                    "  Please enter a valid positive number.")!;
+                    ValidPositiveNumber)!;
 
                 var appointments = _appointmentService.GetAppointmentsByPatientId(int.Parse(raw));
+
                 Console.WriteLine($"\n  {appointments.Count} appointment(s) found:\n");
 
                 foreach (var appt in appointments)
@@ -219,13 +222,13 @@ namespace HealthApp.ConsoleApp.Menus
 
                 Console.WriteLine("  " + new string('─', 50));
             }
+            catch (AppointmentNotFoundException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
             catch (OperationCanceledException)
             {
-                Console.WriteLine("\n  Returning to menu...");
-            }
-            catch(Exception ex)
-            {
-                ConsoleHelper.PrintError(ex.Message);
+                Console.WriteLine(ReturnToMenu);
             }
 
             ConsoleHelper.Pause();
@@ -261,7 +264,7 @@ namespace HealthApp.ConsoleApp.Menus
                 string raw = InputValidator.GetValidatedInput(
                     "\n  Enter Appointment ID : ",
                     InputValidator.IsValidId,
-                    "  Please enter a valid positive number.")!;
+                    ValidPositiveNumber)!;
 
                 var appointment = _appointmentService.GetAppointmentById(int.Parse(raw));
 
@@ -292,7 +295,11 @@ namespace HealthApp.ConsoleApp.Menus
             }
             catch (OperationCanceledException)
             {
-                Console.WriteLine("\n  Returning to menu...");
+                Console.WriteLine(ReturnToMenu);
+            }
+            catch (AppointmentNotFoundException ex)
+            {
+                ConsoleHelper.PrintError(ex.Message);
             }
             catch (Exception ex)
             {
@@ -332,7 +339,7 @@ namespace HealthApp.ConsoleApp.Menus
                 string raw = InputValidator.GetValidatedInput(
                     "\n  Enter Appointment ID : ",
                     InputValidator.IsValidId,
-                    "  Please enter a valid positive number.")!;
+                    ValidPositiveNumber)!;
 
                 var appointment = _appointmentService.GetAppointmentById(int.Parse(raw));
 
@@ -343,7 +350,7 @@ namespace HealthApp.ConsoleApp.Menus
             }
             catch (OperationCanceledException)
             {
-                Console.WriteLine("\n  Returning to menu...");
+                Console.WriteLine(ReturnToMenu);
             }
             catch (AppointmentNotFoundException ex)
             {
@@ -353,10 +360,12 @@ namespace HealthApp.ConsoleApp.Menus
             {
                 ConsoleHelper.PrintError(ex.Message);
             }
+            catch (Exception ex)
+            {
+                ConsoleHelper.PrintError(ex.Message);
+            }
 
             ConsoleHelper.Pause();
         }
-
-
     }
 }

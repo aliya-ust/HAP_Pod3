@@ -66,9 +66,9 @@ namespace HealthApp.ConsoleApp.Menus
 
                 // Get validated full name
                 string fullName = InputValidator.GetValidatedInput(
-                    "  FullName              : ",
+                    "  Full Name              : ",
                     InputValidator.IsValidName,
-                    " Name cannot be empty or contain numbers.")!;
+                    "  Name cannot be empty or contain numbers.")!;
 
                 // Get validated specialisation
                 string spec = InputValidator.GetValidatedInput(
@@ -100,7 +100,7 @@ namespace HealthApp.ConsoleApp.Menus
                 // Build and save the doctor
                 Doctor doctor = new()
                 {
-                    Name = fullName,
+                    FullName = fullName,
                     Specialisation = spec,
                     YearsOfExperience = years,
                     ConsultationFee = fee,
@@ -246,7 +246,7 @@ namespace HealthApp.ConsoleApp.Menus
                 Console.WriteLine("\n  Current Details:");
                 Console.WriteLine("  " + new string('─', 50));
                 Console.WriteLine($"  ID             : {existing.DoctorId}");
-                Console.WriteLine($" Name           : {existing.Name}");
+                Console.WriteLine($"  Name           : {existing.FullName}");
                 Console.WriteLine($"  Specialisation : {existing.Specialisation}");
                 Console.WriteLine($"  Experience     : {existing.YearsOfExperience} years");
                 Console.WriteLine($"  Fee            : Rs.{existing.ConsultationFee}");
@@ -257,9 +257,9 @@ namespace HealthApp.ConsoleApp.Menus
 
                 // Get optional updated name
                 string? name = InputValidator.GetValidatedInput(
-                    "  FullName              : ",
+                    "  Full Name              : ",
                     InputValidator.IsValidName,
-                    " Name cannot be empty or contain numbers.",
+                    "  Name cannot be empty or contain numbers.",
                     allowEmpty: true);
 
                 // Get optional updated specialisation
@@ -303,7 +303,7 @@ namespace HealthApp.ConsoleApp.Menus
                 Doctor updated = new()
                 {
                     DoctorId = existing.DoctorId,
-                    Name = name ?? existing.Name,
+                    FullName = name ?? existing.FullName,
                     Specialisation = spec ?? existing.Specialisation,
                     YearsOfExperience = yearsRaw != null ? int.Parse(yearsRaw) : existing.YearsOfExperience,
                     ConsultationFee = feeRaw != null ? decimal.Parse(feeRaw) : existing.ConsultationFee,
@@ -316,7 +316,7 @@ namespace HealthApp.ConsoleApp.Menus
 
                 ConsoleHelper.PrintSuccess("Doctor Updated Successfully!");
                 Console.WriteLine($"\n  ID             : {updated.DoctorId}");
-                Console.WriteLine($" Name           : {updated.Name}");
+                Console.WriteLine($"  Name           : {updated.FullName}");
                 Console.WriteLine($"  Specialisation : {updated.Specialisation}");
                 Console.WriteLine($"  Experience     : {updated.YearsOfExperience} years");
                 Console.WriteLine($"  Fee            : Rs.{updated.ConsultationFee}");
@@ -361,7 +361,7 @@ namespace HealthApp.ConsoleApp.Menus
 
                 foreach (var d in results)
                 {
-                    Console.WriteLine($"  [{d.DoctorId}]  {d.Name}  —  {d.Specialisation}");
+                    Console.WriteLine($"  [{d.DoctorId}]  {d.FullName}  —  {d.Specialisation}");
                     Console.WriteLine($"       Experience : {d.YearsOfExperience} yrs  |  Fee : Rs.{d.ConsultationFee}");
                     Console.WriteLine($"       Status     : {(d.IsActive ? "Active" : "Inactive")}");
                     Console.WriteLine(d.AvailableSlots.Count > 0
@@ -415,8 +415,8 @@ namespace HealthApp.ConsoleApp.Menus
                 var doctor = _doctorService.GetDoctorById(int.Parse(raw));
 
                 Console.WriteLine("  " + new string('─', 40));
-                Console.WriteLine($"  ID             : {doctor!.DoctorId}");
-                Console.WriteLine($" Name           : {doctor.Name}");
+                Console.WriteLine($"  ID             : {doctor.DoctorId}");
+                Console.WriteLine($"  Name           : {doctor.FullName}");
                 Console.WriteLine($"  Specialisation : {doctor.Specialisation}");
                 Console.WriteLine($"  Experience     : {doctor.YearsOfExperience} years");
                 Console.WriteLine($"  Fee            : Rs.{doctor.ConsultationFee}");
@@ -454,7 +454,7 @@ namespace HealthApp.ConsoleApp.Menus
             foreach (var d in doctors)
             {
                 Console.WriteLine("  " + new string('─', 50));
-                Console.WriteLine($"  [{d.DoctorId}]  {d.Name}  —  {d.Specialisation}");
+                Console.WriteLine($"  [{d.DoctorId}]  {d.FullName}  —  {d.Specialisation}");
                 Console.WriteLine($"       Experience : {d.YearsOfExperience} yrs  |  Fee : Rs.{d.ConsultationFee}");
                 Console.WriteLine($"       Status     : {(d.IsActive ? "Active" : "Inactive")}");
             }
@@ -482,7 +482,7 @@ namespace HealthApp.ConsoleApp.Menus
                 // Verify doctor exists before fetching appointments
                 var doctor = _doctorService.GetDoctorById(doctorId);
 
-                Console.WriteLine($"\n  Dr. {doctor!.Name}  —  {doctor.Specialisation}\n");
+                Console.WriteLine($"\n  Dr. {doctor.FullName}  —  {doctor.Specialisation}\n");
 
                 // Fetch all appointments for this doctor
                 var appointments = _appointmentService.GetAppointmentsByDoctorId(doctorId);
@@ -502,7 +502,7 @@ namespace HealthApp.ConsoleApp.Menus
                     foreach (var appt in group)
                     {
                         Console.WriteLine($"  [{appt.AppointmentId}]  " +
-                                          $"{appt.Patient.Name,-15}  |  " +
+                                          $"{appt.Patient.FullName,-15}  |  " +
                                           $"{appt.ScheduledDate:dd/MM/yyyy}  |  " +
                                           $"{appt.TimeSlot}");
                     }

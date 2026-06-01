@@ -6,7 +6,6 @@ namespace HealthApp.ConsoleApp.Exceptions
     {
         public DoctorAlreadyExistsException(string message) : base(message)
         {
-            Console.WriteLine("Doctor already exists: " + message);
         }
     }
 }

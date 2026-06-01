@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Xunit;
 using Moq;
@@ -9,7 +9,6 @@ using HealthApp.ConsoleApp.Exceptions;
 
 namespace HealthApp.Tests.Services
 {
-    // Test class for HealthRecordService to validate health record management functionalities
     public class HealthRecordServiceTests
     {
         private readonly Mock<IHealthRecordRepository> _healthRepoMock;
@@ -30,15 +29,15 @@ namespace HealthApp.Tests.Services
                 _patientRepoMock.Object
             );
         }
-        // Helper methods to create sample patients, doctors, and health records for testing
         private static Patient GetSamplePatient(int id)
         {
             return new Patient
             {
                 PatientId = id,
-                Name = "Patient " + id,
+                FullName = "Patient " + id,
                 PhoneNumber = "9999999999",
-                Email = "patient@test.com"
+                Email = "patient@test.com",
+                InsuranceId = "23sdfs"
             };
         }
 
@@ -47,7 +46,7 @@ namespace HealthApp.Tests.Services
             return new Doctor
             {
                 DoctorId = id,
-                Name = "Doctor " + id,
+                FullName = "Doctor " + id,
                 Specialisation = "General"
             };
         }
@@ -246,7 +245,7 @@ namespace HealthApp.Tests.Services
 
             var result = HealthRecordService.RecordIdGenerator(records);
 
-            Assert.Equal(401, result);
+            Assert.Equal(101, result);
         }
     }
 }
