@@ -37,11 +37,12 @@ namespace HealthApp.ConsoleApp.Repositories
 
         public Doctor UpdateDoctor(Doctor existingDoctor, Doctor doctor)
         {
-            existingDoctor.Name = doctor.Name;
+            existingDoctor.FullName = doctor.FullName;
             existingDoctor.Specialisation = doctor.Specialisation;
             existingDoctor.YearsOfExperience = doctor.YearsOfExperience;
             existingDoctor.ConsultationFee = doctor.ConsultationFee;
             existingDoctor.IsActive = doctor.IsActive;
+            existingDoctor.AvailableSlots = doctor.AvailableSlots;
 
             return existingDoctor;
         }

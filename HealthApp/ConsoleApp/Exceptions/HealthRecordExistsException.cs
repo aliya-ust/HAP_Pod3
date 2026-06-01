@@ -4,7 +4,7 @@
     {
         public HealthRecordExistsException(string message) : base(message)
         {
-
+            
         }
     }
 }

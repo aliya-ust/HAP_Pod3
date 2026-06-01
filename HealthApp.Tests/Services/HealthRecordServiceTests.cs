@@ -35,9 +35,10 @@ namespace HealthApp.Tests.Services
             return new Patient
             {
                 PatientId = id,
-                Name = "Patient " + id,
+                FullName = "Patient " + id,
                 PhoneNumber = "9999999999",
-                Email = "patient@test.com"
+                Email = "patient@test.com",
+                InsuranceId = "23sdfs"
             };
         }
 
@@ -46,7 +47,7 @@ namespace HealthApp.Tests.Services
             return new Doctor
             {
                 DoctorId = id,
-                Name = "Doctor " + id,
+                FullName = "Doctor " + id,
                 Specialisation = "General"
             };
         }
@@ -245,7 +246,7 @@ namespace HealthApp.Tests.Services
 
             var result = HealthRecordService.RecordIdGenerator(records);
 
-            Assert.Equal(401, result);
+            Assert.Equal(101, result);
         }
     }
 }

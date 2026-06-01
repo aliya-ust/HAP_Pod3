@@ -4,7 +4,7 @@
     {
         public HealthRecordNotFoundException(string message) : base(message)
         {
-
+            
         }
     }
 }

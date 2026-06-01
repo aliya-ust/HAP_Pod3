@@ -16,7 +16,7 @@ namespace HealthApp.ConsoleApp.Repositories
         public string AddAppointment(Appointment appointment)
         {
             _appointmentDb.Appointments.Add(appointment);
-            return $"Appointment of ID {appointment.AppointmentId} has been created successfully";
+            return $"Appointment ID {appointment.AppointmentId} added successfully!";
         }
 
         public List<Appointment> GetAllAppointments()
@@ -41,12 +41,12 @@ namespace HealthApp.ConsoleApp.Repositories
 
         public List<Appointment> GetAppointmentsByPatientId(int patientId)
         {
-            return _appointmentDb.Appointments.Where(a => a.Patient?.PatientId == patientId).ToList();
+            return _appointmentDb.Appointments.Where(a => a.Patient.PatientId == patientId).ToList();
         }
 
         public List<Appointment> GetAppointmentsByDoctorId(int doctorId)
         {
-            return _appointmentDb.Appointments.Where(a => a.Doctor?.DoctorId == doctorId).ToList();
+            return _appointmentDb.Appointments.Where(a => a.Doctor.DoctorId == doctorId).ToList();
         }
     }
 }

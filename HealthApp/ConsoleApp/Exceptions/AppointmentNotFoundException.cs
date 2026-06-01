@@ -4,7 +4,7 @@
     {
         public AppointmentNotFoundException(string message) : base(message)
         {
-
+            
         }
     }
 }

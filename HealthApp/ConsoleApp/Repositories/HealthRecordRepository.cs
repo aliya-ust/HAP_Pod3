@@ -8,11 +8,11 @@ namespace HealthApp.ConsoleApp.Repositories
 
     public class HealthRecordRepository : IHealthRecordRepository
     {
-        private readonly HealthRecordDb _healthRecordDb;
+        private readonly HealthRecordDB _healthRecordDb;
 
-        public HealthRecordRepository(HealthRecordDb healthRecordDb)
+        public HealthRecordRepository(HealthRecordDB healthRecordDB)
         {
-            _healthRecordDb = healthRecordDb;
+            _healthRecordDb = healthRecordDB;
         }
 
         public string AddHealthRecord(HealthRecord record)

@@ -5,8 +5,8 @@
 
         public DoctorUnavailableException(string message) : base(message)
         {
-
+            
         }
     }
-
+    
 }

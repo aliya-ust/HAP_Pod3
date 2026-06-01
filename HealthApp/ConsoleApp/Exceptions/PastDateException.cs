@@ -4,7 +4,7 @@
     {
         public PastDateException(string message) : base(message)
         {
-
+            
         }
     }
 }

@@ -51,14 +51,33 @@ namespace HealthApp.ConsoleApp.Services
 
         public static int PatientIdGenerator(List<Patient> patients)
         {
-            return patients.Any()
+            return patients.Count > 0
                 ? patients.Max(p => p.PatientId) + 1
                 : 101;
         }
+
         public List<Patient> GetAllPatients()
         {
-            return _patientRepo.GetAllPatients();
+            var patients = _patientRepo.GetAllPatients();
+
+            if (patients == null || patients.Count == 0)
+            {
+                throw new PatientNotFoundException("No patients found.");
+            }
+
+            return patients;
         }
 
+        public List<Patient> GetPatientByName(string name)
+        {
+            var result = _patientRepo.GetPatientByName(name);
+
+            if (result == null || result.Count == 0)
+            {
+                throw new PatientNotFoundException($"Patient with name {name} does not exist");
+            }
+
+            return result;
+        }
     }
 }

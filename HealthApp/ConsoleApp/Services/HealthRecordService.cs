@@ -21,6 +21,7 @@ namespace HealthApp.ConsoleApp.Services
             _patientRepository = patientRepository;
         }
 
+        // Add a health record to the database
         public string AddHealthRecord(HealthRecord record)
         {
             List<HealthRecord> records = _healthRecordRepository.GetAllRecords();
@@ -29,6 +30,7 @@ namespace HealthApp.ConsoleApp.Services
             return _healthRecordRepository.AddHealthRecord(record);
         }
 
+        // Get a health record by patient id and return in descending order of visit date
         public List<HealthRecord> GetByPatientIdOrderByVisitDateDesc(int id)
         {
             var patient = _patientRepository.GetPatientById(id);
@@ -49,6 +51,7 @@ namespace HealthApp.ConsoleApp.Services
             return records;
         }
 
+        // Get a health record by doctor id and return in descending order of visit date
         public List<HealthRecord> GetByDoctorIdOrderByVisitDateDesc(int id)
         {
             var doctor = _doctorRepository.GetDoctorById(id);
@@ -69,6 +72,7 @@ namespace HealthApp.ConsoleApp.Services
             return records;
         }
 
+        // Update health record with new details
         public HealthRecord UpdateHealthRecord(HealthRecord record)
         {
             HealthRecord? existingHealthRecord = GetRecordById(record.RecordId);
@@ -80,7 +84,8 @@ namespace HealthApp.ConsoleApp.Services
             return _healthRecordRepository.UpdateHealthRecord(existingHealthRecord, record);
         }
 
-        public HealthRecord? GetRecordById(int recordId)
+        // Get a health record by its id
+        public HealthRecord GetRecordById(int recordId)
         {
             HealthRecord? record = _healthRecordRepository.GetRecordById(recordId);
             if (record is null)
@@ -90,11 +95,12 @@ namespace HealthApp.ConsoleApp.Services
             return record;
         }
 
+        // Assign health record id based on latest record id
         public static int RecordIdGenerator(List<HealthRecord> records)
         {
-            return records.Any()
+            return records.Count > 0
                 ? records.Max(r => r.RecordId) + 1
-                : 401;
+                : 101;
         }
     }
 }

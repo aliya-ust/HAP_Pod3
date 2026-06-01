@@ -4,7 +4,7 @@
     {
         public PatientNotFoundException(string message) : base(message)
         {
-
+            
         }
     }
 }

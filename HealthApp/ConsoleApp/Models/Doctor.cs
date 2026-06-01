@@ -7,8 +7,8 @@ namespace HealthApp.ConsoleApp.Models
     public class Doctor
     {
         public int DoctorId { get; set; }
-        public required string Name { get; set; }=string.Empty;
-        public required string Specialisation { get; set; } = string.Empty;
+        public required string FullName { get; set; }
+        public required string Specialisation { get; set; }
         public int YearsOfExperience { get; set; }
         public decimal ConsultationFee { get; set; }
         public bool IsActive { get; set; }
@@ -16,49 +16,33 @@ namespace HealthApp.ConsoleApp.Models
 
         public List<DateTime> AvailableDates { get; set; } = new List<DateTime>();
 
-        //Availability method
+        // Check if doctor is available based on leaves, and number of confirmed appointments
         public virtual bool IsAvailable(DateTime date)
         {
-            if (!IsActive)
-            {
-                return false;
-            }
-
-            int count = AvailableDates.Count(d => d.Date == date.Date);
-
-            if (count >= 5)
-            {
-                return false;
-            }
-
-            return true;
+            return IsActive && AvailableDates.Any(d => d.Date == date.Date);
         }
 
-        //Upcoming count
-        public string GetScheduleSummary()
+        // Count of upcoming confirmed appointments for this doctor
+        public string GetScheduleSummary(List<Appointment> appointments)
         {
-            int count = AvailableDates.Count(d => d.Date >= DateTime.Today);
+            int count = appointments.Count(a =>
+                a.Doctor.DoctorId == this.DoctorId &&
+                a.ScheduledDate.Date >= DateTime.Today &&
+                a.Status == AppointmentStatus.Confirmed
+            );
 
             if (count == 0)
             {
-                return "No available slots";
+                return $"Dr. {FullName} has no upcoming confirmed appointments.";
             }
 
-            return $"Available slots  count: {count}";
+            return $"Dr. {FullName} has {count} upcoming confirmed appointments.";
         }
 
-        //Upcoming list
-        public List<DateTime> GetUpcomingAppointments()
+        // Formatted string of doctor details
+        public override string ToString()
         {
-            return AvailableDates
-                .Where(d => d.Date >= DateTime.Today)
-                .OrderBy(d => d)
-                .ToList();
-        }
-
-        public string GetDoctorDetails()
-        {
-            return $"Doctor ID: {DoctorId}, Full Name: {Name}, Specialisation: {Specialisation}, Experience: {YearsOfExperience} years, Consultation Fee: Rs. {ConsultationFee}, Active: {(IsActive ? "Yes" : "No")}";
+            return $"Doctor ID: {DoctorId} \nFull Name: {FullName} \nSpecialisation: {Specialisation} \nExperience: {YearsOfExperience} years \nConsultation Fee: Rs. {ConsultationFee} \nActive Status: {(IsActive ? "Yes" : "No")}";
         }
     }
 }

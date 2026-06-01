@@ -9,12 +9,12 @@ namespace HealthApp.Tests.Repositories
 {
     public class HealthRecordRepositoryTests
     {
-        private readonly HealthRecordDb _healthRecordDb;
+        private readonly HealthRecordDB _healthRecordDb;
         private readonly HealthRecordRepository _repository;
 
         public HealthRecordRepositoryTests()
         {
-            _healthRecordDb = new HealthRecordDb
+            _healthRecordDb = new HealthRecordDB
             {
                 Records = new List<HealthRecord>()
             };
@@ -27,9 +27,10 @@ namespace HealthApp.Tests.Repositories
             return new Patient
             {
                 PatientId = id,
-                Name = "Patient " + id,
+                FullName = "Patient " + id,
                 PhoneNumber = "9999999999",
-                Email = "patient@test.com"
+                Email = "patient@test.com",
+                InsuranceId = "sadf23423"
             };
         }
 
@@ -38,7 +39,7 @@ namespace HealthApp.Tests.Repositories
             return new Doctor
             {
                 DoctorId = id,
-                Name = "Doctor " + id,
+                FullName = "Doctor " + id,
                 Specialisation = "General"
             };
         }

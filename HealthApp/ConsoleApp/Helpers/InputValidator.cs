@@ -4,8 +4,10 @@ using System.Text.RegularExpressions;
 
 namespace HealthApp.ConsoleApp.Helpers
 {
+    // Used for validating user input in the console application.
     public static class InputValidator
     {
+        // Prompts the user for input and validates it using the provided validator function.
         public static string? GetValidatedInput(
             string prompt,
             Func<string, bool> validator,
@@ -29,7 +31,7 @@ namespace HealthApp.ConsoleApp.Helpers
                 Console.WriteLine(errorMessage);
             }
         }
-
+        // Prompts the user for a valid date input in the format "dd/MM/yyyy".
         public static DateTime GetValidDate(string prompt)
         {
             while (true)
@@ -37,7 +39,7 @@ namespace HealthApp.ConsoleApp.Helpers
                 Console.Write(prompt);
                 var input = Console.ReadLine();
 
-                if (input?.ToLower() == "q")
+                if (input?.ToLower() == "q" || input?.ToLower() == "back")
                     throw new OperationCanceledException();
 
                 if (DateTime.TryParseExact(
@@ -54,6 +56,28 @@ namespace HealthApp.ConsoleApp.Helpers
             }
         }
 
+        public static DateTime GetValidAppointmentDate(string prompt, IEnumerable<DateTime> availableDates)
+        {
+            while (true)
+            {
+                var selectedDate = GetValidDate(prompt);
+
+                if (selectedDate.Date < DateTime.Today)
+                {
+                    ConsoleHelper.PrintError("Date cannot be in the past.");
+                    continue;
+                }
+
+                if (!availableDates.Any(d => d.Date == selectedDate.Date))
+                {
+                    ConsoleHelper.PrintError("Doctor not available on that date. Choose from the list.");
+                    continue;
+                }
+
+                return selectedDate;
+            }
+        }
+        // Prompts the user for an optional date input in the format "dd/MM/yyyy". Returns null if the user enters an empty string.
         public static DateTime? GetOptionalDate(string prompt)
         {
             while (true)
@@ -64,7 +88,7 @@ namespace HealthApp.ConsoleApp.Helpers
                 if (string.IsNullOrWhiteSpace(input))
                     return null;
 
-                if (input?.ToLower() == "q")
+                if (input?.ToLower() == "q" || input?.ToLower() == "back")
                     throw new OperationCanceledException();
 
                 if (DateTime.TryParseExact(
@@ -81,6 +105,7 @@ namespace HealthApp.ConsoleApp.Helpers
             }
         }
 
+        // Prompts the user for an optional gender input. Returns null if the user enters an empty string.
         public static GenderType? GetOptionalGender(string prompt)
         {
             while (true)
@@ -91,16 +116,21 @@ namespace HealthApp.ConsoleApp.Helpers
                 if (string.IsNullOrWhiteSpace(input))
                     return null;
 
-                if (input?.ToLower() == "q")
+                var trimmedInput = input.Trim();
+
+                if (trimmedInput.Equals("q", StringComparison.OrdinalIgnoreCase) ||
+                    trimmedInput.Equals("back", StringComparison.OrdinalIgnoreCase))
                     throw new OperationCanceledException();
 
-                if (Enum.TryParse<GenderType>(input, true, out var gender))
+                if (Enum.TryParse<GenderType>(trimmedInput, true, out var gender))
+                {
                     return gender;
+                }
 
                 Console.WriteLine("Invalid gender.");
             }
         }
-
+        // Prompts the user for a valid gender input. Continues to prompt until a valid input is received or the user chooses to quit.
         public static GenderType GetValidGender(string prompt)
         {
             while (true)
@@ -108,56 +138,69 @@ namespace HealthApp.ConsoleApp.Helpers
                 Console.Write(prompt);
                 var input = Console.ReadLine();
 
-                if (input?.ToLower() == "q")
+                if (string.IsNullOrWhiteSpace(input))
+                {
+                    Console.WriteLine("Invalid gender.");
+                    continue;
+                }
+
+                var trimmedInput = input.Trim();
+
+                if (trimmedInput.Equals("q", StringComparison.OrdinalIgnoreCase))
                     throw new OperationCanceledException();
 
-                if (Enum.GetNames(typeof(GenderType))
-                        .Any(n => n.Equals(input, StringComparison.OrdinalIgnoreCase)))
+                if (Enum.TryParse<GenderType>(trimmedInput, true, out var gender))
                 {
-                    return Enum.Parse<GenderType>(input!, true);
+                    return gender;
                 }
 
                 Console.WriteLine("Invalid gender.");
             }
         }
-
+        //Validates all the input fields for doctor and patient details.
         public static bool IsValidName(string input)
         {
             if (string.IsNullOrWhiteSpace(input))
                 return false;
-
+        
             string pattern = @"^[A-Za-z]+([.\s]?[A-Za-z]+)*$";
-            return Regex.IsMatch(input.Trim(), pattern);
-        }
-
-        public static bool IsValidEmail(string input)
-        {
-            string pattern = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
-            return Regex.IsMatch(input, pattern);
+            return Regex.IsMatch(input.Trim(), pattern, RegexOptions.None, TimeSpan.FromMilliseconds(500));
         }
 
         public static bool IsValidPhone(string input)
         {
+            //Regex pattern for validating Indian phone numbers (10 digits starting with 6-9)
             string pattern = @"^[6-9]\d{9}$";
-            return Regex.IsMatch(input, pattern);
+            return Regex.IsMatch(input, pattern, RegexOptions.None, TimeSpan.FromMilliseconds(500));
         }
 
+        public static bool IsValidEmail(string input)
+        {
+            //Regex pattern for validating email addresses
+            string pattern = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
+            return Regex.IsMatch(input, pattern, RegexOptions.None, TimeSpan.FromMilliseconds(500));
+        }
 
+        //Assuming insurance ID is a non-negative integer. Adjust validation as needed based on actual format.
         public static bool IsValidInsuranceId(string input) =>
             !string.IsNullOrWhiteSpace(input) &&
-            System.Text.RegularExpressions.Regex.IsMatch(input, @"^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]+$");
+            Regex.IsMatch(input, @"^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]+$", RegexOptions.None, TimeSpan.FromMilliseconds(500));
 
+        //Assuming experience is a non-negative integer representing years of experience. Adjust validation as needed based on actual requirements.
         public static bool IsValidExperience(string input)
         {
             return int.TryParse(input, out int val) && val >= 0 && val <= 50;
         }
 
+        //Assuming fee is a non-negative decimal value. Adjust validation as needed based on actual requirements.
         public static bool IsValidFee(string input) =>
             decimal.TryParse(input, out decimal val) && val >= 0;
 
+        //Assuming IDs are positive integers. Adjust validation as needed based on actual format.
         public static bool IsValidId(string input) =>
             int.TryParse(input, out int id) && id > 0;
 
+        // Validates that the input is not null, empty, or whitespace.
         public static bool IsNonEmpty(string input) =>
             !string.IsNullOrWhiteSpace(input);
 

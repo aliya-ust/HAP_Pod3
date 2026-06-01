@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using HealthApp.ConsoleApp.Exceptions;
+using HealthApp.ConsoleApp.Repositories;
 using HealthApp.ConsoleApp.Interfaces;
 using HealthApp.ConsoleApp.Models;
 
@@ -16,11 +17,7 @@ namespace HealthApp.ConsoleApp.Services
         {
             _appointmentRepo = appointmentRepository;
         }
-        // Method to get all appointments from the database
-        public List<Appointment> GetAllAppointments()
-        {
-            return _appointmentRepo.GetAllAppointments();
-        }
+
         // Book an appointment with date and time slot
         public string BookAppointment(Patient patient, Doctor doctor, DateTime date, string slot)
         {
@@ -37,7 +34,7 @@ namespace HealthApp.ConsoleApp.Services
             var appointments = _appointmentRepo.GetAllAppointments();
 
             bool isSlotTaken = appointments.Any(a =>
-                a.Doctor?.DoctorId == doctor.DoctorId &&
+                a.Doctor.DoctorId == doctor.DoctorId &&
                 a.ScheduledDate.Date == date.Date &&
                 a.TimeSlot == slot &&
                 a.Status != AppointmentStatus.Cancelled);
@@ -57,7 +54,8 @@ namespace HealthApp.ConsoleApp.Services
                 Status = AppointmentStatus.Pending
             };
 
-            return _appointmentRepo.AddAppointment(appointment);
+            _appointmentRepo.AddAppointment(appointment);
+            return $"Appointment of ID {appointment.AppointmentId} has been created successfully";
         }
 
         // Get appointment by patient id
@@ -80,7 +78,7 @@ namespace HealthApp.ConsoleApp.Services
             {
                 throw new AppointmentNotFoundException($"No appointments found for doctor ID {doctorId}.");
             }
-
+            
             return appointments;
         }
 
@@ -98,10 +96,10 @@ namespace HealthApp.ConsoleApp.Services
 
         // Assign appointment id based on latest record id
         public static int AppointmentIdGenerator(List<Appointment> appointments)
-        {
-            return appointments.Any()
+        {       
+            return appointments.Count > 0
                 ? appointments.Max(a => a.AppointmentId) + 1
-                : 301;
+                : 101;
         }
 
         //  Cancel an appointment and update reason
@@ -127,16 +125,17 @@ namespace HealthApp.ConsoleApp.Services
                 throw new AppointmentNotFoundException($"Appointment of ID {appointmentId} does not exist");
             }
             appointment.Confirm();
-            return $"Appointment of ID {appointmentId} has been confirmed successfully";
+            return $"Appointment of ID {appointmentId} has been cancelled successfully";
         }
 
         //  Get list of confirmed (upcoming) appointments
         public List<Appointment> GetUpcomingAppointments()
         {
-            List<Appointment> upcomingAppointments = _appointmentRepo
+            List<Appointment> upcomingAppointments =  _appointmentRepo
                 .GetAllAppointments()
                 .Where(a => a.ScheduledDate > DateTime.Now &&
-                            a.Status == AppointmentStatus.Confirmed)
+                            a.Status != AppointmentStatus.Completed && 
+                            a.Status != AppointmentStatus.Cancelled)
                 .OrderBy(a => a.ScheduledDate)
                 .ToList();
 
@@ -146,7 +145,7 @@ namespace HealthApp.ConsoleApp.Services
             }
             return upcomingAppointments;
         }
-        // Method to update an existing appointment in the database
+
         public Appointment UpdateAppointment(Appointment appointment)
         {
             Appointment? existingAppointment = GetAppointmentById(appointment.AppointmentId);
@@ -156,6 +155,18 @@ namespace HealthApp.ConsoleApp.Services
                 throw new AppointmentNotFoundException($"Appointment of ID {appointment.AppointmentId} does not exist");
             }
             return _appointmentRepo.UpdateAppointment(existingAppointment, appointment);
+        }
+
+        public List<Appointment> GetAllAppointments()
+        {
+            var appointments = _appointmentRepo.GetAllAppointments();
+
+            if (appointments == null || appointments.Count == 0)
+            {
+                throw new AppointmentNotFoundException("No appointments found.");
+            }
+
+            return appointments;
         }
     }
 }
