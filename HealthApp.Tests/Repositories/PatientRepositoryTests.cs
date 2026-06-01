@@ -37,6 +37,48 @@ namespace HealthApp.Tests.Repositories
         }
 
         [Fact]
+        public void GetPatientByName_ShouldReturnMatchingPatients_IgnoringCase()
+        {
+            // Arrange
+            _patientDb.Patients.AddRange(new List<Patient>
+            {
+                new Patient
+                {
+                    PatientId = 1,
+                    FullName = "John Doe",
+                    PhoneNumber = "1111111111",
+                    Email = "john@email.com",
+                    InsuranceId = "INS1"
+                },
+                new Patient
+                {
+                    PatientId = 2,
+                    FullName = "Jane Doe",
+                    PhoneNumber = "2222222222",
+                    Email = "jane@email.com",
+                    InsuranceId = "INS2"
+                },
+                new Patient
+                {
+                    PatientId = 3,
+                    FullName = "Alice Smith",
+                    PhoneNumber = "3333333333",
+                    Email = "alice@email.com",
+                    InsuranceId = "INS3"
+                }
+            });
+
+            // Act
+            var result = _repository.GetPatientByName("doe");
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(2, result.Count);
+            Assert.Contains(result, p => p.FullName == "John Doe");
+            Assert.Contains(result, p => p.FullName == "Jane Doe");
+        }
+
+        [Fact]
         public void RegisterPatient_ShouldAllow_MultiplePatients()
         {
             var patient1 = new Patient

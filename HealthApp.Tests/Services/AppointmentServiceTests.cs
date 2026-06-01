@@ -66,6 +66,26 @@ namespace HealthApp.Tests.Services
             };
         }
 
+        [Fact]
+        public void GetAllAppointments_ShouldReturnAppointments_WhenDataExists()
+        {
+            // Arrange
+            var appointments = new List<Appointment>
+            {
+                GetSampleAppointment(1),
+                GetSampleAppointment(2)
+            };
+
+            _mockRepo.Setup(r => r.GetAllAppointments()).Returns(appointments);
+
+            // Act
+            var result = _service.GetAllAppointments();
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(2, result.Count);
+        }
+
         // BookAppointment - Success
         [Fact]
         public void BookAppointment_ShouldBookSuccessfully()

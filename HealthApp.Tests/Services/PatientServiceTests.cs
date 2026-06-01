@@ -80,6 +80,54 @@ namespace HealthApp.Tests.Services
             Assert.Throws<PatientNotFoundException>(() => _service.GetPatientById(999));
         }
 
+        [Fact]
+        public void GetAllPatients_ShouldReturnPatients_WhenDataExists()
+        {
+            // Arrange
+            var patients = new List<Patient>
+            {
+                GetSamplePatient(101),
+                GetSamplePatient(102)
+            };
+
+            _mockRepo.Setup(r => r.GetAllPatients()).Returns(patients);
+
+            // Act
+            var result = _service.GetAllPatients();
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(2, result.Count);
+        }
+
+        [Fact]
+        public void GetPatientByName_ShouldReturnMatchingPatients()
+        {
+            // Arrange
+            var patients = new List<Patient>
+            {
+                new Patient { PatientId = 1, FullName = "John Doe", PhoneNumber = "9999999999",
+                Email = "patient@test.com",
+                InsuranceId = "sdkjfh234" },
+                new Patient { PatientId = 2, FullName = "Jane Doe", PhoneNumber = "9999999999",
+                Email = "patient@test.com",
+                InsuranceId = "sdkjfh234" }
+            };
+
+            _mockRepo
+                .Setup(r => r.GetPatientByName("doe"))
+                .Returns(patients);
+
+            // Act
+            var result = _service.GetPatientByName("doe");
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(2, result.Count);
+        }
+
+
+
         // UpdatePatient
         [Fact]
         public void UpdatePatient_ShouldUpdateExistingPatient()

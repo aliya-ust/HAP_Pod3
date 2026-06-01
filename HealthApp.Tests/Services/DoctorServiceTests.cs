@@ -52,6 +52,27 @@ namespace HealthApp.Tests.Services
             Assert.Contains("successfully", result);
         }
 
+        [Fact]
+        public void GetAllDoctors_ShouldReturnDoctors_WhenDataExists()
+        {
+            // Arrange
+            var doctors = new List<Doctor>
+            {
+                GetSampleDoctor(101),
+                GetSampleDoctor(102)
+            };
+
+            _mockRepo.Setup(r => r.GetAllDoctors()).Returns(doctors);
+
+            // Act
+            var result = _service.GetAllDoctors();
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(2, result.Count);
+        }
+
+
         // GetDoctorById
         [Fact]
         public void GetDoctorById_ShouldReturnDoctor()
