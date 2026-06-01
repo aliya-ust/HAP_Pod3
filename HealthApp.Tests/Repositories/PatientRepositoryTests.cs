@@ -1,15 +1,4 @@
 ﻿using System;
-<<<<<<< HEAD
-using System.Collections.Generic;
-using System.Text;
-
-namespace HealthApp.Tests.Repositories
-{
-    internal class PatientRepositoryTests
-    {
-    }
-}
-=======
 using Xunit;
 using HealthApp.ConsoleApp.Repositories;
 using HealthApp.ConsoleApp.Databases;
@@ -196,4 +185,3 @@ namespace HealthApp.Tests.Repositories
         }
     }
 }
->>>>>>> 4d8a0e3f027eb90749388ec6177e69d6c9a087fb

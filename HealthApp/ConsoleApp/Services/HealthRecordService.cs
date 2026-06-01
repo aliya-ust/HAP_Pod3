@@ -72,13 +72,9 @@ namespace HealthApp.ConsoleApp.Services
         // Method to update an existing health record in the database
         public HealthRecord UpdateHealthRecord(HealthRecord record)
         {
-            HealthRecord? existingHealthRecord = GetRecordById(record.RecordId);
-
-            if (existingHealthRecord is null)
-            {
-                throw new HealthRecordNotFoundException($"Health Record of ID {record.RecordId} does not exist");
-            }
-            return _healthRecordRepository.UpdateHealthRecord(existingHealthRecord, record);
+            return _healthRecordRepository.UpdateHealthRecord(
+                GetRecordById(record.RecordId)!,
+                record);
         }
         // Method to get a health record by ID from the database
         public HealthRecord? GetRecordById(int recordId)
@@ -104,9 +100,12 @@ namespace HealthApp.ConsoleApp.Services
         // Method to generate a unique health record ID based on existing health records in the database
         public static int RecordIdGenerator(List<HealthRecord> records)
         {
-            return records.Any()
-                ? records.Max(r => r.RecordId) + 1
-                : 401;
+            if (records.Count == 0)
+            {
+                return 401;
+            }
+
+            return records.Max(r => r.RecordId) + 1;
         }
     }
 }

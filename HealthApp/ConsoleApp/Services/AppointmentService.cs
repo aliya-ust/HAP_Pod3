@@ -99,7 +99,7 @@ namespace HealthApp.ConsoleApp.Services
         // Assign appointment id based on latest record id
         public static int AppointmentIdGenerator(List<Appointment> appointments)
         {
-            return appointments.Any()
+            return appointments.Count > 0
                 ? appointments.Max(a => a.AppointmentId) + 1
                 : 301;
         }
@@ -141,7 +141,7 @@ namespace HealthApp.ConsoleApp.Services
                 .OrderBy(a => a.ScheduledDate)
                 .ToList();
 
-            if (upcomingAppointments is null)
+            if (upcomingAppointments.Count == 0)
             {
                 throw new AppointmentNotFoundException("There are no upcoming appointments");
             }
@@ -150,12 +150,8 @@ namespace HealthApp.ConsoleApp.Services
         // Method to update an existing appointment in the database
         public Appointment UpdateAppointment(Appointment appointment)
         {
-            Appointment? existingAppointment = GetAppointmentById(appointment.AppointmentId);
+            Appointment existingAppointment = GetAppointmentById(appointment.AppointmentId);
 
-            if (existingAppointment is null)
-            {
-                throw new AppointmentNotFoundException($"Appointment of ID {appointment.AppointmentId} does not exist");
-            }
             return _appointmentRepo.UpdateAppointment(existingAppointment, appointment);
         }
     }

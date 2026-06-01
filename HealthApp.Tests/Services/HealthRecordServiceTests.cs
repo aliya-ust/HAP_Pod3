@@ -1,11 +1,12 @@
-using System;
-using System.Collections.Generic;
-using Xunit;
-using Moq;
-using HealthApp.ConsoleApp.Services;
+using HealthApp.ConsoleApp.Exceptions;
 using HealthApp.ConsoleApp.Interfaces;
 using HealthApp.ConsoleApp.Models;
-using HealthApp.ConsoleApp.Exceptions;
+using HealthApp.ConsoleApp.Services;
+using Moq;
+using System;
+using System.Collections.Generic;
+using System.Numerics;
+using Xunit;
 
 namespace HealthApp.Tests.Services
 {
