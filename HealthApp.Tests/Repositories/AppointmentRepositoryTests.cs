@@ -28,9 +28,10 @@ namespace HealthApp.Tests.Repositories
             return new Patient
             {
                 PatientId = id,
-                Name = "Patient " + id,
+                FullName = "Patient " + id,
                 PhoneNumber = "9999999999",
-                Email = "patient@test.com"
+                Email = "patient@test.com",
+                InsuranceId = "sadf23423"
             };
         }
 
@@ -39,7 +40,7 @@ namespace HealthApp.Tests.Repositories
             return new Doctor
             {
                 DoctorId = id,
-                Name = "Doctor " + id,
+                FullName = "Doctor " + id,
                 Specialisation = "General"
             };
         }
@@ -57,10 +58,11 @@ namespace HealthApp.Tests.Repositories
                 TimeSlot = "10:00 AM"
             };
 
-            var result = _repository.AddAppointment(appointment);
+            _repository.AddAppointment(appointment);
 
+            
             Assert.Single(_appointmentDb.Appointments);
-            Assert.Contains("created successfully", result);
+            Assert.Equal(appointment, _appointmentDb.Appointments[0]);
         }
 
         // GetAllAppointments
@@ -133,8 +135,8 @@ namespace HealthApp.Tests.Repositories
 
             var result = _repository.UpdateAppointment(existing, updated);
 
-            Assert.Equal("Patient 2", result.Patient.Name);
-            Assert.Equal("Doctor 2", result.Doctor.Name);
+            Assert.Equal("Patient 2", result.Patient.FullName);
+            Assert.Equal("Doctor 2", result.Doctor.FullName);
             Assert.Equal("2:00 PM", result.TimeSlot);
         }
 

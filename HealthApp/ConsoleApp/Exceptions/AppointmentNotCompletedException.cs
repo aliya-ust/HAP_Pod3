@@ -4,7 +4,7 @@
     {
         public AppointmentNotCompletedException(string message) : base(message)
         {
-
+            
         }
     }
 }

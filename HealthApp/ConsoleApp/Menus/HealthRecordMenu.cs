@@ -10,6 +10,7 @@ namespace HealthApp.ConsoleApp.Menus
     {
         private readonly IHealthRecordService _healthRecordService;
         private readonly IAppointmentService _appointmentService;
+        private const string ValidPositiveNumber = "  Please enter a valid positive number.";
         // Constructor to inject required services for health record management and appointments
         public HealthRecordMenu(IHealthRecordService healthRecordService,
                                 IAppointmentService appointmentService)
@@ -42,18 +43,28 @@ namespace HealthApp.ConsoleApp.Menus
                 Console.WriteLine("  COMPLETED APPOINTMENTS");
                 Console.WriteLine("  " + new string('─', 60));
                 foreach (var a in allCompleted)
-                    Console.WriteLine($"  [{a.AppointmentId}]  {a.Patient.Name}  →  " +
-                                      $"Dr. {a.Doctor.Name}  |  {a.ScheduledDate:dd MMM yyyy}");
+                    Console.WriteLine($"  [{a.AppointmentId}]  {a.Patient.FullName}  →  " +
+                                      $"Dr. {a.Doctor.FullName}  |  {a.ScheduledDate:dd MMM yyyy}");
                 Console.WriteLine("  " + new string('─', 60) + "\n");
 
                 // Get and validate appointment ID
                 string rawId = InputValidator.GetValidatedInput(
                     "  Enter Appointment ID : ",
                     InputValidator.IsValidId,
-                    "  Please enter a valid positive number.")!;
+                    ValidPositiveNumber)!;
 
+                // Fetch appointment and handle not found
                 Appointment appointment;
-                appointment = _appointmentService.GetAppointmentById(int.Parse(rawId));
+                try
+                {
+                    appointment = _appointmentService.GetAppointmentById(int.Parse(rawId));
+                }
+                catch (AppointmentNotFoundException)
+                {
+                    ConsoleHelper.PrintError($"No appointment found with ID {rawId}.");
+                    ConsoleHelper.Pause();
+                    return;
+                }
 
                 // Validate the appointment is actually completed
                 if (appointment.Status != AppointmentStatus.Completed)
@@ -67,20 +78,20 @@ namespace HealthApp.ConsoleApp.Menus
                 // Get diagnosis
                 string diagnosis = InputValidator.GetValidatedInput(
                     "  Diagnosis    : ",
-                    InputValidator.IsValidDiagnosis,
-                    "  Diagnosis cannot be empty.")!;
+                    InputValidator.IsValidPrescription,
+                    "  Diagnosis must have more than 3 characters and must not include only numbers.")!;
 
                 // Get prescription
                 string prescription = InputValidator.GetValidatedInput(
                     "  Prescription : ",
                     InputValidator.IsValidPrescription,
-                    "  Prescription cannot be empty.")!;
+                    "  Prescription must have more than 3 characters and must not include only numbers.")!;
 
                 // Get doctor notes
                 string doctorNotes = InputValidator.GetValidatedInput(
                     "  Doctor Notes : ",
                     InputValidator.IsValidDoctorNotes,
-                    "  Doctor notes cannot be empty.")!;
+                    "  Doctor notes must have more than 3 characters and must not include only numbers.")!;
 
                 // Build and persist the health record
                 var record = new HealthRecord
@@ -115,7 +126,7 @@ namespace HealthApp.ConsoleApp.Menus
             {
                 Console.Clear();
                 ConsoleHelper.PrintHeader("VIEW HEALTH RECORDS");
-                Console.WriteLine("  Type 'q' or 'back' to return.\n");
+                Console.WriteLine("  Type 'q' or 'back' to return.\n");             
                 Console.WriteLine("  ╔══════════════════════════════╗");
                 Console.WriteLine("  ║  1.  By Patient ID           ║");
                 Console.WriteLine("  ║  2.  By Doctor ID            ║");
@@ -167,10 +178,20 @@ namespace HealthApp.ConsoleApp.Menus
                 string rawId = InputValidator.GetValidatedInput(
                     "  Enter Record ID : ",
                     InputValidator.IsValidId,
-                    "  Please enter a valid positive number.")!;
+                    ValidPositiveNumber)!;
 
                 HealthRecord existing;
-                existing = _healthRecordService.GetRecordById(int.Parse(rawId))!;
+                try
+                {
+                    existing = _healthRecordService.GetRecordById(int.Parse(rawId))!;
+                }
+                catch (HealthRecordNotFoundException ex)
+                {
+                    ConsoleHelper.PrintError(ex.Message);
+                    ConsoleHelper.Pause();
+                    return;
+                }
+
                 // Show current record before editing
                 Console.WriteLine("\n  Current Record:");
                 Console.WriteLine("  " + new string('─', 55));
@@ -184,17 +205,17 @@ namespace HealthApp.ConsoleApp.Menus
 
                 string? newDiagnosis = InputValidator.GetValidatedInput(
                     "  Diagnosis    : ",
-                    InputValidator.IsValidDiagnosis,
+                    InputValidator.IsNonEmpty,
                     "  Invalid input.", allowEmpty: true);
 
                 string? newPrescription = InputValidator.GetValidatedInput(
                     "  Prescription : ",
-                    InputValidator.IsValidPrescription,
+                    InputValidator.IsNonEmpty,
                     "  Invalid input.", allowEmpty: true);
 
                 string? newNotes = InputValidator.GetValidatedInput(
                     "  Doctor Notes : ",
-                    InputValidator.IsValidDoctorNotes,
+                    InputValidator.IsNonEmpty,
                     "  Invalid input.", allowEmpty: true);
 
                 // Build updated record — fall back to existing values where unchanged
@@ -234,7 +255,7 @@ namespace HealthApp.ConsoleApp.Menus
                 string rawId = InputValidator.GetValidatedInput(
                     $"  Enter {entityName} ID : ",
                     InputValidator.IsValidId,
-                    "  Please enter a valid positive number.")!;
+                    ValidPositiveNumber)!;
 
                 var records = fetch(int.Parse(rawId));
 
@@ -248,9 +269,9 @@ namespace HealthApp.ConsoleApp.Menus
 
                 Console.WriteLine("  " + new string('─', 55));
             }
-            catch (Exception ex) { ConsoleHelper.PrintError(ex.Message); }
-
-
+            catch (PatientNotFoundException ex) { ConsoleHelper.PrintError(ex.Message); }
+            catch (DoctorNotFoundException ex) { ConsoleHelper.PrintError(ex.Message); }
+            catch (HealthRecordNotFoundException ex) { ConsoleHelper.PrintError(ex.Message); }
         }
 
         // Fetch and display a single record by record ID
@@ -261,7 +282,7 @@ namespace HealthApp.ConsoleApp.Menus
                 string rawId = InputValidator.GetValidatedInput(
                     "  Enter Record ID : ",
                     InputValidator.IsValidId,
-                    "  Please enter a valid positive number.")!;
+                    ValidPositiveNumber)!;
 
                 var record = _healthRecordService.GetRecordById(int.Parse(rawId));
 
@@ -269,7 +290,7 @@ namespace HealthApp.ConsoleApp.Menus
                 Console.WriteLine($"  {record!.GetSummary()}");
                 Console.WriteLine("  " + new string('─', 55));
             }
-            catch (Exception ex)
+            catch (HealthRecordNotFoundException ex)
             {
                 ConsoleHelper.PrintError(ex.Message);
             }

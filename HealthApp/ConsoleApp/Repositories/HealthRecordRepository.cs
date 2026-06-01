@@ -5,14 +5,14 @@ using HealthApp.ConsoleApp.Interfaces;
 
 namespace HealthApp.ConsoleApp.Repositories
 {
-    // Repository class to manage health records in the healthcare system
+
     public class HealthRecordRepository : IHealthRecordRepository
     {
-        private readonly HealthRecordDb _healthRecordDb;
+        private readonly HealthRecordDB _healthRecordDb;
 
-        public HealthRecordRepository(HealthRecordDb healthRecordDb)
+        public HealthRecordRepository(HealthRecordDB healthRecordDB)
         {
-            _healthRecordDb = healthRecordDb;
+            _healthRecordDb = healthRecordDB;
         }
 
         // Method to add a new health record to the database
@@ -21,12 +21,12 @@ namespace HealthApp.ConsoleApp.Repositories
             _healthRecordDb.Records.Add(record);
             return $"Record ID {record.RecordId} added successfully!";
         }
-        // Method to Get All health records from the database
+
         public List<HealthRecord> GetAllRecords()
         {
             return _healthRecordDb.Records.ToList();
         }
-        // Method to get health records by patient ID from the database, ordered by visit date in descending order
+
         public List<HealthRecord> GetByPatientIdOrderByVisitDateDesc(int id)
         {
             return _healthRecordDb.Records
@@ -43,12 +43,12 @@ namespace HealthApp.ConsoleApp.Repositories
                     .OrderByDescending(r => r.VisitDate)
                     .ToList();
         }
-        // Method to get a health record by ID from the database
+
         public HealthRecord? GetRecordById(int id)
         {
             return _healthRecordDb.Records.FirstOrDefault(r => r.RecordId == id);
         }
-        // Method to update an existing health record in the database
+
         public HealthRecord UpdateHealthRecord(HealthRecord existingHealthRecord, HealthRecord record)
         {
             existingHealthRecord.RecordId = record.RecordId;

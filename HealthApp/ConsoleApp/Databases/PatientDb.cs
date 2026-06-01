@@ -31,41 +31,9 @@ namespace HealthApp.ConsoleApp.Databases
                 CreatedAt = DateTime.Now
             },
 
-            new Patient
-            {
-                PatientId = 103,
-                Name = "Abi Shankar",
-                Dob = new DateTime(1992, 3, 10),
-                Gender = GenderType.Male,
-                PhoneNumber = "9988776655",
-                Email = "abi@gmail.com",
-                InsuranceId = "INS103",
-                CreatedAt = DateTime.Now
-            },
+namespace HealthApp.ConsoleApp.Databases;
 
-            new Patient
-            {
-                PatientId = 104,
-                Name = "Sneha Reddy",
-                Dob = new DateTime(2000, 11, 5),
-                Gender = GenderType.Female,
-                PhoneNumber = "9001122334",
-                Email = "sneha@gmail.com",
-                InsuranceId = "INS104",
-                CreatedAt = DateTime.Now
-            },
-
-            new Patient
-            {
-                PatientId = 105,
-                Name = "Rahul Verma",
-                Dob = new DateTime(1989, 1, 18),
-                Gender = GenderType.Male,
-                PhoneNumber = "9556677889",
-                Email = "rahul@gmail.com",
-                InsuranceId = "INS105",
-                CreatedAt = DateTime.Now
-            }
-        };
-    }
+public class PatientDb
+{
+    public List<Patient> Patients { get; set; } = new List<Patient>();
 }

@@ -4,13 +4,14 @@ using HealthApp.ConsoleApp.Services;
 using HealthApp.ConsoleApp.Repositories;
 using HealthApp.ConsoleApp.Menus;
 using HealthApp.ConsoleApp.Databases;
+using HealthApp;
 
 // Register all dependencies
 var services = new ServiceCollection();
 // Register databases as singletons
 services.AddSingleton<DoctorDb>();
 services.AddSingleton<AppointmentDb>();
-services.AddSingleton<HealthRecordDb>();
+services.AddSingleton<HealthRecordDB>();
 services.AddSingleton<PatientDb>();
 // Register repositories as singletons for shared in-memory data access
 services.AddSingleton<IPatientRepository, PatientRepository>();

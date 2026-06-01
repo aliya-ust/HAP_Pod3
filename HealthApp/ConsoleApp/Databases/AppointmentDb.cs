@@ -1,124 +1,104 @@
 using HealthApp.ConsoleApp.Models;
+
 namespace HealthApp.ConsoleApp.Databases
 {
     public class AppointmentDb
     {
-
-        private readonly PatientDb patientDb = new();
-        private readonly DoctorDb doctorDb = new();
-
-        public List<Appointment> Appointments { get; private set; } //AppointmentId starts from 301 to avoid conflict with test data
-
-        public AppointmentDb()
+        public List<Appointment> Appointments { get; set; } = new List<Appointment>
         {
             Appointments = new List<Appointment>
             {
                 // CONFIRMED
-                new Appointment
+            new Appointment
+            {
+                AppointmentId = 1,
+                Patient = new Patient
                 {
-                    AppointmentId = 301,
-
-                    Patient = patientDb.Patients
-                        .First(p => p.PatientId == 101),
-
-                    Doctor = doctorDb.Doctors
-                        .First(d => d.DoctorId == 201),
-
-                    ScheduledDate = DateTime.Today.AddDays(1),
-
-                    TimeSlot = "10:00 AM",
-
-                    Status = AppointmentStatus.Confirmed
+                    PatientId = 101,
+                    FullName = "John Doe",
+                    Email = "john.doe@email.com",
+                    PhoneNumber = "9876543210",
+                    InsuranceId = "sdfasd234324"
                 },
-                // PENDING
-                new Appointment
+                Doctor = new Doctor
                 {
-                    AppointmentId = 302,
-
-                    Patient = patientDb.Patients
-                        .First(p => p.PatientId == 102),
-
-                    Doctor = doctorDb.Doctors
-                        .First(d => d.DoctorId == 202),
-
-                    ScheduledDate = DateTime.Today.AddDays(2),
-
-                    TimeSlot = "12:00 PM",
-
-                    Status = AppointmentStatus.Pending
+                    DoctorId = 1,
+                    FullName = "Dr. Smith",
+                    Specialisation = "Cardiology"
                 },
-                // COMPLETED
-                new Appointment
+                ScheduledDate = DateTime.Now.AddDays(1),
+                TimeSlot = "10:00 AM",
+
+                Status = AppointmentStatus.Confirmed
+            },
+
+            new Appointment
+            {
+                AppointmentId = 2,
+                Patient = new Patient
                 {
-                    AppointmentId = 303,
-
-                    Patient = patientDb.Patients
-                        .First(p => p.PatientId == 103),
-
-                    Doctor = doctorDb.Doctors
-                        .First(d => d.DoctorId == 204),
-
-                    ScheduledDate = DateTime.Today.AddDays(-2),
-
-                    TimeSlot = "03:00 PM",
-
-                    Status = AppointmentStatus.Completed
+                    PatientId = 2,
+                    FullName = "Jane Doe",
+                    Email = "jane.doe@email.com",
+                    PhoneNumber = "9123456780",
+                    InsuranceId = "sdf234"
                 },
-                // CANCELLED
-                new Appointment
+                Doctor = new Doctor
                 {
-                    AppointmentId = 304,
-
-                    Patient = patientDb.Patients
-                        .First(p => p.PatientId == 104),
-
-                    Doctor = doctorDb.Doctors
-                        .First(d => d.DoctorId == 205),
-
-                    ScheduledDate = DateTime.Today.AddDays(1),
-
-                    TimeSlot = "11:00 AM",
-
-                    Status = AppointmentStatus.Cancelled,
-
-                    CancellationReason =
-                        "Patient unavailable"
+                    DoctorId = 2,
+                    FullName = "Dr. Brown",
+                    Specialisation = "Dermatology"
                 },
-                // SLOT CONFLICT TEST
-                new Appointment
+                ScheduledDate = DateTime.Now.AddDays(2),
+                TimeSlot = "11:00 AM",
+                Status = AppointmentStatus.Pending
+            },
+
+            new Appointment
+            {
+                AppointmentId = 3,
+                Patient = new Patient
                 {
-                    AppointmentId = 305,
-
-                    Patient = patientDb.Patients
-                        .First(p => p.PatientId == 105),
-
-                    Doctor = doctorDb.Doctors
-                        .First(d => d.DoctorId == 201),
-
-                    ScheduledDate = DateTime.Today.AddDays(1),
-
-                    TimeSlot = "10:00 AM",
-
-                    Status = AppointmentStatus.Confirmed
+                    PatientId = 3,
+                    FullName = "Alice Smith",
+                    Email = "alice.smith@email.com",
+                    PhoneNumber = "9988776655",
+                    InsuranceId = "sdf234"
                 },
-                // SAME DOCTOR DIFFERENT SLOT
-                new Appointment
+                Doctor = new Doctor
                 {
-                    AppointmentId = 306,
+                    DoctorId = 1,
+                    FullName = "Dr. Smith",
+                    Specialisation = "Cardiology"
+                },
+                ScheduledDate = DateTime.Now.AddDays(3),
+                TimeSlot = "02:00 PM",
+                Status = AppointmentStatus.Cancelled,
+                CancellationReason = "Patient requested cancellation"
+            },
 
-                    Patient = patientDb.Patients
-                        .First(p => p.PatientId == 102),
-
-                    Doctor = doctorDb.Doctors
-                        .First(d => d.DoctorId == 201),
-
-                    ScheduledDate = DateTime.Today.AddDays(1),
-
-                    TimeSlot = "11:00 AM",
-
-                    Status = AppointmentStatus.Confirmed
-                }
-            };
-        }
+            new Appointment
+            {
+                AppointmentId = 4,
+                Patient = new Patient
+                {
+                    PatientId = 4,
+                    FullName = "Bob Johnson",
+                    Email = "bob.johnson@email.com",
+                    PhoneNumber = "9012345678",
+                    InsuranceId = "sdf234"
+                },
+                Doctor = new Doctor
+                {
+                    DoctorId = 3,
+                    FullName = "Dr. Green",
+                    Specialisation = "Orthopedics"
+                },
+                ScheduledDate = DateTime.Now.AddDays(4),
+                TimeSlot = "03:00 PM",
+                Status = AppointmentStatus.Completed
+            }
+        };
     }
+}
 }

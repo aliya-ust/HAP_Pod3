@@ -1,4 +1,6 @@
-﻿
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using HealthApp.ConsoleApp.Interfaces;
 using HealthApp.ConsoleApp.Models;
 using HealthApp.ConsoleApp.Databases;
@@ -22,16 +24,23 @@ namespace HealthApp.ConsoleApp.Repositories
             _patientsDb.Patients.Add(patient);
             return $"Patient ID {patient.PatientId} added successfully!";
         }
-        // Method to get all patients from the database
+
         public List<Patient> GetAllPatients()
         {
             return _patientsDb.Patients.ToList();
         }
-        // Method to update an existing patient in the database
+
+        public List<Patient> GetPatientByName(string name)
+        {
+            return _patientsDb.Patients
+                .Where(d => d.FullName.Contains(name, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+        }
+
         public Patient UpdatePatient(Patient existingPatient, Patient patient)
         {
-            existingPatient.Name = patient.Name;
-            existingPatient.Dob = patient.Dob;
+            existingPatient.FullName = patient.FullName;
+            existingPatient.DateOfBirth = patient.DateOfBirth;
             existingPatient.Gender = patient.Gender;
             existingPatient.PhoneNumber = patient.PhoneNumber;
             existingPatient.Email = patient.Email;
@@ -39,7 +48,7 @@ namespace HealthApp.ConsoleApp.Repositories
 
             return existingPatient;
         }
-        // Method to get a patient by ID from the database
+
         public Patient? GetPatientById(int id)
         {
             return _patientsDb.Patients.FirstOrDefault(p => p.PatientId == id);

@@ -26,7 +26,7 @@ namespace HealthApp.Tests.Services
             return new Doctor
             {
                 DoctorId = id,
-                Name = "Doctor " + id,
+                FullName = "Doctor " + id,
                 Specialisation = "General"
             };
         }
@@ -52,6 +52,38 @@ namespace HealthApp.Tests.Services
             Assert.Equal(103, newDoctor.DoctorId);
             Assert.Contains("successfully", result);
         }
+
+        [Fact]
+        public void GetAllDoctors_ShouldReturnDoctors_WhenDataExists()
+        {
+            // Arrange
+            var doctors = new List<Doctor>
+            {
+                GetSampleDoctor(101),
+                GetSampleDoctor(102)
+            };
+
+            _mockRepo.Setup(r => r.GetAllDoctors()).Returns(doctors);
+
+            // Act
+            var result = _service.GetAllDoctors();
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(2, result.Count);
+        }
+
+        [Fact]
+        public void GetAllDoctors_ShouldThrowException_WhenNoDoctorsExist()
+        {
+            // Arrange
+            _mockRepo.Setup(r => r.GetAllDoctors())
+                    .Returns(new List<Doctor>());
+
+            // Act & Assert
+            Assert.Throws<DoctorNotFoundException>(() => _service.GetAllDoctors());
+        }
+
 
         // GetDoctorById
         [Fact]
@@ -111,14 +143,14 @@ namespace HealthApp.Tests.Services
         {
             var existing = GetSampleDoctor(101);
             var updated = GetSampleDoctor(101);
-            updated.Name = "Updated Name";
+            updated.FullName = "Updated Name";
 
             _mockRepo.Setup(r => r.GetDoctorById(101)).Returns(existing);
             _mockRepo.Setup(r => r.UpdateDoctor(existing, updated)).Returns(updated);
 
             var result = _service.UpdateDoctor(updated);
 
-            Assert.Equal("Updated Name", result.Name);
+            Assert.Equal("Updated Name", result.FullName);
         }
 
         // UpdateDoctor - Exception
@@ -155,7 +187,7 @@ namespace HealthApp.Tests.Services
 
             var result = DoctorService.DoctorIdGenerator(doctors);
 
-            Assert.Equal(201, result);
+            Assert.Equal(101, result);
         }
     }
 }

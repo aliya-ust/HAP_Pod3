@@ -1,16 +1,9 @@
-# OS
-.DS_Store
-Thumbs.db
-
-# IDEs
-.vscode/
-.idea/
-*.iml
-
-# Visual Studio
+# Ignore Visual Studio workspace files and build artifacts
 .vs/
 **/bin/
 **/obj/
+
+# Optional project-specific ignores
 *.user
 *.suo
 *.userosscache
@@ -60,5 +53,5 @@ sonar-report.*
 # Misc
 *.sqlite
 
-# Keep sonar-project.properties if you prefer it in repo; otherwise uncomment to ignore it
-# sonar-project.properties
+*.lscache
+coverage.xml

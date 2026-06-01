@@ -31,7 +31,7 @@ namespace HealthApp.Tests.Repositories
             var doctor = new Doctor
             {
                 DoctorId = 1,
-                Name = "Dr. Smith",
+                FullName = "Dr. Smith",
                 Specialisation = "Cardiology"
             };
 
@@ -48,14 +48,14 @@ namespace HealthApp.Tests.Repositories
             _doctorDb.Doctors.Add(new Doctor
             {
                 DoctorId = 1,
-                Name = "Dr. A",
+                FullName = "Dr. A",
                 Specialisation = "Neurology"
             });
 
             var result = _repository.GetDoctorById(1);
 
             Assert.NotNull(result);
-            Assert.Equal("Dr. A", result.Name);
+            Assert.Equal("Dr. A", result.FullName);
         }
 
         // GetDoctorById - Not Found
@@ -74,14 +74,14 @@ namespace HealthApp.Tests.Repositories
             _doctorDb.Doctors.Add(new Doctor
             {
                 DoctorId = 1,
-                Name = "Dr. X",
+                FullName = "Dr. X",
                 Specialisation = "Cardiology"
             });
 
             _doctorDb.Doctors.Add(new Doctor
             {
                 DoctorId = 2,
-                Name = "Dr. Y",
+                FullName = "Dr. Y",
                 Specialisation = "Neurology"
             });
 
@@ -106,14 +106,14 @@ namespace HealthApp.Tests.Repositories
             var existing = new Doctor
             {
                 DoctorId = 1,
-                Name = "Old Name",
+                FullName = "Old Name",
                 Specialisation = "General"
             };
 
             var updated = new Doctor
             {
                 DoctorId = 1,
-                Name = "New Name",
+                FullName = "New Name",
                 Specialisation = "Ortho",
                 YearsOfExperience = 10,
                 ConsultationFee = 500,
@@ -122,7 +122,7 @@ namespace HealthApp.Tests.Repositories
 
             var result = _repository.UpdateDoctor(existing, updated);
 
-            Assert.Equal("New Name", result.Name);
+            Assert.Equal("New Name", result.FullName);
             Assert.Equal("Ortho", result.Specialisation);
             Assert.Equal(10, result.YearsOfExperience);
         }
@@ -134,14 +134,14 @@ namespace HealthApp.Tests.Repositories
             _doctorDb.Doctors.Add(new Doctor
             {
                 DoctorId = 1,
-                Name = "Doc1",
+                FullName = "Doc1",
                 Specialisation = "General"
             });
 
             _doctorDb.Doctors.Add(new Doctor
             {
                 DoctorId = 2,
-                Name = "Doc2",
+                FullName = "Doc2",
                 Specialisation = "Cardiology"
             });
 

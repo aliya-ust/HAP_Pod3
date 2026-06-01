@@ -17,13 +17,7 @@ namespace HealthApp.ConsoleApp.Models
         public AppointmentStatus Status { get; set; } = AppointmentStatus.Pending;
         public string CancellationReason { get; set; } = "";
 
-
-        public Appointment()
-        {
-            Status = AppointmentStatus.Pending;
-        }
-
-        //Confirm the appointment if it's not cancelled
+        // Change Appointment status to confirmed
         public void Confirm()
         {
             if (Status == AppointmentStatus.Cancelled)
@@ -34,7 +28,7 @@ namespace HealthApp.ConsoleApp.Models
             Status = AppointmentStatus.Confirmed;
         }
 
-        // Cancel the appointment with a reason, but only if it's not already completed
+        // Change appointment status to cancelled and assign reason
         public void Cancel(string reason)
         {
             if (Status == AppointmentStatus.Completed)
@@ -46,7 +40,7 @@ namespace HealthApp.ConsoleApp.Models
             CancellationReason = reason;
         }
 
-        // Mark the appointment as completed, but only if it's currently confirmed
+        // Mark appointment as completed
         public void Complete()
         {
             if (Status != AppointmentStatus.Confirmed)
@@ -57,14 +51,14 @@ namespace HealthApp.ConsoleApp.Models
             Status = AppointmentStatus.Completed;
         }
 
-        // Get a detailed string representation of the appointment, including patient and doctor info
+        // Formatted string for appointment details
         public string GetDetails()
         {
             StringBuilder details = new StringBuilder();
 
             details.AppendLine($"Appointment ID: {AppointmentId}");
-            details.AppendLine($"Patient: {Patient?.Name}");
-            details.AppendLine($"Doctor: {Doctor?.Name} ({Doctor?.Specialisation})");
+            details.AppendLine($"Patient: {Patient?.FullName}");
+            details.AppendLine($"Doctor: {Doctor?.FullName} ({Doctor?.Specialisation})");
             details.AppendLine($"Date: {ScheduledDate.ToShortDateString()}");
             details.AppendLine($"Time Slot: {TimeSlot}");
             details.AppendLine($"Status: {Status}");
@@ -73,6 +67,7 @@ namespace HealthApp.ConsoleApp.Models
             {
                 details.AppendLine($"Cancellation Reason: {CancellationReason}");
             }
+
             return details.ToString();
         }
     }
