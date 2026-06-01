@@ -345,11 +345,11 @@ namespace HealthApp.ConsoleApp.Menus
             {
                 Console.WriteLine("\n  Returning to menu...");
             }
-            catch (AppointmentNotFoundException ex)
+            catch (InvalidOperationException ex)
             {
                 ConsoleHelper.PrintError(ex.Message);
             }
-            catch (InvalidOperationException ex)
+            catch (Exception ex)
             {
                 ConsoleHelper.PrintError(ex.Message);
             }

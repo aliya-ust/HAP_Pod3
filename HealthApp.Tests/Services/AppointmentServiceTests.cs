@@ -27,7 +27,6 @@ namespace HealthApp.Tests.Services
         {
             return IsAvailableOverride;
         }
-
         private static Patient GetSamplePatient(int id)
         {
             return new Patient

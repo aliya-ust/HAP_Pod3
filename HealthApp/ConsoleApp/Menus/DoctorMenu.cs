@@ -389,7 +389,7 @@ namespace HealthApp.ConsoleApp.Menus
             {
                 Console.WriteLine(ReturnToMenu);
             }
-            catch (SpecialisationNotFoundException ex)
+            catch (Exception ex)
             {
                 ConsoleHelper.PrintError(ex.Message);
             }

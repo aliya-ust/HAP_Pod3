@@ -44,7 +44,7 @@ namespace HealthApp.ConsoleApp.Menus
                     healthRecords = new List<HealthRecord>();
                 }
  
-                // Extract appointment IDs
+                // Extract appointment ID
                 var existingAppointmentIds = healthRecords
                     .Select(hr => hr.AppointmentId)
                     .ToHashSet();

@@ -1,12 +1,13 @@
 # Ignore Visual Studio workspace files and build artifacts
 .vs/
+bin/
+obj/
 **/bin/
 **/obj/
 **/.sonarqube/
 **/TestResults/
-**/coverage.xml/
 coverage.xml
-\ncoverage.xml\n
+
 # Optional project-specific ignores
 *.user
 *.suo

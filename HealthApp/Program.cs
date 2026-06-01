@@ -55,7 +55,7 @@ while (running)
         case "9": ShowDetailedMenus(); break;
         case "0":
             Console.Clear();
-            Console.ForegroundColor=ConsoleColor.DarkGreen;
+            Console.ForegroundColor = ConsoleColor.DarkGreen;
             Console.WriteLine("\n  Thank you for using HealthAxis. Goodbye!\n");
             Console.ResetColor();
             running = false;
