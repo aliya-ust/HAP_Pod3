@@ -55,6 +55,28 @@ namespace HealthApp.ConsoleApp.Helpers
                 Console.WriteLine("Invalid date.");
             }
         }
+
+        public static DateTime GetValidAppointmentDate(string prompt, IEnumerable<DateTime> availableDates)
+        {
+            while (true)
+            {
+                var selectedDate = GetValidDate(prompt);
+
+                if (selectedDate.Date < DateTime.Today)
+                {
+                    ConsoleHelper.PrintError("Date cannot be in the past.");
+                    continue;
+                }
+
+                if (!availableDates.Any(d => d.Date == selectedDate.Date))
+                {
+                    ConsoleHelper.PrintError("Doctor not available on that date. Choose from the list.");
+                    continue;
+                }
+
+                return selectedDate;
+            }
+        }
         // Prompts the user for an optional date input in the format "dd/MM/yyyy". Returns null if the user enters an empty string.
         public static DateTime? GetOptionalDate(string prompt)
         {
