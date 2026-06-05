@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace HealthCareAPI.DTOs.Appointment
+namespace HealthCareApi.DTOs.Appointment
 {
     public class AppointmentDto
     {
