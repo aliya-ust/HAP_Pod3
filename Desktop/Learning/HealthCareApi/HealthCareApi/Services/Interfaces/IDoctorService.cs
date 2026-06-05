@@ -1,7 +1,7 @@
 ﻿using HealthCareApi.Models;
 using System.Collections.Generic;
 
-namespace HealthCareApi.Service.Interfaces
+namespace HealthCareApi.Services.Interfaces
 {
     public interface IDoctorService
     {

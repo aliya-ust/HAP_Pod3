@@ -1,5 +1,7 @@
 ﻿using System.Web.Http;
 using HealthCareApi.Repositories.Interfaces;
+using HealthCareApi.Services.Interfaces;
+using HealthCareApi.Services.Implementations;
 
 namespace HealthCareApi.Controllers
 {

@@ -1,9 +1,9 @@
 ﻿using HealthCareApi.Data.Repositories.Interfaces;
-using HealthCareApi.Service.Interfaces;
+using HealthCareApi.Services.Interfaces;
 using HealthCareApi.Models;
 using System.Collections.Generic;
 
-namespace HealthCareApi.Service.Implementations
+namespace HealthCareApi.Services.Implementations
 {
     public class DoctorService : IDoctorService
     {
