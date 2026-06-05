@@ -24,13 +24,14 @@ namespace HealthCareApi.Data.Configurations
             // Unique Email
             HasIndex(u => u.Email).IsUnique();
 
-            // Relationship: User ↔ Patient (Optional 1–1)
-            HasOptional(u => u.Patient)
-                .WithOptionalPrincipal(p => p.User);
+            // Patients → 1-to-many
+            HasMany(u => u.Patients)
+                .WithRequired(p => p.User)
+                .HasForeignKey(p => p.UserId);
 
-            // Relationship: User ↔ Doctor (Optional 1–1)
+            // Doctor → 1-to-1
             HasOptional(u => u.Doctor)
-                .WithOptionalPrincipal(d => d.User);
+                .WithRequired(d => d.User);
         }
     }
 }

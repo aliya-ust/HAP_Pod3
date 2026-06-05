@@ -200,6 +200,10 @@
     <Compile Include="Migrations\202606051013389_InitialSchema.Designer.cs">
       <DependentUpon>202606051013389_InitialSchema.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202606051218526_SyncWithDatabase.cs" />
+    <Compile Include="Migrations\202606051218526_SyncWithDatabase.Designer.cs">
+      <DependentUpon>202606051218526_SyncWithDatabase.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Appointment.cs" />
     <Compile Include="Models\Doctor.cs" />
@@ -449,6 +453,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\202606051013389_InitialSchema.resx">
       <DependentUpon>202606051013389_InitialSchema.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202606051218526_SyncWithDatabase.resx">
+      <DependentUpon>202606051218526_SyncWithDatabase.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

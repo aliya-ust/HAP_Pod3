@@ -10,16 +10,16 @@ namespace HealthCareApi.Data.Configurations
             ToTable("Doctors");
             HasKey(d => d.DoctorId);
 
+            Property(d => d.UserId)
+                .IsRequired();
+
+            HasIndex(d => d.UserId).IsUnique();
+
             Property(d => d.FullName).IsRequired().HasMaxLength(100);
             Property(d => d.Specialisation).IsRequired().HasMaxLength(50);
             Property(d => d.ConsultationFee).HasPrecision(10, 2);
             Property(d => d.IsActive).IsRequired();
             Property(d => d.CreatedDate).IsRequired();
-
-            // Relationship: Doctor → User (optional FK)
-            //HasOptional(d => d.User)
-            //    .WithOptionalDependent(u => u.Doctor)
-            //    .Map(m => m.MapKey("UserId"));
         }
     }
 }

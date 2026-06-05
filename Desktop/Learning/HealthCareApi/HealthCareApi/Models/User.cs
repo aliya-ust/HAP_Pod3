@@ -1,4 +1,5 @@
 using HealthCareApi.Models;
+using System.Collections.Generic;
 
 namespace HealthCareApi.Models
 {
@@ -9,7 +10,8 @@ namespace HealthCareApi.Models
         public string PasswordHash { get; set; }
         public string Role { get; set; }          // "Patient", "Doctor", "Admin"
 
-        public virtual Patient Patient { get; set; }
         public virtual Doctor Doctor { get; set; }
+        public virtual ICollection<Patient> Patients { get; set; }
+
     }
 }

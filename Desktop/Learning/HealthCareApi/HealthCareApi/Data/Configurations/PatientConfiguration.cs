@@ -45,11 +45,6 @@ namespace HealthCareApi.Data.Configurations
             HasMany(p => p.HealthRecords)
                 .WithRequired(h => h.Patient)
                 .HasForeignKey(h => h.PatientId);
-
-            // Optional 1-1 with User
-            //HasOptional(p => p.User)
-            //    .WithOptionalDependent(u => u.Patient)
-            //    .Map(m => m.MapKey("UserId"));
         }
     }
 }
