@@ -17,7 +17,5 @@ packages
 node_modules/
 wwwroot/lib/
 
-Web.Local.config
-*Web.Local.config
 
 TestResults/
