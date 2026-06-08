@@ -1,0 +1,44 @@
+﻿@{
+    ViewBag.Title = "Patient Management";
+}
+
+<div class="container-fluid">
+
+    <div class="mb-4">
+        <h2 class="fw-bold">Patient Management</h2>
+        <p class="text-muted">View and manage all patients.</p>
+    </div>
+
+    <div class="row g-4">
+
+        <div class="col-md-6 col-lg-4">
+            <a href="@Url.Action("List", "Patient")" class="text-decoration-none">
+
+                <div class="card border-0 shadow-sm h-100 module-card">
+                    <div class="card-body p-4">
+
+                        <div class="module-icon bg-primary text-white mb-3">
+                            👤
+                        </div>
+
+                        <h5 class="card-title fw-bold text-dark">
+                            Patients List
+                        </h5>
+
+                        <p class="card-text text-muted">
+                            View, add, edit and manage patients.
+                        </p>
+
+                        <span class="btn btn-outline-primary mt-2">
+                            Open Patients List
+                        </span>
+
+                    </div>
+                </div>
+
+            </a>
+        </div>
+
+    </div>
+
+</div>

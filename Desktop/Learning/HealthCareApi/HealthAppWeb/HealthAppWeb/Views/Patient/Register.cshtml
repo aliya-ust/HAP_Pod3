@@ -1,0 +1,194 @@
+﻿@using HealthAppWeb.Models.ViewModels
+
+@model PatientRegisterViewModel
+
+@{
+    ViewBag.Title = "Register Patient";
+    var maxDateOfBirth = DateTime.Today.AddDays(-1).ToString("yyyy-MM-dd");
+}
+
+<div class="container-fluid">
+
+    <!-- Header (UNCHANGED UI) -->
+    <div class="mb-4">
+
+        <nav aria-label="breadcrumb" class="mb-2">
+            <ol class="breadcrumb mb-1">
+                <li class="breadcrumb-item">
+                    <a href="@Url.Action("Index","Patient")" class="text-decoration-none">
+                        Patient Management
+                    </a>
+                </li>
+                <li class="breadcrumb-item active">Register Patient</li>
+            </ol>
+        </nav>
+
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h2 class="fw-bold mb-1">Register Patient</h2>
+                <p class="text-muted mb-0">
+                    Add a new patient record to the healthcare system.
+                </p>
+            </div>
+
+            <a href="@Url.Action("List","Patient")"
+               class="btn btn-outline-secondary rounded-3">
+                Back to Patient List
+            </a>
+        </div>
+    </div>
+
+    <!-- Form -->
+    <div class="card border-0 shadow-sm rounded-4">
+        <div class="card-body p-4 p-md-5">
+
+            @using (Html.BeginForm("Register", "Patient", FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+                <div class="row g-4">
+
+                    <!-- Full Name -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">
+                            Full Name <span class="text-danger">*</span>
+                        </label>
+
+                        @Html.TextBoxFor(m => m.FullName, new
+                        {
+                            @class = "form-control rounded-3",
+                            maxlength = "100",
+                            placeholder = "Enter full name"
+                        })
+
+                        @Html.ValidationMessageFor(m => m.FullName, "", new { @class = "text-danger" })
+                    </div>
+
+                    <!-- DOB -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">
+                            Date of Birth <span class="text-danger">*</span>
+                        </label>
+
+                        @Html.TextBoxFor(m => m.DateOfBirth, new
+                        {
+                            @class = "form-control rounded-3",
+                            type = "date",
+                            max = maxDateOfBirth
+                        })
+
+                        <small class="text-muted">
+                            Date of birth must be before today.
+                        </small>
+                    </div>
+
+                    <!-- Gender -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold d-block">
+                            Gender <span class="text-danger">*</span>
+                        </label>
+
+                        <div class="d-flex gap-4 flex-wrap">
+                            @foreach (var g in new[] { "Male", "Female", "Other" })
+                            {
+                                <div class="form-check">
+                                    @Html.RadioButtonFor(m => m.Gender, g, new { @class = "form-check-input" })
+                                    <label class="form-check-label">@g</label>
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                    <!-- Phone -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">
+                            Phone Number <span class="text-danger">*</span>
+                        </label>
+
+                        @Html.TextBoxFor(m => m.PhoneNumber, new
+                        {
+                            @class = "form-control rounded-3",
+                            maxlength = "20",
+                            placeholder = "Enter phone number"
+                        })
+                    </div>
+
+                    <!-- Email -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">
+                            Email <span class="text-danger">*</span>
+                        </label>
+
+                        @Html.TextBoxFor(m => m.Email, new
+                        {
+                            @class = "form-control rounded-3",
+                            type = "email",
+                            maxlength = "100",
+                            placeholder = "Enter email address"
+                        })
+
+                        <!-- ServiceResult error -->
+                        @if (ViewBag.ErrorField == "Email")
+                        {
+                            <span class="text-danger">
+                                @ViewBag.ErrorMessage
+                            </span>
+                        }
+
+                        <small class="text-muted">Email must be unique.</small>
+                    </div>
+
+                    <!-- Password -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">
+                            Password <span class="text-danger">*</span>
+                        </label>
+
+                        @Html.PasswordFor(m => m.Password, new
+                        {
+                            @class = "form-control rounded-3"
+                        })
+                    </div>
+
+                    <!-- Insurance -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">
+                            Insurance ID
+                        </label>
+
+                        @Html.TextBoxFor(m => m.InsuranceId, new
+                        {
+                            @class = "form-control rounded-3",
+                            maxlength = "50",
+                            placeholder = "Enter insurance ID"
+                        })
+
+                        <small class="text-muted">Optional</small>
+                    </div>
+
+                </div>
+
+                <!-- Actions (same UI) -->
+                <div class="d-flex justify-content-end gap-2 mt-5">
+
+                    <a href="@Url.Action("List","Patient")"
+                       class="btn btn-outline-secondary rounded-3 px-4">
+                        Cancel
+                    </a>
+
+                    <button type="reset"
+                            class="btn btn-outline-danger rounded-3 px-4">
+                        Clear
+                    </button>
+
+                    <button type="submit"
+                            class="btn btn-primary rounded-3 px-4">
+                        Register Patient
+                    </button>
+
+                </div>
+            }
+
+        </div>
+    </div>
+
+</div>

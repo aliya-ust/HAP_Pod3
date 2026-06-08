@@ -1,0 +1,106 @@
+﻿@using HealthAppWeb.Models.ViewModels
+
+@model DoctorProfileViewModel
+
+@{
+    ViewBag.Title = "Doctor Profile";
+
+    var role = Convert.ToString(Session["Role"]);
+    var referenceId = Session["ReferenceId"] == null ? 0 : Convert.ToInt32(Session["ReferenceId"]);
+
+    var isAdmin = role == "Admin";
+    var isOwnDoctorProfile = role == "Doctor" && referenceId == Model.DoctorId;
+
+    var canEdit = isAdmin || isOwnDoctorProfile;
+}
+
+<div class="page-card">
+
+    <!-- Header -->
+    <div class="page-header">
+        <div>
+            <h2 class="page-title">@Model.FullName</h2>
+            <div class="page-subtitle">@Model.Specialisation</div>
+        </div>
+
+        <div>
+            <!-- ✅ Edit Button -->
+            @if (canEdit)
+            {
+                <a href="@Url.Action("Edit", "Doctor", new { id = Model.DoctorId })"
+                   class="btn btn-warning">
+                    Edit Profile
+                </a>
+            }
+
+            <!-- ✅ Toggle Status -->
+            @if (isAdmin)
+            {
+                <button type="button"
+                        class="btn btn-danger"
+                        onclick="openConfirmModal(
+                            'Toggle Doctor Status',
+                            'Are you sure you want to change this doctor status?',
+                            '@Url.Action("ToggleStatus", "Doctor", new { id = Model.DoctorId })'
+                        )">
+                    Toggle Active
+                </button>
+            }
+        </div>
+    </div>
+
+    <!-- Profile Grid -->
+    <div class="profile-grid">
+
+        <div class="profile-item">
+            <div class="profile-label">Full Name</div>
+            <div class="profile-value">@Model.FullName</div>
+        </div>
+
+        <div class="profile-item">
+            <div class="profile-label">Specialisation</div>
+            <div class="profile-value">@Model.Specialisation</div>
+        </div>
+
+        <div class="profile-item">
+            <div class="profile-label">Years of Experience</div>
+            <div class="profile-value">@Model.YearsOfExperience years</div>
+        </div>
+
+        <div class="profile-item">
+            <div class="profile-label">Consultation Fee</div>
+            <div class="profile-value">₹@Model.ConsultationFee</div>
+        </div>
+
+        <div class="profile-item">
+            <div class="profile-label">Status</div>
+            <div class="profile-value">
+                @(Model.IsActive ? "Active" : "Inactive")
+            </div>
+        </div>
+
+        <div class="profile-item">
+            <div class="profile-label">Upcoming Appointments</div>
+            @*<div class="profile-value">@Model.UpcomingAppointmentCount</div>*@
+        </div>
+
+    </div>
+
+    <hr />
+
+    <!-- ✅ Book Appointment -->
+    <a href="@Url.Action("Book", "Appointment", new { doctorId = Model.DoctorId })"
+       class="btn btn-primary">
+        Book Appointment
+    </a>
+
+    <!-- ✅ Back Button -->
+    @if (isAdmin)
+    {
+        <a href="@Url.Action("List", "Doctor")"
+           class="btn btn-secondary">
+            Back to Doctor List
+        </a>
+    }
+
+</div>

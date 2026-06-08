@@ -1,0 +1,131 @@
+﻿@using HealthAppWeb.Models.ViewModels
+@model DoctorRegisterViewModel
+
+@{
+    ViewBag.Title = "Add Doctor";
+}
+
+<div class="container-fluid">
+
+    <div class="mb-4">
+        <h2 class="fw-bold">Add Doctor</h2>
+        <p class="text-muted">Register a new doctor in the system.</p>
+    </div>
+
+    <div class="card border-0 shadow-sm rounded-4">
+        <div class="card-body p-4">
+
+            @using (Html.BeginForm("Register", "Doctor", FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+
+                <!-- ✅ GLOBAL ERROR -->
+                @Html.ValidationSummary(true, "", new { @class = "alert alert-danger" })
+
+                <div class="row g-3">
+
+                    <!-- Full Name -->
+                    <div class="col-md-6">
+                        @Html.LabelFor(m => m.FullName, new { @class = "form-label" })
+
+                        @Html.TextBoxFor(m => m.FullName, new
+                        {
+                            @class = "form-control",
+                            placeholder = "Enter doctor's name"
+                        })
+
+                        @Html.ValidationMessageFor(m => m.FullName, "", new { @class = "text-danger" })
+                    </div>
+
+                    <!-- Specialisation -->
+                    <div class="col-md-6">
+                        @Html.LabelFor(m => m.Specialisation, new { @class = "form-label" })
+
+                        @Html.DropDownListFor(m => m.Specialisation,
+                            new List<SelectListItem>
+                            {
+                                new SelectListItem { Text = "Cardiologist", Value = "Cardiologist" },
+                                new SelectListItem { Text = "Dermatologist", Value = "Dermatologist" },
+                                new SelectListItem { Text = "Neurologist", Value = "Neurologist" },
+                                new SelectListItem { Text = "Pediatrician", Value = "Pediatrician" },
+                                new SelectListItem { Text = "Orthopedic", Value = "Orthopedic" }
+                            },
+                            "Select Specialisation",
+                            new { @class = "form-select" })
+
+                        @Html.ValidationMessageFor(m => m.Specialisation, "", new { @class = "text-danger" })
+                    </div>
+
+                    <!-- Experience -->
+                    <div class="col-md-6">
+                        @Html.LabelFor(m => m.YearsOfExperience, new { @class = "form-label" })
+
+                        @Html.TextBoxFor(m => m.YearsOfExperience, new
+                        {
+                            @class = "form-control",
+                            type = "number"
+                        })
+
+                        @Html.ValidationMessageFor(m => m.YearsOfExperience, "", new { @class = "text-danger" })
+                    </div>
+
+                    <!-- Fee -->
+                    <div class="col-md-6">
+                        @Html.LabelFor(m => m.ConsultationFee, new { @class = "form-label" })
+
+                        @Html.TextBoxFor(m => m.ConsultationFee, new
+                        {
+                            @class = "form-control",
+                            type = "number"
+                        })
+
+                        @Html.ValidationMessageFor(m => m.ConsultationFee, "", new { @class = "text-danger" })
+                    </div>
+
+                    <!-- Email -->
+                    <div class="col-md-6">
+                        @Html.LabelFor(m => m.Email, new { @class = "form-label" })
+
+                        @Html.TextBoxFor(m => m.Email, new
+                        {
+                            @class = "form-control",
+                            type = "email"
+                        })
+
+                        @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+                    </div>
+
+                    <!-- Password -->
+                    <div class="col-md-6">
+                        @Html.LabelFor(m => m.Password, new { @class = "form-label" })
+
+                        @Html.PasswordFor(m => m.Password, new
+                        {
+                            @class = "form-control"
+                        })
+
+                        @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+                    </div>
+
+                </div>
+
+                <!-- Actions -->
+                <div class="mt-4 text-end">
+
+                    <a href="@Url.Action("List","Doctor")"
+                       class="btn btn-secondary">
+                        Cancel
+                    </a>
+
+                    <button type="submit"
+                            class="btn btn-success">
+                        Register Doctor
+                    </button>
+
+                </div>
+            }
+
+        </div>
+    </div>
+
+</div>

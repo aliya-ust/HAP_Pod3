@@ -1,0 +1,110 @@
+﻿@using HealthAppWeb.Models.ViewModels
+
+@model AppointmentBookingViewModel
+
+@{
+    ViewBag.Title = "Book Appointment";
+}
+
+<div class="page-card">
+
+    <div class="page-header">
+        <div>
+            <h2 class="page-title">Book Appointment</h2>
+            <div class="page-subtitle">
+                Select doctor, date and available time slot.
+            </div>
+        </div>
+    </div>
+
+    @using (Html.BeginForm("Book", "Appointment", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+
+        <!-- ✅ GLOBAL ERROR -->
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div class="row">
+
+            <!-- ✅ Doctor -->
+            <div class="col-md-6 form-group">
+                @Html.LabelFor(m => m.SelectedDoctorId)
+
+                @Html.DropDownListFor(m => m.SelectedDoctorId,
+    Model.Doctors,
+    "Select Doctor",
+    new
+         {
+        @class = "form-control",
+        onchange = "this.form.submit();"
+    })
+
+                @Html.ValidationMessageFor(m => m.SelectedDoctorId, "", new { @class = "text-danger" })
+            </div>
+
+            <!-- ✅ Date -->
+            <div class="col-md-6 form-group">
+                @Html.LabelFor(m => m.SelectedDate)
+
+                @Html.TextBoxFor(m => m.SelectedDate, "{0:yyyy-MM-dd}", new
+           {
+               @class = "form-control",
+               type = "date",
+               min = DateTime.Today.ToString("yyyy-MM-dd"),
+               id = "scheduledDate"
+           })
+
+                @Html.ValidationMessageFor(m => m.SelectedDate, "", new { @class = "text-danger" })
+            </div>
+
+            <!-- ✅ Time Slot -->
+            <div class="col-md-6 form-group">
+                @Html.LabelFor(m => m.SelectedSlot)
+
+                @Html.DropDownListFor(m => m.SelectedSlot,
+           new SelectList(Model.AvailableSlots),
+           "Select Time Slot",
+           new { @class = "form-control", id = "timeSlotDropdown" })
+
+                @Html.ValidationMessageFor(m => m.SelectedSlot, "", new { @class = "text-danger" })
+            </div>
+
+        </div>
+
+        <!-- ✅ ACTIONS -->
+        <div class="d-flex justify-content-end gap-2 mt-5">
+
+            <a href="@Url.Action("Book", "Appointment")"
+               class="btn btn-outline-secondary rounded-3 px-4">
+                Cancel
+            </a>
+
+            <button type="submit"
+                    class="btn btn-primary rounded-3 px-4">
+                Book Appointment
+            </button>
+
+        </div>
+    }
+
+</div>
+
+@section scripts {
+
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script>
+        // ✅ Prevent past dates
+        $("#scheduledDate").on("change", function () {
+            var selectedDate = new Date($(this).val());
+            var today = new Date();
+
+            today.setHours(0, 0, 0, 0);
+
+            if (selectedDate < today) {
+                alert("Past dates are not allowed.");
+                $(this).val("");
+            }
+        });
+    </script>
+}

@@ -1,0 +1,117 @@
+﻿@{
+    var role = Convert.ToString(Session["Role"]);
+    role = "Admin";
+    var referenceId = Session["ReferenceId"] == null ? 0 : Convert.ToInt32(Session["ReferenceId"]);
+
+    var isAdmin = role == "Admin";
+    var isPatient = role == "Patient";
+    var isDoctor = role == "Doctor";
+
+    var userInitial = string.IsNullOrEmpty(role) ? "U" : role.Substring(0, 1);
+}
+
+<aside class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark shadow"
+       style="width: 280px; min-height: 100vh; position: fixed; left: 0; top: 0;">
+
+    <!-- Brand -->
+    <a href="@Url.Action("Index", "Home")"
+       class="d-flex align-items-center mb-4 text-white text-decoration-none">
+
+        <div class="bg-primary rounded-3 d-flex align-items-center justify-content-center me-3"
+             style="width: 42px; height: 42px; font-size: 24px; font-weight: 700;">
+            +
+        </div>
+
+        <div>
+            <div class="fs-5 fw-bold">HealthCare</div>
+            <small class="text-white-50">Management System</small>
+        </div>
+    </a>
+
+    <!-- User Info -->
+    <div class="d-flex align-items-center gap-3 p-3 mb-4 rounded-4"
+         style="background-color: rgba(255,255,255,0.08);">
+
+        <div class="bg-light text-primary rounded-circle d-flex align-items-center justify-content-center fw-bold"
+             style="width: 42px; height: 42px;">
+            @userInitial
+        </div>
+
+        <div class="overflow-hidden">
+            <div class="fw-semibold">@role</div>
+            <small class="text-white-50 d-block text-truncate" style="max-width: 170px;">
+                @Convert.ToString(Session["Email"])
+            </small>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="text-uppercase text-white-50 small fw-bold mb-2 px-2">
+        Main Menu
+    </div>
+
+    <ul class="nav nav-pills flex-column gap-2">
+        <li class="nav-item">
+            <a href="@Url.Action("Index", "Home")"
+               class="nav-link text-white sidebar-link">
+                <span class="me-2">🏠</span>
+                Home
+            </a>
+        </li>
+
+        @if (isAdmin || isPatient)
+        {
+            <li class="nav-item">
+                <a href="@Url.Action("Index", "Patient")"
+                   class="nav-link text-white sidebar-link">
+                    <span class="me-2">🧑‍⚕️</span>
+                    Patient Management
+                </a>
+            </li>
+        }
+
+        @if (isAdmin || isDoctor)
+        {
+            <li class="nav-item">
+                <a href="@Url.Action("List", "Doctor")"
+                   class="nav-link text-white sidebar-link">
+                    <span class="me-2">👨‍⚕️</span>
+                    Doctor Management
+                </a>
+            </li>
+        }
+
+        @if (isAdmin || isPatient || isDoctor)
+        {
+            <li class="nav-item">
+                <a href="@Url.Action("Book", "Appointment")"
+                   class="nav-link text-white sidebar-link">
+                    <span class="me-2">📅</span>
+                    Appointment Booking
+                </a>
+            </li>
+        }
+
+        @if (isPatient || isDoctor)
+        {
+            <li class="nav-item">
+                <a href="@Url.Action("Index", "Appointment")"
+                   class="nav-link text-white sidebar-link">
+                    <span class="me-2">🗂️</span>
+                    Appointment Management
+                </a>
+            </li>
+        }
+
+        @if (isPatient)
+        {
+            <li class="nav-item">
+                <a href="@Url.Action("MyHistory", "HealthRecord")"
+                   class="nav-link text-white sidebar-link">
+                    <span class="me-2">📋</span>
+                    Patient Health History
+                </a>
+            </li>
+        }
+    </ul>
+</aside>

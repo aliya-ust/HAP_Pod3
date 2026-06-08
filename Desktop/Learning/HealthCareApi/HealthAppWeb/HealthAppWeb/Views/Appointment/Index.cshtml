@@ -1,0 +1,106 @@
+﻿@{
+    ViewBag.Title = "View Appointments";
+
+    var role = Session["Role"]?.ToString();
+
+    if (string.IsNullOrEmpty(role))
+    {
+        role = "Admin";
+    }
+
+    var isAdmin = role == "Admin";
+    var isPatient = role == "Patient";
+    var isDoctor = role == "Doctor";
+
+    // ===================== DUMMY DATA INSIDE VIEW =====================
+    var appointments = new List<dynamic>
+{
+        new { Id = 1, Patient = "Liya", Doctor = "Dr. John Smith", Date = "2026-06-10", Slot = "10:00 AM" },
+        new { Id = 2, Patient = "Ravi", Doctor = "Dr. Sarah Johnson", Date = "2026-06-11", Slot = "02:00 PM" },
+        new { Id = 3, Patient = "Meena", Doctor = "Dr. John Smith", Date = "2026-06-12", Slot = "11:00 AM" },
+        new { Id = 4, Patient = "Liya", Doctor = "Dr. Priya Nair", Date = "2026-06-13", Slot = "05:00 PM" }
+    };
+
+    // FILTER BASED ON ROLE
+    if (isPatient)
+    {
+        appointments = appointments.Where(x => x.Patient == "Liya").ToList(); // replace with session later
+    }
+    else if (isDoctor)
+    {
+        appointments = appointments.Where(x => x.Doctor == "Dr. John Smith").ToList(); // replace later
+    }
+}
+
+<div class="container py-4">
+
+    <h2 class="text-primary mb-4">📅 View Appointments</h2>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+
+            <table class="table table-hover">
+
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+
+                        @if (isAdmin || isDoctor)
+                        {
+                            <th>Patient</th>
+                        }
+
+                        @if (isAdmin || isPatient)
+                        {
+                            <th>Doctor</th>
+                        }
+
+                        <th>Date</th>
+                        <th>Slot</th>
+
+                        @if (isAdmin)
+                        {
+                            <th>Actions</th>
+                        }
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    @foreach (var item in appointments)
+                    {
+                        <tr>
+                            <td>@item.Id</td>
+
+                            @if (isAdmin || isDoctor)
+                            {
+                                <td>@item.Patient</td>
+                            }
+
+                            @if (isAdmin || isPatient)
+                            {
+                                <td>@item.Doctor</td>
+                            }
+
+                            <td>@item.Date</td>
+                            <td>@item.Slot</td>
+
+                            @if (isAdmin)
+                            {
+                                <td>
+                                    <button class="btn btn-sm btn-warning">Edit</button>
+                                    <button class="btn btn-sm btn-danger">Delete</button>
+                                </td>
+                            }
+
+                        </tr>
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+    </div>
+
+</div>

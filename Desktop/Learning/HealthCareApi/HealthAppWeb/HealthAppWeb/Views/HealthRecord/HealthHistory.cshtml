@@ -1,0 +1,147 @@
+﻿@{
+    ViewBag.Title = "Health History";
+
+    var role = Session["Role"]?.ToString();
+
+    if (string.IsNullOrEmpty(role))
+    {
+        role = "Patient";
+    }
+
+    var isAdmin = role == "Admin";
+    var isPatient = role == "Patient";
+    var isDoctor = role == "Doctor";
+
+    // ===================== DUMMY DATA =====================
+    var records = new List<dynamic>
+{
+        new {
+            Patient = "Liya",
+            Doctor = "Dr. John Smith",
+            Diagnosis = "Fever & Viral Infection",
+            Prescription = "Paracetamol 500mg",
+            Notes = "Rest and hydration advised"
+        },
+        new {
+            Patient = "Ravi",
+            Doctor = "Dr. Sarah Johnson",
+            Diagnosis = "Skin Allergy",
+            Prescription = "Antihistamine tablets",
+            Notes = "Avoid dust and allergens"
+        },
+        new {
+            Patient = "Meena",
+            Doctor = "Dr. Amit Kumar",
+            Diagnosis = "Migraine",
+            Prescription = "Pain relief medication",
+            Notes = "Reduce screen time"
+        },
+        new {
+            Patient = "Liya",
+            Doctor = "Dr. Priya Nair",
+            Diagnosis = "Cold & Cough",
+            Prescription = "Cough syrup + tablets",
+            Notes = "Steam inhalation recommended"
+        }
+    };
+
+    // ================= FILTER FOR PATIENT =================
+    if (isPatient)
+    {
+        records = records.Where(x => x.Patient == "Liya").ToList(); // replace later with Session User
+    }
+
+    // ================= FILTER FOR DOCTOR =================
+    if (isDoctor)
+    {
+        records = records.Where(x => x.Doctor == "Dr. John Smith").ToList(); // replace later with Session Doctor
+    }
+}
+
+<div class="container py-4">
+
+    <h2 class="text-primary mb-4">📋 Health History</h2>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+
+            <table class="table table-hover">
+
+                <thead class="table-dark">
+                    <tr>
+
+                        @if (isAdmin)
+                        {
+                            <th>Patient</th>
+                            <th>Doctor</th>
+                            <th>Action</th>
+                        }
+
+                        @if (isPatient)
+                        {
+                            <th>Doctor</th>
+                            <th>Diagnosis</th>
+                            <th>Prescription</th>
+                            <th>Doctor Notes</th>
+                        }
+
+                        @if (isDoctor)
+                        {
+                            <th>Patient</th>
+                            <th>Diagnosis</th>
+                            <th>Prescription</th>
+                            <th>Doctor Notes</th>
+                        }
+
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    @foreach (var item in records)
+                    {
+                        <tr>
+
+                            <!-- ADMIN VIEW -->
+                            @if (isAdmin)
+                            {
+                                <td>@item.Patient</td>
+                                <td>@item.Doctor</td>
+
+                                <td>
+                                    <a href="@Url.Action("History", "HealthRecord", new { patient = item.Patient })"
+                                       class="btn btn-sm btn-primary">
+                                        Health History
+                                    </a>
+                                </td>
+                            }
+
+                            <!-- PATIENT VIEW -->
+                            @if (isPatient)
+                            {
+                                <td>@item.Doctor</td>
+                                <td>@item.Diagnosis</td>
+                                <td>@item.Prescription</td>
+                                <td>@item.Notes</td>
+                            }
+
+                            <!-- DOCTOR VIEW -->
+                            @if (isDoctor)
+                            {
+                                <td>@item.Patient</td>
+                                <td>@item.Diagnosis</td>
+                                <td>@item.Prescription</td>
+                                <td>@item.Notes</td>
+                            }
+
+                        </tr>
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+    </div>
+
+</div>
