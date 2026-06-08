@@ -11,6 +11,5 @@ namespace HealthCareApi.DTOs.Appointment
         public string TimeSlot { get; set; }
         public string Status { get; set; }
         public string CancellationReason { get; set; }
-        public DateTime CreatedDate { get; set; }
     }
 }

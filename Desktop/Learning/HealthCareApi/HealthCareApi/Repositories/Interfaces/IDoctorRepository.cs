@@ -1,9 +1,9 @@
-﻿using HealthCareApi.Models;
+﻿//using HealthCareApi.Models;
 using HealthCareApi.Repositories.Interfaces;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace HealthCareApi.Data.Repositories.Interfaces
+namespace HealthCareApi.Repositories.Interfaces
 {
     public interface IDoctorRepository : IRepository<Doctor>
     {

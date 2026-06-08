@@ -20,7 +20,5 @@ namespace HealthCareApi.DTOs.Doctor
 
         [Range(0, 100000)]
         public decimal ConsultationFee { get; set; }
-
-        public bool IsActive { get; set; }
     }
 }

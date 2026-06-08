@@ -1,36 +1,30 @@
 ﻿using AutoMapper;
-//using HealthCareAPI.Domain.Entities;
+using HealthCareApi;
 using HealthCareApi.DTOs.Appointment;
 using HealthCareApi.DTOs.Doctor;
 using HealthCareApi.DTOs.Patient;
-using HealthCareApi.Models;
-using System;
+using HealthCareApi.DTOs.HealthRecord;
 
-namespace HealthCareApi.Mapping
+public class MappingProfile : Profile
 {
-    public class MappingProfile : Profile
+    public MappingProfile()
     {
-        public MappingProfile()
-        {
-            // Doctor
-            CreateMap<Doctor, DoctorDto>();
-            CreateMap<CreateDoctorDto, Doctor>()
-                .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => true))
-                .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => DateTime.UtcNow));
-            CreateMap<UpdateDoctorDto, Doctor>();
+        // Entity -> DTO
+        CreateMap<Doctor, DoctorDto>()
+            .ForMember(dest => dest.DoctorId,
+                       opt => opt.MapFrom(src => src.DoctorId))
+            .ForMember(dest => dest.Specialisation,
+                       opt => opt.MapFrom(src => src.Specialisation));
 
-            // Patient
-            CreateMap<Patient, PatientDto>();
-            CreateMap<CreatePatientDto, Patient>()
-                .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => DateTime.UtcNow));
+        // DTO -> Entity
+        CreateMap<DoctorDto, Doctor>()
+            .ForMember(dest => dest.DoctorId,
+                       opt => opt.MapFrom(src => src.DoctorId))
+            .ForMember(dest => dest.Specialisation,
+                       opt => opt.MapFrom(src => src.Specialisation));
 
-            // Appointment
-            //CreateMap<Appointment, AppointmentDto>()
-            //    .ForMember(dest => dest.PatientName, opt => opt.MapFrom(src => src.Patient.FullName))
-            //    .ForMember(dest => dest.DoctorName, opt => opt.MapFrom(src => src.Doctor.FullName));
-            //CreateMap<CreateAppointmentDto, Appointment>()
-            //    .ForMember(dest => dest.Status, opt => opt.MapFrom(src => "Pending"))
-            //    .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => DateTime.UtcNow));
-        }
+        CreateMap<Patient, PatientDto>().ReverseMap();
+        CreateMap<Appointment, AppointmentDto>().ReverseMap();
+        CreateMap<vw_PatientHealthHistory, HealthRecordDto>();
     }
 }

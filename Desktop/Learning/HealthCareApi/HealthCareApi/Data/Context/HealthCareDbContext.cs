@@ -1,5 +1,4 @@
-﻿using HealthCareApi.Data.Configurations;
-using HealthCareApi.Data.Seed;
+﻿using HealthCareApi.Data.Seed;
 using HealthCareApi.Models;
 using HealthCareApi.Models.Views;
 using System.Data.Entity;
@@ -24,23 +23,67 @@ namespace HealthCareApi.Data.Context
         public DbSet<DoctorLeave> DoctorLeaves { get; set; }
 
         // Views (read-only)
-        public DbSet<VwPatientAppointment> VwPatientAppointments { get; set; }
-        public DbSet<VwDoctorSchedule> VwDoctorSchedules { get; set; }
-        public DbSet<VwPatientHealthHistory> VwPatientHealthHistories { get; set; }
-        public DbSet<VwDoctorProfile> VwDoctorProfiles { get; set; }
-        public DbSet<VwPatientProfile> VwPatientProfiles { get; set; }
+        //public DbSet<VwPatientAppointment> VwPatientAppointments { get; set; }
+        //public DbSet<VwDoctorSchedule> VwDoctorSchedules { get; set; }
+        //public DbSet<VwPatientHealthHistory> VwPatientHealthHistories { get; set; }
+        //public DbSet<VwDoctorProfile> VwDoctorProfiles { get; set; }
+        //public DbSet<VwPatientProfile> VwPatientProfiles { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
-            modelBuilder.Configurations.Add(new UserConfiguration());
-            modelBuilder.Configurations.Add(new PatientConfiguration());
-            modelBuilder.Configurations.Add(new DoctorConfiguration());
-            modelBuilder.Configurations.Add(new AppointmentConfiguration());
-            modelBuilder.Configurations.Add(new HealthRecordConfiguration());
-            //modelBuilder.Configurations.Add(new DoctorAvailableSlotConfiguration());
-            //modelBuilder.Configurations.Add(new DoctorLeaveConfiguration());
-
             base.OnModelCreating(modelBuilder);
+
+            // ----------------------------------------------------------
+            // User -> Patient (optional 1-to-1)
+            // EF6 maps as one-to-many; UNIQUE on UserId enforces 1-to-1 in DB
+            // ----------------------------------------------------------
+            modelBuilder.Entity<Patient>()
+                .HasOptional(p => p.User)
+                .WithMany()
+                .HasForeignKey(p => p.UserId);
+
+            // ----------------------------------------------------------
+            // User -> Doctor (required 1-to-1)
+            // Same pattern — UNIQUE on UserId enforces 1-to-1 in DB
+            // ----------------------------------------------------------
+            modelBuilder.Entity<Doctor>()
+                .HasRequired(d => d.User)
+                .WithMany()
+                .HasForeignKey(d => d.UserId);
+
+            // ----------------------------------------------------------
+            // Appointment -> HealthRecord (optional 1-to-1)
+            // HealthRecord.AppointmentId is FK; UNIQUE enforces 1-to-1 in DB
+            // ----------------------------------------------------------
+            modelBuilder.Entity<HealthRecord>()
+                .HasRequired(hr => hr.Appointment)
+                .WithOptional(a => a.HealthRecord);
+
+            // ----------------------------------------------------------
+            // Appointment -> Patient / Doctor (many-to-one, straightforward)
+            // ----------------------------------------------------------
+            modelBuilder.Entity<Appointment>()
+                .HasRequired(a => a.Patient)
+                .WithMany(p => p.Appointments)
+                .HasForeignKey(a => a.PatientId);
+
+            modelBuilder.Entity<Appointment>()
+                .HasRequired(a => a.Doctor)
+                .WithMany(d => d.Appointments)
+                .HasForeignKey(a => a.DoctorId);
+
+            // ----------------------------------------------------------
+            // Doctor -> Slots / Leaves (one-to-many, straightforward)
+            // ----------------------------------------------------------
+            modelBuilder.Entity<DoctorAvailableSlot>()
+                .HasRequired(s => s.Doctor)
+                .WithMany(d => d.AvailableSlots)
+                .HasForeignKey(s => s.DoctorId);
+
+            modelBuilder.Entity<DoctorLeave>()
+                .HasRequired(l => l.Doctor)
+                .WithMany(d => d.Leaves)
+                .HasForeignKey(l => l.DoctorId);
         }
     }
 }

@@ -1,5 +1,9 @@
-﻿using HealthCareApi.Models;
+﻿//using HealthCareApi.Models;
+using AutoMapper;
+using HealthCareApi.DTOs.Doctor;
 using HealthCareApi.Services.Interfaces;
+using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Web.Http;
 
@@ -9,10 +13,12 @@ namespace HealthCareApi.Controllers
     public class DoctorController : ApiController
     {
         private readonly IDoctorService _doctorService;
+        private readonly IMapper _mapper;
 
-        public DoctorController(IDoctorService doctorService)
+        public DoctorController(IDoctorService doctorService, IMapper mapper)
         {
             _doctorService = doctorService;
+            _mapper = mapper;
         }
 
         [HttpGet]
@@ -24,7 +30,6 @@ namespace HealthCareApi.Controllers
             [FromUri] int pageNumber = 1,
             [FromUri] int pageSize = 10)
         {
-            // Call the async service method
             var doctors = await _doctorService.GetFilteredDoctorsAsync(
                 specialization,
                 searchTerm,
@@ -32,8 +37,12 @@ namespace HealthCareApi.Controllers
                 pageNumber,
                 pageSize);
 
-            return Ok(doctors);
+            // Map to DTO
+            var doctorDtos = _mapper.Map<IEnumerable<DoctorDto>>(doctors);
+
+            return Ok(doctorDtos);
         }
+
 
         [HttpGet]
         [Route("{id:int}")]
@@ -42,34 +51,55 @@ namespace HealthCareApi.Controllers
             var doctor = await _doctorService.GetDoctorByIdAsync(id);
             if (doctor == null) return NotFound();
 
-            return Ok(doctor);
+            var doctorDto = _mapper.Map<DoctorDto>(doctor);
+
+            return Ok(doctorDto);
         }
 
         [HttpPost]
         [Route("")]
         public async Task<IHttpActionResult> Add(Doctor doctor)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-            await _doctorService.AddDoctorAsync(doctor);
-            return Ok(doctor);
+            var createdDoctor = await _doctorService.AddDoctorAsync(doctor);
+
+            var dto = _mapper.Map<DoctorDto>(createdDoctor);
+
+            // ✅ Correct REST response
+            return Created($"api/doctors/{dto.DoctorId}", dto);
         }
 
         [HttpPut]
-        [Route("")]
-        public async Task<IHttpActionResult> Update(Doctor doctor)
+        [Route("{id:int}")]
+        public async Task<IHttpActionResult> Update(int id, Doctor doctor)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-            await _doctorService.UpdateDoctorAsync(doctor);
-            return Ok();
+            if (id != doctor.DoctorId)
+                return BadRequest("Doctor ID mismatch");
+
+            var updatedDoctor = await _doctorService.UpdateDoctorAsync(doctor);
+
+            if (updatedDoctor == null)
+                return NotFound();
+
+            var dto = _mapper.Map<DoctorDto>(updatedDoctor);
+
+            return Ok(dto);
         }
 
         [HttpDelete]
         [Route("{id:int}")]
         public async Task<IHttpActionResult> Delete(int id)
         {
-            await _doctorService.DeleteDoctorAsync(id);
+            var result = await _doctorService.DeleteDoctorAsync(id);
+
+            if (!result)
+                return NotFound();
+
             return StatusCode(System.Net.HttpStatusCode.NoContent);
         }
     }

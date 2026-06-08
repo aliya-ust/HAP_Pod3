@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using HealthCareApi.Mapping;
+//using HealthCareApi.Mapping;
 
 namespace HealthCareApi.App_Start
 {
@@ -7,12 +7,16 @@ namespace HealthCareApi.App_Start
     {
         public static IMapper Initialize()
         {
+
             var config = new MapperConfiguration(cfg =>
             {
                 cfg.AddProfile<MappingProfile>();
             });
 
-            return config.CreateMapper();
+            IMapper mapper = config.CreateMapper();
+            config.AssertConfigurationIsValid();
+            return mapper;
+
         }
     }
 }

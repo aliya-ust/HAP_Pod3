@@ -1,18 +1,19 @@
 ﻿namespace HealthCareApi.Migrations
 {
+    using HealthCareApi.Data.Context;
     using System;
     using System.Data.Entity;
     using System.Data.Entity.Migrations;
     using System.Linq;
 
-    internal sealed class Configuration : DbMigrationsConfiguration<HealthCareApi.Data.Context.HealthCareDbContext>
+    internal sealed class Configuration : DbMigrationsConfiguration<HealthCareDbContext>
     {
         public Configuration()
         {
             AutomaticMigrationsEnabled = false;
         }
 
-        protected override void Seed(HealthCareApi.Data.Context.HealthCareDbContext context)
+        protected override void Seed(HealthCareDbContext context)
         {
             //  This method will be called after migrating to the latest version.
 

@@ -1,21 +1,19 @@
-﻿using HealthCareApi.Data.Context;
-using HealthCareApi.Data.Repositories.Interfaces;
-using HealthCareApi.Models;
+﻿//using HealthCareApi.Data.Context;
 using HealthCareApi.Repositories.Implementations;
+using HealthCareApi.Repositories.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
+//using HealthCareApi.Models;
 
-namespace HealthCareApi.Data.Repositories.Implementations
+namespace HealthCareApi.Repositories.Implementations
 {
     public class DoctorRepository : Repository<Doctor>, IDoctorRepository
     {
-        private readonly HealthCareDbContext _context;
-
-        public DoctorRepository(HealthCareDbContext context) : base(context)
+        public DoctorRepository(HealthAppDbContext _context) : base(_context)
         {
-            _context = context;
         }
 
         public async Task<IEnumerable<Doctor>> GetDoctorsAsync(
@@ -25,18 +23,22 @@ namespace HealthCareApi.Data.Repositories.Implementations
             int pageNumber = 1,
             int pageSize = 10)
         {
+            // Safety for paging
+            pageNumber = pageNumber < 1 ? 1 : pageNumber;
+            pageSize = pageSize > 50 ? 50 : pageSize;
+
             // Start the query
             IQueryable<Doctor> query = _context.Doctors.Where(d => d.IsActive == true).AsQueryable();
 
             // 1. Filter
             if (!string.IsNullOrWhiteSpace(specialization))
             {
-                query = query.Where(d => d.Specialisation.Contains(specialization));
+                query = query.Where(d => d.Specialisation.ToLower().Contains(specialization.ToLower()));
             }
 
             if (!string.IsNullOrWhiteSpace(searchTerm))
             {
-                query = query.Where(d => d.FullName.Contains(searchTerm));
+                query = query.Where(d => d.FullName.ToLower().Contains(searchTerm.ToLower()));
             }
 
             // 2. Order
@@ -53,10 +55,8 @@ namespace HealthCareApi.Data.Repositories.Implementations
 
         public override async Task DeleteAsync(Doctor doctor)
         {
-            doctor.IsActive = false;
-
-            // We use the base class's UpdateAsync logic or manually update the entry state
-            _context.Entry(doctor).State = EntityState.Modified;
+            if (doctor == null)
+                throw new ArgumentNullException(nameof(doctor));
 
             await _context.SaveChangesAsync();
         }

@@ -62,6 +62,7 @@
     <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.5.2\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
     </Reference>
+    <Reference Include="System.Security" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -145,6 +146,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Appointment.cs">
+      <DependentUpon>HealthAppDb.tt</DependentUpon>
+    </Compile>
     <Compile Include="App_Start\AutoMapperConfig.cs" />
     <Compile Include="App_Start\UnityConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
@@ -176,15 +180,20 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\SampleDirection.cs" />
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
+    <Compile Include="Controllers\AppointmentController.cs" />
     <Compile Include="Controllers\DoctorController.cs" />
-    <Compile Include="Data\Configurations\AppointmentConfiguration.cs" />
-    <Compile Include="Data\Configurations\DoctorConfiguration.cs" />
-    <Compile Include="Data\Configurations\HealthRecordConfiguration.cs" />
-    <Compile Include="Data\Configurations\PatientConfiguration.cs" />
-    <Compile Include="Data\Configurations\UserConfiguration.cs" />
-    <Compile Include="Data\Context\HealthCareDbContext.cs" />
-    <Compile Include="Data\Seed\HealthCareDbInitializer.cs" />
+    <Compile Include="Controllers\PatientController.cs" />
+    <Compile Include="Doctor.cs">
+      <DependentUpon>HealthAppDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DoctorAvailableSlot.cs">
+      <DependentUpon>HealthAppDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DoctorLeaf.cs">
+      <DependentUpon>HealthAppDb.tt</DependentUpon>
+    </Compile>
     <Compile Include="DTOs\Appointment\AppointmentDto.cs" />
+    <Compile Include="DTOs\Appointment\CancelAppointmentDto.cs" />
     <Compile Include="DTOs\Appointment\CreateAppointmentDto.cs" />
     <Compile Include="DTOs\Appointment\UpdateAppointmentDto.cs" />
     <Compile Include="DTOs\Doctor\CreateDoctorDto.cs" />
@@ -195,36 +204,54 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="HealthAppDb.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>HealthAppDb.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="HealthAppDb.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>HealthAppDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="HealthAppDb.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>HealthAppDb.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="HealthRecord.cs">
+      <DependentUpon>HealthAppDb.tt</DependentUpon>
+    </Compile>
     <Compile Include="Mapping\MappingProfile.cs" />
-    <Compile Include="Migrations\202606051013389_InitialSchema.cs" />
-    <Compile Include="Migrations\202606051013389_InitialSchema.Designer.cs">
-      <DependentUpon>202606051013389_InitialSchema.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202606051218526_SyncWithDatabase.cs" />
-    <Compile Include="Migrations\202606051218526_SyncWithDatabase.Designer.cs">
-      <DependentUpon>202606051218526_SyncWithDatabase.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\Configuration.cs" />
-    <Compile Include="Models\Appointment.cs" />
-    <Compile Include="Models\Doctor.cs" />
-    <Compile Include="Models\DoctorAvailableSlot.cs" />
-    <Compile Include="Models\DoctorLeave.cs" />
-    <Compile Include="Models\HealthRecord.cs" />
-    <Compile Include="Models\Patient.cs" />
-    <Compile Include="Models\User.cs" />
-    <Compile Include="Models\Views\VwDoctorProfile.cs" />
-    <Compile Include="Models\Views\VwDoctorSchedule.cs" />
-    <Compile Include="Models\Views\VwPatientAppointment.cs" />
-    <Compile Include="Models\Views\VwPatientHealthHistory.cs" />
-    <Compile Include="Models\Views\VwPatientProfile.cs" />
     <Compile Include="obj\Debug\.NETFramework,Version=v4.7.2.AssemblyAttributes.cs" />
+    <Compile Include="Patient.cs">
+      <DependentUpon>HealthAppDb.tt</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repositories\Implementations\AppointmentRepository.cs" />
     <Compile Include="Repositories\Implementations\DoctorRepository.cs" />
+    <Compile Include="Repositories\Implementations\HealthRecordRepository.cs" />
+    <Compile Include="Repositories\Implementations\PatientRepository.cs" />
     <Compile Include="Repositories\Implementations\Repository.cs" />
+    <Compile Include="Repositories\Interfaces\IAppointmentRepository.cs" />
     <Compile Include="Repositories\Interfaces\IDoctorRepository.cs" />
+    <Compile Include="Repositories\Interfaces\IHealthRecordRepository.cs" />
+    <Compile Include="Repositories\Interfaces\IPatientRepository.cs" />
     <Compile Include="Repositories\Interfaces\IRepository.cs" />
+    <Compile Include="Services\Implementations\AppointmentService.cs" />
     <Compile Include="Services\Implementations\DoctorService.cs" />
+    <Compile Include="Services\Implementations\HealthRecordService.cs" />
+    <Compile Include="Services\Implementations\PatientService.cs" />
+    <Compile Include="Services\Interfaces\IAppointmentService.cs" />
     <Compile Include="Services\Interfaces\IDoctorService.cs" />
+    <Compile Include="Services\Interfaces\IHealthRecordService.cs" />
+    <Compile Include="Services\Interfaces\IPatientService.cs" />
+    <Compile Include="User.cs">
+      <DependentUpon>HealthAppDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="vw_PatientHealthHistory.cs">
+      <DependentUpon>HealthAppDb.tt</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\HelpPage\HelpPage.css" />
@@ -319,6 +346,16 @@
     <Content Include="Content\bootstrap.rtl.min.css" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
+    <Content Include="HealthAppDb.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>HealthAppDb.edmx</DependentUpon>
+      <LastGenOutput>HealthAppDb.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="HealthAppDb.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>HealthAppDb.edmx</DependentUpon>
+      <LastGenOutput>HealthAppDb.cs</LastGenOutput>
+    </Content>
     <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.bundle.min.js" />
     <Content Include="Scripts\bootstrap.esm.js" />
@@ -355,6 +392,13 @@
     <Content Include="bin\roslyn\vbc.exe.config" />
     <Content Include="bin\roslyn\vbc.rsp" />
     <Content Include="bin\roslyn\VBCSCompiler.exe.config" />
+    <EntityDeploy Include="HealthAppDb.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>HealthAppDb.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <Content Include="HealthAppDb.edmx.diagram">
+      <DependentUpon>HealthAppDb.edmx</DependentUpon>
+    </Content>
     <None Include="Scripts\jquery-3.7.0.intellisense.js" />
     <Content Include="Scripts\jquery-3.7.0.js" />
     <Content Include="Scripts\jquery-3.7.0.min.js" />
@@ -378,6 +422,8 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\Appointment\" />
+    <Folder Include="Views\Patient\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Scripts\bootstrap.min.js.map" />
@@ -451,12 +497,7 @@
     <Content Include="Scripts\jquery-3.7.0.min.map" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\202606051013389_InitialSchema.resx">
-      <DependentUpon>202606051013389_InitialSchema.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202606051218526_SyncWithDatabase.resx">
-      <DependentUpon>202606051218526_SyncWithDatabase.cs</DependentUpon>
-    </EmbeddedResource>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

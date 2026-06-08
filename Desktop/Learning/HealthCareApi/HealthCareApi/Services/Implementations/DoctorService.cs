@@ -1,7 +1,8 @@
-﻿using HealthCareApi.Data.Repositories.Interfaces;
+﻿using HealthCareApi.Repositories.Interfaces;
 using HealthCareApi.Services.Interfaces;
-using HealthCareApi.Models;
+//using HealthCareApi.Models;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace HealthCareApi.Services.Implementations
@@ -13,11 +14,6 @@ namespace HealthCareApi.Services.Implementations
         public DoctorService(IDoctorRepository doctorRepository)
         {
             _doctorRepository = doctorRepository;
-        }
-
-        public async Task<IEnumerable<Doctor>> GetAllDoctorsAsync()
-        {
-            return await _doctorRepository.GetAllAsync();
         }
 
         public async Task<Doctor> GetDoctorByIdAsync(int id)
@@ -32,31 +28,54 @@ namespace HealthCareApi.Services.Implementations
             int pageNumber = 1,
             int pageSize = 10)
         {
-            return await _doctorRepository.GetDoctorsAsync(
+            var doctors = await _doctorRepository.GetDoctorsAsync(
                 specialization,
                 searchTerm,
                 orderByDescending,
                 pageNumber,
                 pageSize);
+            return doctors.Where(d => d.IsActive);
         }
 
-        public async Task AddDoctorAsync(Doctor doctor)
+        public async Task<Doctor> AddDoctorAsync(Doctor doctor)
         {
             await _doctorRepository.AddAsync(doctor);
+            return doctor;
         }
 
-        public async Task UpdateDoctorAsync(Doctor doctor)
+        public async Task<Doctor> UpdateDoctorAsync(Doctor updatedDoctor)
         {
-            await _doctorRepository.UpdateAsync(doctor);
+            // Step 1: Get existing data via repo
+            var existingDoctor = await _doctorRepository.GetByIdAsync(updatedDoctor.DoctorId);
+
+            if (existingDoctor == null)
+                return null;
+
+            // Step 2: Update only allowed fields
+            existingDoctor.FullName = updatedDoctor.FullName;
+            existingDoctor.Specialisation = updatedDoctor.Specialisation;
+            existingDoctor.YearsOfExperience = updatedDoctor.YearsOfExperience;
+            existingDoctor.ConsultationFee = updatedDoctor.ConsultationFee;
+
+            // Step 3: Call repo to save
+            await _doctorRepository.UpdateAsync(existingDoctor);
+
+            return existingDoctor;
         }
 
-        public async Task DeleteDoctorAsync(int id)
+        public async Task<bool> DeleteDoctorAsync(int id)
         {
             var doctor = await _doctorRepository.GetByIdAsync(id);
-            if (doctor != null)
-            {
-                await _doctorRepository.DeleteAsync(doctor);
-            }
+
+            if (doctor == null)
+                return false;
+
+            // Soft delete
+            doctor.IsActive = false;
+
+            await _doctorRepository.UpdateAsync(doctor);
+
+            return true;
         }
     }
 }
