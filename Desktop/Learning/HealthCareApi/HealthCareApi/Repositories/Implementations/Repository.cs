@@ -1,8 +1,9 @@
 ﻿using HealthCareApi.Data.Context;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
 using HealthCareApi.Repositories.Interfaces;
+using System.Collections.Generic;
+using System.Data.Entity; 
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace HealthCareApi.Repositories.Implementations
 {
@@ -17,10 +18,26 @@ namespace HealthCareApi.Repositories.Implementations
             _dbSet = context.Set<T>();
         }
 
-        public T GetById(int id) => _dbSet.Find(id);
-        public List<T> GetAll() => _dbSet.ToList();
-        public void Add(T entity) => _dbSet.Add(entity);
-        public void Update(T entity) => _context.Entry(entity).State = EntityState.Modified;
-        public void Delete(T entity) => _dbSet.Remove(entity);
+        public async Task<T> GetByIdAsync(int id) => await _dbSet.FindAsync(id);
+
+        public async Task<List<T>> GetAllAsync() => await _dbSet.ToListAsync();
+
+        public async Task AddAsync(T entity)
+        {
+            _dbSet.Add(entity);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task UpdateAsync(T entity)
+        {
+            _context.Entry(entity).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task DeleteAsync(T entity)
+        {
+            _dbSet.Remove(entity);
+            await _context.SaveChangesAsync();
+        }
     }
 }

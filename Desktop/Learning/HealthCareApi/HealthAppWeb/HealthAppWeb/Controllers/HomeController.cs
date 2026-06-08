@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Web;
 using System.Web.Mvc;
+using System.Web.Security;
 
 namespace HealthAppWeb.Controllers
 {
@@ -8,11 +10,16 @@ namespace HealthAppWeb.Controllers
     {
         public ActionResult Index()
         {
+            return View();
+        }
+
+        public ActionResult Dashboard()
+        {
             if (User.IsInRole("Admin"))
                 return RedirectToAction("List", "Patient");
 
             if (User.IsInRole("Doctor"))
-                return RedirectToAction("Schedule", "Appointment");
+                return RedirectToAction("Profile", "Doctor");
 
             if (User.IsInRole("Patient"))
                 return RedirectToAction("Book", "Appointment");
@@ -53,7 +60,7 @@ namespace HealthAppWeb.Controllers
 
             string userData = role + "|" + fullName + "|" + userId;
 
-            var ticket = new System.Web.Security.FormsAuthenticationTicket(
+            var ticket = new FormsAuthenticationTicket(
                 1,
                 email,
                 DateTime.Now,
@@ -62,12 +69,19 @@ namespace HealthAppWeb.Controllers
                 userData
             );
 
-            string encrypted = System.Web.Security.FormsAuthentication.Encrypt(ticket);
-            Response.Cookies.Add(new System.Web.HttpCookie(
-                System.Web.Security.FormsAuthentication.FormsCookieName, encrypted
+            string encrypted = FormsAuthentication.Encrypt(ticket);
+
+            Response.Cookies.Add(new HttpCookie(
+                FormsAuthentication.FormsCookieName, encrypted
             ));
 
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Dashboard", "Home");
+        }
+
+        public ActionResult Logout()
+        {
+            FormsAuthentication.SignOut();
+            return RedirectToAction("Login", "Account");
         }
     }
 }
