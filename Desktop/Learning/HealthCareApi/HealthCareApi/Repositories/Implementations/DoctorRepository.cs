@@ -26,7 +26,7 @@ namespace HealthCareApi.Data.Repositories.Implementations
             int pageSize = 10)
         {
             // Start the query
-            IQueryable<Doctor> query = _context.Doctors.AsQueryable();
+            IQueryable<Doctor> query = _context.Doctors.Where(d => d.IsActive == true).AsQueryable();
 
             // 1. Filter
             if (!string.IsNullOrWhiteSpace(specialization))
@@ -49,6 +49,16 @@ namespace HealthCareApi.Data.Repositories.Implementations
             query = query.Skip((pageNumber - 1) * pageSize).Take(pageSize);
 
             return await query.ToListAsync();
+        }
+
+        public override async Task DeleteAsync(Doctor doctor)
+        {
+            doctor.IsActive = false;
+
+            // We use the base class's UpdateAsync logic or manually update the entry state
+            _context.Entry(doctor).State = EntityState.Modified;
+
+            await _context.SaveChangesAsync();
         }
     }
 }
