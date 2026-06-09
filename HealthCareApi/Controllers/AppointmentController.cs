@@ -7,9 +7,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
+using System.Web.Http.Cors;
 
 namespace HealthCareApi.Controllers
 {
+    [EnableCors(origins: "*", headers: "*", methods: "*")]
     [RoutePrefix("api/appointments")]
     public class AppointmentController : ApiController
     {
@@ -44,6 +46,7 @@ namespace HealthCareApi.Controllers
             }
             catch (Exception ex)
             {
+                System.Diagnostics.Debug.WriteLine(ex.ToString());
                 return BadRequest(ex.Message);
             }
         }
@@ -115,6 +118,25 @@ namespace HealthCareApi.Controllers
             var dtos = _mapper.Map<IEnumerable<AppointmentDto>>(appointments);
 
             return Ok(dtos);
+        }
+
+        // 6. GET AVAILABLE TIME SLOTS
+        // GET: api/appointments/slots?doctorId=1&date=2026-06-10
+        [HttpGet]
+        [Route("slots")]
+        public async Task<IHttpActionResult> GetAvailableSlots(int doctorId, DateTime date)
+        {
+            try
+            {
+                var slots = await _appointmentService
+                    .GetAvailableSlotsAsync(doctorId, date);
+
+                return Ok(slots); // return list<string> or list<TimeSlotDto>
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPut]

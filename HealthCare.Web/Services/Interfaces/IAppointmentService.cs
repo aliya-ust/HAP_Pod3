@@ -20,6 +20,8 @@ namespace HealthCare.Web.Services.Interfaces
         Task<IEnumerable<AppointmentDto>> GetTodayAppointmentsAsync(int doctorId);
         Task<IEnumerable<AppointmentDto>> GetWeeklyAppointmentsAsync(int doctorId);
         Task<IEnumerable<AppointmentDto>> GetByDateAsync(DateTime date);
+        Task<List<string>> GetAvailableSlotsAsync(int doctorId, DateTime date);
+
 
         Task<bool> BookAsync(AppointmentDto dto);
         Task<bool> ConfirmAsync(int id);

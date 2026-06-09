@@ -17,7 +17,7 @@ namespace HealthCare.Web.Controllers
         }
 
         // ✅ LIST → Doctor/List.cshtml
-        public async Task<ActionResult> Index(
+        public async Task<ActionResult> List(
             string specialization,
             string searchTerm,
             bool orderByDescending = false,
@@ -45,29 +45,29 @@ namespace HealthCare.Web.Controllers
         }
 
         // ✅ CREATE (GET) → Doctor/Register.cshtml
-        public ActionResult Register()
+        public ActionResult Add()
         {
-            return View("Register");
+            return View("Add");
         }
 
         // ✅ CREATE (POST)
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Register(DoctorDto dto)
+        public async Task<ActionResult> Add(CreateDoctorDto dto)
         {
             if (!ModelState.IsValid)
-                return View("Register", dto);
+                return View(dto);
 
             var result = await _service.CreateAsync(dto);
 
             if (result)
             {
                 TempData["Success"] = "Doctor created successfully.";
-                return RedirectToAction("Index");
+                return RedirectToAction("List");
             }
 
             ModelState.AddModelError("", "Error creating doctor");
-            return View("Register", dto);
+            return View(dto);
         }
 
         // ✅ EDIT (GET) → Doctor/Edit.cshtml
@@ -114,6 +114,15 @@ namespace HealthCare.Web.Controllers
                 TempData["Error"] = "Delete failed.";
 
             return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> GetDoctors(string specialization)
+        {
+            var doctors = await _service
+                .GetDoctorsBySpecializationAsync(specialization);
+
+            return Json(doctors, JsonRequestBehavior.AllowGet);
         }
     }
 }

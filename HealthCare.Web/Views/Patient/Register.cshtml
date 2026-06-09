@@ -9,41 +9,39 @@
 
     <!-- Header -->
     <div class="mb-4">
-
         <nav aria-label="breadcrumb" class="mb-2">
             <ol class="breadcrumb mb-1">
                 <li class="breadcrumb-item">
-                    @Url.Action("Index", "Patient")" class="text-decoration-none">
-                    Patient Management
+                    <a href="@Url.Action("List", "Patient")" class="text-decoration-none">
+                        Patient Management
                     </a>
                 </li>
                 <li class="breadcrumb-item active">Register Patient</li>
             </ol>
+        </nav>
 
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <h2 class="fw-bold mb-1">Register Patient</h2>
-                    <p class="text-muted mb-0">
-                        Add a new patient record to the healthcare system.
-                    </p>
-                </div>
-
-                @Url.Action("Index", "Patient")"
-                class="btn btn-outline-secondary rounded-3">
-                Back to Patient List
-                </a>
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h2 class="fw-bold mb-1">Register Patient</h2>
+                <p class="text-muted mb-0">
+                    Add a new patient record to the healthcare system.
+                </p>
             </div>
+
+            <a href="@Url.Action("List", "Patient")"
+               class="btn btn-outline-secondary rounded-3">
+                Back to Patient List
+            </a>
+        </div>
     </div>
 
     <!-- Form -->
     <div class="card border-0 shadow-sm rounded-4">
         <div class="card-body p-4 p-md-5">
 
-            @using (Html.BeginForm("Create", "Patient", FormMethod.Post))
+            @using (Html.BeginForm("Register", "Patient", FormMethod.Post, new { novalidate = "novalidate" }))
             {
                 @Html.AntiForgeryToken()
-
-                @Html.ValidationSummary(true, "", new { @class = "alert alert-danger" })
 
                 <div class="row g-4">
 
@@ -55,12 +53,12 @@
 
                         @Html.TextBoxFor(m => m.FullName, new
                         {
-                            @class = "form-control rounded-3",
-                            maxlength = "100",
-                            placeholder = "Enter full name"
+                            @class = "form-control rounded-3 " +
+                                (ViewData.ModelState["FullName"]?.Errors.Count > 0 ? "is-invalid" : "")
                         })
 
-                        @Html.ValidationMessageFor(m => m.FullName, "", new { @class = "text-danger" })
+                        @Html.ValidationMessageFor(m => m.FullName, "",
+                            new { @class = "invalid-feedback d-block" })
                     </div>
 
                     <!-- DOB -->
@@ -71,10 +69,14 @@
 
                         @Html.TextBoxFor(m => m.DateOfBirth, "{0:yyyy-MM-dd}", new
                         {
-                            @class = "form-control rounded-3",
+                            @class = "form-control rounded-3 " +
+                                (ViewData.ModelState["DateOfBirth"]?.Errors.Count > 0 ? "is-invalid" : ""),
                             type = "date",
                             max = maxDateOfBirth
                         })
+
+                        @Html.ValidationMessageFor(m => m.DateOfBirth, "",
+                            new { @class = "invalid-feedback d-block" })
                     </div>
 
                     <!-- Gender -->
@@ -92,6 +94,9 @@
                                 </div>
                             }
                         </div>
+
+                        @Html.ValidationMessageFor(m => m.Gender, "",
+                            new { @class = "text-danger d-block" })
                     </div>
 
                     <!-- Phone -->
@@ -102,10 +107,12 @@
 
                         @Html.TextBoxFor(m => m.PhoneNumber, new
                         {
-                            @class = "form-control rounded-3",
-                            maxlength = "20",
-                            placeholder = "Enter phone number"
+                            @class = "form-control rounded-3 " +
+                                (ViewData.ModelState["PhoneNumber"]?.Errors.Count > 0 ? "is-invalid" : "")
                         })
+
+                        @Html.ValidationMessageFor(m => m.PhoneNumber, "",
+                            new { @class = "invalid-feedback d-block" })
                     </div>
 
                     <!-- Email -->
@@ -116,28 +123,13 @@
 
                         @Html.TextBoxFor(m => m.Email, new
                         {
-                            @class = "form-control rounded-3",
-                            type = "email",
-                            maxlength = "100",
-                            placeholder = "Enter email address"
+                            @class = "form-control rounded-3 " +
+                                (ViewData.ModelState["Email"]?.Errors.Count > 0 ? "is-invalid" : "")
                         })
 
-                        @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
-
-                        <small class="text-muted">Email must be unique.</small>
+                        @Html.ValidationMessageFor(m => m.Email, "",
+                            new { @class = "invalid-feedback d-block" })
                     </div>
-
-                    <!-- ✅ Password (IMPORTANT) -->
-                    @*<div class="col-md-6">
-                        <label class="form-label fw-semibold">
-                            Password <span class="text-danger">*</span>
-                        </label>
-
-                        @Html.PasswordFor(m => m.Password, new
-                        {
-                            @class = "form-control rounded-3"
-                        })*@
-                    @*</div>*@
 
                     <!-- Insurance -->
                     <div class="col-md-6">
@@ -147,36 +139,30 @@
 
                         @Html.TextBoxFor(m => m.InsuranceId, new
                         {
-                            @class = "form-control rounded-3",
-                            maxlength = "50",
-                            placeholder = "Enter insurance ID"
+                            @class = "form-control rounded-3"
                         })
-
-                        <small class="text-muted">Optional</small>
                     </div>
 
                 </div>
 
                 <!-- Actions -->
-        <div class="d-flex justify-content-end gap-2 mt-5">
+                <div class="d-flex justify-content-end gap-2 mt-5">
+                    <a href="@Url.Action("List", "Patient")"
+                       class="btn btn-outline-secondary rounded-3 px-4">
+                        Cancel
+                    </a>
 
-            <a href="@Url.Action("Index", "Patient")"
-               class="btn btn-outline-secondary rounded-3 px-4">
-                Cancel
-            </a>
+                    <button type="reset"
+                            class="btn btn-outline-danger rounded-3 px-4">
+                        Clear
+                    </button>
 
-            <button type="reset"
-                    class="btn btn-outline-danger rounded-3 px-4">
-                Clear
-            </button>
-
-            <button type="submit"
-                    class="btn btn-primary rounded-3 px-4">
-                Register Patient
-            </button>
-
-        </div>
-                            }
+                    <button type="submit"
+                            class="btn btn-primary rounded-3 px-4">
+                        Register Patient
+                    </button>
+                </div>
+            }
 
         </div>
     </div>

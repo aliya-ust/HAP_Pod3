@@ -1,6 +1,9 @@
-﻿using HealthCare.Shared.DTOs.HealthRecord;
+﻿using HealthCare.Shared;
+using HealthCare.Shared.DTOs.HealthRecord;
 using HealthCare.Web.Services;
 using HealthCare.Web.Services.Interfaces;
+using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 
@@ -16,10 +19,20 @@ public class HealthRecordController : Controller
 
     // ✅ LIST / HISTORY
     // → HealthRecord/List.cshtml
-    public async Task<ActionResult> List(int patientId, int pageNumber = 1)
+    public async Task<ActionResult> List(int? patientId, int pageNumber = 1)
     {
+        if (!patientId.HasValue)
+        {
+            return View(new PagedResult<HealthRecordDto>
+            {
+                Items = new List<HealthRecordDto>(),
+                PageNumber = 1,
+                PageSize = PageSize
+            });
+        }
+
         var result = await _service.GetPatientHealthHistoryAsync(
-            patientId,
+            patientId.Value,
             pageNumber,
             PageSize);
 
@@ -30,7 +43,7 @@ public class HealthRecordController : Controller
     // → HealthRecord/Create.cshtml
     public ActionResult Create(int patientId)
     {
-        var model = new HealthRecordDto
+        var model = new CreateHealthRecordDto
         {
             PatientId = patientId
         };
@@ -41,20 +54,20 @@ public class HealthRecordController : Controller
     // ✅ ADD (POST)
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<ActionResult> Create(HealthRecordDto dto)
+    public async Task<ActionResult> Create(CreateHealthRecordDto dto)
     {
         if (!ModelState.IsValid)
             return View("Create", dto);
 
-        var result = await _service.CreateAsync(dto);
+            var result = await _service.CreateAsync(dto);
 
-        if (result)
-        {
-            TempData["Success"] = "Health record added successfully.";
-            return RedirectToAction("List", new { patientId = dto.PatientId });
-        }
+            if (result != null)
+            {
+                TempData["Success"] = "Health record added successfully.";
+                return RedirectToAction("List", new { patientId = dto.PatientId });
+            }
 
-        ModelState.AddModelError("", "Failed to create record");
-        return View("Create", dto);
+            ModelState.AddModelError("", "Failed to create record");
+            return View("Create", dto);
     }
 }

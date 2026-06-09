@@ -1,6 +1,4 @@
-﻿@using HealthAppWeb.Models.ViewModels
-
-@model DoctorProfileViewModel
+﻿@model HealthCare.Shared.DTOs.Doctor.DoctorDto
 
 @{
     ViewBag.Title = "Doctor Profile";
@@ -14,93 +12,112 @@
     var canEdit = isAdmin || isOwnDoctorProfile;
 }
 
-<div class="page-card">
+<div class="container-fluid">
 
-    <!-- Header -->
-    <div class="page-header">
-        <div>
-            <h2 class="page-title">@Model.FullName</h2>
-            <div class="page-subtitle">@Model.Specialisation</div>
-        </div>
-
-        <div>
-            <!-- ✅ Edit Button -->
-            @if (canEdit)
-            {
-                <a href="@Url.Action("Edit", "Doctor", new { id = Model.DoctorId })"
-                   class="btn btn-warning">
-                    Edit Profile
-                </a>
-            }
-
-            <!-- ✅ Toggle Status -->
-            @if (isAdmin)
-            {
-                <button type="button"
-                        class="btn btn-danger"
-                        onclick="openConfirmModal(
-                            'Toggle Doctor Status',
-                            'Are you sure you want to change this doctor status?',
-                            '@Url.Action("ToggleStatus", "Doctor", new { id = Model.DoctorId })'
-                        )">
-                    Toggle Active
-                </button>
-            }
-        </div>
+    <div class="mb-4">
+        <h2 class="fw-bold">Doctor Profile</h2>
+        <p class="text-muted">
+            View doctor details.
+        </p>
     </div>
 
-    <!-- Profile Grid -->
-    <div class="profile-grid">
+    <div class="card border-0 shadow-sm rounded-4">
+        <div class="card-body p-5">
 
-        <div class="profile-item">
-            <div class="profile-label">Full Name</div>
-            <div class="profile-value">@Model.FullName</div>
-        </div>
+            <!-- ✅ Profile Header -->
+            <div class="text-center mb-4">
 
-        <div class="profile-item">
-            <div class="profile-label">Specialisation</div>
-            <div class="profile-value">@Model.Specialisation</div>
-        </div>
+                <div class="rounded-circle bg-primary text-white
+                            d-inline-flex align-items-center
+                            justify-content-center"
+                     style="width:120px;height:120px;font-size:50px;">
+                    👨‍⚕️
+                </div>
 
-        <div class="profile-item">
-            <div class="profile-label">Years of Experience</div>
-            <div class="profile-value">@Model.YearsOfExperience years</div>
-        </div>
+                <h3 class="mt-3">
+                    @Model.FullName
+                </h3>
 
-        <div class="profile-item">
-            <div class="profile-label">Consultation Fee</div>
-            <div class="profile-value">₹@Model.ConsultationFee</div>
-        </div>
+                <p class="text-muted">
+                    Doctor ID : @Model.DoctorId
+                </p>
 
-        <div class="profile-item">
-            <div class="profile-label">Status</div>
-            <div class="profile-value">
-                @(Model.IsActive ? "Active" : "Inactive")
+                <span class="badge @(Model.IsActive ? "bg-success" : "bg-danger")">
+                    @(Model.IsActive ? "Active" : "Inactive")
+                </span>
+
             </div>
-        </div>
 
-        <div class="profile-item">
-            <div class="profile-label">Upcoming Appointments</div>
-            @*<div class="profile-value">@Model.UpcomingAppointmentCount</div>*@
-        </div>
+            <!-- ✅ Details -->
+            <div class="row g-4">
 
+                <div class="col-md-6">
+                    <label class="fw-bold">Specialisation</label>
+                    <p>@Model.Specialisation</p>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="fw-bold">Experience</label>
+                    <p>@Model.YearsOfExperience years</p>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="fw-bold">Consultation Fee</label>
+                    <p>₹@Model.ConsultationFee</p>
+                </div>
+
+                @*<div class="col-md-6">
+                    <label class="fw-bold">Upcoming Appointments</label>
+                    <p>@Model.UpcomingAppointmentCount</p>
+                </div>*@
+
+            </div>
+
+            <hr />
+
+            <!-- ✅ Actions -->
+            <div class="text-end">
+
+                <!-- Back -->
+                @if (isAdmin)
+                {
+                    <a href="@Url.Action("List","Doctor")"
+                       class="btn btn-secondary">
+                        Back to List
+                    </a>
+                }
+
+                <!-- Edit -->
+                @if (canEdit)
+                {
+                    <a href="@Url.Action("Edit","Doctor", new { id = Model.DoctorId })"
+                       class="btn btn-warning">
+                        Edit Profile
+                    </a>
+                }
+
+                <!-- Toggle -->
+                <!-- ✅ Back -->
+                <a href="@Url.Action("List","Doctor")"
+                   class="btn btn-secondary">
+                    Back to List
+                </a>
+
+                <!-- Book -->
+                @*<a href="@Url.Action("Book", "Appointment", new { doctorId = Model.DoctorId })"
+                   class="btn btn-primary">
+                    Book Appointment
+                </a>*@
+
+                <a href="@Url.Action("Edit","Doctor", new { id = Model.DoctorId })"
+                   class="btn btn-warning">
+                    Edit Doctor
+                </a>
+
+            </div>
+
+        </div>
     </div>
-
-    <hr />
-
-    <!-- ✅ Book Appointment -->
-    <a href="@Url.Action("Book", "Appointment", new { doctorId = Model.DoctorId })"
-       class="btn btn-primary">
-        Book Appointment
-    </a>
-
-    <!-- ✅ Back Button -->
-    @if (isAdmin)
-    {
-        <a href="@Url.Action("List", "Doctor")"
-           class="btn btn-secondary">
-            Back to Doctor List
-        </a>
-    }
 
 </div>
+``

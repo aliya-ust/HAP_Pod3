@@ -68,6 +68,15 @@ namespace HealthCareApi.Repositories.Implementations
                 PageNumber = pageNumber,
                 PageSize = pageSize
             };
+
+        }
+
+        public async Task<List<Doctor>> GetBySpecializationAsync(string specialization)
+        {
+            return await _context.Doctors
+                .Where(d => d.Specialisation == specialization && d.IsActive)
+                .OrderBy(d => d.FullName)
+                .ToListAsync();
         }
 
         public override async Task DeleteAsync(Doctor doctor)

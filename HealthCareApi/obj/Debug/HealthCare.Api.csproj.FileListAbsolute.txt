@@ -63,3 +63,17 @@ C:\Users\310466\Desktop\Learning\HealthCareApi\HealthCareApi\obj\Debug\HealthCar
 C:\Users\310466\Desktop\Learning\HealthCareApi\HealthCareApi\obj\Debug\HealthCa.7DA66EE0.Up2Date
 C:\Users\310466\Desktop\Learning\HealthCareApi\HealthCareApi\obj\Debug\HealthCareApi.dll
 C:\Users\310466\Desktop\Learning\HealthCareApi\HealthCareApi\obj\Debug\HealthCareApi.pdb
+C:\Users\310466\Desktop\Learning\HealthCareApi\HealthCareApi\bin\Newtonsoft.Json.Bson.dll
+C:\Users\310466\Desktop\Learning\HealthCareApi\HealthCareApi\bin\System.Buffers.dll
+C:\Users\310466\Desktop\Learning\HealthCareApi\HealthCareApi\bin\System.Memory.dll
+C:\Users\310466\Desktop\Learning\HealthCareApi\HealthCareApi\bin\System.Numerics.Vectors.dll
+C:\Users\310466\Desktop\Learning\HealthCareApi\HealthCareApi\bin\System.Threading.Tasks.Extensions.dll
+C:\Users\310466\Desktop\Learning\HealthCareApi\HealthCareApi\bin\System.Web.Cors.dll
+C:\Users\310466\Desktop\Learning\HealthCareApi\HealthCareApi\bin\System.Web.Http.Cors.dll
+C:\Users\310466\Desktop\Learning\HealthCareApi\HealthCareApi\bin\Newtonsoft.Json.Bson.pdb
+C:\Users\310466\Desktop\Learning\HealthCareApi\HealthCareApi\bin\Newtonsoft.Json.Bson.xml
+C:\Users\310466\Desktop\Learning\HealthCareApi\HealthCareApi\bin\System.Buffers.xml
+C:\Users\310466\Desktop\Learning\HealthCareApi\HealthCareApi\bin\System.Memory.xml
+C:\Users\310466\Desktop\Learning\HealthCareApi\HealthCareApi\bin\System.Numerics.Vectors.xml
+C:\Users\310466\Desktop\Learning\HealthCareApi\HealthCareApi\bin\System.Threading.Tasks.Extensions.xml
+C:\Users\310466\Desktop\Learning\HealthCareApi\HealthCareApi\bin\System.Web.Http.Cors.xml

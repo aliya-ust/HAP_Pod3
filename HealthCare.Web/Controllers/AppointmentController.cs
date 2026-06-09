@@ -1,7 +1,9 @@
-﻿using HealthCare.Shared.DTOs.Appointment;
-using HealthCare.Web.Services.Interfaces;
+﻿using HealthCare.Shared;
+using HealthCare.Shared.DTOs.Appointment;
 using HealthCare.Web.Services;
+using HealthCare.Web.Services.Interfaces;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 
@@ -18,10 +20,20 @@ namespace HealthCare.Web.Controllers
         }
 
         // ✅ LIST (Patient appointments)
-        public async Task<ActionResult> List(int patientId, string status, int pageNumber = 1)
+        public async Task<ActionResult> List(int? patientId, string status, int pageNumber = 1)
         {
+            if (!patientId.HasValue)
+            {
+                return View(new PagedResult<AppointmentDto>
+                {
+                    Items = new List<AppointmentDto>(),
+                    PageNumber = 1,
+                    PageSize = PageSize
+                });
+            }
+
             var result = await _service.GetPatientAppointmentsAsync(
-                patientId,
+                patientId.Value,
                 status,
                 pageNumber,
                 PageSize);
@@ -37,11 +49,10 @@ namespace HealthCare.Web.Controllers
 
         // ✅ BOOK (POST)
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<ActionResult> Book(AppointmentDto dto)
         {
             if (!ModelState.IsValid)
-                return View("Book", dto);
+                return View(dto);
 
             var result = await _service.BookAsync(dto);
 
@@ -52,24 +63,28 @@ namespace HealthCare.Web.Controllers
             }
 
             ModelState.AddModelError("", "Booking failed");
-            return View("Book", dto);
+            return View(dto);
         }
 
-        // ✅ CONFIRM
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Confirm(int id, int patientId)
         {
             await _service.ConfirmAsync(id);
+
+            TempData["Success"] = "Appointment confirmed successfully";
+
             return RedirectToAction("List", new { patientId });
         }
 
-        // ✅ CANCEL
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Cancel(int id, int patientId, string reason)
         {
             await _service.CancelAsync(id, reason);
+
+            TempData["Success"] = "Appointment cancelled successfully";
+
             return RedirectToAction("List", new { patientId });
         }
 
@@ -77,14 +92,16 @@ namespace HealthCare.Web.Controllers
         public async Task<ActionResult> Today(int doctorId)
         {
             var data = await _service.GetTodayAppointmentsAsync(doctorId);
-            return View("Today", data);
+            ViewBag.ActiveTab = "Today";
+            return View("DocList", data);
         }
 
         // ✅ DOCTOR WEEK
         public async Task<ActionResult> Week(int doctorId)
         {
             var data = await _service.GetWeeklyAppointmentsAsync(doctorId);
-            return View("Week", data);
+            ViewBag.ActiveTab = "Week";
+            return View("DocList", data);
         }
 
         // ✅ BY DATE
@@ -92,6 +109,15 @@ namespace HealthCare.Web.Controllers
         {
             var data = await _service.GetByDateAsync(date);
             return View("ByDate", data);
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> GetSlots(int doctorId, DateTime date)
+        {
+            var slots = await _service
+                .GetAvailableSlotsAsync(doctorId, date);
+
+            return Json(slots, JsonRequestBehavior.AllowGet);
         }
     }
 }

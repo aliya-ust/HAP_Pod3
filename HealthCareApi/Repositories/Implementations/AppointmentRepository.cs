@@ -22,6 +22,14 @@ public class AppointmentRepository : Repository<Appointment>, IAppointmentReposi
             s.TimeSlot == timeSlot);
     }
 
+    public async Task<List<string>> GetDoctorSlotsAsync(int doctorId)
+    {
+        return await _context.DoctorAvailableSlots
+            .Where(s => s.DoctorId == doctorId)
+            .Select(s => s.TimeSlot)
+            .ToListAsync();
+    }
+
     // Check if slot already booked
     public async Task<bool> IsSlotBookedAsync(int doctorId, DateTime date, string timeSlot)
     {
@@ -44,6 +52,9 @@ public class AppointmentRepository : Repository<Appointment>, IAppointmentReposi
 
         // ✅ Base Query
         IQueryable<Appointment> query = _context.Appointments
+               .Include(a => a.Patient)   
+            .Include(a => a.Doctor)
+
             .Where(a => a.PatientId == patientId);
 
         // ✅ Filter by Status
@@ -57,7 +68,7 @@ public class AppointmentRepository : Repository<Appointment>, IAppointmentReposi
 
         // ✅ Sorting (latest first)
         query = query
-            .OrderByDescending(a => a.ScheduledDate)
+            .OrderBy(a => a.ScheduledDate)
             .ThenByDescending(a => a.TimeSlot);
 
         // ✅ Pagination
@@ -106,6 +117,16 @@ public class AppointmentRepository : Repository<Appointment>, IAppointmentReposi
         return await _context.Appointments
             .Where(a => DbFunctions.TruncateTime(a.ScheduledDate) == date.Date)
             .OrderBy(a => a.TimeSlot)
+            .ToListAsync();
+    }
+
+    public async Task<List<string>> GetBookedSlotsAsync(int doctorId, DateTime date)
+    {
+        return await _context.Appointments
+            .Where(a => a.DoctorId == doctorId &&
+                        DbFunctions.TruncateTime(a.ScheduledDate) == date.Date &&
+                        a.Status != "Cancelled")
+            .Select(a => a.TimeSlot)
             .ToListAsync();
     }
 }

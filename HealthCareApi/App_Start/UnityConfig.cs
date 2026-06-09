@@ -40,11 +40,13 @@ namespace HealthCareApi
             container.RegisterType<IDoctorRepository, DoctorRepository>();
             container.RegisterType<IPatientRepository, PatientRepository>();
             container.RegisterType<IAppointmentRepository, AppointmentRepository>();
+            container.RegisterType<IHealthRecordRepository, HealthRecordRepository>();
 
             // Services
             container.RegisterType<IDoctorService, DoctorService>();
             container.RegisterType<IPatientService, PatientService>();
             container.RegisterType<IAppointmentService, AppointmentService>();
+            container.RegisterType<IHealthRecordService, HealthRecordService>();
 
             GlobalConfiguration.Configuration.DependencyResolver = new UnityDependencyResolver(container);
         }

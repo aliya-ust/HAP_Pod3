@@ -1,6 +1,9 @@
 ﻿using HealthCareApi.Helper;
+using HealthCareApi.Repositories.Implementations;
 using HealthCareApi.Repositories.Interfaces;
 using HealthCareApi.Services.Interfaces;
+using System;
+
 //using HealthCareApi.Models;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,6 +44,15 @@ namespace HealthCareApi.Services.Implementations
         {
             await _doctorRepository.AddAsync(doctor);
             return doctor;
+        }
+
+        public async Task<List<Doctor>> GetBySpecializationAsync(string specialization)
+        {
+            if (string.IsNullOrWhiteSpace(specialization))
+                throw new Exception("Specialization is required");
+
+            return await _doctorRepository
+                .GetBySpecializationAsync(specialization);
         }
 
         public async Task<Doctor> UpdateDoctorAsync(Doctor updatedDoctor)

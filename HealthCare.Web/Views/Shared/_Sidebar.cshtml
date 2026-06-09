@@ -1,13 +1,5 @@
 ﻿@{
-    var role = Convert.ToString(Session["Role"]);
-    role = "Admin";
-    var referenceId = Session["ReferenceId"] == null ? 0 : Convert.ToInt32(Session["ReferenceId"]);
-
-    var isAdmin = role == "Admin";
-    var isPatient = role == "Patient";
-    var isDoctor = role == "Doctor";
-
-    var userInitial = string.IsNullOrEmpty(role) ? "U" : role.Substring(0, 1);
+    var userInitial = "U";
 }
 
 <aside class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark shadow"
@@ -28,7 +20,7 @@
         </div>
     </a>
 
-    <!-- User Info -->
+    <!-- User Info (optional static) -->
     <div class="d-flex align-items-center gap-3 p-3 mb-4 rounded-4"
          style="background-color: rgba(255,255,255,0.08);">
 
@@ -37,10 +29,10 @@
             @userInitial
         </div>
 
-        <div class="overflow-hidden">
-            <div class="fw-semibold">@role</div>
-            <small class="text-white-50 d-block text-truncate" style="max-width: 170px;">
-                @Convert.ToString(Session["Email"])
+        <div>
+            <div class="fw-semibold">User</div>
+            <small class="text-white-50">
+                Welcome
             </small>
         </div>
     </div>
@@ -51,6 +43,8 @@
     </div>
 
     <ul class="nav nav-pills flex-column gap-2">
+
+        <!-- Home -->
         <li class="nav-item">
             <a href="@Url.Action("Index", "Home")"
                class="nav-link text-white sidebar-link">
@@ -59,59 +53,51 @@
             </a>
         </li>
 
-        @if (isAdmin || isPatient)
-        {
-            <li class="nav-item">
-                <a href="@Url.Action("Index", "Patient")"
-                   class="nav-link text-white sidebar-link">
-                    <span class="me-2">🧑‍⚕️</span>
-                    Patient Management
-                </a>
-            </li>
-        }
+        <!-- Patient List -->
+        <li class="nav-item">
+            <a href="@Url.Action("List", "Patient")"
+               class="nav-link text-white sidebar-link">
+                <span class="me-2">🧑‍⚕️</span>
+                Patient Management
+            </a>
+        </li>
 
-        @if (isAdmin || isDoctor)
-        {
-            <li class="nav-item">
-                <a href="@Url.Action("List", "Doctor")"
-                   class="nav-link text-white sidebar-link">
-                    <span class="me-2">👨‍⚕️</span>
-                    Doctor Management
-                </a>
-            </li>
-        }
+        <!-- Doctor List -->
+        <li class="nav-item">
+            <a href="@Url.Action("List", "Doctor")"
+               class="nav-link text-white sidebar-link">
+                <span class="me-2">👨‍⚕️</span>
+                Doctor Management
+            </a>
+        </li>
 
-        @if (isAdmin || isPatient || isDoctor)
-        {
-            <li class="nav-item">
-                <a href="@Url.Action("Book", "Appointment")"
-                   class="nav-link text-white sidebar-link">
-                    <span class="me-2">📅</span>
-                    Appointment Booking
-                </a>
-            </li>
-        }
+        <!-- Appointment Booking -->
+        <li class="nav-item">
+            <a href="@Url.Action("Book", "Appointment")"
+               class="nav-link text-white sidebar-link">
+                <span class="me-2">📅</span>
+                Appointment Booking
+            </a>
+        </li>
 
-        @if (isPatient || isDoctor)
-        {
-            <li class="nav-item">
-                <a href="@Url.Action("Index", "Appointment")"
-                   class="nav-link text-white sidebar-link">
-                    <span class="me-2">🗂️</span>
-                    Appointment Management
-                </a>
-            </li>
-        }
 
-        @if (isPatient)
-        {
-            <li class="nav-item">
-                <a href="@Url.Action("MyHistory", "HealthRecord")"
-                   class="nav-link text-white sidebar-link">
-                    <span class="me-2">📋</span>
-                    Patient Health History
-                </a>
-            </li>
-        }
+        <li class="nav-item">
+            <a href="@Url.Action("List", "Appointment")"
+               class="nav-link text-white sidebar-link">
+                <span class="me-2">🗂️</span>
+                Appointment Management
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a href="@Url.Action("List", "HealthRecord")"
+               class="nav-link text-white sidebar-link">
+                <span class="me-2">📋</span>
+                Health Record Management
+            </a>
+        </li>
+
     </ul>
+
 </aside>
+``

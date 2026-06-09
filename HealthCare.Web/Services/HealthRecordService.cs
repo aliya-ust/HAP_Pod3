@@ -2,6 +2,7 @@
 using HealthCare.Shared.DTOs.HealthRecord;
 using HealthCare.Web.Services.Interfaces;
 using Newtonsoft.Json;
+using System;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,7 +12,7 @@ namespace HealthCare.Web.Services
     public class HealthRecordService : IHealthRecordService
     {
         private static readonly HttpClient client = new HttpClient();
-        private readonly string baseUrl = "https://localhost:5001/api/healthrecords";
+        private readonly string baseUrl = "https://localhost:44373/api/healthrecords";
 
         // ✅ GET PAGINATED HISTORY
         public async Task<PagedResult<HealthRecordDto>> GetPatientHealthHistoryAsync(
@@ -32,10 +33,13 @@ namespace HealthCare.Web.Services
         }
 
         // ✅ CREATE RECORD
-        public async Task<bool> CreateAsync(HealthRecordDto dto)
+        public async Task<bool> CreateAsync(CreateHealthRecordDto dto)
         {
+            System.Diagnostics.Debug.WriteLine(dto.AppointmentId);
             var json = JsonConvert.SerializeObject(dto);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            System.Diagnostics.Debug.WriteLine(content);
 
             var response = await client.PostAsync(baseUrl, content);
 

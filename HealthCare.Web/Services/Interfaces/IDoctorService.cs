@@ -18,7 +18,8 @@ namespace HealthCare.Web.Services.Interfaces
                 int pageSize);
 
         Task<DoctorDto> GetByIdAsync(int id);
-        Task<bool> CreateAsync(DoctorDto dto);
+        Task<bool> CreateAsync(CreateDoctorDto dto);
+        Task<List<DoctorLookupDto>> GetDoctorsBySpecializationAsync(string specialization);
         Task<bool> UpdateAsync(DoctorDto dto);
         Task<bool> DeleteAsync(int id);
 

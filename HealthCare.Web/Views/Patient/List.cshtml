@@ -15,8 +15,8 @@
         <nav aria-label="breadcrumb" class="mb-2">
             <ol class="breadcrumb mb-1">
                 <li class="breadcrumb-item">
-                    @Url.Action("Index", "Patient")" class="text-decoration-none">
-                    Patient Management
+                    <a href="@Url.Action("List", "Patient")" class="text-decoration-none">
+                        Patient Management
                     </a>
                 </li>
                 <li class="breadcrumb-item active">
@@ -33,8 +33,9 @@
                 </p>
             </div>
 
-            ("Register", "Patient")" class="btn btn-primary rounded-3">
-            + Register Patient
+            <a href="@Url.Action("Register", "Patient")"
+               class="btn btn-primary rounded-3">
+                + Register Patient
             </a>
         </div>
 

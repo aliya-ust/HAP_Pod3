@@ -97,6 +97,25 @@ namespace HealthCareApi.Services.Implementations
             return await _appointmentRepository.GetAppointmentsByDateAsync(date);
         }
 
+        public async Task<List<string>> GetAvailableSlotsAsync(int doctorId, DateTime date)
+        {
+            // ✅ Step 1: Get working slots
+            var allSlots = await _appointmentRepository
+                .GetDoctorSlotsAsync(doctorId);
+
+            // ✅ Step 2: Get booked slots
+            var bookedSlots = await _appointmentRepository
+                .GetBookedSlotsAsync(doctorId, date);
+
+            // ✅ Step 3: Remove booked slots
+            var availableSlots = allSlots
+                .Except(bookedSlots)
+                .ToList();
+
+            return availableSlots;
+        }
+
+
         public async Task<Appointment> ConfirmAppointmentAsync(int appointmentId)
         {
             var appointment = await _appointmentRepository.GetByIdAsync(appointmentId);

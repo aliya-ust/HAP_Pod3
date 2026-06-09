@@ -49,7 +49,9 @@
     <Compile Include="DTOs\Appointment\UpdateAppointmentDto.cs" />
     <Compile Include="DTOs\Doctor\CreateDoctorDto.cs" />
     <Compile Include="DTOs\Doctor\DoctorDto.cs" />
+    <Compile Include="DTOs\Doctor\DoctorLookupDto.cs" />
     <Compile Include="DTOs\Doctor\UpdateDoctorDto.cs" />
+    <Compile Include="DTOs\HealthRecord\CreateHealthRecordDto.cs" />
     <Compile Include="DTOs\HealthRecord\HealthRecordDto.cs" />
     <Compile Include="DTOs\Patient\CreatePatientDto.cs" />
     <Compile Include="DTOs\Patient\PatientDto.cs" />

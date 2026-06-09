@@ -2,6 +2,7 @@
 using HealthCare.Shared.DTOs.Doctor;
 using HealthCare.Web.Services.Interfaces;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -44,7 +45,7 @@ namespace HealthCare.Web.Services
             return JsonConvert.DeserializeObject<DoctorDto>(json);
         }
 
-        public async Task<bool> CreateAsync(DoctorDto dto)
+        public async Task<bool> CreateAsync(CreateDoctorDto dto)
         {
             var json = JsonConvert.SerializeObject(dto);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
@@ -69,6 +70,18 @@ namespace HealthCare.Web.Services
             var response = await client.DeleteAsync($"{baseUrl}/{id}");
 
             return response.IsSuccessStatusCode;
+        }
+
+        // ✅ Get doctors by specialization
+        public async Task<List<DoctorLookupDto>> GetDoctorsBySpecializationAsync(string specialization)
+        {
+            var response = await client.GetAsync($"doctors/specialization/{specialization}");
+
+            if (!response.IsSuccessStatusCode)
+                return new List<DoctorLookupDto>();
+
+            var json = await response.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<List<DoctorLookupDto>>(json);
         }
     }
 }

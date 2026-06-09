@@ -15,5 +15,6 @@ namespace HealthCareApi.Repositories.Interfaces
             int pageNumber = 1,
             int pageSize = 10
         );
+        Task<List<Doctor>> GetBySpecializationAsync(string specialization);
     }
 }

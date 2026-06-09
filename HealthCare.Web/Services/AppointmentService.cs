@@ -13,7 +13,7 @@ namespace HealthCare.Web.Services
     public class AppointmentService : IAppointmentService
     {
         private static readonly HttpClient client = new HttpClient();
-        private readonly string baseUrl = "https://localhost:5001/api/appointments";
+        private readonly string baseUrl = "https://localhost:44373/api/appointments";
 
         // ✅ GET PATIENT APPOINTMENTS (PAGED)
         public async Task<PagedResult<AppointmentDto>> GetPatientAppointmentsAsync(
@@ -94,6 +94,19 @@ namespace HealthCare.Web.Services
 
             var res = await client.PutAsync($"{baseUrl}/{id}/cancel", content);
             return res.IsSuccessStatusCode;
+        }
+
+        // ✅ Get available slots
+        public async Task<List<string>> GetAvailableSlotsAsync(int doctorId, DateTime date)
+        {
+            var response = await client.GetAsync(
+                $"appointments/slots?doctorId={doctorId}&date={date:yyyy-MM-dd}");
+
+            if (!response.IsSuccessStatusCode)
+                return new List<string>();
+
+            var json = await response.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<List<string>>(json);
         }
     }
 }

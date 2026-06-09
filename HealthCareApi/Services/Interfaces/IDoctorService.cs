@@ -16,6 +16,7 @@ namespace HealthCareApi.Services.Interfaces
             int pageSize = 10);
 
         Task<Doctor> AddDoctorAsync(Doctor doctor);
+        Task<List<Doctor>> GetBySpecializationAsync(string specialization);
         Task<Doctor> UpdateDoctorAsync(Doctor updatedDoctor);
         Task<bool> DeleteDoctorAsync(int id);
     }

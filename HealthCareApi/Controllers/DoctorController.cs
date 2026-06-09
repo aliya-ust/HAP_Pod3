@@ -8,9 +8,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
+using System.Web.Http.Cors;
 
 namespace HealthCareApi.Controllers
 {
+    [EnableCors(origins: "*", headers: "*", methods: "*")]
     [RoutePrefix("api/doctors")]
     public class DoctorController : ApiController
     {
@@ -52,6 +54,29 @@ namespace HealthCareApi.Controllers
             });
         }
 
+        [HttpGet]
+        [Route("api/doctors/specialization/{specialization}")]
+        public async Task<IHttpActionResult> GetBySpecialization(string specialization)
+        {
+            try
+            {
+                var doctors = await _doctorService
+                    .GetBySpecializationAsync(specialization);
+
+                var result = doctors.Select(d => new
+                {
+                    d.DoctorId,
+                    d.FullName
+                });
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
 
 
         [HttpGet]
@@ -75,10 +100,10 @@ namespace HealthCareApi.Controllers
 
             var createdDoctor = await _doctorService.AddDoctorAsync(doctor);
 
-            var dto = _mapper.Map<DoctorDto>(createdDoctor);
+            var dto = _mapper.Map<CreateDoctorDto>(createdDoctor);
 
             // ✅ Correct REST response
-            return Created($"api/doctors/{dto.DoctorId}", dto);
+            return Created($"api/doctors/{doctor.DoctorId}", dto);
         }
 
         [HttpPut]

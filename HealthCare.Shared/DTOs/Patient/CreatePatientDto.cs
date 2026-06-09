@@ -7,8 +7,8 @@ namespace HealthCare.Shared.DTOs.Patient
     {
         public int? UserId { get; set; }
 
-        [Required]
-        [StringLength(100)]
+        [Required(ErrorMessage = "Full Name is required")]
+        [StringLength(100, ErrorMessage = "Full Name cannot exceed 100 characters")]
         public string FullName { get; set; }
 
         [Required]
@@ -19,7 +19,8 @@ namespace HealthCare.Shared.DTOs.Patient
         public string Gender { get; set; }
 
         [Required]
-        [StringLength(20)]
+        [StringLength(10, MinimumLength = 10, ErrorMessage = "Phone number must be 10 digits")]
+        [RegularExpression(@"^[0-9]+$", ErrorMessage = "Phone number must contain only digits")]
         public string PhoneNumber { get; set; }
 
         [Required]

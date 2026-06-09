@@ -18,6 +18,7 @@ namespace HealthCareApi.Services.Interfaces
         Task<IEnumerable<Appointment>> GetTodayAppointmentsAsync(int doctorId);
         Task<IEnumerable<Appointment>> GetWeeklyAppointmentsAsync(int doctorId);
         Task<IEnumerable<Appointment>> GetAppointmentsByDateAsync(DateTime date);
+        Task<List<string>> GetAvailableSlotsAsync(int doctorId, DateTime date);
         Task<Appointment> ConfirmAppointmentAsync(int appointmentId);
         Task<Appointment> CancelAppointmentAsync(int appointmentId, string reason);
     }
