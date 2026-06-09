@@ -1,0 +1,141 @@
+﻿@model HealthCare.Shared.PagedResult<HealthCare.Shared.DTOs.Patient.PatientDto>
+
+@{
+    ViewBag.Title = "Patient List";
+
+    int currentPage = Model.PageNumber;
+    int totalPages = Model.TotalPages;
+}
+
+<div class="container-fluid">
+
+    <!-- Header -->
+    <div class="mb-4">
+
+        <nav aria-label="breadcrumb" class="mb-2">
+            <ol class="breadcrumb mb-1">
+                <li class="breadcrumb-item">
+                    @Url.Action("Index", "Patient")" class="text-decoration-none">
+                    Patient Management
+                    </a>
+                </li>
+                <li class="breadcrumb-item active">
+                    Patient List
+                </li>
+            </ol>
+        </nav>
+
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h2 class="fw-bold mb-1">Patient List</h2>
+                <p class="text-muted mb-0">
+                    View registered patients and their insurance details.
+                </p>
+            </div>
+
+            ("Register", "Patient")" class="btn btn-primary rounded-3">
+            + Register Patient
+            </a>
+        </div>
+
+    </div>
+
+    <!-- Table -->
+    <div class="card border-0 shadow-sm rounded-4">
+        <div class="card-body p-0">
+
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="px-4 py-3">Patient Name</th>
+                            <th class="px-4 py-3">Email</th>
+                            <th class="px-4 py-3">Insurance Status</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @if (Model.Items != null && Model.Items.Any())
+                        {
+                            foreach (var patient in Model.Items)
+                            {
+                                <tr>
+                                    <td class="px-4 py-3">
+                                        <a href="@Url.Action("Profile", "Patient", new { id = patient.PatientId })"
+                                           class="fw-semibold text-decoration-none">
+                                            @patient.FullName
+                                        </a>
+                                    </td>
+
+                                    <td class="px-4 py-3 text-muted">
+                                        @patient.Email
+                                    </td>
+
+                                    <td class="px-4 py-3">
+                                        @if (!string.IsNullOrEmpty(patient.InsuranceId))
+                                        {
+                                            <span class="badge bg-success px-3 py-2">
+                                                Insured
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-danger px-3 py-2">
+                                                Not Insured
+                                            </span>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="3" class="text-center py-4 text-muted">
+                                    No patients found.
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ✅ ✅ REAL PAGINATION -->
+    <nav class="mt-4">
+        <ul class="pagination justify-content-center">
+
+            <!-- ✅ Previous -->
+            <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+                <a class="page-link"
+                   href="@Url.Action("List", "Patient", new { pageNumber = currentPage - 1 })">
+                    Previous
+                </a>
+            </li>
+
+            <!-- ✅ Page Numbers -->
+            @for (int i = 1; i <= totalPages; i++)
+            {
+                <li class="page-item @(i == currentPage ? "active" : "")">
+                    <a class="page-link"
+                       href="@Url.Action("List", "Patient", new { pageNumber = i })">
+                        @i
+                    </a>
+                </li>
+            }
+
+            <!-- ✅ Next -->
+            <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
+                <a class="page-link"
+                   href="@Url.Action("List", "Patient", new { pageNumber = currentPage + 1 })">
+                    Next
+                </a>
+            </li>
+
+        </ul>
+    </nav>
+
+
+</div>
