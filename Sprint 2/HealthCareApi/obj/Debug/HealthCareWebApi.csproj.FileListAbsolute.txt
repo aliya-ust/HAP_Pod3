@@ -1,0 +1,2 @@
+C:\Users\310508\source\repos\Sprint 2\HealthCareWebApi\obj\Debug\HealthCareWebApi.csproj.AssemblyReference.cache
+C:\Users\310508\source\repos\Sprint 2\HealthCareWebApi\obj\Debug\HealthCareWebApi.csproj.CoreCompileInputs.cache

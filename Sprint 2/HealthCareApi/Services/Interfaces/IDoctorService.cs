@@ -1,0 +1,25 @@
+﻿//using HealthCareApi.Models;
+using HealthCare.Shared;
+//using HealthCareApi.Helper;
+using HealthCareWebApi;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
+namespace HealthCareApi.Services.Interfaces
+{
+    public interface IDoctorService
+    {
+        Task<Doctor> GetDoctorByIdAsync(int id);
+        Task<PagedResult<Doctor>> GetFilteredDoctorsAsync(
+            string specialization = null,
+            string searchTerm = null,
+            bool orderByDescending = false,
+            int pageNumber = 1,
+            int pageSize = 10);
+
+        Task<Doctor> AddDoctorAsync(Doctor doctor);
+        Task<Doctor> UpdateDoctorAsync(Doctor updatedDoctor);
+        Task<List<Doctor>> GetBySpecializationAsync(string specialization);
+        Task<bool> DeleteDoctorAsync(int id);
+    }
+}
