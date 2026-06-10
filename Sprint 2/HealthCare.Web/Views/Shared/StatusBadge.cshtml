@@ -1,0 +1,15 @@
+﻿@helper RenderStatus(string status)
+{
+    var cls = "badge-status";
+    switch ((status ?? string.Empty).ToLower())
+    {
+        case "pending": cls = "badge-status badge-pending"; break;
+        case "confirmed": cls = "badge-status badge-confirmed"; break;
+        case "cancelled": cls = "badge-status badge-cancelled"; break;
+        case "completed": cls = "badge-status badge-completed"; break;
+    }
+
+    <span class="@cls">@status</span>
+}
+
+@RenderStatus(ViewBag.Status as string)

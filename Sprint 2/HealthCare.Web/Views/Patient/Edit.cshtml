@@ -1,0 +1,130 @@
+﻿@model HealthCare.Shared.DTOs.Patient.PatientDto
+
+@{
+    ViewBag.Title = "Edit Patient";
+}
+
+<div class="container-fluid">
+
+    <div class="mb-4">
+        <h2 class="fw-bold">Edit Patient</h2>
+        <p class="text-muted">
+            Update patient details.
+        </p>
+    </div>
+
+    <div class="card border-0 shadow-sm rounded-4">
+        <div class="card-body p-4">
+
+            @using (Html.BeginForm("Edit", "Patient", FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+                @Html.HiddenFor(m => m.PatientId)
+
+                <!-- Global Validation -->
+                @Html.ValidationSummary(true, "", new { @class = "alert alert-danger" })
+
+                <div class="row g-3">
+
+                    <!-- ✅ Full Name -->
+                    <div class="col-md-6">
+                        @Html.LabelFor(m => m.FullName, new { @class = "form-label" })
+
+                        @Html.TextBoxFor(m => m.FullName, new
+                        {
+                            @class = "form-control"
+                        })
+
+                        @Html.ValidationMessageFor(m => m.FullName, "", new { @class = "text-danger" })
+                    </div>
+
+                    <!-- ✅ Email -->
+                    <div class="col-md-6">
+                        @Html.LabelFor(m => m.Email, new { @class = "form-label" })
+
+                        @Html.TextBoxFor(m => m.Email, new
+                        {
+                            @class = "form-control",
+                            type = "email"
+                        })
+
+                        @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+                    </div>
+
+                    <!-- ✅ Phone -->
+                    <div class="col-md-6">
+                        @Html.LabelFor(m => m.PhoneNumber, new { @class = "form-label" })
+
+                        @Html.TextBoxFor(m => m.PhoneNumber, new
+                        {
+                            @class = "form-control"
+                        })
+
+                        @Html.ValidationMessageFor(m => m.PhoneNumber, "", new { @class = "text-danger" })
+                    </div>
+
+                    <!-- ✅ Gender -->
+                    <div class="col-md-6">
+                        @Html.LabelFor(m => m.Gender, new { @class = "form-label" })
+
+                        @Html.DropDownListFor(m => m.Gender,
+                            new List<SelectListItem>
+                            {
+                                new SelectListItem { Text = "Male", Value = "Male" },
+                                new SelectListItem { Text = "Female", Value = "Female" },
+                                new SelectListItem { Text = "Other", Value = "Other" }
+                            },
+                            "Select Gender",
+                            new { @class = "form-select" })
+
+                        @Html.ValidationMessageFor(m => m.Gender, "", new { @class = "text-danger" })
+                    </div>
+
+                    <!-- ✅ Date of Birth -->
+                    <div class="col-md-6">
+                        @Html.LabelFor(m => m.DateOfBirth, new { @class = "form-label" })
+
+                        @Html.TextBoxFor(m => m.DateOfBirth, "{0:yyyy-MM-dd}", new
+                        {
+                            @class = "form-control",
+                            type = "date"
+                        })
+
+                        @Html.ValidationMessageFor(m => m.DateOfBirth, "", new { @class = "text-danger" })
+                    </div>
+
+                    <!-- ✅ Insurance -->
+                    <div class="col-md-6">
+                        @Html.LabelFor(m => m.InsuranceId, new { @class = "form-label" })
+
+                        @Html.TextBoxFor(m => m.InsuranceId, new
+                        {
+                            @class = "form-control"
+                        })
+
+                        @Html.ValidationMessageFor(m => m.InsuranceId, "", new { @class = "text-danger" })
+                    </div>
+
+                </div>
+
+                <!-- Actions -->
+                <div class="mt-4 text-end">
+
+                    <a href="@Url.Action("List", "Patient")"
+                       class="btn btn-secondary">
+                        Cancel
+                    </a>
+
+                    <button type="submit"
+                            class="btn btn-primary">
+                        Update Patient
+                    </button>
+
+                </div>
+            }
+
+        </div>
+    </div>
+
+</div>
+``

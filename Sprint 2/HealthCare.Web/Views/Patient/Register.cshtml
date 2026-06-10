@@ -1,0 +1,170 @@
+﻿@model HealthCare.Shared.DTOs.Patient.PatientDto
+
+@{
+    ViewBag.Title = "Register Patient";
+    var maxDateOfBirth = DateTime.Today.AddDays(-1).ToString("yyyy-MM-dd");
+}
+
+<div class="container-fluid">
+
+    <!-- Header -->
+    <div class="mb-4">
+        <nav aria-label="breadcrumb" class="mb-2">
+            <ol class="breadcrumb mb-1">
+                <li class="breadcrumb-item">
+                    <a href="@Url.Action("List", "Patient")" class="text-decoration-none">
+                        Patient Management
+                    </a>
+                </li>
+                <li class="breadcrumb-item active">Register Patient</li>
+            </ol>
+        </nav>
+
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h2 class="fw-bold mb-1">Register Patient</h2>
+                <p class="text-muted mb-0">
+                    Add a new patient record to the healthcare system.
+                </p>
+            </div>
+
+            <a href="@Url.Action("List", "Patient")"
+               class="btn btn-outline-secondary rounded-3">
+                Back to Patient List
+            </a>
+        </div>
+    </div>
+
+    <!-- Form -->
+    <div class="card border-0 shadow-sm rounded-4">
+        <div class="card-body p-4 p-md-5">
+
+            @using (Html.BeginForm("Register", "Patient", FormMethod.Post, new { novalidate = "novalidate" }))
+            {
+                @Html.AntiForgeryToken()
+
+                <div class="row g-4">
+
+                    <!-- Full Name -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">
+                            Full Name <span class="text-danger">*</span>
+                        </label>
+
+                        @Html.TextBoxFor(m => m.FullName, new
+                        {
+                            @class = "form-control rounded-3 " +
+                                (ViewData.ModelState["FullName"]?.Errors.Count > 0 ? "is-invalid" : "")
+                        })
+
+                        @Html.ValidationMessageFor(m => m.FullName, "",
+                            new { @class = "invalid-feedback d-block" })
+                    </div>
+
+                    <!-- DOB -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">
+                            Date of Birth <span class="text-danger">*</span>
+                        </label>
+
+                        @Html.TextBoxFor(m => m.DateOfBirth, "{0:yyyy-MM-dd}", new
+                        {
+                            @class = "form-control rounded-3 " +
+                                (ViewData.ModelState["DateOfBirth"]?.Errors.Count > 0 ? "is-invalid" : ""),
+                            type = "date",
+                            max = maxDateOfBirth
+                        })
+
+                        @Html.ValidationMessageFor(m => m.DateOfBirth, "",
+                            new { @class = "invalid-feedback d-block" })
+                    </div>
+
+                    <!-- Gender -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold d-block">
+                            Gender <span class="text-danger">*</span>
+                        </label>
+
+                        <div class="d-flex gap-4 flex-wrap">
+                            @foreach (var g in new[] { "Male", "Female", "Other" })
+                            {
+                                <div class="form-check">
+                                    @Html.RadioButtonFor(m => m.Gender, g, new { @class = "form-check-input" })
+                                    <label class="form-check-label">@g</label>
+                                </div>
+                            }
+                        </div>
+
+                        @Html.ValidationMessageFor(m => m.Gender, "",
+                            new { @class = "text-danger d-block" })
+                    </div>
+
+                    <!-- Phone -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">
+                            Phone Number <span class="text-danger">*</span>
+                        </label>
+
+                        @Html.TextBoxFor(m => m.PhoneNumber, new
+                        {
+                            @class = "form-control rounded-3 " +
+                                (ViewData.ModelState["PhoneNumber"]?.Errors.Count > 0 ? "is-invalid" : "")
+                        })
+
+                        @Html.ValidationMessageFor(m => m.PhoneNumber, "",
+                            new { @class = "invalid-feedback d-block" })
+                    </div>
+
+                    <!-- Email -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">
+                            Email <span class="text-danger">*</span>
+                        </label>
+
+                        @Html.TextBoxFor(m => m.Email, new
+                        {
+                            @class = "form-control rounded-3 " +
+                                (ViewData.ModelState["Email"]?.Errors.Count > 0 ? "is-invalid" : "")
+                        })
+
+                        @Html.ValidationMessageFor(m => m.Email, "",
+                            new { @class = "invalid-feedback d-block" })
+                    </div>
+
+                    <!-- Insurance -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">
+                            Insurance ID
+                        </label>
+
+                        @Html.TextBoxFor(m => m.InsuranceId, new
+                        {
+                            @class = "form-control rounded-3"
+                        })
+                    </div>
+
+                </div>
+
+                <!-- Actions -->
+                <div class="d-flex justify-content-end gap-2 mt-5">
+                    <a href="@Url.Action("List", "Patient")"
+                       class="btn btn-outline-secondary rounded-3 px-4">
+                        Cancel
+                    </a>
+
+                    <button type="reset"
+                            class="btn btn-outline-danger rounded-3 px-4">
+                        Clear
+                    </button>
+
+                    <button type="submit"
+                            class="btn btn-primary rounded-3 px-4">
+                        Register Patient
+                    </button>
+                </div>
+            }
+
+        </div>
+    </div>
+
+</div>
