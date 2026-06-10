@@ -9,14 +9,6 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
 
-            <!-- Body -->
-            <div class="modal-body">
-                <label class="form-label">Cancellation Reason</label>
-                <textarea name="reason"
-                          class="form-control"
-                          placeholder="Enter reason..."
-                          rows="3"></textarea>
-            </div>
 
             <!-- Footer -->
             <div class="modal-footer">
@@ -27,12 +19,20 @@
                     Close
                 </button>
 
+                <!-- ✅ FORM -->
                 @using (Html.BeginForm("Cancel", "Appointment", FormMethod.Post))
                 {
                     @Html.AntiForgeryToken()
 
-                    <!-- ✅ Correct hidden ID -->
+                    <!-- ✅ CORRECT hidden ID -->
                     <input type="hidden" name="id" id="cancelId" />
+                    <input type="hidden" name="patientId" value="@Request["patientId"]" />
+
+                    <!-- ✅ textarea sends reason directly -->
+                    <textarea name="reason"
+                              class="form-control"
+                              placeholder="Enter reason..."
+                              rows="3"></textarea>
 
                     <button type="submit" class="btn btn-danger">
                         Confirm Cancel

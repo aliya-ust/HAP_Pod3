@@ -1,13 +1,16 @@
-﻿<!DOCTYPE html>
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Error</title>
-</head>
-<body>
-    <hgroup>
-        <h1>Error.</h1>
-        <h2>An error occurred while processing your request.</h2>
-    </hgroup>
-</body>
-</html>
+﻿@{
+    ViewBag.Title = "Error";
+}
+
+<div class="text-center mt-5">
+    <h1 class="text-danger">Oops! Something went wrong </h1>
+
+    <p class="lead mt-3">
+        An unexpected error occurred. Please try again later.
+    </p>
+
+    <a href="@Url.Action("Index", "Home")"
+       class="btn btn-primary mt-3">
+        Go Home
+    </a>
+</div>

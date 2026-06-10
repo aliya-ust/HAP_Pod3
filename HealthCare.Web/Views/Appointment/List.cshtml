@@ -154,28 +154,4 @@
 
 </div>
 
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-
-        window.openCancelModal = function (id) {
-            document.getElementById("cancelId").value = id;
-            document.getElementById("cancelReason").value = "";
-
-            var modal = new bootstrap.Modal(document.getElementById('cancelModal'));
-            modal.show();
-        };
-
-        document.getElementById("cancelForm")?.addEventListener("submit", function (e) {
-
-            var reason = document.getElementById("cancelReason").value;
-
-            if (!reason || reason.trim() === "") {
-                alert("Please enter a cancellation reason.");
-                e.preventDefault();
-            }
-        });
-
-    });
-</script>
-
 @Html.Partial("_CancelModal")

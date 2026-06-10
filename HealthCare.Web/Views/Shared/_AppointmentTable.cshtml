@@ -87,10 +87,10 @@
                                     else if (appt.Status == "Completed")
                                     {
                                         <!-- ✅ ADD HEALTH RECORD -->
-                                <a href="@Url.Action("Single", "HealthRecord", new { id = appt.AppointmentId })"
-                                   class="btn btn-primary btn-sm">
-                                    View Health Record
-                                </a>
+                                        <a href="@Url.Action("Single", "HealthRecord", new { id = appt.AppointmentId })"
+                                           class="btn btn-primary btn-sm">
+                                            View Health Record
+                                        </a>
                                     }
 
                                 </td>
@@ -114,13 +114,18 @@
 </div>
 
 <script>
-    function openCancelModal(appointmentId, patientId) {
+    function openCancelModal(appointmentId) {
 
-        // ✅ Set appointment ID to hidden input
+        console.log("Opening modal for:", appointmentId);
+
+        // ✅ Set correct hidden input
         document.getElementById("cancelId").value = appointmentId;
 
         // ✅ Show modal
-        var modal = new bootstrap.Modal(document.getElementById('cancelModal'));
+        var modal = new bootstrap.Modal(
+            document.getElementById('cancelModal')
+        );
+
         modal.show();
     }
 </script>
