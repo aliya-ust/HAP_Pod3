@@ -1,0 +1,86 @@
+﻿@model HealthCare.Shared.DTOs.Doctor.DoctorDto
+
+@using (Html.BeginForm("Edit", "Doctor", FormMethod.Post, new { id = "editDoctorForm" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.DoctorId)
+
+    <!-- ✅ Validation -->
+    @Html.ValidationSummary(true, "", new { @class = "alert alert-danger" })
+
+    <div class="row g-3">
+
+        <!-- ✅ Full Name -->
+        <div class="col-md-6">
+            @Html.LabelFor(m => m.FullName, new { @class = "form-label" })
+
+            @Html.TextBoxFor(m => m.FullName, new
+            {
+                @class = "form-control"
+            })
+
+            @Html.ValidationMessageFor(m => m.FullName, "", new { @class = "text-danger" })
+        </div>
+
+        <!-- ✅ Specialisation -->
+        <div class="col-md-6">
+            @Html.LabelFor(m => m.Specialisation, new { @class = "form-label" })
+
+            @Html.TextBoxFor(m => m.Specialisation, new
+            {
+                @class = "form-control"
+            })
+
+            @Html.ValidationMessageFor(m => m.Specialisation, "", new { @class = "text-danger" })
+        </div>
+
+        <!-- ✅ Experience -->
+        <div class="col-md-6">
+            @Html.LabelFor(m => m.YearsOfExperience, new { @class = "form-label" })
+
+            @Html.TextBoxFor(m => m.YearsOfExperience, new
+            {
+                @class = "form-control",
+                type = "number"
+            })
+
+            @Html.ValidationMessageFor(m => m.YearsOfExperience, "", new { @class = "text-danger" })
+        </div>
+
+        <!-- ✅ Fee -->
+        <div class="col-md-6">
+            @Html.LabelFor(m => m.ConsultationFee, new { @class = "form-label" })
+
+            @Html.TextBoxFor(m => m.ConsultationFee, new
+            {
+                @class = "form-control",
+                type = "number"
+            })
+
+            @Html.ValidationMessageFor(m => m.ConsultationFee, "", new { @class = "text-danger" })
+        </div>
+
+        <!-- ✅ Status -->
+        <div class="col-md-6">
+            @Html.LabelFor(m => m.IsActive, new { @class = "form-label" })
+
+            @Html.DropDownListFor(m => m.IsActive,
+                new List<SelectListItem>
+                {
+                    new SelectListItem { Text = "Active", Value = "true" },
+                    new SelectListItem { Text = "Inactive", Value = "false" }
+                },
+                new { @class = "form-select" })
+
+            @Html.ValidationMessageFor(m => m.IsActive, "", new { @class = "text-danger" })
+        </div>
+
+    </div>
+
+    <!-- ✅ Actions -->
+    <div class="mt-4 text-end">
+        <button type="submit" class="btn btn-primary">
+            Update Doctor
+        </button>
+    </div>
+}

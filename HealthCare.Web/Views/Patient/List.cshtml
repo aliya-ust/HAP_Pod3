@@ -33,52 +33,54 @@
                 </p>
             </div>
 
-            <a href="@Url.Action("Register", "Patient")"
-               class="btn btn-primary rounded-3">
+            <button class="btn btn-primary"
+                    onclick="openModal('@Url.Action("RegisterPartial", "Patient")')">
                 + Register Patient
-            </a>
+            </button>
         </div>
 
     </div>
 
-    <div class="mb-4">
+    <div class="d-flex gap-3 flex-wrap align-items-end mb-4">
+
+        <!-- Search by Name -->
         @using (Html.BeginForm("List", "Patient", FormMethod.Get))
         {
             <div class="d-flex gap-2">
-
                 <input type="text"
                        name="searchTerm"
                        value="@Request["searchTerm"]"
                        class="form-control"
                        placeholder="Search patient name"
-                       style="width:250px;" />
+                       style="width:220px;" />
 
                 <button type="submit" class="btn btn-primary">
                     Search
                 </button>
-
             </div>
         }
-    <div class="mb-4 mt-2">
 
+        <!-- Search by ID -->
         @using (Html.BeginForm("Profile", "Patient", FormMethod.Get))
         {
             <div class="d-flex gap-2">
-
                 <input type="number"
                        name="id"
                        class="form-control"
-                       placeholder="Enter Patient ID"
-                       style="width:200px;" required />
+                       placeholder="Patient ID"
+                       style="width:160px;"
+                       required />
 
                 <button type="submit" class="btn btn-success">
-                    Search by ID
+                    Find
                 </button>
-
             </div>
         }
 
     </div>
+
+
+</div>
     </div>
 
 
@@ -128,30 +130,34 @@
                                         }
                                     </td>
 
-                                    <!-- ✅ ACTIONS -->
+                                    <!-- ACTIONS -->
                                     <td class="px-4 py-3 text-center">
                                         <div class="d-flex justify-content-center gap-2">
 
                                             <!-- View -->
-                                            <a href="@Url.Action("Profile", "Patient", new { id = patient.PatientId })"
-                                               class="btn btn-sm btn-outline-primary">
-                                                View
-                                            </a>
+                                            <button class="btn btn-sm btn-outline-primary"
+                                                    onclick="openModal('@Url.Action("ViewPartial", "Patient", new { id = patient.PatientId })')"
+                                                    title="View">
+                                                <i class="bi bi-eye"></i>
+                                            </button>
 
                                             <!-- Edit -->
-                                            <a href="@Url.Action("Edit", "Patient", new { id = patient.PatientId })"
-                                               class="btn btn-sm btn-outline-warning">
-                                                Edit
-                                            </a>
+                                            <button class="btn btn-sm btn-outline-warning"
+                                                    onclick="openModal('@Url.Action("EditPartial", "Patient", new { id = patient.PatientId })')"
+                                                    title="Edit">
+                                                <i class="bi bi-pencil-square"></i>
+                                            </button>
 
                                             <!-- Delete -->
                                             <button type="button"
                                                     class="btn btn-sm btn-outline-danger"
-                                                    onclick="openDeleteModal(@patient.PatientId, '@patient.FullName')">
-                                                Delete
+                                                    onclick="openDeleteModal(@patient.PatientId, '@patient.FullName')"
+                                                    title="Delete">
+                                                <i class="bi bi-trash"></i>
                                             </button>
 
                                         </div>
+
                                     </td>
 
                                 </tr>
@@ -172,11 +178,11 @@
         </div>
     </div>
 
-    <!-- ✅ ✅ REAL PAGINATION -->
+    <!-- PAGINATION -->
     <nav class="mt-4">
         <ul class="pagination justify-content-center">
 
-            <!-- ✅ Previous -->
+            <!-- Previous -->
             <li class="page-item @(currentPage == 1 ? "disabled" : "")">
                 <a class="page-link"
                    href="@Url.Action("List", "Patient", new {
@@ -187,7 +193,7 @@
                 </a>
             </li>
 
-            <!-- ✅ Page Numbers -->
+            <!-- Page Numbers -->
             @for (int i = 1; i <= totalPages; i++)
             {
                 <li class="page-item @(i == currentPage ? "active" : "")">
@@ -201,7 +207,7 @@
                 </li>
             }
 
-            <!-- ✅ Next -->
+            <!-- Next -->
             <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
                 <a class="page-link"
                    href="@Url.Action("List", "Patient", new {
@@ -221,13 +227,13 @@
 <script>
     function openDeleteModal(id, name) {
 
-        // ✅ Set hidden ID
+        // Set hidden ID
         document.getElementById("deleteId").value = id;
 
-        // ✅ Set patient name in modal
+        // Set patient name in modal
         document.getElementById("patientName").innerText = name;
 
-        // ✅ Show modal
+        // Show modal
         var modal = new bootstrap.Modal(document.getElementById('deleteModal'));
         modal.show();
     }
@@ -270,3 +276,29 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="mainModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content p-4">
+
+            <div id="modalContent">
+                <!-- dynamic content loads here -->
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    function openModal(url) {
+
+        fetch(url)
+            .then(response => response.text())
+            .then(html => {
+
+                document.getElementById("modalContent").innerHTML = html;
+
+                new bootstrap.Modal(document.getElementById('mainModal')).show();
+            });
+    }
+</script>

@@ -51,8 +51,8 @@ namespace HealthCareApi.Repositories.Implementations
 
             // ✅ Sorting
             query = orderByDescending
-                ? query.OrderByDescending(d => d.FullName)
-                : query.OrderBy(d => d.FullName);
+                ? query.OrderByDescending(d => d.YearsOfExperience)
+                : query.OrderBy(d => d.YearsOfExperience);
 
             // ✅ Pagination
             var items = await query

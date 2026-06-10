@@ -36,7 +36,7 @@ namespace HealthCareApi.Repositories.Implementations
             int totalCount = await query.CountAsync();
 
             // Sorting
-            query = query.OrderBy(p => p.FullName);
+            query = query.OrderBy(p => p.PatientId);
 
             // Pagination
             var items = await query

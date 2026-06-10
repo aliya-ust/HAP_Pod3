@@ -202,11 +202,7 @@
     <Content Include="Views\HealthRecord\Create.cshtml" />
     <Content Include="Views\HealthRecord\List.cshtml" />
     <Content Include="Views\HealthRecord\PatientHistory.cshtml" />
-    <Content Include="Views\Patient\Edit.cshtml" />
-    <Content Include="Views\Patient\Index.cshtml" />
     <Content Include="Views\Patient\List.cshtml" />
-    <Content Include="Views\Patient\Profile.cshtml" />
-    <Content Include="Views\Patient\Register.cshtml" />
     <Content Include="Views\Doctor\List.cshtml" />
     <Content Include="Views\Shared\_Sidebar.cshtml" />
     <Content Include="Views\Appointment\List.cshtml" />
@@ -214,6 +210,11 @@
     <Content Include="Views\Shared\_AppointmentTable.cshtml" />
     <Content Include="Views\Shared\_CancelModal.cshtml" />
     <Content Include="Views\HealthRecord\Single.cshtml" />
+    <Content Include="Views\Patient\_RegisterPartial.cshtml" />
+    <Content Include="Views\Patient\_EditPartial.cshtml" />
+    <Content Include="Views\Patient\_ViewPartial.cshtml" />
+    <Content Include="Views\Doctor\_AddPartial.cshtml" />
+    <Content Include="Views\Doctor\_EditPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -124,5 +124,22 @@ namespace HealthCare.Web.Controllers
 
             return Json(doctors, JsonRequestBehavior.AllowGet);
         }
+
+        public ActionResult AddPartial()
+        {
+            return PartialView("_AddDoctorPartial");
+        }
+
+        public async Task<ActionResult> EditPartial(int id)
+        {
+            var doctor = await _service.GetByIdAsync(id);
+            return PartialView("_EditDoctorPartial", doctor);
+        }
+
+        public async Task<ActionResult> ViewPartial(int id)
+        {
+            var doctor = await _service.GetByIdAsync(id);
+            return PartialView("_ViewDoctorPartial", doctor);
+        }
     }
 }

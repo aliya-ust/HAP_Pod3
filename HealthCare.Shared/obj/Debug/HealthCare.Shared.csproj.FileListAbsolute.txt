@@ -1,6 +1,0 @@
-C:\Users\310466\Desktop\Learning\HealthCareApi\HealthCare.Shared\bin\Debug\HealthCare.Shared.dll
-C:\Users\310466\Desktop\Learning\HealthCareApi\HealthCare.Shared\bin\Debug\HealthCare.Shared.pdb
-C:\Users\310466\Desktop\Learning\HealthCareApi\HealthCare.Shared\obj\Debug\HealthCare.Shared.csproj.AssemblyReference.cache
-C:\Users\310466\Desktop\Learning\HealthCareApi\HealthCare.Shared\obj\Debug\HealthCare.Shared.csproj.CoreCompileInputs.cache
-C:\Users\310466\Desktop\Learning\HealthCareApi\HealthCare.Shared\obj\Debug\HealthCare.Shared.dll
-C:\Users\310466\Desktop\Learning\HealthCareApi\HealthCare.Shared\obj\Debug\HealthCare.Shared.pdb

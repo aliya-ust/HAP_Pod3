@@ -90,7 +90,7 @@ namespace HealthCare.Web.Controllers
             if (result)
             {
                 TempData["Success"] = "Patient updated successfully.";
-                return RedirectToAction("Profile", new { id = dto.PatientId });
+                return RedirectToAction("List", new { id = dto.PatientId });
             }
 
             ModelState.AddModelError("", "Error updating patient");
@@ -110,6 +110,23 @@ namespace HealthCare.Web.Controllers
                 TempData["Error"] = "Delete failed.";
 
             return RedirectToAction("List");
+        }
+
+        public ActionResult RegisterPartial()
+        {
+            return PartialView("_RegisterPartial");
+        }
+
+        public async Task<ActionResult> EditPartial(int id)
+        {
+            var patient = await _service.GetByIdAsync(id);
+            return PartialView("_EditPartial", patient);
+        }
+
+        public async Task<ActionResult> ViewPartial(int id)
+        {
+            var patient = await _service.GetByIdAsync(id);
+            return PartialView("_ViewPartial", patient);
         }
     }
 }
