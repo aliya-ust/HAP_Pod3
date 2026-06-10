@@ -17,6 +17,11 @@ namespace HealthCare.Web.Controllers
             _service = new AppointmentService();
         }
 
+        public ActionResult Index()
+        {
+            return View();
+        }
+
         //  LIST (Patient appointments)
         public async Task<ActionResult> List(int patientId, string status, int pageNumber = 1)
         {
@@ -26,7 +31,7 @@ namespace HealthCare.Web.Controllers
                 pageNumber,
                 PageSize);
 
-            return View("List", result);
+            return View("Index", result);
         }
 
         //  BOOK (GET)
@@ -61,7 +66,7 @@ namespace HealthCare.Web.Controllers
         public async Task<ActionResult> Confirm(int id, int patientId)
         {
             await _service.ConfirmAsync(id);
-            return RedirectToAction("List", new { patientId });
+            return RedirectToAction("Index", new { patientId });
         }
 
         //  CANCEL
@@ -70,7 +75,7 @@ namespace HealthCare.Web.Controllers
         public async Task<ActionResult> Cancel(int id, int patientId, string reason)
         {
             await _service.CancelAsync(id, reason);
-            return RedirectToAction("List", new { patientId });
+            return RedirectToAction("Index", new { patientId });
         }
 
         //  DOCTOR TODAY

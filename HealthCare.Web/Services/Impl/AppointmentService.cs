@@ -13,7 +13,7 @@ namespace HealthCare.Web.Services
     public class AppointmentService : IAppointmentService
     {
         private static readonly HttpClient client = new HttpClient();
-        private readonly string baseUrl = "https://localhost:5001/api/appointments";
+        private readonly string baseUrl = "https://localhost:44326/api/appointments";
 
         //  GET PATIENT APPOINTMENTS (PAGED)
         public async Task<PagedResult<AppointmentDto>> GetPatientAppointmentsAsync(

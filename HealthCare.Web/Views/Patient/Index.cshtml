@@ -1,44 +1,119 @@
-﻿@{
-    ViewBag.Title = "Patient Management";
+﻿@model HealthCare.Shared.PagedResult<HealthCare.Shared.DTOs.Patient.PatientDto>
+
+@{
+    ViewBag.Title = "Patients";
 }
 
-<div class="container-fluid">
+<div class="container py-4">
 
-    <div class="mb-4">
+    <!-- HEADER -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
         <h2 class="fw-bold">Patient Management</h2>
-        <p class="text-muted">View and manage all patients.</p>
+
+        <a href="@Url.Action("Register", "Patient")" class="btn btn-primary">
+            ➕ Register Patient
+        </a>
     </div>
 
-    <div class="row g-4">
+    <!-- SEARCH -->
+    <form method="get" action="@Url.Action("List", "Patient")" class="mb-3">
+        <div class="input-group">
+            <input type="text"
+                   name="searchTerm"
+                   value="@Request["searchTerm"]"
+                   class="form-control"
+                   placeholder="Search by ID or Name"
+                   onfocus="showHint()" />
 
-        <div class="col-md-6 col-lg-4">
-            <a href="@Url.Action("List", "Patient")" class="text-decoration-none">
+            <button class="btn btn-outline-primary">Search</button>
+        </div>
 
-                <div class="card border-0 shadow-sm h-100 module-card">
-                    <div class="card-body p-4">
+        <small id="hint" class="text-muted d-none">
+            🔎 You can search using Patient ID or Patient Name
+        </small>
+    </form>
 
-                        <div class="module-icon bg-primary text-white mb-3">
-                            👤
-                        </div>
+    <!-- TABLE -->
+    <div class="card shadow-sm">
+        <div class="card-body p-0">
 
-                        <h5 class="card-title fw-bold text-dark">
-                            Patients List
-                        </h5>
+            <table class="table table-hover mb-0">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th width="200">Actions</th>
+                    </tr>
+                </thead>
 
-                        <p class="card-text text-muted">
-                            View, add, edit and manage patients.
-                        </p>
+                <tbody>
+                    @if (Model?.Items != null && Model.Items.Any())
+                    {
+                        foreach (var p in Model.Items)
+                        {
+                            <tr>
+                                <td>@p.PatientId</td>
+                                <td>@p.FullName</td>
+                                <td>@p.Email</td>
+                                <td>
+                                    <a class="btn btn-sm btn-info"
+                                       href="@Url.Action("Profile", "Patient", new { id = p.PatientId })">
+                                        View
+                                    </a>
 
-                        <span class="btn btn-outline-primary mt-2">
-                            Open Patients List
-                        </span>
+                                    <a class="btn btn-sm btn-warning"
+                                       href="@Url.Action("Edit", "Patient", new { id = p.PatientId })">
+                                        Edit
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="4" class="text-center text-muted p-3">
+                                No patients found
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
 
-                    </div>
-                </div>
+        </div>
+    </div>
 
-            </a>
+    <!-- PAGINATION -->
+    <div class="d-flex justify-content-between mt-3">
+
+        <div>
+            Page @Model.PageNumber of @Model.TotalPages
+        </div>
+
+        <div>
+            @if (Model.HasPreviouPage)
+            {
+                <a class="btn btn-outline-secondary"
+                   href="@Url.Action("List", new { pageNumber = Model.PageNumber - 1, searchTerm = Request["searchTerm"] })">
+                    ⬅ Prev
+                </a>
+            }
+
+            @if (Model.HasNextPage)
+            {
+                <a class="btn btn-outline-secondary"
+                   href="@Url.Action("List", new { pageNumber = Model.PageNumber + 1, searchTerm = Request["searchTerm"] })">
+                    Next ➡
+                </a>
+            }
         </div>
 
     </div>
-
 </div>
+
+<script>
+    function showHint() {
+        document.getElementById("hint").classList.remove("d-none");
+    }
+</script>

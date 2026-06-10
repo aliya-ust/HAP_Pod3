@@ -1,6 +1,6 @@
 ﻿using HealthCare.Shared;
 using HealthCare.Shared.DTOs.Doctor;
-using HealthCareApi.DTOs.Doctor;
+//using HealthCareApi.DTOs.Doctor;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,8 +19,8 @@ namespace HealthCare.Web.Services.Interfaces
                 int pageSize);
 
         Task<DoctorDto> GetByIdAsync(int id);
-        Task<bool> CreateAsync(DoctorDto dto);
-        Task<bool> UpdateAsync(DoctorDto dto);
+        Task<bool> CreateAsync(CreateDoctorDto dto);
+        Task<bool> UpdateAsync(UpdateDoctorDto dto);
         Task<bool> DeleteAsync(int id);
 
     }

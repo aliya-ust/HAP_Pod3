@@ -35,16 +35,19 @@ namespace HealthCareApi.Repositories.Implementations
                 .AsQueryable();
 
             // Filter
-            if (!string.IsNullOrWhiteSpace(specialization))
+
+            bool hasSpecialization = !string.IsNullOrWhiteSpace(specialization);
+            bool hasSearchTerm = !string.IsNullOrWhiteSpace(searchTerm);
+
+            if (hasSearchTerm)
             {
                 query = query.Where(d =>
                     d.Specialisation.ToLower().Contains(specialization.ToLower()));
             }
-
-            if (!string.IsNullOrWhiteSpace(searchTerm))
+            else if (hasSpecialization)
             {
                 query = query.Where(d =>
-                    d.FullName.ToLower().Contains(searchTerm.ToLower()));
+                    d.FullName.ToLower().Contains(searchTerm.ToLower()) || d.DoctorId.ToString() == searchTerm);
             }
 
             // TOTAL COUNT (must be before pagination)
@@ -75,6 +78,10 @@ namespace HealthCareApi.Repositories.Implementations
         {
             if (doctor == null)
                 throw new ArgumentNullException(nameof(doctor));
+
+            doctor.IsActive = false;
+
+            _context.Entry(doctor).State = EntityState.Modified;
 
             await _context.SaveChangesAsync();
         }

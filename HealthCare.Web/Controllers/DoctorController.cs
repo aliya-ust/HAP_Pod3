@@ -1,7 +1,7 @@
 ﻿using HealthCare.Shared.DTOs.Doctor;
 using HealthCare.Web.Services;
 using HealthCare.Web.Services.Interfaces;
-using HealthCareApi.DTOs.Doctor;
+//using HealthCareApi.DTOs.Doctor;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 
@@ -17,7 +17,7 @@ namespace HealthCare.Web.Controllers
             _service = new DoctorService();
         }
 
-        //  LIST → Doctor/List.cshtml
+        //  LIST → Doctor/Index.cshtml
         public async Task<ActionResult> Index(
             string specialization,
             string searchTerm,
@@ -31,7 +31,7 @@ namespace HealthCare.Web.Controllers
                 pageNumber,
                 PageSize);
 
-            return View("List", result);
+            return View("Index", result);
         }
 
         //  PROFILE → Doctor/Profile.cshtml
@@ -54,7 +54,7 @@ namespace HealthCare.Web.Controllers
         //  CREATE (POST)
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Register(DoctorDto dto)
+        public async Task<ActionResult> Register(CreateDoctorDto dto)
         {
             if (!ModelState.IsValid)
                 return View("Register", dto);
@@ -85,7 +85,7 @@ namespace HealthCare.Web.Controllers
         //  EDIT (POST)
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(DoctorDto dto)
+        public async Task<ActionResult> Edit(UpdateDoctorDto dto)
         {
             if (!ModelState.IsValid)
                 return View("Edit", dto);

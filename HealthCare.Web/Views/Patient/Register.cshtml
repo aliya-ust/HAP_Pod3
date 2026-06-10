@@ -1,58 +1,53 @@
-﻿@using HealthCare.Shared.DTOs.Patient
-@model CreatePatientDto
+﻿@model HealthCare.Shared.DTOs.Patient.PatientDto
 
 @{
     ViewBag.Title = "Register Patient";
-    var maxDateOfBirth = DateTime.Today.AddDays(-1).ToString("yyyy-MM-dd");
 }
 
-<div class="container-fluid">
+<div class="container py-4">
 
-    <h2 class="fw-bold mb-4">Register Patient</h2>
+    <h2>Register Patient</h2>
 
-    @using (Html.BeginForm("Register", "Patient", FormMethod.Post))
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+    @using (Html.BeginForm())
     {
-        <div class="row g-3">
+        @Html.AntiForgeryToken()
 
-            <div class="col-md-6">
-                <label>Full Name</label>
-                @Html.TextBoxFor(m => m.FullName, new { @class = "form-control" })
-            </div>
-
-            <div class="col-md-6">
-                <label>Date of Birth</label>
-                @Html.TextBoxFor(m => m.DateOfBirth, new { @type = "date", @class = "form-control", @max = maxDateOfBirth })
-            </div>
-
-            <div class="col-md-6">
-                <label>Gender</label>
-                @Html.DropDownListFor(m => m.Gender,
-                    new SelectList(new[] { "Male", "Female", "Other" }),
-                    "Select Gender",
-                    new { @class = "form-control" })
-            </div>
-
-            <div class="col-md-6">
-                <label>Phone</label>
-                @Html.TextBoxFor(m => m.PhoneNumber, new { @class = "form-control" })
-            </div>
-
-            <div class="col-md-6">
-                <label>Email</label>
-                @Html.TextBoxFor(m => m.Email, new { @class = "form-control", type = "email" })
-            </div>
-
-            <div class="col-md-6">
-                <label>Insurance ID</label>
-                @Html.TextBoxFor(m => m.InsuranceId, new { @class = "form-control" })
-            </div>
-
+        <div class="mb-2">
+            @Html.TextBoxFor(m => m.FullName, new { @class = "form-control", placeholder = "Full Name" })
+            @Html.ValidationMessageFor(m => m.FullName, "", new { @class = "text-danger" })
         </div>
 
-        <div class="mt-4 text-end">
-            <a href="@Url.Action("List","Patient")" class="btn btn-secondary">Cancel</a>
-            <button type="submit" class="btn btn-success">Register</button>
+        <div class="mb-2">
+            @Html.TextBoxFor(m => m.DateOfBirth, new { @class = "form-control", type = "date" })
+            @Html.ValidationMessageFor(m => m.DateOfBirth, "", new { @class = "text-danger" })
         </div>
+
+        <div class="mb-2">
+            @Html.TextBoxFor(m => m.Gender, new { @class = "form-control", placeholder = "Gender" })
+            @Html.ValidationMessageFor(m => m.Gender, "", new { @class = "text-danger" })
+        </div>
+
+        <div class="mb-2">
+            @Html.TextBoxFor(m => m.PhoneNumber, new { @class = "form-control", placeholder = "Phone" })
+            @Html.ValidationMessageFor(m => m.PhoneNumber, "", new { @class = "text-danger" })
+        </div>
+
+        <div class="mb-2">
+            @Html.TextBoxFor(m => m.Email, new { @class = "form-control", placeholder = "Email" })
+            @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+        </div>
+
+        <div class="mb-2">
+            @Html.TextBoxFor(m => m.InsuranceId, new { @class = "form-control", placeholder = "Insurance ID" })
+            @Html.ValidationMessageFor(m => m.InsuranceId, "", new { @class = "text-danger" })
+        </div>
+
+        <button type="submit" class="btn btn-primary">Register</button>
+
+        <a href="@Url.Action("Index", "Patient")" class="btn btn-secondary">
+            Back
+        </a>
     }
-
 </div>

@@ -14,8 +14,13 @@ public class HealthRecordController : Controller
         _service = new HealthRecordService();
     }
 
+    public ActionResult Index()
+    {
+        return View();
+    }
+
     //  LIST / HISTORY
-    // → HealthRecord/List.cshtml
+    //  HealthRecord/Index.cshtml
     public async Task<ActionResult> List(int patientId, int pageNumber = 1)
     {
         var result = await _service.GetPatientHealthHistoryAsync(
@@ -23,11 +28,11 @@ public class HealthRecordController : Controller
             pageNumber,
             PageSize);
 
-        return View("List", result);
+        return View("Index", result);
     }
 
     //  ADD (GET)
-    // → HealthRecord/Create.cshtml
+    //  HealthRecord/Create.cshtml
     public ActionResult Create(int patientId)
     {
         var model = new HealthRecordDto

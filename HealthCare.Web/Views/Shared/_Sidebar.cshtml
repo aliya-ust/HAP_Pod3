@@ -3,18 +3,13 @@
 }
 
 <aside class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark shadow"
-       style="width: 280px; min-height: 100vh; position: fixed; left: 0; top: 0;">
+       style="width: 300px; min-height: 100vh; position: fixed; left: 0; top: 0;">
 
     <!-- Brand -->
     <a href="@Url.Action("Index", "Home")"
        class="d-flex align-items-center mb-4 text-white text-decoration-none">
 
-        <div class="bg-primary rounded-3 d-flex align-items-center justify-content-center me-3"
-             style="width: 42px; height: 42px; font-size: 24px; font-weight: 700;">
-            +
-        </div>
-
-        <div>
+        <div class="border border-primary rounded p-2 px-3 d-inline-block">
             <div class="fs-5 fw-bold">HealthCare</div>
             <small class="text-white-50">Management System</small>
         </div>
@@ -44,7 +39,7 @@
         </li>
 
         <li class="nav-item">
-            <a href="@Url.Action("List", "Doctor")"
+            <a href="@Url.Action("Index", "Doctor")"
                class="nav-link text-white sidebar-link">
                 <span class="me-2">👨‍⚕️</span>
                 Doctor Management

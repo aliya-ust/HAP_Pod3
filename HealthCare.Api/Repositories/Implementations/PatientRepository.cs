@@ -29,7 +29,7 @@ namespace HealthCareApi.Repositories.Implementations
             if (!string.IsNullOrWhiteSpace(searchTerm))
             {
                 query = query.Where(p =>
-                    p.FullName.ToLower().Contains(searchTerm.ToLower()));
+                    p.FullName.ToLower().Contains(searchTerm.ToLower()) || p.PatientId.ToString() == searchTerm);
             }
 
             // Get total BEFORE pagination

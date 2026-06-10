@@ -1,96 +1,61 @@
-﻿@{
+﻿@model HealthCare.Shared.DTOs.Patient.PatientDto
+
+@{
     ViewBag.Title = "Edit Patient";
 }
 
-<div class="container-fluid">
+<div class="container py-4">
 
-    <div class="mb-4">
-        <h2 class="fw-bold">Edit Patient</h2>
-        <p class="text-muted">
-            Update patient details.
-        </p>
-    </div>
+    <h2>Edit Patient</h2>
 
-    <div class="card border-0 shadow-sm rounded-4">
-        <div class="card-body p-4">
+    @Html.ValidationSummary(true, "", new { @class = "tex-danger" })
 
-            <form>
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
 
-                <div class="row g-3">
+        @Html.HiddenFor(m => m.PatientId)
 
-                    <div class="col-md-6">
-                        <label class="form-label">
-                            Full Name
-                        </label>
+<div class="mb-2">
+    @Html.LabelFor(m => m.FullName)
+    @Html.TextBoxFor(m => m.FullName, new { @class = "form-control" })
+    @Html.ValidationMessageFor(m => m.FullName, "", new { @class = "text-danger" })
+</div>
 
-                        <input type="text"
-                               class="form-control"
-                               value="Aarav Menon" />
-                    </div>
+<div class="mb-2">
+    @Html.LabelFor(m => m.DateOfBirth)
+    @Html.TextBoxFor(m => m.DateOfBirth, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+    @Html.ValidationMessageFor(m => m.DateOfBirth, "", new { @class = "text-danger" })
+</div>
 
-                    <div class="col-md-6">
-                        <label class="form-label">
-                            Email
-                        </label>
+<div class="mb-2">
+    @Html.LabelFor(m => m.Gender)
+    @Html.TextBoxFor(m => m.Gender, new { @class = "form-control" })
+    @Html.ValidationMessageFor(m => m.Gender, "", new { @class = "text-danger" })
+</div>
 
-                        <input type="email"
-                               class="form-control"
-                               value="aarav.menon@example.com" />
-                    </div>
+<div class="mb-2">
+    @Html.LabelFor(m => m.PhoneNumber)
+    @Html.TextBoxFor(m => m.PhoneNumber, new { @class = "form-control" })
+    @Html.ValidationMessageFor(m => m.PhoneNumber, "", new { @class = "text-danger" })
+</div>
 
-                    <div class="col-md-6">
-                        <label class="form-label">
-                            Phone Number
-                        </label>
+<div class="mb-2">
+    @Html.LabelFor(m => m.Email)
+    @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+    @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+</div>
 
-                        <input type="text"
-                               class="form-control"
-                               value="9876543210" />
-                    </div>
+<div class="mb-2">
+    @Html.LabelFor(m => m.InsuranceId)
+    @Html.TextBoxFor(m => m.InsuranceId, new { @class = "form-control" })
+    @Html.ValidationMessageFor(m => m.InsuranceId, "", new { @class = "text-danger" })
+</div>
 
-                    <div class="col-md-6">
-                        <label class="form-label">
-                            Gender
-                        </label>
+        <button type="submit" class="btn btn-success">Save</button>
 
-                        <select class="form-select">
-                            <option selected>Male</option>
-                            <option>Female</option>
-                            <option>Other</option>
-                        </select>
-                    </div>
-
-                    <div class="col-md-6">
-                        <label class="form-label">
-                            Insurance Status
-                        </label>
-
-                        <select class="form-select">
-                            <option selected>Insured</option>
-                            <option>Pending</option>
-                            <option>Not Insured</option>
-                        </select>
-                    </div>
-
-                </div>
-
-                <div class="mt-4 text-end">
-
-                    <a href="@Url.Action("List","Patient")"
-                       class="btn btn-secondary">
-                        Cancel
-                    </a>
-
-                    <button type="submit"
-                            class="btn btn-primary">
-                        Update Patient
-                    </button>
-
-                </div>
-
-            </form>
-
-        </div>
-    </div>
-
+        <a href="@Url.Action("List", "Patient")" class="btn btn-secondary">
+            Back
+        </a>
+    }
 </div>

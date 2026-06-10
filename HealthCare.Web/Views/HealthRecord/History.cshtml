@@ -1,0 +1,54 @@
+﻿@model IEnumerable<HealthCare.Shared.DTOs.HealthRecord.HealthRecordDto>
+
+@{
+    ViewBag.Title = "Health History";
+}
+
+<div class="container mt-4">
+
+    <h2>Health History</h2>
+
+    <form method="get" class="card p-3 mb-3">
+
+        <div class="row">
+            <div class="col-md-6">
+                <input type="number" name="patientId" class="form-control" placeholder="Patient Id" />
+            </div>
+
+            <div class="col-md-6">
+                <input type="number" name="doctorId" class="form-control" placeholder="Doctor Id" />
+            </div>
+        </div>
+
+        <button class="btn btn-primary mt-2">Search</button>
+
+    </form>
+
+    <table class="table table-bordered">
+
+        <thead>
+            <tr>
+                <th>Record Id</th>
+                <th>Visit Date</th>
+                <th>Diagnosis</th>
+                <th>Prescription</th>
+                <th>Notes</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var item in Model ?? Enumerable.Empty<dynamic>())
+            {
+                <tr>
+                    <td>@item.RecordId</td>
+                    <td>@item.VisitDate.ToString("yyyy-MM-dd")</td>
+                    <td>@item.Diagnosis</td>
+                    <td>@item.Prescription</td>
+                    <td>@item.Notes</td>
+                </tr>
+            }
+        </tbody>
+
+    </table>
+
+</div>

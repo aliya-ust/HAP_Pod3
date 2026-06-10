@@ -1,87 +1,37 @@
-﻿@model  HealthCare.Models.DTOs.PatientDto
-    @{
-    ViewBag.Title = "Patient Profile";
+﻿@model HealthCare.Shared.DTOs.Patient.PatientDto
 
+@{
+    ViewBag.Title = "Patient Profile";
 }
 
-<div class="container-fluid">
+<div class="container py-4">
 
-    <div class="mb-4">
-        <h2 class="fw-bold">Patient Profile</h2>
-        <p class="text-muted">
-            View patient details.
-        </p>
-    </div>
+    <h2 class="fw-bold mb-4">Patient Profile</h2>
 
-    <div class="card border-0 shadow-sm rounded-4">
-        <div class="card-body p-5">
+    <div class="card shadow-sm">
+        <div class="card-body">
 
-            <div class="text-center mb-4">
+            <table class="table table-bordered">
+                <tr><th>ID</th><td>@Model.PatientId</td></tr>
+                <tr><th>Full Name</th><td>@Model.FullName</td></tr>
+                <tr><th>DOB</th><td>@Model.DateOfBirth.ToShortDateString()</td></tr>
+                <tr><th>Gender</th><td>@Model.Gender</td></tr>
+                <tr><th>Phone</th><td>@Model.PhoneNumber</td></tr>
+                <tr><th>Email</th><td>@Model.Email</td></tr>
+                <tr><th>Insurance</th><td>@Model.InsuranceId</td></tr>
+                <tr><th>Created</th><td>@Model.CreatedDate</td></tr>
+            </table>
 
-                <div class="rounded-circle bg-primary text-white
-                            d-inline-flex align-items-center
-                            justify-content-center"
-                     style="width:120px;height:120px;font-size:50px;">
+            <a href="@Url.Action("Edit", "Patient", new { id = Model.PatientId })"
+               class="btn btn-warning">
+                Edit
+            </a>
 
-                    👤
-
-                </div>
-                <h3 class="mt-3">
-                    @Model.Name
-                </h3>
-
-                <p class="text-muted">
-                    Patient ID : @Model.Id
-                </p>
-
-            </div>
-
-            <div class="row g-4">
-
-                <div class="col-md-6">
-                    <label class="fw-bold">Email</label>
-                    <p>@Model.Email</p>
-                </div>
-
-                <div class="col-md-6">
-                    <label class="fw-bold">Phone</label>
-                    <p>@Model.Phone</p>
-                </div>
-
-                <div class="col-md-6">
-                    <label class="fw-bold">Gender</label>
-                    <p>@Model.Gender</p>
-                </div>
-
-                <div class="col-md-6">
-                    <label class="fw-bold">Insurance Status</label>
-
-                    <p>
-                        <span class="badge bg-success">
-                            @Model.InsuranceStatus
-                        </span>
-                    </p>
-                </div>
-
-            </div>
-
-            <hr />
-
-            <div class="text-end">
-
-                <a href="@Url.Action("List","Patient")"
-                   class="btn btn-secondary">
-                    Back to List
-                </a>
-
-                <a href="@Url.Action("Edit","Patient", new { id = Model.Id })"
-                   class="btn btn-warning">
-                    Edit Patient
-                </a>
-
-            </div>
+            <a href="@Url.Action("List", "Patient")"
+               class="btn btn-secondary">
+                Back
+            </a>
 
         </div>
     </div>
-
 </div>

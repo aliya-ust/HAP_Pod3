@@ -1,0 +1,64 @@
+﻿@model HealthCare.Shared.DTOs.Appointment.AppointmentDto
+
+@{
+    ViewBag.Title = "Book Appointment";
+}
+
+<div class="container mt-4">
+
+    <h2>Book Appointment</h2>
+
+    @using (Html.BeginForm("Book", "Appointment", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="card p-4">
+
+            <div class="row">
+
+                <div class="col-md-6 mb-3">
+                    <label>Patient Id</label>
+                    @Html.TextBoxFor(m => m.PatientId, new { @class = "form-control", type = "number", required = "required" })
+                    @Html.ValidationMessageFor(m => m.PatientId)
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label>Doctor Id</label>
+                    @Html.TextBoxFor(m => m.DoctorId, new { @class = "form-control", type = "number", required = "required" })
+                    @Html.ValidationMessageFor(m => m.DoctorId)
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label>Scheduled Date</label>
+                    @Html.TextBoxFor(m => m.ScheduledDate, new
+                    {
+                        @class = "form-control",
+                        type = "date",
+                        required = "required"
+                    })
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label>Time Slot</label>
+                    @Html.TextBoxFor(m => m.TimeSlot, new
+                    {
+                        @class = "form-control",
+                        placeholder = "e.g. 10:00 AM - 10:30 AM",
+                        required = "required"
+                    })
+                </div>
+
+            </div>
+
+            <button type="submit" class="btn btn-success">
+                Book Appointment
+            </button>
+
+            <a href="@Url.Action("Index","Appointment")" class="btn btn-secondary">
+                Back
+            </a>
+
+        </div>
+    }
+
+</div>

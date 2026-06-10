@@ -5,7 +5,7 @@ namespace HealthCare.Shared.DTOs.Patient
 {
     public class CreatePatientDto
     {
-        public int? UserId { get; set; }
+        public int PatientId { get; set; }
 
         [Required]
         [StringLength(100)]

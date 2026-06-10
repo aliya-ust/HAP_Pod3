@@ -12,7 +12,7 @@ namespace HealthCare.Web.Services
     public class PatientService : IPatientService
     {
         private static readonly HttpClient client = new HttpClient();
-        private readonly string baseUrl = "https://localhost:44373/api/patients";
+        private readonly string baseUrl = "https://localhost:44326/api/patients";
 
         public async Task<PagedResult<PatientDto>> GetPatientsAsync(
             string searchTerm,
@@ -43,7 +43,7 @@ namespace HealthCare.Web.Services
             return JsonConvert.DeserializeObject<PatientDto>(json);
         }
 
-        public async Task<bool> CreateAsync(PatientDto patient)
+        public async Task<bool> CreateAsync(CreatePatientDto patient)
         {
             var json = JsonConvert.SerializeObject(patient);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
@@ -53,7 +53,7 @@ namespace HealthCare.Web.Services
             return response.IsSuccessStatusCode;
         }
 
-        public async Task<bool> UpdateAsync(PatientDto patient)
+        public async Task<bool> UpdateAsync(CreatePatientDto patient)
         {
             var json = JsonConvert.SerializeObject(patient);
             var content = new StringContent(json, Encoding.UTF8, "application/json");

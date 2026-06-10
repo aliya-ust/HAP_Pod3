@@ -1,0 +1,40 @@
+﻿@model HealthCare.Shared.DTOs.Doctor.DoctorDto
+
+<div class="container mt-4">
+
+    <h3>Edit Doctor</h3>
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        @Html.HiddenFor(m => m.DoctorId)
+
+<div class="form-group">
+    <label>Name</label>
+    @Html.TextBoxFor(m => m.FullName, new { @class = "form-control" })
+    @Html.ValidationMessageFor(m => m.FullName, "", new { @class = "text-danger" })
+</div>
+
+<div class="form-group">
+    <label>Specialisation</label>
+    @Html.TextBoxFor(m => m.Specialisation, new { @class = "form-control" })
+    @Html.ValidationMessageFor(m => m.Specialisation, "", new { @class = "text-danger" })
+</div>
+
+<div class="form-group">
+    <label>Experience</label>
+    @Html.TextBoxFor(m => m.YearsOfExperience, new { @class = "form-control" })
+    @Html.ValidationMessageFor(m => m.YearsOfExperience, "", new { @class = "text-danger" })
+</div>
+
+<div class="form-group">
+    <label>Fee</label>
+    @Html.TextBoxFor(m => m.ConsultationFee, new { @class = "form-control" })
+    @Html.ValidationMessageFor(m => m.ConsultationFee, "", new { @class = "text-danger" })
+</div>
+
+        <button type="submit" class="btn btn-success mt-3">Save</button>
+    }
+
+</div>

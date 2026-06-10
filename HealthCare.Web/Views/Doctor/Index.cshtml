@@ -1,0 +1,98 @@
+﻿@model HealthCare.Shared.PagedResult<HealthCare.Shared.DTOs.Doctor.DoctorDto>
+
+@{
+    ViewBag.Title = "Doctor Management";
+}
+
+<div class="container mt-3">
+
+    <!-- TOP BAR -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+
+        <h3>Doctor Management</h3>
+
+        <a href="@Url.Action("Register", "Doctor")" class="btn btn-primary">
+            + Add Doctor
+        </a>
+    </div>
+
+    <!-- SEARCH SECTION -->
+    <div class="row mb-3">
+
+        <!-- SEARCH NAME / ID -->
+        <div class="col-md-6">
+            <input type="text" id="searchTerm" class="form-control"
+                   placeholder="Search by Doctor Name or ID" />
+        </div>
+
+        <!-- SPECIALISATION DROPDOWN -->
+        <div class="col-md-6">
+            <select id="specialisation" class="form-control">
+                <option value="">-- Select Specialisation --</option>
+                <option>Cardiology</option>
+                <option>Dermatology</option>
+                <option>Neurology</option>
+                <option>Orthopedics</option>
+            </select>
+        </div>
+    </div>
+
+    <button class="btn btn-dark mb-3" onclick="searchDoctors()">
+        Search
+    </button>
+
+    <!-- TABLE -->
+    <table class="table table-bordered table-hover">
+
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Specialisation</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var doc in Model.Items)
+            {
+                <tr>
+                    <td>@doc.DoctorId</td>
+                    <td>@doc.FullName</td>
+                    <td>@doc.Specialisation</td>
+
+                    <td>
+                        <a class="btn btn-info btn-sm"
+                           href="@Url.Action("Profile", new { id = doc.DoctorId })">
+                            Profile
+                        </a>
+
+                        <a class="btn btn-warning btn-sm"
+                           href="@Url.Action("Edit", new { id = doc.DoctorId })">
+                            Edit
+                        </a>
+
+                        <form method="post"
+                              action="@Url.Action("Delete", "Doctor")"
+                              style="display:inline">
+
+                            <input type="hidden" name="id" value="@doc.DoctorId" />
+                            <button class="btn btn-danger btn-sm">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+</div>
+
+<script>
+function searchDoctors() {
+    var name = document.getElementById("searchTerm").value;
+    var spec = document.getElementById("specialisation").value;
+
+    window.location.href =
+        '/Doctor/Index?searchTerm=' + name + '&specialization=' + spec;
+}
+</script>

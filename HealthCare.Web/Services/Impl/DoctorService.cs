@@ -1,7 +1,7 @@
 ﻿using HealthCare.Shared;
 using HealthCare.Shared.DTOs.Doctor;
 using HealthCare.Web.Services.Interfaces;
-using HealthCareApi.DTOs.Doctor;
+//using HealthCareApi.DTOs.Doctor;
 using Newtonsoft.Json;
 using System.Net.Http;
 using System.Text;
@@ -12,7 +12,7 @@ namespace HealthCare.Web.Services
     public class DoctorService : IDoctorService
     {
         private static readonly HttpClient client = new HttpClient();
-        private readonly string baseUrl = "https://localhost:44373/api/doctors";
+        private readonly string baseUrl = "https://localhost:44326/api/doctors";
 
         public async Task<PagedResult<DoctorDto>> GetDoctorsAsync(
             string specialization,
@@ -45,7 +45,7 @@ namespace HealthCare.Web.Services
             return JsonConvert.DeserializeObject<DoctorDto>(json);
         }
 
-        public async Task<bool> CreateAsync(DoctorDto dto)
+        public async Task<bool> CreateAsync(CreateDoctorDto dto)
         {
             var json = JsonConvert.SerializeObject(dto);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
@@ -55,7 +55,7 @@ namespace HealthCare.Web.Services
             return response.IsSuccessStatusCode;
         }
 
-        public async Task<bool> UpdateAsync(DoctorDto dto)
+        public async Task<bool> UpdateAsync(UpdateDoctorDto dto)
         {
             var json = JsonConvert.SerializeObject(dto);
             var content = new StringContent(json, Encoding.UTF8, "application/json");

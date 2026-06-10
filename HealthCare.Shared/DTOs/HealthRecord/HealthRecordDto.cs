@@ -9,6 +9,7 @@ namespace HealthCare.Shared.DTOs.HealthRecord
     {
         public int RecordId { get; set; }
         public int PatientId { get; set; }
+        public int AppointmentId { get; set; }
         public string PatientName { get; set; }
         public string DoctorName { get; set; }
         public string Specialisation { get; set; }

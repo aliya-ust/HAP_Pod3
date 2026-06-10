@@ -1,9 +1,9 @@
 ﻿using HealthCare.Shared.DTOs.Patient;
+using HealthCare.Web.Services;
 using HealthCare.Web.Services.Interfaces;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using System.Web.Security;
-using HealthCare.Web.Services;
 
 namespace HealthCare.Web.Controllers
 {
@@ -17,54 +17,37 @@ namespace HealthCare.Web.Controllers
             _service = new PatientService();
         }
 
-        // LIST (Index view)
-        public async Task<ActionResult> List(string searchTerm, int pageNumber = 1)
+        // LIST (INDEX PAGE)
+        public async Task<ActionResult> Index(string searchTerm, int pageNumber = 1)
         {
             var result = await _service.GetPatientsAsync(searchTerm, pageNumber, PageSize);
-
-            // result = PagedResult<PatientDto>
             return View(result);
         }
 
-        // PROFILE (Profile.cshtml)
-        public async Task<ActionResult> Profile(int id = 0)
+        // PROFILE
+        public async Task<ActionResult> Profile(int id)
         {
-            PatientDto patient;
-
-            if (User.IsInRole("Patient"))
-            {
-                patient = await _service.GetByIdAsync(GetCurrentUserId());
-            }
-            else if (User.IsInRole("Admin") && id != 0)
-            {
-                patient = await _service.GetByIdAsync(id);
-            }
-            else
-            {
-                return new HttpUnauthorizedResult();
-            }
+            var patient = await _service.GetByIdAsync(id);
 
             if (patient == null)
                 return HttpNotFound();
 
-            return View(patient); // Profile.cshtml 
+            return View(patient);
         }
 
-        // REGISTER (GET → Register.cshtml)
-        [Authorize(Roles = "Admin")]
+        // REGISTER (GET)
         public ActionResult Register()
         {
-            return View(); // Register.cshtml 
+            return View();
         }
 
-        //  REGISTER (POST → Register.cshtml)
-        [Authorize(Roles = "Admin")]
+        // REGISTER (POST)
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Register(PatientDto dto)
+        public async Task<ActionResult> Register(CreatePatientDto dto)
         {
             if (!ModelState.IsValid)
-                return View(dto); // MUST return Register view
+                return View(dto);
 
             var result = await _service.CreateAsync(dto);
 
@@ -75,81 +58,51 @@ namespace HealthCare.Web.Controllers
             }
 
             ModelState.AddModelError("", "Error creating patient");
-            return View(dto); // Register.cshtml 
+            return View(dto);
         }
 
-        // EDIT (GET → Edit.cshtml)
-        public async Task<ActionResult> Edit(int id = 0)
+        // EDIT (GET)
+        public async Task<ActionResult> Edit(int id)
         {
-            PatientDto patient;
-
-            if (User.IsInRole("Patient"))
-            {
-                patient = await _service.GetByIdAsync(GetCurrentUserId());
-            }
-            else if (User.IsInRole("Admin") && id != 0)
-            {
-                patient = await _service.GetByIdAsync(id);
-            }
-            else
-            {
-                return new HttpUnauthorizedResult();
-            }
+            var patient = await _service.GetByIdAsync(id);
 
             if (patient == null)
                 return HttpNotFound();
 
-            return View(patient); // Edit.cshtml 
+            return View(patient);
         }
 
         // EDIT (POST)
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(PatientDto dto)
+        public async Task<ActionResult> Edit(CreatePatientDto dto)
         {
             if (!ModelState.IsValid)
                 return View(dto);
-
-            // Security check
-            if (User.IsInRole("Patient") && dto.PatientId != GetCurrentUserId())
-                return new HttpUnauthorizedResult();
 
             var result = await _service.UpdateAsync(dto);
 
             if (result)
             {
-                TempData["Success"] = "Patient updated successfully.";
-
-                // FIXED: redirect to Profile (NOT Details)
+                TempData["Success"] = "Updated successfully";
                 return RedirectToAction("Profile", new { id = dto.PatientId });
             }
 
-            ModelState.AddModelError("", "Error updating patient");
+            ModelState.AddModelError("", "Update failed");
             return View(dto);
         }
 
         // DELETE
-        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Delete(int id)
         {
             var result = await _service.DeleteAsync(id);
 
-            if (result)
-                TempData["Success"] = "Patient deleted.";
-            else
-                TempData["Error"] = "Delete failed.";
+            TempData[result ? "Success" : "Error"] =
+                result ? "Deleted successfully" : "Delete failed";
 
             return RedirectToAction("Index");
-        }
-
-        // HELPER
-        private int GetCurrentUserId()
-        {
-            var identity = (FormsIdentity)User.Identity;
-            var parts = identity.Ticket.UserData.Split('|');
-            return int.Parse(parts[2]);
         }
     }
 }

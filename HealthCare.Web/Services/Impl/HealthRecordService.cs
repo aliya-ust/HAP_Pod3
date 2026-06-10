@@ -11,7 +11,7 @@ namespace HealthCare.Web.Services
     public class HealthRecordService : IHealthRecordService
     {
         private static readonly HttpClient client = new HttpClient();
-        private readonly string baseUrl = "https://localhost:5001/api/healthrecords";
+        private readonly string baseUrl = "https://localhost:44326/api/healthrecords";
 
         //  GET PAGINATED HISTORY
         public async Task<PagedResult<HealthRecordDto>> GetPatientHealthHistoryAsync(

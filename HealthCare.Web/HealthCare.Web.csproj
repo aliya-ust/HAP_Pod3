@@ -223,22 +223,25 @@
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="Views\Home\About.cshtml" />
-    <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Patient\Edit.cshtml" />
     <Content Include="Views\Patient\Index.cshtml" />
-    <Content Include="Views\Patient\List.cshtml" />
     <Content Include="Views\Patient\Profile.cshtml" />
     <Content Include="Views\Patient\Register.cshtml" />
     <Content Include="Views\Shared\_Sidebar.cshtml" />
+    <Content Include="Views\Doctor\Index.cshtml" />
+    <Content Include="Views\Doctor\Profile.cshtml" />
+    <Content Include="Views\Doctor\Edit.cshtml" />
+    <Content Include="Views\Doctor\Register.cshtml" />
+    <Content Include="Views\Appointment\Index.cshtml" />
+    <Content Include="Views\Appointment\Book.cshtml" />
+    <Content Include="Views\HealthRecord\Index.cshtml" />
+    <Content Include="Views\HealthRecord\History.cshtml" />
+    <Content Include="Views\HealthRecord\Add.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Models\" />
-    <Folder Include="Views\Appointment\" />
-    <Folder Include="Views\Doctor\" />
-    <Folder Include="Views\HealthRecord\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

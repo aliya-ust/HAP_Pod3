@@ -17,5 +17,6 @@ namespace HealthCare.Shared.DTOs.Doctor
 
         [Range(0, 100000)]
         public decimal ConsultationFee { get; set; }
+
     }
 }
