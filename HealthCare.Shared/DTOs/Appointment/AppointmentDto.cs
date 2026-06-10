@@ -13,3 +13,4 @@ namespace HealthCare.Shared.DTOs.Appointment
         public string CancellationReason { get; set; }
     }
 }
+

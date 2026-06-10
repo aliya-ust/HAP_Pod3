@@ -158,5 +158,18 @@ namespace HealthCareApi.Services.Implementations
 
             return appointment;
         }
+
+        public async Task<PagedResult<Appointment>> GetUpcomingAppointmentsAsync(
+    int? patientId,
+    int? doctorId,
+    int pageNumber,
+    int pageSize)
+        {
+            return await _appointmentRepository.GetUpcomingAppointmentsAsync(
+                patientId,
+                doctorId,
+                pageNumber,
+                pageSize);
+        }
     }
 }

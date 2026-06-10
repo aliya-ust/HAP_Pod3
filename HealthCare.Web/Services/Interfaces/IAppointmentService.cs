@@ -26,6 +26,11 @@ namespace HealthCare.Web.Services.Interfaces
         Task<bool> BookAsync(AppointmentDto dto);
         Task<bool> ConfirmAsync(int id);
         Task<bool> CancelAsync(int id, string reason);
+        Task<PagedResult<AppointmentDto>> GetUpcomingAppointmentsAsync(
+            int? patientId,
+            int? doctorId,
+            int pageNumber,
+            int pageSize);
 
     }
 }

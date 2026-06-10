@@ -67,6 +67,28 @@
 
             </div>
         }
+
+        <div class="mb-4 mt-2 d-flex flex-wrap gap-3">
+
+            <!-- ✅ Search by ID -->
+            @using (Html.BeginForm("Profile", "Doctor", FormMethod.Get))
+            {
+                <div class="d-flex gap-2">
+
+                    <input type="number"
+                           name="id"
+                           class="form-control"
+                           placeholder="Enter Doctor ID"
+                           style="width:200px;" required />
+
+                    <button type="submit" class="btn btn-success">
+                        Search by ID
+                    </button>
+
+                </div>
+            }
+
+        </div>
     </div>
 
     <!-- ✅ TABLE -->
@@ -78,6 +100,7 @@
 
                     <thead class="table-light">
                         <tr>
+                            <th class="px-4 py-3">Doctor Id</th>
                             <th class="px-4 py-3">Doctor Name</th>
                             <th class="px-4 py-3">Specialisation</th>
                             <th class="px-4 py-3">Experience</th>
@@ -92,6 +115,9 @@
                             foreach (var doctor in Model.Items)
                             {
                                 <tr>
+                                    <td class="px-4 py-3 fw-semibold">
+                                        @doctor.DoctorId
+                                    </td>
 
                                     <!-- ✅ Name (NO hyperlink anymore) -->
                                     <td class="px-4 py-3 fw-semibold">

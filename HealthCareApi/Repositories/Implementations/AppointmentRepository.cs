@@ -129,4 +129,54 @@ public class AppointmentRepository : Repository<Appointment>, IAppointmentReposi
             .Select(a => a.TimeSlot)
             .ToListAsync();
     }
+
+    public async Task<PagedResult<Appointment>> GetUpcomingAppointmentsAsync(
+    int? patientId,
+    int? doctorId,
+    int pageNumber,
+    int pageSize)
+    {
+        var today = DateTime.Today;
+
+        var query = _context.Appointments.AsQueryable();
+
+        // ✅ From today onwards
+        query = query.Where(a => a.ScheduledDate >= today);
+
+        // ✅ Exclude cancelled
+        query = query.Where(a => a.Status != "Cancelled");
+
+        // ✅ Optional filters
+        if (patientId.HasValue)
+        {
+            query = query.Where(a => a.PatientId == patientId.Value);
+        }
+
+        if (doctorId.HasValue)
+        {
+            query = query.Where(a => a.DoctorId == doctorId.Value);
+        }
+
+        // ✅ Order by date ASC + time slot
+        query = query
+            .OrderBy(a => a.ScheduledDate)
+            .ThenBy(a => a.TimeSlot);
+
+        // ✅ Total count (before pagination)
+        var totalCount = await query.CountAsync();
+
+        // ✅ Apply pagination
+        var items = await query
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+        return new PagedResult<Appointment>
+        {
+            Items = items,
+            TotalCount = totalCount,
+            PageNumber = pageNumber,
+            PageSize = pageSize
+        };
+    }
 }

@@ -46,7 +46,8 @@
                         {
                             type = "date",
                             @class = "form-control rounded-3",
-                            id = "date"
+                            id = "date",
+                            min = DateTime.Now.ToString("yyyy-MM-dd")   // ✅ THIS
                         })
                     </div>
 

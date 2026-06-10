@@ -4,6 +4,7 @@ using HealthCare.Web.Services.Interfaces;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Drawing.Printing;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -107,6 +108,32 @@ namespace HealthCare.Web.Services
 
             var json = await response.Content.ReadAsStringAsync();
             return JsonConvert.DeserializeObject<List<string>>(json);
+        }
+
+        // ✅ UPCOMING APPOINTMENTS (PAGED)
+        public async Task<PagedResult<AppointmentDto>> GetUpcomingAppointmentsAsync(
+            int? patientId,
+            int? doctorId,
+            int pageNumber,
+            int pageSize)
+        {
+            // ✅ Build query string
+            string url = $"{baseUrl}/upcoming?pageNumber={pageNumber}&pageSize={pageSize}";
+
+            if (patientId.HasValue)
+                url += $"&patientId={patientId.Value}";
+
+            if (doctorId.HasValue)
+                url += $"&doctorId={doctorId.Value}";
+
+            var response = await client.GetAsync(url);
+
+            if (!response.IsSuccessStatusCode)
+                return new PagedResult<AppointmentDto>();
+
+            var json = await response.Content.ReadAsStringAsync();
+
+            return JsonConvert.DeserializeObject<PagedResult<AppointmentDto>>(json);
         }
     }
 }

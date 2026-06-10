@@ -12,5 +12,6 @@ namespace HealthCare.Web.Services.Interfaces
             int pageSize);
 
         Task<bool> CreateAsync(CreateHealthRecordDto dto);
+        Task<HealthRecordDto> GetByIdAsync(int recordId);
     }
 }

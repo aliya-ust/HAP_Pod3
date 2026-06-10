@@ -4,6 +4,7 @@ using HealthCare.Web.Services;
 using HealthCare.Web.Services.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 
@@ -118,6 +119,39 @@ namespace HealthCare.Web.Controllers
                 .GetAvailableSlotsAsync(doctorId, date);
 
             return Json(slots, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> Upcoming(
+            int doctorId,
+            string status,
+            int pageNumber = 1)
+        {
+            try
+            {
+                ViewBag.ActiveTab = "Upcoming";
+
+                var result = await _service.GetUpcomingAppointmentsAsync(
+                    null,
+                    doctorId,
+                    pageNumber,
+                    PageSize);
+
+                // ✅ OPTIONAL: filter by status at MVC level (quick way)
+                if (!string.IsNullOrEmpty(status))
+                {
+                    result.Items = result.Items
+                        .Where(a => a.Status == status)
+                        .ToList();
+                }
+
+                return View("DocList", result.Items);
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Error = ex.Message;
+                return View("DocList", new List<AppointmentDto>());
+            }
         }
     }
 }

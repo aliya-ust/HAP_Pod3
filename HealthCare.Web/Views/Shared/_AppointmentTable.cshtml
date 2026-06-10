@@ -84,6 +84,14 @@
                                             Add Health Record
                                         </a>
                                     }
+                                    else if (appt.Status == "Completed")
+                                    {
+                                        <!-- ✅ ADD HEALTH RECORD -->
+                                <a href="@Url.Action("Single", "HealthRecord", new { id = appt.AppointmentId })"
+                                   class="btn btn-primary btn-sm">
+                                    View Health Record
+                                </a>
+                                    }
 
                                 </td>
                             </tr>

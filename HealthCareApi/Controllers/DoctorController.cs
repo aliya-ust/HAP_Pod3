@@ -60,8 +60,7 @@ namespace HealthCareApi.Controllers
         {
             try
             {
-                var doctors = await _doctorService
-                    .GetBySpecializationAsync(specialization);
+                var doctors = await _doctorService.GetBySpecializationAsync(specialization);
 
                 var result = doctors.Select(d => new
                 {

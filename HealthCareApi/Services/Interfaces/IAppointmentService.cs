@@ -21,5 +21,10 @@ namespace HealthCareApi.Services.Interfaces
         Task<List<string>> GetAvailableSlotsAsync(int doctorId, DateTime date);
         Task<Appointment> ConfirmAppointmentAsync(int appointmentId);
         Task<Appointment> CancelAppointmentAsync(int appointmentId, string reason);
+        Task<PagedResult<Appointment>> GetUpcomingAppointmentsAsync(
+            int? patientId,
+            int? doctorId,
+            int pageNumber,
+            int pageSize);
     }
 }

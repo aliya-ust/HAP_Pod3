@@ -70,4 +70,26 @@ public class HealthRecordController : Controller
             ModelState.AddModelError("", "Failed to create record");
             return View("Create", dto);
     }
+
+    public async Task<ActionResult> Single(int id)
+    {
+        try
+        {
+            var record = await _service.GetByIdAsync(id);
+
+            if (record == null)
+            {
+                ViewBag.Error = "Health record not found.";
+                return View();
+            }
+
+            return View(record);
+        }
+        catch (Exception ex)
+        {
+            ViewBag.Error = ex.Message;
+            return View();
+        }
+    }
+
 }

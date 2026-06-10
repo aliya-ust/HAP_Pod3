@@ -77,3 +77,5 @@ C:\Users\310466\Desktop\Learning\HealthCareApi\HealthCareApi\bin\System.Memory.x
 C:\Users\310466\Desktop\Learning\HealthCareApi\HealthCareApi\bin\System.Numerics.Vectors.xml
 C:\Users\310466\Desktop\Learning\HealthCareApi\HealthCareApi\bin\System.Threading.Tasks.Extensions.xml
 C:\Users\310466\Desktop\Learning\HealthCareApi\HealthCareApi\bin\System.Web.Http.Cors.xml
+C:\Users\310466\Desktop\Learning\HealthCareApi\HealthCareApi\bin\HealthCare.Shared.dll
+C:\Users\310466\Desktop\Learning\HealthCareApi\HealthCareApi\bin\HealthCare.Shared.pdb

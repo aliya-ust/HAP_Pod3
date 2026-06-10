@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using HealthCareApi;
-using HealthCareApi.DTOs.Appointment;
-using HealthCareApi.DTOs.Doctor;
-using HealthCareApi.DTOs.HealthRecord;
-using HealthCareApi.DTOs.Patient;
+using HealthCare.Shared.DTOs.Appointment;
+using HealthCare.Shared.DTOs.Doctor;
+using HealthCare.Shared.DTOs.HealthRecord;
+using HealthCare.Shared.DTOs.Patient;
 using HealthCareApi.Helper;
 
 public class MappingProfile : Profile
@@ -26,6 +26,7 @@ public class MappingProfile : Profile
 
         CreateMap<Patient, PatientDto>().ReverseMap();
         CreateMap<Appointment, AppointmentDto>().ReverseMap();
+        CreateMap<HealthRecord, HealthRecordDto>().ReverseMap();
         CreateMap<vw_PatientHealthHistory, HealthRecordDto>();
     }
 }

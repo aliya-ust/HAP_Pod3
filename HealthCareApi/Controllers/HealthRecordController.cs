@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using HealthCareApi.DTOs.HealthRecord;
+using HealthCare.Shared.DTOs.HealthRecord;
 using HealthCareApi.Helper;
 using HealthCareApi.Services.Interfaces;
 using System;
@@ -70,6 +70,29 @@ namespace HealthCareApi.Controllers
                 PageNumber = result.PageNumber,
                 PageSize = result.PageSize
             });
+        }
+
+        // ✅ 3. GET HEALTH RECORD BY ID
+        // GET: api/healthrecords/10
+        [HttpGet]
+        [Route("{id:int}")]
+        public async Task<IHttpActionResult> GetById(int id)
+        {
+            try
+            {
+                var record = await _healthRecordService.GetByAppointmentIdAsync(id);
+
+                if (record == null)
+                    return NotFound();
+
+                var dto = _mapper.Map<HealthRecordDto>(record);
+
+                return Ok(dto);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

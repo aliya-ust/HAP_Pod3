@@ -41,6 +41,47 @@
 
     </div>
 
+    <div class="mb-4">
+        @using (Html.BeginForm("List", "Patient", FormMethod.Get))
+        {
+            <div class="d-flex gap-2">
+
+                <input type="text"
+                       name="searchTerm"
+                       value="@Request["searchTerm"]"
+                       class="form-control"
+                       placeholder="Search patient name"
+                       style="width:250px;" />
+
+                <button type="submit" class="btn btn-primary">
+                    Search
+                </button>
+
+            </div>
+        }
+    <div class="mb-4 mt-2">
+
+        @using (Html.BeginForm("Profile", "Patient", FormMethod.Get))
+        {
+            <div class="d-flex gap-2">
+
+                <input type="number"
+                       name="id"
+                       class="form-control"
+                       placeholder="Enter Patient ID"
+                       style="width:200px;" required />
+
+                <button type="submit" class="btn btn-success">
+                    Search by ID
+                </button>
+
+            </div>
+        }
+
+    </div>
+    </div>
+
+
     <!-- Table -->
     <div class="card border-0 shadow-sm rounded-4">
         <div class="card-body p-0">
@@ -49,9 +90,11 @@
                 <table class="table table-hover align-middle mb-0">
                     <thead class="table-light">
                         <tr>
+                            <th class="px-4 py-3">Patient Id</th>
                             <th class="px-4 py-3">Patient Name</th>
                             <th class="px-4 py-3">Email</th>
                             <th class="px-4 py-3">Insurance Status</th>
+                            <th class="px-4 py-3 text-center">Actions</th>
                         </tr>
                     </thead>
 
@@ -61,11 +104,13 @@
                             foreach (var patient in Model.Items)
                             {
                                 <tr>
-                                    <td class="px-4 py-3">
-                                        <a href="@Url.Action("Profile", "Patient", new { id = patient.PatientId })"
-                                           class="fw-semibold text-decoration-none">
-                                            @patient.FullName
-                                        </a>
+                                    <td class="px-4 py-3 fw-semibold">
+                                        @patient.PatientId
+                                    </td>
+
+                                    <!-- ✅ Name (NO hyperlink) -->
+                                    <td class="px-4 py-3 fw-semibold">
+                                        @patient.FullName
                                     </td>
 
                                     <td class="px-4 py-3 text-muted">
@@ -75,24 +120,47 @@
                                     <td class="px-4 py-3">
                                         @if (!string.IsNullOrEmpty(patient.InsuranceId))
                                         {
-                                            <span class="badge bg-success px-3 py-2">
-                                                Insured
-                                            </span>
+                                            <span class="badge bg-success px-3 py-2">Insured</span>
                                         }
                                         else
                                         {
-                                            <span class="badge bg-danger px-3 py-2">
-                                                Not Insured
-                                            </span>
+                                            <span class="badge bg-danger px-3 py-2">Not Insured</span>
                                         }
                                     </td>
+
+                                    <!-- ✅ ACTIONS -->
+                                    <td class="px-4 py-3 text-center">
+                                        <div class="d-flex justify-content-center gap-2">
+
+                                            <!-- View -->
+                                            <a href="@Url.Action("Profile", "Patient", new { id = patient.PatientId })"
+                                               class="btn btn-sm btn-outline-primary">
+                                                View
+                                            </a>
+
+                                            <!-- Edit -->
+                                            <a href="@Url.Action("Edit", "Patient", new { id = patient.PatientId })"
+                                               class="btn btn-sm btn-outline-warning">
+                                                Edit
+                                            </a>
+
+                                            <!-- Delete -->
+                                            <button type="button"
+                                                    class="btn btn-sm btn-outline-danger"
+                                                    onclick="openDeleteModal(@patient.PatientId, '@patient.FullName')">
+                                                Delete
+                                            </button>
+
+                                        </div>
+                                    </td>
+
                                 </tr>
                             }
                         }
                         else
                         {
                             <tr>
-                                <td colspan="3" class="text-center py-4 text-muted">
+                                <td colspan="4" class="text-center py-4 text-muted">
                                     No patients found.
                                 </td>
                             </tr>
@@ -111,7 +179,10 @@
             <!-- ✅ Previous -->
             <li class="page-item @(currentPage == 1 ? "disabled" : "")">
                 <a class="page-link"
-                   href="@Url.Action("List", "Patient", new { pageNumber = currentPage - 1 })">
+                   href="@Url.Action("List", "Patient", new {
+    pageNumber = currentPage - 1,
+    searchTerm = Request["searchTerm"]
+})">
                     Previous
                 </a>
             </li>
@@ -121,7 +192,10 @@
             {
                 <li class="page-item @(i == currentPage ? "active" : "")">
                     <a class="page-link"
-                       href="@Url.Action("List", "Patient", new { pageNumber = i })">
+                       href="@Url.Action("List", "Patient", new {
+    pageNumber = i,
+    searchTerm = Request["searchTerm"]
+})">
                         @i
                     </a>
                 </li>
@@ -130,7 +204,10 @@
             <!-- ✅ Next -->
             <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
                 <a class="page-link"
-                   href="@Url.Action("List", "Patient", new { pageNumber = currentPage + 1 })">
+                   href="@Url.Action("List", "Patient", new {
+    pageNumber = currentPage + 1,
+    searchTerm = Request["searchTerm"]
+})">
                     Next
                 </a>
             </li>
@@ -139,4 +216,51 @@
     </nav>
 
 
+</div>
+
+<script>
+    function openDeleteModal(id, name)("patientName").innerText = name; function openDeleteModal(id, name) {
+
+        var modal = new bootstrap.Modal(document.getElementById('deleteModal'));
+        modal.show();
+    }
+</script>
+        document.getElementById("deleteId").value = id;
+
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Confirm Delete</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                Are you sure you want to delete
+                <strong id="patientName"></strong>?
+            </div>
+
+            <div class="modal-footer">
+
+                <button type="button" class="btn btn-secondary"
+                        data-bs-dismiss="modal">
+                    Cancel
+                </button>
+
+                @using (Html.BeginForm("Delete", "Patient", FormMethod.Post, new { id = "deleteForm" }))
+                {
+                    @Html.AntiForgeryToken()
+
+                    <input type="hidden" id="deleteId" name="id" />
+
+                    <button type="submit" class="btn btn-danger">
+                        Yes, Delete
+                    </button>
+                }
+
+            </div>
+
+        </div>
+    </div>
 </div>

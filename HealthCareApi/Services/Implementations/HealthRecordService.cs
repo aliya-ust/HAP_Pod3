@@ -59,5 +59,10 @@ namespace HealthCareApi.Services.Implementations
             return await _healthRecordRepository
                 .GetPatientHealthHistoryAsync(patientId, pageNumber, pageSize);
         }
+
+        public async Task<HealthRecord> GetByAppointmentIdAsync(int id)
+        {
+            return await _healthRecordRepository.GetByAppointmentIdAsync(id);
+        }
     }
 }

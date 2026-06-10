@@ -57,5 +57,11 @@ namespace HealthCareApi.Repositories.Implementations
                 PageSize = pageSize
             };
         }
+
+        public async Task<HealthRecord> GetByAppointmentIdAsync(int appointmentId)
+        {
+            return await _context.HealthRecords
+                .FirstOrDefaultAsync(h => h.AppointmentId == appointmentId);
+        }
     }
 }

@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using HealthCareApi.DTOs.Appointment;
+using HealthCare.Shared.DTOs.Appointment;
 using HealthCareApi.Helper;
 using HealthCareApi.Services.Interfaces;
 using System;
@@ -170,6 +170,37 @@ namespace HealthCareApi.Controllers
                 var result = _mapper.Map<AppointmentDto>(appointment);
 
                 return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        // ✅ 7. GET UPCOMING APPOINTMENTS (Paginated)
+        // GET: api/appointments/upcoming?patientId=5&pageNumber=1&pageSize=10
+        [HttpGet]
+        [Route("upcoming")]
+        public async Task<IHttpActionResult> GetUpcomingAppointments(
+            int? patientId = null,
+            int? doctorId = null,
+            int pageNumber = 1,
+            int pageSize = 10)
+        {
+            try
+            {
+                var result = await _appointmentService
+                    .GetUpcomingAppointmentsAsync(patientId, doctorId, pageNumber, pageSize);
+
+                var dtos = _mapper.Map<IEnumerable<AppointmentDto>>(result.Items);
+
+                return Ok(new PagedResult<AppointmentDto>
+                {
+                    Items = dtos.ToList(),
+                    TotalCount = result.TotalCount,
+                    PageNumber = result.PageNumber,
+                    PageSize = result.PageSize
+                });
             }
             catch (Exception ex)
             {

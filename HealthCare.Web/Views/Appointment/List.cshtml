@@ -9,7 +9,7 @@
 
 <div class="container-fluid">
 
-    <!-- Header -->
+    <!-- HEADER -->
     <div class="mb-4">
         <h2 class="fw-bold mb-1">Appointment List</h2>
         <p class="text-muted mb-0">
@@ -17,16 +17,25 @@
         </p>
     </div>
 
-    <!-- ✅ FILTER -->
-    <!-- ✅ SEARCH SECTION -->
+    <!-- ✅ CONTEXT -->
+    @if (!string.IsNullOrEmpty(Request["patientId"]))
+    {
+        <div class="alert alert-secondary">
+            Showing appointments for Patient ID:
+            <strong>@Request["patientId"]</strong>
+        </div>
+    }
+
+    <!-- ✅ SEARCH + FILTER -->
     <div class="mb-4 d-flex flex-wrap gap-3">
 
-        <!-- ✅ Search by Patient -->
+        <!-- ✅ Patient Search -->
         @using (Html.BeginForm("List", "Appointment", FormMethod.Get))
         {
             <div class="d-flex gap-2">
                 <input type="number"
                        name="patientId"
+                       value="@Request["patientId"]"
                        class="form-control"
                        placeholder="Enter Patient ID"
                        style="width:180px;" />
@@ -37,12 +46,13 @@
             </div>
         }
 
-        <!-- ✅ Search by Doctor -->
+        <!-- ✅ Doctor Search -->
         @using (Html.BeginForm("Today", "Appointment", FormMethod.Get))
         {
             <div class="d-flex gap-2">
                 <input type="number"
                        name="doctorId"
+                       value="@Request["doctorId"]"
                        class="form-control"
                        placeholder="Enter Doctor ID"
                        style="width:180px;" />
@@ -53,17 +63,15 @@
             </div>
         }
 
+        <!-- ✅ Status Filter -->
         @if (!string.IsNullOrEmpty(Request["patientId"]))
         {
-            <!-- ✅ FILTER -->
             using (Html.BeginForm("List", "Appointment", FormMethod.Get))
             {
                 <div class="d-flex gap-2">
 
-                    <!-- ✅ Keep patientId hidden -->
                     <input type="hidden" name="patientId" value="@Request["patientId"]" />
 
-                    <!-- ✅ Status filter -->
                     <select name="status" class="form-select" style="width:180px;">
                         <option value="">All Status</option>
                         <option value="Pending" @(Request["status"] == "Pending" ? "selected" : "")>Pending</option>
@@ -80,7 +88,6 @@
         }
         else
         {
-            <!-- ✅ USER GUIDANCE -->
             <div class="alert alert-info">
                 Please enter a Patient ID to view and filter appointments.
             </div>
@@ -88,7 +95,7 @@
 
     </div>
 
-    <!-- Table -->
+    <!-- ✅ TABLE -->
     <div class="card border-0 shadow-sm rounded-4">
         <div class="card-body p-0">
 
@@ -103,29 +110,41 @@
     <nav class="mt-4">
         <ul class="pagination justify-content-center">
 
-            <!-- Previous -->
+            <!-- PREVIOUS -->
             <li class="page-item @(currentPage == 1 ? "disabled" : "")">
                 <a class="page-link"
-                   href="@Url.Action("List", new { pageNumber = currentPage - 1 })">
+                   href="@Url.Action("List", new {
+                       pageNumber = currentPage - 1,
+                       patientId = Request["patientId"],
+                       status = Request["status"]
+                   })">
                     Previous
                 </a>
             </li>
 
-            <!-- Page numbers -->
+            <!-- PAGE NUMBERS -->
             @for (int i = 1; i <= totalPages; i++)
             {
                 <li class="page-item @(i == currentPage ? "active" : "")">
                     <a class="page-link"
-                       href="@Url.Action("List", new { pageNumber = i })">
+                       href="@Url.Action("List", new {
+                           pageNumber = i,
+                           patientId = Request["patientId"],
+                           status = Request["status"]
+                       })">
                         @i
                     </a>
                 </li>
             }
 
-            <!-- Next -->
+            <!-- NEXT -->
             <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
                 <a class="page-link"
-                   href="@Url.Action("List", new { pageNumber = currentPage + 1 })">
+                   href="@Url.Action("List", new {
+                       pageNumber = currentPage + 1,
+                       patientId = Request["patientId"],
+                       status = Request["status"]
+                   })">
                     Next
                 </a>
             </li>
@@ -138,7 +157,6 @@
 <script>
     document.addEventListener("DOMContentLoaded", function () {
 
-        // ✅ Make it GLOBAL
         window.openCancelModal = function (id) {
             document.getElementById("cancelId").value = id;
             document.getElementById("cancelReason").value = "";
@@ -147,18 +165,14 @@
             modal.show();
         };
 
-        // ✅ Handle submit
-        document.getElementById("cancelForm").addEventListener("submit", function (e) {
+        document.getElementById("cancelForm")?.addEventListener("submit", function (e) {
 
             var reason = document.getElementById("cancelReason").value;
 
             if (!reason || reason.trim() === "") {
                 alert("Please enter a cancellation reason.");
                 e.preventDefault();
-                return;
             }
-
-            document.getElementById("hiddenReason").value = reason;
         });
 
     });

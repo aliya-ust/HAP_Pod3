@@ -213,6 +213,7 @@
     <Content Include="Views\Appointment\DocList.cshtml" />
     <Content Include="Views\Shared\_AppointmentTable.cshtml" />
     <Content Include="Views\Shared\_CancelModal.cshtml" />
+    <Content Include="Views\HealthRecord\Single.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

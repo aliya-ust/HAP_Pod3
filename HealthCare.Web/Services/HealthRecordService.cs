@@ -45,5 +45,17 @@ namespace HealthCare.Web.Services
 
             return response.IsSuccessStatusCode;
         }
+
+        public async Task<HealthRecordDto> GetByIdAsync(int appointmentId)
+        {
+            var response = await client.GetAsync($"{baseUrl}/{appointmentId}");
+
+            if (!response.IsSuccessStatusCode)
+                return null;
+
+            var json = await response.Content.ReadAsStringAsync();
+
+            return JsonConvert.DeserializeObject<HealthRecordDto>(json);
+        }
     }
 }

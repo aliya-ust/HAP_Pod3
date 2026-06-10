@@ -53,7 +53,37 @@
             </div>
         }
 
+
+
     </div>
+
+    @if (activeTab == "Upcoming")
+    {
+        <div class="mb-3">
+
+            @using (Html.BeginForm("Upcoming", "Appointment", FormMethod.Get))
+            {
+                <div class="d-flex gap-2">
+
+                    <!-- keep doctorId -->
+                    <input type="hidden" name="doctorId" value="@doctorId" />
+
+                    <!-- ✅ Status Filter -->
+                    <select name="status" class="form-select" style="width:180px;">
+                        <option value="">All Status</option>
+                        <option value="Pending" @(Request["status"] == "Pending" ? "selected" : "")>Pending</option>
+                        <option value="Confirmed" @(Request["status"] == "Confirmed" ? "selected" : "")>Confirmed</option>
+                    </select>
+
+                    <button class="btn btn-primary" type="submit">
+                        Filter
+                    </button>
+
+                </div>
+            }
+
+        </div>
+    }
 
     <!-- ✅ TABS -->
     <ul class="nav nav-tabs mb-3">
@@ -73,6 +103,15 @@
                 Week
             </a>
         </li>
+
+
+        <li class="nav-item">
+            <a class="nav-link @(activeTab == "Upcoming" ? "active" : "")"
+               href="@Url.Action("Upcoming", "Appointment", new { doctorId = doctorId })">
+                Upcoming
+            </a>
+        </li>
+
 
     </ul>
 
