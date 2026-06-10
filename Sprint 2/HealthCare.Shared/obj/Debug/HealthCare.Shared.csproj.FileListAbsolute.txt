@@ -1,0 +1,8 @@
+C:\Users\310508\source\repos\Sprint 2\HealthCare.Shared\obj\Debug\HealthCare.Shared.csproj.AssemblyReference.cache
+C:\Users\310508\source\repos\Sprint 2\HealthCare.Shared\obj\Debug\HealthCare.Shared.csproj.CoreCompileInputs.cache
+C:\Users\310508\source\repos\Sprint 2\HealthCare.Shared\bin\Debug\HealthCare.Shared.dll
+C:\Users\310508\source\repos\Sprint 2\HealthCare.Shared\bin\Debug\HealthCare.Shared.pdb
+C:\Users\310508\source\repos\Sprint 2\HealthCare.Shared\bin\Debug\System.ComponentModel.Annotations.dll
+C:\Users\310508\source\repos\Sprint 2\HealthCare.Shared\obj\Debug\HealthCa.1A70919E.Up2Date
+C:\Users\310508\source\repos\Sprint 2\HealthCare.Shared\obj\Debug\HealthCare.Shared.dll
+C:\Users\310508\source\repos\Sprint 2\HealthCare.Shared\obj\Debug\HealthCare.Shared.pdb
