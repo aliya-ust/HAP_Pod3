@@ -29,27 +29,27 @@ namespace HealthCareApi.Repositories.Implementations
             int pageNumber,
             int pageSize)
         {
-            //  Safety
+            // ✅ Safety
             pageNumber = pageNumber < 1 ? 1 : pageNumber;
             pageSize = pageSize > 50 ? 50 : pageSize;
 
-            //  Base query
+            // ✅ Base query
             var query = _context.vw_PatientHealthHistory
                 .Where(v => v.PatientId == patientId);
 
-            //  IMPORTANT: total count BEFORE pagination
+            // ✅ ✅ IMPORTANT: total count BEFORE pagination
             int totalCount = await query.CountAsync();
 
-            //  Sorting
+            // ✅ Sorting
             query = query.OrderByDescending(v => v.VisitDate);
 
-            //  Pagination
+            // ✅ Pagination
             var items = await query
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
 
-            //  Return paged result
+            // ✅ Return paged result
             return new PagedResult<vw_PatientHealthHistory>
             {
                 Items = items,
@@ -57,6 +57,12 @@ namespace HealthCareApi.Repositories.Implementations
                 PageNumber = pageNumber,
                 PageSize = pageSize
             };
+        }
+
+        public async Task<HealthRecord> GetByAppointmentIdAsync(int appointmentId)
+        {
+            return await _context.HealthRecords
+                .FirstOrDefaultAsync(h => h.AppointmentId == appointmentId);
         }
     }
 }

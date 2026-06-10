@@ -1,0 +1,41 @@
+﻿@model HealthCare.Shared.PagedResult<HealthCare.Shared.DTOs.Doctor.DoctorDto>
+
+@{
+    ViewBag.Title = "Available Doctors";
+}
+
+<h2>Available Doctors</h2>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Doctor Id</th>
+            <th>Name</th>
+            <th>Specialization</th>
+            <th>Fees</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @if (Model != null && Model.Items != null && Model.Items.Any())
+        {
+            foreach (var doctor in Model.Items)
+            {
+                <tr>
+                    <td>@doctor.DoctorId</td>
+                    <td>@doctor.FullName</td>
+                    <td>@doctor.Specialisation</td>
+                    <td>@doctor.ConsultationFee</td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="4" class="text-center">
+                    No doctors available
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

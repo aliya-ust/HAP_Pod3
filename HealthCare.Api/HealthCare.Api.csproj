@@ -304,9 +304,6 @@
     <Compile Include="Services\Interfaces\IDoctorService.cs" />
     <Compile Include="Services\Interfaces\IHealthRecordService.cs" />
     <Compile Include="Services\Interfaces\IPatientService.cs" />
-    <Compile Include="User.cs">
-      <DependentUpon>HealthAppDb.tt</DependentUpon>
-    </Compile>
     <Compile Include="vw_PatientHealthHistory.cs">
       <DependentUpon>HealthAppDb.tt</DependentUpon>
     </Compile>

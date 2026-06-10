@@ -16,7 +16,7 @@
     </div>
 
     <!-- SEARCH -->
-    <form method="get" action="@Url.Action("List", "Patient")" class="mb-3">
+    <form method="get" action="@Url.Action("Index", "Patient")" class="mb-3">
         <div class="input-group">
             <input type="text"
                    name="searchTerm"
@@ -66,6 +66,17 @@
                                        href="@Url.Action("Edit", "Patient", new { id = p.PatientId })">
                                         Edit
                                     </a>
+
+                                    <form method="post"
+                                          action="@Url.Action("Delete", "Patient")"
+                                          style="display:inline">
+
+                                        @Html.AntiForgeryToken()
+
+                                        <input type="hidden" name="id" value="@p.PatientId" />
+                                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+
+                                    </form>
                                 </td>
                             </tr>
                         }

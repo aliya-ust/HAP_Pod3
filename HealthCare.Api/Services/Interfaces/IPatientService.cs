@@ -1,4 +1,5 @@
 ﻿using HealthCare.Api;
+using HealthCare.Shared.DTOs.Patient;
 using HealthCare.Shared;
 using System;
 using System.Collections.Generic;

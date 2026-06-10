@@ -76,9 +76,13 @@
                               action="@Url.Action("Delete", "Doctor")"
                               style="display:inline">
 
+                            @Html.AntiForgeryToken()
+
                             <input type="hidden" name="id" value="@doc.DoctorId" />
-                            <button class="btn btn-danger btn-sm">Delete</button>
+                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+
                         </form>
+                     
                     </td>
                 </tr>
             }

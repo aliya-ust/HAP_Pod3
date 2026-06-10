@@ -23,7 +23,7 @@ namespace HealthCareApi.Repositories.Implementations
             pageNumber = pageNumber < 1 ? 1 : pageNumber;
             pageSize = pageSize > 50 ? 50 : pageSize;
 
-            IQueryable<Patient> query = _context.Patients;
+            IQueryable<Patient> query = _context.Patients.Where(p=>p.IsActive);
 
             // Search
             if (!string.IsNullOrWhiteSpace(searchTerm))
@@ -36,7 +36,7 @@ namespace HealthCareApi.Repositories.Implementations
             int totalCount = await query.CountAsync();
 
             // Sorting
-            query = query.OrderBy(p => p.FullName);
+            query = query.OrderBy(p => p.PatientId);
 
             // Pagination
             var items = await query

@@ -11,14 +11,11 @@
         <EntityTypeShape EntityType="HealthAppDb.Doctor" Width="1.5" PointX="3" PointY="4" IsExpanded="true" />
         <EntityTypeShape EntityType="HealthAppDb.HealthRecord" Width="1.5" PointX="7.5" PointY="3.625" IsExpanded="true" />
         <EntityTypeShape EntityType="HealthAppDb.Patient" Width="1.5" PointX="3" PointY="8.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="HealthAppDb.User" Width="1.5" PointX="0.75" PointY="6.5" IsExpanded="true" />
         <AssociationConnector Association="HealthAppDb.FK__Appointme__Docto__73BA3083" ManuallyRouted="false" />
         <AssociationConnector Association="HealthAppDb.FK__Appointme__Patie__72C60C4A" ManuallyRouted="false" />
         <AssociationConnector Association="HealthAppDb.FK__HealthRec__Appoi__787EE5A0" ManuallyRouted="false" />
         <AssociationConnector Association="HealthAppDb.FK__DoctorAva__Docto__7C4F7684" ManuallyRouted="false" />
         <AssociationConnector Association="HealthAppDb.FK__DoctorLea__Docto__00200768" ManuallyRouted="false" />
-        <AssociationConnector Association="HealthAppDb.FK__Doctors__UserId__6C190EBB" ManuallyRouted="false" />
-        <AssociationConnector Association="HealthAppDb.FK__Patients__UserId__6477ECF3" ManuallyRouted="false" />
         <EntityTypeShape EntityType="HealthAppDb.vw_PatientHealthHistory" Width="1.5" PointX="7.375" PointY="7.75" />
       </Diagram>
     </edmx:Diagrams>

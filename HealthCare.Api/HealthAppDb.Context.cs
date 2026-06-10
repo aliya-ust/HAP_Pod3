@@ -31,7 +31,6 @@ namespace HealthCare.Api
         public virtual DbSet<Doctor> Doctors { get; set; }
         public virtual DbSet<HealthRecord> HealthRecords { get; set; }
         public virtual DbSet<Patient> Patients { get; set; }
-        public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<vw_PatientHealthHistory> vw_PatientHealthHistory { get; set; }
     }
 }

@@ -26,7 +26,7 @@ namespace HealthCareApi.Services.Implementations
         public async Task<PagedResult<Doctor>> GetFilteredDoctorsAsync(
             string specialization = null,
             string searchTerm = null,
-            bool orderByDescending = false,
+            bool orderByDescending = true,
             int pageNumber = 1,
             int pageSize = 10)
         {
@@ -40,6 +40,7 @@ namespace HealthCareApi.Services.Implementations
 
         public async Task<Doctor> AddDoctorAsync(Doctor doctor)
         {
+            doctor.IsActive = true;
             await _doctorRepository.AddAsync(doctor);
             return doctor;
         }

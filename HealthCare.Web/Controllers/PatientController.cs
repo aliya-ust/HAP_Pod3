@@ -44,7 +44,7 @@ namespace HealthCare.Web.Controllers
         // REGISTER (POST)
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Register(CreatePatientDto dto)
+        public async Task<ActionResult> Register(PatientDto dto)
         {
             if (!ModelState.IsValid)
                 return View(dto);
@@ -75,7 +75,7 @@ namespace HealthCare.Web.Controllers
         // EDIT (POST)
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(CreatePatientDto dto)
+        public async Task<ActionResult> Edit(PatientDto dto)
         {
             if (!ModelState.IsValid)
                 return View(dto);

@@ -43,7 +43,7 @@ namespace HealthCare.Web.Services
             return JsonConvert.DeserializeObject<PatientDto>(json);
         }
 
-        public async Task<bool> CreateAsync(CreatePatientDto patient)
+        public async Task<bool> CreateAsync(PatientDto patient)
         {
             var json = JsonConvert.SerializeObject(patient);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
@@ -53,7 +53,7 @@ namespace HealthCare.Web.Services
             return response.IsSuccessStatusCode;
         }
 
-        public async Task<bool> UpdateAsync(CreatePatientDto patient)
+        public async Task<bool> UpdateAsync(PatientDto patient)
         {
             var json = JsonConvert.SerializeObject(patient);
             var content = new StringContent(json, Encoding.UTF8, "application/json");

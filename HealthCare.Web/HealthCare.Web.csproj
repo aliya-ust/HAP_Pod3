@@ -235,9 +235,11 @@
     <Content Include="Views\Doctor\Register.cshtml" />
     <Content Include="Views\Appointment\Index.cshtml" />
     <Content Include="Views\Appointment\Book.cshtml" />
-    <Content Include="Views\HealthRecord\Index.cshtml" />
-    <Content Include="Views\HealthRecord\History.cshtml" />
-    <Content Include="Views\HealthRecord\Add.cshtml" />
+    <Content Include="Views\HealthRecord\List.cshtml" />
+    <Content Include="Views\HealthRecord\PatientHistory.cshtml" />
+    <Content Include="Views\HealthRecord\Create.cshtml" />
+    <Content Include="Views\HealthRecord\Single.cshtml" />
+    <Content Include="Views\Doctor\Available.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

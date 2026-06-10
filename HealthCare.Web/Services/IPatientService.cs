@@ -13,8 +13,8 @@ namespace HealthCare.Web.Services.Interfaces
     {
         Task<PagedResult<PatientDto>> GetPatientsAsync(string searchTerm, int pageNumber, int pageSize);
         Task<PatientDto> GetByIdAsync(int id);
-        Task<bool> CreateAsync(CreatePatientDto patient);
-        Task<bool> UpdateAsync(CreatePatientDto patient);
+        Task<bool> CreateAsync(PatientDto patient);
+        Task<bool> UpdateAsync(PatientDto patient);
         Task<bool> DeleteAsync(int id);
 
     }

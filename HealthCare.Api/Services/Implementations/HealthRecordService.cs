@@ -1,6 +1,5 @@
 ﻿using HealthCare.Api;
 using HealthCare.Shared;
-//using HealthCareApi.Helper;
 using HealthCareApi.Repositories.Interfaces;
 using HealthCareApi.Services.Interfaces;
 using System;
@@ -26,6 +25,7 @@ namespace HealthCareApi.Services.Implementations
         // ADD HEALTH RECORD
         public async Task<HealthRecord> AddHealthRecordAsync(HealthRecord record)
         {
+            System.Diagnostics.Debug.WriteLine(record.AppointmentId);
             var appointment = await _context.Appointments
                 .FirstOrDefaultAsync(a => a.AppointmentId == record.AppointmentId);
 
@@ -42,7 +42,7 @@ namespace HealthCareApi.Services.Implementations
 
             // NO need to check "Completed"
 
-            record.VisitDate = DateTime.Now;
+            record.VisitDate = appointment.ScheduledDate;
 
             await _healthRecordRepository.AddAsync(record);
 
@@ -59,6 +59,11 @@ namespace HealthCareApi.Services.Implementations
         {
             return await _healthRecordRepository
                 .GetPatientHealthHistoryAsync(patientId, pageNumber, pageSize);
+        }
+
+        public async Task<HealthRecord> GetByAppointmentIdAsync(int id)
+        {
+            return await _healthRecordRepository.GetByAppointmentIdAsync(id);
         }
     }
 }

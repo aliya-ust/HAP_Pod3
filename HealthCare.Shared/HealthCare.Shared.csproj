@@ -54,6 +54,7 @@
     <Compile Include="DTOs\Doctor\DoctorDto.cs" />
     <Compile Include="DTOs\Doctor\UpdateDoctorDto.cs" />
     <Compile Include="DTOs\HealthRecord\HealthRecordDto.cs" />
+    <Compile Include="DTOs\HealthRecord\CreateHealthRecordDto.cs" />
     <Compile Include="DTOs\Patient\CreatePatientDto.cs" />
     <Compile Include="DTOs\Patient\PatientDto.cs" />
     <Compile Include="PagedResult.cs" />

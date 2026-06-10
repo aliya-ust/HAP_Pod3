@@ -23,7 +23,6 @@ namespace HealthCare.Api
         }
     
         public int DoctorId { get; set; }
-        public int UserId { get; set; }
         public string FullName { get; set; }
         public string Specialisation { get; set; }
         public int YearsOfExperience { get; set; }
@@ -37,6 +36,5 @@ namespace HealthCare.Api
         public virtual ICollection<DoctorAvailableSlot> DoctorAvailableSlots { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<DoctorLeaf> DoctorLeaves { get; set; }
-        public virtual User User { get; set; }
     }
 }

@@ -102,6 +102,22 @@ namespace HealthCare.Web.Controllers
             return View("Edit", dto);
         }
 
+        public async Task<ActionResult> Available(
+               string specialization,
+               string searchTerm,
+               bool orderByDescending = false,
+               int pageNumber = 1)
+        {
+            var result = await _service.GetDoctorsAsync(
+                specialization,
+                searchTerm,
+                orderByDescending,
+                pageNumber,
+                PageSize);
+
+            return View("Available", result);
+        }
+
         //  DELETE
         [HttpPost]
         [ValidateAntiForgeryToken]

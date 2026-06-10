@@ -2,6 +2,7 @@
 using HealthCare.Shared;
 using HealthCareApi.Repositories.Interfaces;
 using HealthCareApi.Services.Interfaces;
+using HealthCare.Shared.DTOs.Patient;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,6 +38,7 @@ namespace HealthCareApi.Services.Implementations
 
         public async Task<Patient> AddPatientAsync(Patient patient)
         {
+            patient.IsActive = true;
             await _patientRepository.AddAsync(patient);
             return patient;
         }
@@ -68,7 +70,7 @@ namespace HealthCareApi.Services.Implementations
                 return false;
 
             // Soft delete
-            //patient.IsActive = false;
+            patient.IsActive = false;
 
             await _patientRepository.UpdateAsync(patient);
 

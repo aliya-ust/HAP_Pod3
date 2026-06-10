@@ -21,7 +21,7 @@ namespace HealthCareApi.Repositories.Implementations
         public async Task<PagedResult<Doctor>> GetDoctorsAsync(
             string specialization = null,
             string searchTerm = null,
-            bool orderByDescending = false,
+            bool orderByDescending = true,
             int pageNumber = 1,
             int pageSize = 10)
         {
