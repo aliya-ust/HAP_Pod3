@@ -1,7 +1,7 @@
 ﻿//using HealthCareApi.Models;
 using AutoMapper;
-using HealthCareApi.DTOs.Doctor;
-using HealthCareApi.Helper;
+using HealthCare.Shared.DTOs.Doctor;
+using HealthCare.Shared;
 using HealthCareApi.Services.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -92,17 +92,16 @@ namespace HealthCareApi.Controllers
 
         [HttpPost]
         [Route("")]
-        public async Task<IHttpActionResult> Add(Doctor doctor)
+        public async Task<IHttpActionResult> Add(CreateDoctorDto dto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var createdDoctor = await _doctorService.AddDoctorAsync(doctor);
+            var doctor = await _doctorService.AddDoctorAsync(dto);
 
-            var dto = _mapper.Map<CreateDoctorDto>(createdDoctor);
+            var result = _mapper.Map<DoctorDto>(doctor);
 
-            // ✅ Correct REST response
-            return Created($"api/doctors/{doctor.DoctorId}", dto);
+            return Ok(result);
         }
 
         [HttpPut]

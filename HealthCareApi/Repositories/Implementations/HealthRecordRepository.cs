@@ -1,5 +1,6 @@
 ﻿using HealthCareApi;
-using HealthCareApi.Helper;
+//using HealthCareApi.Helper;
+using HealthCare.Shared;
 using HealthCareApi.Repositories.Implementations;
 using HealthCareApi.Repositories.Interfaces;
 using System.Collections.Generic;

@@ -1,4 +1,4 @@
-﻿using HealthCareApi.Helper;
+﻿using HealthCare.Shared;
 using HealthCareApi.Repositories.Interfaces;
 using HealthCareApi.Services.Interfaces;
 using System;

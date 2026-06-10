@@ -214,16 +214,6 @@
     <Compile Include="DoctorLeaf.cs">
       <DependentUpon>HealthAppDb.tt</DependentUpon>
     </Compile>
-    <Compile Include="DTOs\Appointment\AppointmentDto.cs" />
-    <Compile Include="DTOs\Appointment\CancelAppointmentDto.cs" />
-    <Compile Include="DTOs\Appointment\CreateAppointmentDto.cs" />
-    <Compile Include="DTOs\Appointment\UpdateAppointmentDto.cs" />
-    <Compile Include="DTOs\Doctor\CreateDoctorDto.cs" />
-    <Compile Include="DTOs\Doctor\DoctorDto.cs" />
-    <Compile Include="DTOs\Doctor\UpdateDoctorDto.cs" />
-    <Compile Include="DTOs\HealthRecord\HealthRecordDto.cs" />
-    <Compile Include="DTOs\Patient\CreatePatientDto.cs" />
-    <Compile Include="DTOs\Patient\PatientDto.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -245,7 +235,6 @@
     <Compile Include="HealthRecord.cs">
       <DependentUpon>HealthAppDb.tt</DependentUpon>
     </Compile>
-    <Compile Include="Helper\PagedResult.cs" />
     <Compile Include="Mapping\MappingProfile.cs" />
     <Compile Include="obj\Debug\.NETFramework,Version=v4.7.2.AssemblyAttributes.cs" />
     <Compile Include="Patient.cs">
@@ -270,9 +259,6 @@
     <Compile Include="Services\Interfaces\IDoctorService.cs" />
     <Compile Include="Services\Interfaces\IHealthRecordService.cs" />
     <Compile Include="Services\Interfaces\IPatientService.cs" />
-    <Compile Include="User.cs">
-      <DependentUpon>HealthAppDb.tt</DependentUpon>
-    </Compile>
     <Compile Include="vw_PatientHealthHistory.cs">
       <DependentUpon>HealthAppDb.tt</DependentUpon>
     </Compile>

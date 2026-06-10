@@ -1,5 +1,5 @@
 ﻿//using HealthCareApi.Data.Context;
-using HealthCareApi.Helper;
+using HealthCare.Shared;
 using HealthCareApi.Repositories.Implementations;
 using HealthCareApi.Repositories.Interfaces;
 using System;
@@ -85,6 +85,13 @@ namespace HealthCareApi.Repositories.Implementations
                 throw new ArgumentNullException(nameof(doctor));
 
             await _context.SaveChangesAsync();
+        }
+
+        public async Task AddRangeAsync(List<DoctorAvailableSlot> slots)
+        {
+            _context.DoctorAvailableSlots.AddRange(slots);
+            await _context.SaveChangesAsync();
+
         }
     }
 }

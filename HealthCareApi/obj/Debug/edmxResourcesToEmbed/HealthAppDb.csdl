@@ -40,7 +40,6 @@
       <PropertyRef Name="DoctorId" />
     </Key>
     <Property Name="DoctorId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-    <Property Name="UserId" Type="Int32" Nullable="false" />
     <Property Name="FullName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
     <Property Name="Specialisation" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
     <Property Name="YearsOfExperience" Type="Int32" Nullable="false" />
@@ -50,7 +49,7 @@
     <NavigationProperty Name="Appointments" Relationship="Self.FK__Appointme__Docto__73BA3083" FromRole="Doctors" ToRole="Appointments" />
     <NavigationProperty Name="DoctorAvailableSlots" Relationship="Self.FK__DoctorAva__Docto__7C4F7684" FromRole="Doctors" ToRole="DoctorAvailableSlots" />
     <NavigationProperty Name="DoctorLeaves" Relationship="Self.FK__DoctorLea__Docto__00200768" FromRole="Doctors" ToRole="DoctorLeaves" />
-    <NavigationProperty Name="User" Relationship="Self.FK__Doctors__UserId__6C190EBB" FromRole="Doctors" ToRole="Users" />
+    <Property Name="Email" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
   </EntityType>
   <EntityType Name="HealthRecord">
     <Key>
@@ -70,7 +69,6 @@
       <PropertyRef Name="PatientId" />
     </Key>
     <Property Name="PatientId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-    <Property Name="UserId" Type="Int32" />
     <Property Name="FullName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
     <Property Name="DateOfBirth" Type="DateTime" Nullable="false" Precision="0" />
     <Property Name="Gender" Type="String" MaxLength="10" FixedLength="false" Unicode="true" Nullable="false" />
@@ -78,19 +76,8 @@
     <Property Name="InsuranceId" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
     <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="7" annotation:StoreGeneratedPattern="Computed" />
     <NavigationProperty Name="Appointments" Relationship="Self.FK__Appointme__Patie__72C60C4A" FromRole="Patients" ToRole="Appointments" />
-    <NavigationProperty Name="User" Relationship="Self.FK__Patients__UserId__6477ECF3" FromRole="Patients" ToRole="Users" />
     <Property Name="Email" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
-  </EntityType>
-  <EntityType Name="User">
-    <Key>
-      <PropertyRef Name="UserId" />
-    </Key>
-    <Property Name="UserId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-    <Property Name="Email" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
-    <Property Name="PasswordHash" Type="String" MaxLength="256" FixedLength="false" Unicode="true" Nullable="false" />
-    <Property Name="Role" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
-    <NavigationProperty Name="Doctors" Relationship="Self.FK__Doctors__UserId__6C190EBB" FromRole="Users" ToRole="Doctors" />
-    <NavigationProperty Name="Patients" Relationship="Self.FK__Patients__UserId__6477ECF3" FromRole="Users" ToRole="Patients" />
+    <Property Name="IsActive" Type="Boolean" Nullable="false" />
   </EntityType>
   <Association Name="FK__Appointme__Docto__73BA3083">
     <End Role="Doctors" Type="Self.Doctor" Multiplicity="1" />
@@ -152,30 +139,6 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__Doctors__UserId__6C190EBB">
-    <End Role="Users" Type="Self.User" Multiplicity="1" />
-    <End Role="Doctors" Type="Self.Doctor" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="Users">
-        <PropertyRef Name="UserId" />
-      </Principal>
-      <Dependent Role="Doctors">
-        <PropertyRef Name="UserId" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="FK__Patients__UserId__6477ECF3">
-    <End Role="Users" Type="Self.User" Multiplicity="0..1" />
-    <End Role="Patients" Type="Self.Patient" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="Users">
-        <PropertyRef Name="UserId" />
-      </Principal>
-      <Dependent Role="Patients">
-        <PropertyRef Name="UserId" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
   <EntityContainer Name="HealthAppDbContext" annotation:LazyLoadingEnabled="true">
     <EntitySet Name="Appointments" EntityType="Self.Appointment" />
     <EntitySet Name="DoctorAvailableSlots" EntityType="Self.DoctorAvailableSlot" />
@@ -183,7 +146,6 @@
     <EntitySet Name="Doctors" EntityType="Self.Doctor" />
     <EntitySet Name="HealthRecords" EntityType="Self.HealthRecord" />
     <EntitySet Name="Patients" EntityType="Self.Patient" />
-    <EntitySet Name="Users" EntityType="Self.User" />
     <AssociationSet Name="FK__Appointme__Docto__73BA3083" Association="Self.FK__Appointme__Docto__73BA3083">
       <End Role="Doctors" EntitySet="Doctors" />
       <End Role="Appointments" EntitySet="Appointments" />
@@ -203,14 +165,6 @@
     <AssociationSet Name="FK__DoctorLea__Docto__00200768" Association="Self.FK__DoctorLea__Docto__00200768">
       <End Role="Doctors" EntitySet="Doctors" />
       <End Role="DoctorLeaves" EntitySet="DoctorLeaves" />
-    </AssociationSet>
-    <AssociationSet Name="FK__Doctors__UserId__6C190EBB" Association="Self.FK__Doctors__UserId__6C190EBB">
-      <End Role="Users" EntitySet="Users" />
-      <End Role="Doctors" EntitySet="Doctors" />
-    </AssociationSet>
-    <AssociationSet Name="FK__Patients__UserId__6477ECF3" Association="Self.FK__Patients__UserId__6477ECF3">
-      <End Role="Users" EntitySet="Users" />
-      <End Role="Patients" EntitySet="Patients" />
     </AssociationSet>
     <EntitySet Name="vw_PatientHealthHistory" EntityType="HealthAppDbModel.vw_PatientHealthHistory" />
   </EntityContainer>

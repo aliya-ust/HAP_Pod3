@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using HealthCare.Shared.DTOs.Appointment;
-using HealthCareApi.Helper;
+using HealthCare.Shared;
 using HealthCareApi.Services.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -173,6 +173,7 @@ namespace HealthCareApi.Controllers
             }
             catch (Exception ex)
             {
+                System.Diagnostics.Debug.WriteLine(ex.ToString());
                 return BadRequest(ex.Message);
             }
         }

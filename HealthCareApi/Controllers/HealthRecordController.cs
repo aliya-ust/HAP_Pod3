@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using HealthCare.Shared.DTOs.HealthRecord;
-using HealthCareApi.Helper;
+using HealthCare.Shared;
 using HealthCareApi.Services.Interfaces;
 using System;
 using System.Collections.Generic;

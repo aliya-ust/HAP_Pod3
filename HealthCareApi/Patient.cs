@@ -21,7 +21,6 @@ namespace HealthCareApi
         }
     
         public int PatientId { get; set; }
-        public Nullable<int> UserId { get; set; }
         public string FullName { get; set; }
         public System.DateTime DateOfBirth { get; set; }
         public string Gender { get; set; }
@@ -29,9 +28,9 @@ namespace HealthCareApi
         public string InsuranceId { get; set; }
         public System.DateTime CreatedDate { get; set; }
         public string Email { get; set; }
+        public bool IsActive { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Appointment> Appointments { get; set; }
-        public virtual User User { get; set; }
     }
 }

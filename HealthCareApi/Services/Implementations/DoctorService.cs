@@ -1,4 +1,6 @@
-﻿using HealthCareApi.Helper;
+﻿using AutoMapper;
+using HealthCare.Shared;
+using HealthCare.Shared.DTOs.Doctor;
 using HealthCareApi.Repositories.Implementations;
 using HealthCareApi.Repositories.Interfaces;
 using HealthCareApi.Services.Interfaces;
@@ -14,10 +16,12 @@ namespace HealthCareApi.Services.Implementations
     public class DoctorService : IDoctorService
     {
         private readonly IDoctorRepository _doctorRepository;
+        private readonly IMapper _mapper;
 
-        public DoctorService(IDoctorRepository doctorRepository)
+        public DoctorService(IDoctorRepository doctorRepository, IMapper mapper)
         {
             _doctorRepository = doctorRepository;
+            _mapper = mapper;
         }
 
         public async Task<Doctor> GetDoctorByIdAsync(int id)
@@ -40,9 +44,27 @@ namespace HealthCareApi.Services.Implementations
                 pageSize);
         }
 
-        public async Task<Doctor> AddDoctorAsync(Doctor doctor)
+        public async Task<Doctor> AddDoctorAsync(CreateDoctorDto dto)
         {
+            // ✅ 1. Map doctor
+            var doctor = _mapper.Map<Doctor>(dto);
+
+            // ✅ 2. Save doctor first (to get DoctorId)
+            doctor.IsActive = true;
             await _doctorRepository.AddAsync(doctor);
+
+            // ✅ 3. Handle time slots manually
+            if (dto.TimeSlots != null && dto.TimeSlots.Any())
+            {
+                var slots = dto.TimeSlots.Select(slot => new DoctorAvailableSlot
+                {
+                    DoctorId = doctor.DoctorId,
+                    TimeSlot = slot
+                }).ToList();
+
+                await _doctorRepository.AddRangeAsync(slots);
+            }
+
             return doctor;
         }
 

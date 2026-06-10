@@ -1,5 +1,5 @@
 ﻿//using HealthCareApi.Models;
-using HealthCareApi.Helper;
+using HealthCare.Shared;
 using HealthCareApi.Repositories.Interfaces;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -16,5 +16,6 @@ namespace HealthCareApi.Repositories.Interfaces
             int pageSize = 10
         );
         Task<List<Doctor>> GetBySpecializationAsync(string specialization);
+        Task AddRangeAsync(List<DoctorAvailableSlot> slots);
     }
 }

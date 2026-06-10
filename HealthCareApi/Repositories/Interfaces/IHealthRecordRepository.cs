@@ -1,4 +1,4 @@
-﻿using HealthCareApi.Helper;
+﻿using HealthCare.Shared;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

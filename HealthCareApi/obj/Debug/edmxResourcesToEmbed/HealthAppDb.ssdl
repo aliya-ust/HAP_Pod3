@@ -35,13 +35,13 @@
       <PropertyRef Name="DoctorId" />
     </Key>
     <Property Name="DoctorId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="UserId" Type="int" Nullable="false" />
     <Property Name="FullName" Type="nvarchar" MaxLength="100" Nullable="false" />
     <Property Name="Specialisation" Type="nvarchar" MaxLength="50" Nullable="false" />
     <Property Name="YearsOfExperience" Type="int" Nullable="false" />
     <Property Name="ConsultationFee" Type="decimal" Precision="10" Scale="2" Nullable="false" />
     <Property Name="IsActive" Type="bit" Nullable="false" />
     <Property Name="CreatedDate" Type="datetime2" Precision="7" Nullable="false" StoreGeneratedPattern="Computed" />
+    <Property Name="Email" Type="nvarchar" MaxLength="100" Nullable="false" />
   </EntityType>
   <EntityType Name="HealthRecords">
     <Key>
@@ -60,7 +60,6 @@
       <PropertyRef Name="PatientId" />
     </Key>
     <Property Name="PatientId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="UserId" Type="int" />
     <Property Name="FullName" Type="nvarchar" MaxLength="100" Nullable="false" />
     <Property Name="DateOfBirth" Type="date" Nullable="false" />
     <Property Name="Gender" Type="nvarchar" MaxLength="10" Nullable="false" />
@@ -68,15 +67,7 @@
     <Property Name="InsuranceId" Type="nvarchar" MaxLength="50" />
     <Property Name="CreatedDate" Type="datetime2" Precision="7" Nullable="false" StoreGeneratedPattern="Computed" />
     <Property Name="Email" Type="nvarchar" MaxLength="100" Nullable="false" />
-  </EntityType>
-  <EntityType Name="Users">
-    <Key>
-      <PropertyRef Name="UserId" />
-    </Key>
-    <Property Name="UserId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="Email" Type="nvarchar" MaxLength="255" Nullable="false" />
-    <Property Name="PasswordHash" Type="nvarchar" MaxLength="256" Nullable="false" />
-    <Property Name="Role" Type="nvarchar" MaxLength="20" Nullable="false" />
+    <Property Name="IsActive" Type="bit" Nullable="false" />
   </EntityType>
   <!--Errors Found During Generation:
 warning 6002: The table/view 'HealthAppDb.dbo.vw_PatientHealthHistory' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -149,18 +140,6 @@ warning 6002: The table/view 'HealthAppDb.dbo.vw_PatientHealthHistory' does not 
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__Doctors__UserId__6C190EBB">
-    <End Role="Users" Type="Self.Users" Multiplicity="1" />
-    <End Role="Doctors" Type="Self.Doctors" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="Users">
-        <PropertyRef Name="UserId" />
-      </Principal>
-      <Dependent Role="Doctors">
-        <PropertyRef Name="UserId" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
   <Association Name="FK__HealthRec__Appoi__787EE5A0">
     <End Role="Appointments" Type="Self.Appointments" Multiplicity="1" />
     <End Role="HealthRecords" Type="Self.HealthRecords" Multiplicity="*" />
@@ -173,18 +152,6 @@ warning 6002: The table/view 'HealthAppDb.dbo.vw_PatientHealthHistory' does not 
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__Patients__UserId__6477ECF3">
-    <End Role="Users" Type="Self.Users" Multiplicity="0..1" />
-    <End Role="Patients" Type="Self.Patients" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="Users">
-        <PropertyRef Name="UserId" />
-      </Principal>
-      <Dependent Role="Patients">
-        <PropertyRef Name="UserId" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
   <EntityContainer Name="HealthAppDbModelStoreContainer">
     <EntitySet Name="Appointments" EntityType="Self.Appointments" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="DoctorAvailableSlots" EntityType="Self.DoctorAvailableSlots" Schema="dbo" store:Type="Tables" />
@@ -192,7 +159,6 @@ warning 6002: The table/view 'HealthAppDb.dbo.vw_PatientHealthHistory' does not 
     <EntitySet Name="Doctors" EntityType="Self.Doctors" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="HealthRecords" EntityType="Self.HealthRecords" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Patients" EntityType="Self.Patients" Schema="dbo" store:Type="Tables" />
-    <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="vw_PatientHealthHistory" EntityType="Self.vw_PatientHealthHistory" store:Type="Views" store:Schema="dbo">
       <DefiningQuery>SELECT 
     [vw_PatientHealthHistory].[RecordId] AS [RecordId], 
@@ -222,17 +188,9 @@ warning 6002: The table/view 'HealthAppDb.dbo.vw_PatientHealthHistory' does not 
       <End Role="Doctors" EntitySet="Doctors" />
       <End Role="DoctorLeaves" EntitySet="DoctorLeaves" />
     </AssociationSet>
-    <AssociationSet Name="FK__Doctors__UserId__6C190EBB" Association="Self.FK__Doctors__UserId__6C190EBB">
-      <End Role="Users" EntitySet="Users" />
-      <End Role="Doctors" EntitySet="Doctors" />
-    </AssociationSet>
     <AssociationSet Name="FK__HealthRec__Appoi__787EE5A0" Association="Self.FK__HealthRec__Appoi__787EE5A0">
       <End Role="Appointments" EntitySet="Appointments" />
       <End Role="HealthRecords" EntitySet="HealthRecords" />
-    </AssociationSet>
-    <AssociationSet Name="FK__Patients__UserId__6477ECF3" Association="Self.FK__Patients__UserId__6477ECF3">
-      <End Role="Users" EntitySet="Users" />
-      <End Role="Patients" EntitySet="Patients" />
     </AssociationSet>
   </EntityContainer>
 </Schema>

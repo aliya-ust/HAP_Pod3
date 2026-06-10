@@ -1,4 +1,4 @@
-﻿using HealthCareApi.Helper;
+﻿using HealthCare.Shared;
 using HealthCareApi.Repositories.Interfaces;
 using HealthCareApi.Services.Interfaces;
 using System;
@@ -36,6 +36,7 @@ namespace HealthCareApi.Services.Implementations
 
         public async Task<Patient> AddPatientAsync(Patient patient)
         {
+            patient.IsActive = true;
             await _patientRepository.AddAsync(patient);
             return patient;
         }
@@ -66,8 +67,9 @@ namespace HealthCareApi.Services.Implementations
             if (patient == null)
                 return false;
 
-            // Soft delete
-            //patient.IsActive = false;
+            //Soft delete
+
+           patient.IsActive = false;
 
             await _patientRepository.UpdateAsync(patient);
 

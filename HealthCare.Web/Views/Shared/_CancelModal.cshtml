@@ -12,7 +12,7 @@
             <!-- Body -->
             <div class="modal-body">
                 <label class="form-label">Cancellation Reason</label>
-                <textarea id="cancelReason"
+                <textarea name="reason"
                           class="form-control"
                           placeholder="Enter reason..."
                           rows="3"></textarea>
@@ -27,14 +27,12 @@
                     Close
                 </button>
 
-                <!-- ✅ FORM -->
-                @using (Html.BeginForm("Cancel", "Appointment", FormMethod.Post, new { id = "cancelForm" }))
+                @using (Html.BeginForm("Cancel", "Appointment", FormMethod.Post))
                 {
                     @Html.AntiForgeryToken()
 
+                    <!-- ✅ Correct hidden ID -->
                     <input type="hidden" name="id" id="cancelId" />
-                    <input type="hidden" name="patientId" value="@Request["patientId"]" />
-                    <input type="hidden" name="reason" id="hiddenReason" />
 
                     <button type="submit" class="btn btn-danger">
                         Confirm Cancel

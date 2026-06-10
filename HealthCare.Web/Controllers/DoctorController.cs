@@ -113,7 +113,7 @@ namespace HealthCare.Web.Controllers
             else
                 TempData["Error"] = "Delete failed.";
 
-            return RedirectToAction("Index");
+            return RedirectToAction("List");
         }
 
         [HttpGet]

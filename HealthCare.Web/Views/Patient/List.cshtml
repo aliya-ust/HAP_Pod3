@@ -219,13 +219,19 @@
 </div>
 
 <script>
-    function openDeleteModal(id, name)("patientName").innerText = name; function openDeleteModal(id, name) {
+    function openDeleteModal(id, name) {
 
+        // ✅ Set hidden ID
+        document.getElementById("deleteId").value = id;
+
+        // ✅ Set patient name in modal
+        document.getElementById("patientName").innerText = name;
+
+        // ✅ Show modal
         var modal = new bootstrap.Modal(document.getElementById('deleteModal'));
         modal.show();
     }
 </script>
-        document.getElementById("deleteId").value = id;
 
 <div class="modal fade" id="deleteModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">

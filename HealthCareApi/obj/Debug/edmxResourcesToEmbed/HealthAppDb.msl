@@ -37,8 +37,8 @@
     <EntitySetMapping Name="Doctors">
       <EntityTypeMapping TypeName="HealthAppDbModel.Doctor">
         <MappingFragment StoreEntitySet="Doctors">
+          <ScalarProperty Name="Email" ColumnName="Email" />
           <ScalarProperty Name="DoctorId" ColumnName="DoctorId" />
-          <ScalarProperty Name="UserId" ColumnName="UserId" />
           <ScalarProperty Name="FullName" ColumnName="FullName" />
           <ScalarProperty Name="Specialisation" ColumnName="Specialisation" />
           <ScalarProperty Name="YearsOfExperience" ColumnName="YearsOfExperience" />
@@ -64,25 +64,15 @@
     <EntitySetMapping Name="Patients">
       <EntityTypeMapping TypeName="HealthAppDbModel.Patient">
         <MappingFragment StoreEntitySet="Patients">
+          <ScalarProperty Name="IsActive" ColumnName="IsActive" />
           <ScalarProperty Name="Email" ColumnName="Email" />
           <ScalarProperty Name="PatientId" ColumnName="PatientId" />
-          <ScalarProperty Name="UserId" ColumnName="UserId" />
           <ScalarProperty Name="FullName" ColumnName="FullName" />
           <ScalarProperty Name="DateOfBirth" ColumnName="DateOfBirth" />
           <ScalarProperty Name="Gender" ColumnName="Gender" />
           <ScalarProperty Name="PhoneNumber" ColumnName="PhoneNumber" />
           <ScalarProperty Name="InsuranceId" ColumnName="InsuranceId" />
           <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
-    <EntitySetMapping Name="Users">
-      <EntityTypeMapping TypeName="HealthAppDbModel.User">
-        <MappingFragment StoreEntitySet="Users">
-          <ScalarProperty Name="UserId" ColumnName="UserId" />
-          <ScalarProperty Name="Email" ColumnName="Email" />
-          <ScalarProperty Name="PasswordHash" ColumnName="PasswordHash" />
-          <ScalarProperty Name="Role" ColumnName="Role" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

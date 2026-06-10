@@ -4,7 +4,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 using HealthCareApi.Repositories.Interfaces;
-using HealthCareApi.Helper;
+using HealthCare.Shared;
 
 namespace HealthCareApi.Repositories.Implementations
 {
@@ -22,7 +22,8 @@ namespace HealthCareApi.Repositories.Implementations
             pageNumber = pageNumber < 1 ? 1 : pageNumber;
             pageSize = pageSize > 50 ? 50 : pageSize;
 
-            IQueryable<Patient> query = _context.Patients;
+            IQueryable<Patient> query = _context.Patients
+                .Where(p => p.IsActive);
 
             // Search
             if (!string.IsNullOrWhiteSpace(searchTerm))

@@ -112,3 +112,15 @@
 
     </div>
 </div>
+
+<script>
+    function openCancelModal(appointmentId, patientId) {
+
+        // ✅ Set appointment ID to hidden input
+        document.getElementById("cancelId").value = appointmentId;
+
+        // ✅ Show modal
+        var modal = new bootstrap.Modal(document.getElementById('cancelModal'));
+        modal.show();
+    }
+</script>
