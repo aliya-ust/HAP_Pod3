@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="HealthCare.Api.Tests/HealthCare.Api.Tests.csproj" Id="2a4a7bce-1a93-4619-b09c-26b36960201b" />
+  <Project Path="HealthCare.Shared/HealthCare.Shared.csproj" Id="b3a298e5-51fa-42df-aa6f-8960450d71a1" />
+  <Project Path="HealthCare.Web.Tests/HealthCare.Web.Tests.csproj" Id="b6a69143-3880-406e-b007-fb092046fc6e" />
+  <Project Path="HealthCare.Web/HealthCare.Web.csproj" Id="c3e0556b-6902-4e90-b69f-3ac8d40bb6b6" />
+  <Project Path="HealthCareApi/HealthCare.Api.csproj" Id="059115ad-7358-4d67-8d10-dfbab5f5db20" />
+</Solution>
