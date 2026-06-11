@@ -27,20 +27,14 @@ namespace HealthCare.Web.Controllers
         public async Task<ActionResult> Profile(int id)
         {
             if (id == 0)
-                return View("NotFound");;
+                return View("NotFound");
 
             var patient = await _service.GetByIdAsync(id);
 
             if (patient == null)
-                return View("NotFound");;
+                return View("NotFound");
 
             return View("List", patient);
-        }
-
-        // REGISTER (GET)
-        public ActionResult Register()
-        {
-            return View();
         }
 
         // REGISTER (POST)
@@ -67,14 +61,14 @@ namespace HealthCare.Web.Controllers
         public async Task<ActionResult> Edit(int id)
         {
             if (id == 0)
-                return View("NotFound");;
+                return PartialView("_EditPartial", id);
 
             var patient = await _service.GetByIdAsync(id);
 
             if (patient == null)
-                return View("NotFound");;
+                return PartialView("_EditPartial", patient);
 
-            return View(patient);
+            return PartialView("_EditPartial", patient);
         }
 
         // EDIT (POST)

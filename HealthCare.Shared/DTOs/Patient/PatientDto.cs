@@ -13,7 +13,6 @@ namespace HealthCare.Shared.DTOs.Patient
 
         [Required(ErrorMessage = "Date of Birth is required")]
         [DataType(DataType.Date)]
-        [CustomValidation(typeof(PatientDto), nameof(ValidateDOB))]
         public DateTime DateOfBirth { get; set; }
 
         [Required(ErrorMessage = "Gender is required")]
@@ -31,26 +30,5 @@ namespace HealthCare.Shared.DTOs.Patient
 
         [StringLength(50, ErrorMessage = "Insurance ID cannot exceed 50 characters")]
         public string InsuranceId { get; set; }
-
-        //  Custom DOB validation
-        public static ValidationResult ValidateDOB(DateTime dob, ValidationContext context)
-        {
-            if (dob > DateTime.Today)
-            {
-                return new ValidationResult("Date of Birth cannot be in the future");
-            }
-
-            if (dob > DateTime.Today.AddYears(-1))
-            {
-                return new ValidationResult("Patient must be at least 1 year old");
-            }
-
-            if (dob < DateTime.Today.AddYears(-120))
-            {
-                return new ValidationResult("Enter a valid Date of Birth");
-            }
-
-            return ValidationResult.Success;
-        }
     }
 }
