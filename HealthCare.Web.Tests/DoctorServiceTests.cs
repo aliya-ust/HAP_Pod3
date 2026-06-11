@@ -76,7 +76,7 @@ namespace HealthCare.Tests
             var result = await service.GetByIdAsync(1);
 
             Assert.IsNotNull(result);
-            Assert.AreEqual(1, result.DoctorId);
+            Assert.AreEqual(1, result.Items[0].DoctorId);
         }
 
         //  GET BY ID FAIL

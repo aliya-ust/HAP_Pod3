@@ -1,8 +1,9 @@
 ﻿using HealthCare.Shared.DTOs.Doctor;
+using HealthCare.Web.Services;
 using HealthCare.Web.Services.Interfaces;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
-using HealthCare.Web.Services;
 
 namespace HealthCare.Web.Controllers
 {
@@ -41,7 +42,7 @@ namespace HealthCare.Web.Controllers
             if (doctor == null)
                 return View("NotFound");;
 
-            return View("Profile", doctor);
+            return View("List", doctor);
         }
 
         //  CREATE (GET) → Doctor/Register.cshtml
@@ -55,6 +56,11 @@ namespace HealthCare.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Add(CreateDoctorDto dto)
         {
+            if (dto.TimeSlots == null || !dto.TimeSlots.Any())
+            {
+                ModelState.AddModelError("TimeSlots", "Please select at least one time slot");
+            }
+
             if (!ModelState.IsValid)
                 return PartialView("_EditPartial", dto);
 

@@ -34,7 +34,7 @@ namespace HealthCare.Web.Controllers
             if (patient == null)
                 return View("NotFound");;
 
-            return View(patient);
+            return View("List", patient);
         }
 
         // REGISTER (GET)

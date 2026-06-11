@@ -3,6 +3,7 @@ obj/
 .vs/
 .vscode/
 .idea/
+.sonarqube/
 
 *.user
 *.suo
@@ -19,8 +20,3 @@ wwwroot/lib/
 
 
 TestResults/
-
-HealthAppDb.Context.tt
-HealthAppDb.edmx
-HealthAppDb.edmx.diagram
-HealthAppDb.tt

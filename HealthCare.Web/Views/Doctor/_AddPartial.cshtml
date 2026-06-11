@@ -94,7 +94,7 @@
             <div class="d-flex flex-wrap gap-3">
                 @{
                     var slots = new List<string>
-                    {
+                        {
                     "9 AM", "10 AM", "11 AM", "12 PM",
                     "1 PM", "2 PM", "3 PM", "4 PM", "5 PM"
                 };
@@ -140,23 +140,37 @@
 
             var form = $(this);
 
+            // ✅ CHECK TIME SLOTS
+            var selectedSlots = $('input[name="TimeSlots"]:checked');
+
+            if (selectedSlots.length === 0) {
+
+                // ✅ Show error under checkbox group
+                var errorDiv = $('[data-valmsg-for="TimeSlots"]');
+                errorDiv.text("Please select at least one time slot");
+
+                return; // ❌ STOP submission
+            } else {
+                // ✅ Clear error if valid
+                $('[data-valmsg-for="TimeSlots"]').text("");
+            }
+
+            // ✅ Continue AJAX submit
             $.ajax({
                 url: form.attr("action"),
                 type: "POST",
                 data: form.serialize(),
                 success: function (response) {
 
-                    // ✅ SUCCESS
                     if (response && response.success) {
                         alert("Doctor added successfully");
                         location.reload();
                         return;
                     }
 
-                    // ✅ RELOAD FORM WITH ERRORS
                     $("#doctorFormContainer").html(response);
 
-                    // 🔥 IMPORTANT (rebind validation)
+                    // ✅ Rebind validation after reload
                     $.validator.unobtrusive.parse("#doctorFormContainer");
                 },
                 error: function () {

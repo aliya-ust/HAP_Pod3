@@ -38,16 +38,29 @@ namespace HealthCare.Web.Services
             return JsonConvert.DeserializeObject<PagedResult<DoctorDto>>(json);
         }
 
-        public async Task<DoctorDto> GetByIdAsync(int id)
+        public async Task<PagedResult<DoctorDto>> GetByIdAsync(int id)
         {
             var response = await _client.GetAsync($"{baseUrl}/{id}");
 
+            var result = new PagedResult<DoctorDto>();
+
             if (!response.IsSuccessStatusCode)
-                return null;
+            {
+                result.PageNumber = 1;
+                result.PageSize = 1;
+                result.TotalCount = 0;
+                return result;
+            }
 
             var json = await response.Content.ReadAsStringAsync();
+            var doctor = JsonConvert.DeserializeObject<DoctorDto>(json);
 
-            return JsonConvert.DeserializeObject<DoctorDto>(json);
+            result.Items = new List<DoctorDto> { doctor };
+            result.PageNumber = 1;
+            result.PageSize = 1;
+            result.TotalCount = 1;
+
+            return result;
         }
 
         public async Task<bool> CreateAsync(CreateDoctorDto dto)
