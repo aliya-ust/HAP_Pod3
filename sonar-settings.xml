@@ -1,0 +1,48 @@
+sonar.projectKey=HealthCare
+sonar.projectName=HealthCare System
+sonar.projectVersion=1.0
+
+# Exclusions (Code Analysis)
+sonar.exclusions=\
+**/*.cshtml,\
+**/Views/**,\
+**/Content/**,\
+**/Scripts/**,\
+**/wwwroot/**,\
+**/bin/**,\
+**/obj/**,\
+**/App_Data/**,\
+**/TestResults/**,\
+**/*.config,\
+**/*.tt,\
+**/*.edmx,\
+**/*.diagram,\
+**/*.Designer.cs,\
+**/*.user,\
+**/*.sln,\
+**/*.slnx,\
+**/favicon.ico,\
+**/packages/**
+
+# Coverage exclusions (ONLY measure Services)
+sonar.coverage.exclusions=\
+**/*.cshtml,\
+**/Controllers/**,\
+**/Repositories/**,\
+**/Views/**,\
+**/Content/**,\
+**/Scripts/**,\
+**/App_Start/**,\
+**/App_Data/**,\
+**/DTOs/**,\
+**/Models/**,\
+**/Mapping/**,\
+**/*.config,\
+**/Areas/**
+
+# Test projects
+sonar.tests=\
+HealthCare.Api.Tests/**,\
+HealthCare.Web.Tests/**
+
+sonar.sourceEncoding=UTF-8
