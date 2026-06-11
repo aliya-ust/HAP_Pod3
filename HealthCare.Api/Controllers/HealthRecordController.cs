@@ -37,7 +37,7 @@ namespace HealthCareApi.Controllers
             try
             {
                 var created = await _healthRecordService
-                    .AddHealthRecordAsync(record);
+                    .CreateAsync(record);
 
                 return Ok(created);
             }
@@ -71,6 +71,32 @@ namespace HealthCareApi.Controllers
                 PageNumber = result.PageNumber,
                 PageSize = result.PageSize
             });
+        }
+
+        [HttpPost]
+        public async Task<IHttpActionResult> Create(HealthRecordDto dto)
+        {
+            try
+            {
+                var record = new HealthRecord
+                {
+                    AppointmentId = dto.AppointmentId,
+                    PatientId = dto.PatientId,
+                    DoctorId = dto.DoctorId,
+                    Diagnosis = dto.Diagnosis,
+                    Prescription = dto.Prescription,
+                    Notes = dto.Notes,
+                    VisitDate = DateTime.Now
+                };
+
+                var result = await _healthRecordService.CreateAsync(record);
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message); // ✅ send error
+            }
         }
 
         // ✅ 3. GET HEALTH RECORD BY ID

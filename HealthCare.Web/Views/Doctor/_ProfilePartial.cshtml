@@ -1,0 +1,14 @@
+﻿@model HealthCare.Shared.DTOs.Doctor.DoctorDto
+
+<p><b>Name:</b> @Model.FullName</p>
+<p><b>Specialisation:</b> @Model.Specialisation</p>
+<p><b>Experience:</b> @Model.YearsOfExperience</p>
+<p><b>Fee:</b> @Model.ConsultationFee</p>
+
+<h5>Available Slots</h5>
+<ul>
+    @foreach (var slot in Model.DoctorAvailableSlots ?? new List<string>())
+    {
+        <li>@slot</li>
+    }
+</ul>

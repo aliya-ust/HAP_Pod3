@@ -42,7 +42,7 @@ namespace HealthCare.Web.Controllers
             if (doctor == null)
                 return HttpNotFound();
 
-            return View("Profile", doctor);
+            return View("_ProfilePartial", doctor);
         }
 
         //  CREATE (GET) → Doctor/Register.cshtml

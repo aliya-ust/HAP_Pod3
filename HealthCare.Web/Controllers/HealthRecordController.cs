@@ -39,26 +39,15 @@ public class HealthRecordController : Controller
         return View("List", result);
     }
 
-    // ✅ ADD (GET)
-    // → HealthRecord/Create.cshtml
-    public ActionResult Create(int patientId)
-    {
-        var model = new CreateHealthRecordDto
-        {
-            PatientId = patientId
-        };
-
-        return View("Create", model);
-    }
-
-    // ✅ ADD (POST)
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<ActionResult> Create(CreateHealthRecordDto dto)
+    public async Task<ActionResult> Create(HealthRecordDto dto)
     {
         if (!ModelState.IsValid)
-            return View("Create", dto);
+            return View(dto);
 
+        try
+        {
             var result = await _service.CreateAsync(dto);
 
             if (result != null)
@@ -68,9 +57,14 @@ public class HealthRecordController : Controller
             }
 
             ModelState.AddModelError("", "Failed to create record");
-            return View("Create", dto);
+            return View(dto);
+        }
+        catch (Exception ex)
+        {
+            ModelState.AddModelError("", ex.Message);
+            return View(dto);
+        }
     }
-
     public async Task<ActionResult> Single(int id)
     {
         try

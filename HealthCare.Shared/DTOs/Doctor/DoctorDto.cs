@@ -13,7 +13,7 @@ namespace HealthCare.Shared.DTOs.Doctor
         public decimal ConsultationFee { get; set; }
         public bool IsActive { get; set; }
 
-        public List<string> AvailableSlots { get; set; }
+        public List<string> DoctorAvailableSlots { get; set; }
         public List<DateTime> LeaveDates { get; set; }
     }
 }

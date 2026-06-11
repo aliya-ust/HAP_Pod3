@@ -59,6 +59,12 @@ namespace HealthCareApi.Repositories.Implementations
             };
         }
 
+        public async Task AddAsync(HealthRecord record)
+        {
+            _context.HealthRecords.Add(record);
+            await _context.SaveChangesAsync();
+        }
+
         public async Task<HealthRecord> GetByAppointmentIdAsync(int appointmentId)
         {
             return await _context.HealthRecords

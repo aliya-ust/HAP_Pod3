@@ -33,18 +33,22 @@ namespace HealthCare.Web.Services
         }
 
         // ✅ CREATE RECORD
-        public async Task<bool> CreateAsync(CreateHealthRecordDto dto)
+        public async Task<bool> CreateAsync(HealthRecordDto dto)
         {
-            System.Diagnostics.Debug.WriteLine(dto.AppointmentId);
             var json = JsonConvert.SerializeObject(dto);
+
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-            System.Diagnostics.Debug.WriteLine(content);
+            var res = await client.PostAsync(baseUrl, content);
 
-            var response = await client.PostAsync(baseUrl, content);
+            if (res.IsSuccessStatusCode)
+                return true;
 
-            return response.IsSuccessStatusCode;
+            var error = await res.Content.ReadAsStringAsync();
+
+            throw new Exception(error); // ✅ propagate API error
         }
+
 
         public async Task<HealthRecordDto> GetByIdAsync(int appointmentId)
         {

@@ -16,5 +16,8 @@ namespace HealthCareApi.Repositories.Interfaces
             int pageNumber = 1,
             int pageSize = 10
         );
+
+        Task AddDoctorSlotAsync(DoctorAvailableSlot slot);
+
     }
 }

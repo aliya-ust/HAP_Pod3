@@ -23,5 +23,7 @@ namespace HealthCare.Api
         public System.DateTime CreatedDate { get; set; }
     
         public virtual Appointment Appointment { get; set; }
+        public int PatientId { get; internal set; }
+        public int DoctorId { get; internal set; }
     }
 }

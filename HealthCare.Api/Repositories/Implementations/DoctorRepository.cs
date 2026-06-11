@@ -42,12 +42,12 @@ namespace HealthCareApi.Repositories.Implementations
             if (hasSearchTerm)
             {
                 query = query.Where(d =>
-                    d.Specialisation.ToLower().Contains(specialization.ToLower()));
+                    d.FullName.ToLower().Contains(searchTerm.ToLower()) || d.DoctorId.ToString() == searchTerm);
             }
             else if (hasSpecialization)
             {
                 query = query.Where(d =>
-                    d.FullName.ToLower().Contains(searchTerm.ToLower()) || d.DoctorId.ToString() == searchTerm);
+                     d.Specialisation.ToLower().Trim() == specialization.ToLower().Trim());
             }
 
             // TOTAL COUNT (must be before pagination)
@@ -73,6 +73,14 @@ namespace HealthCareApi.Repositories.Implementations
                 PageSize = pageSize
             };
         }
+
+
+        public async Task AddDoctorSlotAsync(DoctorAvailableSlot slot)
+        {
+            _context.DoctorAvailableSlots.Add(slot);
+            await _context.SaveChangesAsync();
+        }
+
 
         public override async Task DeleteAsync(Doctor doctor)
         {

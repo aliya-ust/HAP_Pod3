@@ -43,6 +43,7 @@ namespace HealthCareApi.Services.Implementations
             return patient;
         }
 
+
         public async Task<Patient> UpdatePatientAsync(Patient updatedPatient)
         {
             var existingPatient = await _patientRepository.GetByIdAsync(updatedPatient.PatientId);

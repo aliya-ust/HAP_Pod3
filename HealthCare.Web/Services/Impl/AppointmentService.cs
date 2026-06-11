@@ -75,14 +75,23 @@ namespace HealthCare.Web.Services
 
             var res = await client.PostAsync(baseUrl, content);
 
-            return res.IsSuccessStatusCode;
+            if (res.IsSuccessStatusCode)
+                return true;
+
+            var error = await res.Content.ReadAsStringAsync();
+            throw new Exception(error); //  send error to controller
         }
 
         //  CONFIRM
         public async Task<bool> ConfirmAsync(int id)
         {
             var res = await client.PutAsync($"{baseUrl}/{id}/confirm", null);
-            return res.IsSuccessStatusCode;
+            if (res.IsSuccessStatusCode)
+                return true;
+
+            var error = await res.Content.ReadAsStringAsync();
+            throw new Exception(error); //  send error to controller
+
         }
 
         //  CANCEL
@@ -93,7 +102,12 @@ namespace HealthCare.Web.Services
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
             var res = await client.PutAsync($"{baseUrl}/{id}/cancel", content);
-            return res.IsSuccessStatusCode;
+            if (res.IsSuccessStatusCode)
+                return true;
+
+            var error = await res.Content.ReadAsStringAsync();
+            throw new Exception(error); //  send error to controller
+
         }
     }
 }

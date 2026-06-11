@@ -240,6 +240,8 @@
     <Content Include="Views\HealthRecord\Create.cshtml" />
     <Content Include="Views\HealthRecord\Single.cshtml" />
     <Content Include="Views\Doctor\Available.cshtml" />
+    <Content Include="Views\Patient\_ProfilePartial.cshtml" />
+    <Content Include="Views\Doctor\_ProfilePartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

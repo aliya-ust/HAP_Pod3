@@ -45,18 +45,23 @@ namespace HealthCare.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Book(AppointmentDto dto)
         {
-            if (!ModelState.IsValid)
-                return View("Book", dto);
-
-            var result = await _service.BookAsync(dto);
-
-            if (result)
+            try
             {
-                TempData["Success"] = "Appointment booked successfully.";
-                return RedirectToAction("List", new { patientId = dto.PatientId });
+                var result = await _service.BookAsync(dto);
+
+                if (result)
+                {
+                    TempData["Success"] = "Appointment booked successfully.";
+                    return RedirectToAction("Index", new { patientId = dto.PatientId });
+                }
+
+                ModelState.AddModelError("", "Booking failed");
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", ex.Message); //show API error
             }
 
-            ModelState.AddModelError("", "Booking failed");
             return View("Book", dto);
         }
 

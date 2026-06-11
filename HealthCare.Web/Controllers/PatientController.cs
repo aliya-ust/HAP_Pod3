@@ -32,7 +32,7 @@ namespace HealthCare.Web.Controllers
             if (patient == null)
                 return HttpNotFound();
 
-            return View(patient);
+            return PartialView("_ProfilePartial", patient);
         }
 
         // REGISTER (GET)

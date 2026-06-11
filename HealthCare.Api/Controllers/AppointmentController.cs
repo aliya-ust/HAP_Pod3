@@ -2,8 +2,6 @@
 using HealthCare.Api;
 using HealthCare.Shared;
 using HealthCare.Shared.DTOs.Appointment;
-//using HealthCareApi.DTOs.Appointment;
-//using HealthCareApi.Helper;
 using HealthCareApi.Services.Interfaces;
 using System;
 using System.Collections.Generic;

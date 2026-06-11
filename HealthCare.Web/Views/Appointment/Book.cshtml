@@ -12,53 +12,123 @@
     {
         @Html.AntiForgeryToken()
 
-        <div class="card p-4">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
+        <div class="card p-4">
             <div class="row">
 
+                <!-- ✅ Patient -->
                 <div class="col-md-6 mb-3">
                     <label>Patient Id</label>
-                    @Html.TextBoxFor(m => m.PatientId, new { @class = "form-control", type = "number", required = "required" })
-                    @Html.ValidationMessageFor(m => m.PatientId)
+                    @Html.TextBoxFor(m => m.PatientId, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.PatientId, "", new { @class = "text-danger" })
                 </div>
 
-                <div class="col-md-6 mb-3">
-                    <label>Doctor Id</label>
-                    @Html.TextBoxFor(m => m.DoctorId, new { @class = "form-control", type = "number", required = "required" })
-                    @Html.ValidationMessageFor(m => m.DoctorId)
-                </div>
-
+                <!-- ✅ Date (No Past Dates) -->
                 <div class="col-md-6 mb-3">
                     <label>Scheduled Date</label>
                     @Html.TextBoxFor(m => m.ScheduledDate, new
                     {
                         @class = "form-control",
                         type = "date",
-                        required = "required"
+                        id = "date",
+                        min = DateTime.Now.ToString("yyyy-MM-dd")
                     })
+                    @Html.ValidationMessageFor(m => m.ScheduledDate, "", new { @class = "text-danger" })
                 </div>
 
+                <!-- ✅ Specialization -->
+                <div class="col-md-6 mb-3">
+                    <label>Specialization</label>
+                    <select id="specialization" class="form-control">
+                        <option value="">-- Select Specialization --</option>
+                        <option value="Cardiologist">Cardiology</option>
+                        <option value="Dermatologist">Dermatology</option>
+                        <option value="Neurologist">Neurology</option>
+                        <option value="Orthopedics">Orthopedics</option>
+                        <option value="Pediatrician">Pediatrician</option>
+                    </select>
+                </div>
+
+                <!-- ✅ Doctor Dropdown -->
+                <div class="col-md-6 mb-3">
+                    <label>Doctor</label>
+                    <select id="doctor" name="DoctorId" class="form-control" disabled>
+                        <option>-- Select Doctor --</option>
+                    </select>
+                    @Html.ValidationMessageFor(m => m.DoctorId, "", new { @class = "text-danger" })
+                </div>
+
+                <!-- ✅ Time Slot Dropdown -->
                 <div class="col-md-6 mb-3">
                     <label>Time Slot</label>
-                    @Html.TextBoxFor(m => m.TimeSlot, new
-                    {
-                        @class = "form-control",
-                        placeholder = "e.g. 10:00 AM - 10:30 AM",
-                        required = "required"
-                    })
+                    <select id="timeslot" name="TimeSlot" class="form-control" disabled>
+                        <option>-- Select Time Slot --</option>
+                    </select>
+                    @Html.ValidationMessageFor(m => m.TimeSlot, "", new { @class = "text-danger" })
                 </div>
 
             </div>
 
-            <button type="submit" class="btn btn-success">
+            <button type="submit" class="btn btn-success mt-3">
                 Book Appointment
             </button>
 
-            <a href="@Url.Action("Index","Appointment")" class="btn btn-secondary">
+            <a href="@Url.Action("Index","Appointment")" class="btn btn-secondary mt-3">
                 Back
             </a>
-
         </div>
     }
 
 </div>
+
+<!-- ✅ Scripts -->
+<script>
+
+    // Load Doctors
+    document.getElementById("specialization").addEventListener("change", function () {
+        var specialization = this.value;
+        var doctor = document.getElementById("doctor");
+
+        doctor.disabled = true;
+        doctor.innerHTML = '<option>Loading doctors...</option>';
+
+        fetch('https://localhost:44326/api/doctors?specialization=' + specialization)
+            .then(res => res.json())
+            .then(data => {
+                doctor.disabled = false;
+                doctor.innerHTML = '<option value="">-- Select Doctor --</option>';
+
+                data.Items.forEach(d => {
+                    doctor.innerHTML += `<option value="${d.DoctorId}">${d.FullName}</option>`;
+                });
+            });
+    });
+
+    // Load Slots
+    document.getElementById("doctor").addEventListener("change", loadSlots);
+    document.getElementById("date").addEventListener("change", loadSlots);
+
+    function loadSlots() {
+        var doctorId = document.getElementById("doctor").value;
+        var date = document.getElementById("date").value;
+        var slot = document.getElementById("timeslot");
+
+        if (!doctorId || !date) return;
+
+        slot.disabled = true;
+        slot.innerHTML = '<option>Loading slots...</option>';
+
+        fetch(`https://localhost:44326/api/appointments/slots?doctorId=${doctorId}&date=${date}`)
+            .then(res => res.json())
+            .then(data => {
+                slot.disabled = false;
+                slot.innerHTML = '<option value="">-- Select Time Slot --</option>';
+
+                data.forEach(s => {
+                    slot.innerHTML += `<option value="${s}">${s}</option>`;
+                });
+            });
+    }
+
+</script>

@@ -41,16 +41,19 @@ namespace HealthCareApi.Services.Implementations
             if (!doctorExists)
                 throw new Exception("Invalid or inactive doctor");
 
-            //// 3. Validate timeslot exists
-            //var slotExists = await _appointmentRepository
-            //    .SlotExistsAsync(appointment.DoctorId, appointment.TimeSlot);
+            // 3. Validate timeslot exists
+            var slotExists = await _appointmentRepository
+                .SlotExistsAsync(appointment.DoctorId, appointment.TimeSlot);
 
-            //if (!slotExists)
-            //    throw new Exception("Invalid time slot for this doctor");
+            if (!slotExists)
+                throw new Exception("Invalid time slot for this doctor");
 
             // 4. Prevent booking in the past
             if (appointment.ScheduledDate.Date < DateTime.Today)
                 throw new Exception("Cannot book appointment in the past");
+
+            if (appointment.ScheduledDate.Date == DateTime.Today && DateTime.Now.Hour >= 0)
+                throw new Exception("Booking closed for today");
 
             // 5. Check slot availability
             var isBooked = await _appointmentRepository
