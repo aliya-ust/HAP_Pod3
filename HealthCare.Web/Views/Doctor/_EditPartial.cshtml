@@ -1,46 +1,55 @@
-﻿@model HealthCare.Shared.DTOs.Doctor.DoctorDto
+﻿@model HealthCare.Shared.PagedResult<HealthCare.Shared.DTOs.Doctor.DoctorDto>
 
 <div id="editDoctorFormContainer">
     @using (Html.BeginForm("Edit", "Doctor", FormMethod.Post, new { id = "editDoctorForm" }))
     {
         @Html.AntiForgeryToken()
-        @Html.HiddenFor(m => m.DoctorId)
+        @Html.HiddenFor(m => m.Items[0].DoctorId)
 
         <div class="row g-3">
 
             <!-- ✅ Full Name -->
             <div class="col-md-6">
-                @Html.LabelFor(m => m.FullName, new { @class = "form-label fw-semibold" })
+                @Html.LabelFor(m => m.Items[0].FullName, new { @class = "form-label fw-semibold" })
 
-                @Html.TextBoxFor(m => m.FullName, new
+                @Html.TextBoxFor(m => m.Items[0].FullName, new
                 {
                     @class = "form-control",
                     required = "required",
                     maxlength = "100"
                 })
 
-                @Html.ValidationMessageFor(m => m.FullName, "", new { @class = "text-danger" })
+                @Html.ValidationMessageFor(m => m.Items[0].FullName, "", new { @class = "text-danger" })
             </div>
 
             <!-- ✅ Specialisation -->
             <div class="col-md-6">
-                @Html.LabelFor(m => m.Specialisation, new { @class = "form-label fw-semibold" })
 
-                @Html.TextBoxFor(m => m.Specialisation, new
-                {
-                    @class = "form-control",
-                    required = "required",
-                    maxlength = "50"
-                })
+                    @Html.LabelFor(m => m.Items[0].Specialisation,
+                        new { @class = "form-label fw-semibold" })
 
-                @Html.ValidationMessageFor(m => m.Specialisation, "", new { @class = "text-danger" })
+                    @Html.DropDownListFor(m => m.Items[0].Specialisation,
+                        new List<SelectListItem>
+                        {
+                            new SelectListItem { Text = "Cardiologist", Value = "Cardiologist" },
+                            new SelectListItem { Text = "Dermatologist", Value = "Dermatologist" },
+                            new SelectListItem { Text = "Neurologist", Value = "Neurologist" },
+                            new SelectListItem { Text = "Pediatrician", Value = "Pediatrician" },
+                            new SelectListItem { Text = "Orthopedic", Value = "Orthopedic" }
+                        },
+                        "Select Specialisation",
+                        new { @class = "form-select", required = "required" }
+                    )
+
+                    @Html.ValidationMessageFor(m => m.Items[0].Specialisation, "",
+                        new { @class = "text-danger" })
             </div>
 
             <!-- ✅ Experience -->
             <div class="col-md-6">
-                @Html.LabelFor(m => m.YearsOfExperience, new { @class = "form-label fw-semibold" })
+                @Html.LabelFor(m => m.Items[0].YearsOfExperience, new { @class = "form-label fw-semibold" })
 
-                @Html.TextBoxFor(m => m.YearsOfExperience, new
+                @Html.TextBoxFor(m => m.Items[0].YearsOfExperience, new
                 {
                     @class = "form-control",
                     type = "number",
@@ -49,14 +58,14 @@
                     required = "required"
                 })
 
-                @Html.ValidationMessageFor(m => m.YearsOfExperience, "", new { @class = "text-danger" })
+                @Html.ValidationMessageFor(m => m.Items[0].YearsOfExperience, "", new { @class = "text-danger" })
             </div>
 
             <!-- ✅ Fee -->
             <div class="col-md-6">
-                @Html.LabelFor(m => m.ConsultationFee, new { @class = "form-label fw-semibold" })
+                @Html.LabelFor(m => m.Items[0].ConsultationFee, new { @class = "form-label fw-semibold" })
 
-                @Html.TextBoxFor(m => m.ConsultationFee, new
+                @Html.TextBoxFor(m => m.Items[0].ConsultationFee, new
                 {
                     @class = "form-control",
                     type = "number",
@@ -64,7 +73,7 @@
                     required = "required"
                 })
 
-                @Html.ValidationMessageFor(m => m.ConsultationFee, "", new { @class = "text-danger" })
+                @Html.ValidationMessageFor(m => m.Items[0].ConsultationFee, "", new { @class = "text-danger" })
             </div>
 
         </div>
@@ -77,40 +86,3 @@
         </div>
     }
 </div>
-
-<!-- ✅ AJAX SCRIPT -->
-<script>
-    $(document).ready(function () {
-
-        $("#editDoctorForm").submit(function (e) {
-            e.preventDefault();
-
-            var form = $(this);
-
-            $.ajax({
-                url: form.attr("action"),
-                type: "POST",
-                data: form.serialize(),
-                success: function (response) {
-
-                    // ✅ SUCCESS
-                    if (response && response.success) {
-                        alert("Doctor updated successfully");
-                        location.reload();
-                        return;
-                    }
-
-                    // ✅ VALIDATION ERROR (reload partial)
-                    $("#editDoctorFormContainer").html(response);
-
-                    // 🔥 IMPORTANT: rebind validation
-                    $.validator.unobtrusive.parse("#editDoctorFormContainer");
-                },
-                error: function () {
-                    alert("Something went wrong");
-                }
-            });
-        });
-
-    });
-</script>

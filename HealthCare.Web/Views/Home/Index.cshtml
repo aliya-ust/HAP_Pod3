@@ -15,7 +15,7 @@
 
         <!-- VIEW DOCTORS -->
         <div class="col-md-4">
-            <a href="/Doctor/Available" class="text-decoration-none">
+            <a href="@Url.Action("List", "Doctor")" class="text-decoration-none">
                 <div class="card option-card text-center p-4">
                     <h1>👨‍⚕️</h1>
                     <h4 class="mt-2">View Available Doctors</h4>
@@ -26,7 +26,7 @@
 
         <!-- VIEW APPOINTMENTS -->
         <div class="col-md-4">
-            <a href="/Appointment/Index" class="text-decoration-none">
+            <a href="@Url.Action("List", "Appointment")" class="text-decoration-none">
                 <div class="card option-card text-center p-4">
                     <h1>📅</h1>
                     <h4 class="mt-2">View Appointments</h4>
@@ -37,7 +37,7 @@
 
         <!-- HEALTH HISTORY -->
         <div class="col-md-4">
-            <a href="/HealthRecord/HealthHistory" class="text-decoration-none">
+            <a href="@Url.Action("List", "HealthRecord")" class="text-decoration-none">
                 <div class="card option-card text-center p-4">
                     <h1>📋</h1>
                     <h4 class="mt-2">Health History</h4>

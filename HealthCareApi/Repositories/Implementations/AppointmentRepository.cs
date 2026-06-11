@@ -192,7 +192,7 @@ public class AppointmentRepository : Repository<Appointment>, IAppointmentReposi
         //  CASE 1: No filters → exclude both Cancelled + Completed
         if (!patientId.HasValue && !doctorId.HasValue)
         {
-            query = query.Where(a => a.Status != "Cancelled" && a.Status != "Completed");
+            query = query;
         }
         else
         {

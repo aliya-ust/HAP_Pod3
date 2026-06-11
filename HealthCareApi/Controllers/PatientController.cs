@@ -85,9 +85,6 @@ namespace HealthCareApi.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            if (id != patient.PatientId)
-                return BadRequest("Patient ID mismatch");
-
             var updatedPatient = await _patientService.UpdatePatientAsync(patient);
 
             if (updatedPatient == null)

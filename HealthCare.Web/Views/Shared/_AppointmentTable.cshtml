@@ -122,18 +122,17 @@
 </div>
 
 <script>
-    function openCancelModal(appointmentId) {
+    function openCancelModal(appointmentId, patientId) {
 
-        console.log("Opening modal for:", appointmentId);
+        console.log("Opening modal:", appointmentId, patientId);
 
-        //  Set correct hidden input
+        // ✅ set appointment id
         document.getElementById("cancelId").value = appointmentId;
 
-        //  Show modal
-        var modal = new bootstrap.Modal(
-            document.getElementById('cancelModal')
-        );
+        // ✅ set patient id
+        document.getElementById("cancelPatientId").value = patientId;
 
-        modal.show();
+        // ✅ show modal
+        new bootstrap.Modal(document.getElementById('cancelModal')).show();
     }
 </script>

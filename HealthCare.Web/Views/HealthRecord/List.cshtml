@@ -24,6 +24,7 @@
             <div class="d-flex gap-2">
                 <input type="number"
                        name="patientId"
+                       value="@Request["patientId"]"
                        class="form-control"
                        placeholder="Enter Patient ID"
                        style="width:180px;" />
@@ -41,6 +42,7 @@
 
                 <input type="number"
                        name="id"
+                       value="@Request["id"]"
                        class="form-control"
                        placeholder="Enter Record ID"
                        style="width:180px;" />
@@ -97,7 +99,7 @@
                         {
                             <tr>
                                 <td colspan="5" class="text-center py-4 text-muted">
-                                    No health records found.
+                                    Search with correct ID to view Health Records.
                                 </td>
                             </tr>
                         }

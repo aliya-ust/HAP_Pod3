@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using System.Web.UI.WebControls;
 
 namespace HealthCare.Web.Controllers
 {
@@ -91,6 +92,7 @@ namespace HealthCare.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Cancel(int id, int patientId, string reason)
         {
+            System.Diagnostics.Debug.WriteLine(patientId, reason);
             await _service.CancelAsync(id, reason);
 
             TempData["Success"] = "Appointment cancelled successfully";

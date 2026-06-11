@@ -118,38 +118,4 @@
             </button>
         </div>
     }
-</div>
-
-<!-- ✅ AJAX SCRIPT -->
-<script>
-    $(document).ready(function () {
-
-        $("#editForm").submit(function (e) {
-            e.preventDefault();
-
-            var form = $(this);
-
-            $.ajax({
-                url: form.attr("action"),
-                type: "POST",
-                data: form.serialize(),
-                success: function (response) {
-
-                    // ✅ SUCCESS
-                    if (response && response.success) {
-                        alert("Patient updated successfully");
-                        location.reload();
-                        return;
-                    }
-
-                    // ✅ VALIDATION ERROR
-                    $("#editFormContainer").html(response);
-                },
-                error: function () {
-                    alert("Something went wrong");
-                }
-            });
-        });
-
-    });
-</script>
+</div>S

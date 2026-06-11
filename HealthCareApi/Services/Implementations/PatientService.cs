@@ -53,7 +53,7 @@ namespace HealthCareApi.Services.Implementations
             existingPatient.DateOfBirth = updatedPatient.DateOfBirth;
             existingPatient.Gender = updatedPatient.Gender;
             existingPatient.PhoneNumber = updatedPatient.PhoneNumber;
-            //existingPatient.IsActive = updatedPatient.IsActive;
+            existingPatient.IsActive = true;
 
             await _patientRepository.UpdateAsync(existingPatient);
 

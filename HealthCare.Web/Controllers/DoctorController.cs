@@ -4,6 +4,7 @@ using HealthCare.Web.Services.Interfaces;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using HealthCare.Shared;
 
 namespace HealthCare.Web.Controllers
 {
@@ -40,7 +41,7 @@ namespace HealthCare.Web.Controllers
             var doctor = await _service.GetByIdAsync(id);
 
             if (doctor == null)
-                return View("NotFound");;
+                TempData["Error"] = "Doctor does not exist.";
 
             return View("List", doctor);
         }
@@ -90,17 +91,17 @@ namespace HealthCare.Web.Controllers
         //  EDIT (POST)
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(UpdateDoctorDto dto)
+        public async Task<ActionResult> Edit(PagedResult<UpdateDoctorDto> dto)
         {
             if (!ModelState.IsValid)
                 return PartialView("_EditPartial", dto);
 
-            var result = await _service.UpdateAsync(dto);
+            var result = await _service.UpdateAsync(dto.Items[0]);
 
             if (result)
             {
                 TempData["Success"] = "Doctor updated successfully.";
-                return RedirectToAction("List", new { id = dto.DoctorId });
+                return RedirectToAction("List", new { id = dto.Items[0].DoctorId });
             }
 
             ModelState.AddModelError("", "Error updating doctor");

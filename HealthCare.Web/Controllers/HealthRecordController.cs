@@ -4,6 +4,7 @@ using HealthCare.Web.Services;
 using HealthCare.Web.Services.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 
@@ -41,21 +42,25 @@ public class HealthRecordController : Controller
 
     //  ADD (GET)
     // → HealthRecord/Create.cshtml
-    public ActionResult Create(int patientId)
+    public ActionResult Create(int appointmentId, int patientId, int doctorId)
     {
         var model = new CreateHealthRecordDto
         {
-            PatientId = patientId
+            AppointmentId = appointmentId,
+            PatientId = patientId,
+            DoctorId = doctorId,
         };
 
-        return View("Create", model);
+        return View(model);
     }
+
 
     //  ADD (POST)
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<ActionResult> Create(CreateHealthRecordDto dto)
     {
+        System.Diagnostics.Debug.WriteLine(dto.AppointmentId);
         if (!ModelState.IsValid)
             return View("Create", dto);
 

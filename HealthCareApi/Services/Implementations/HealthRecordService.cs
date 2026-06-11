@@ -29,7 +29,6 @@ namespace HealthCareApi.Services.Implementations
         // ADD HEALTH RECORD
         public async Task<HealthRecord> AddHealthRecordAsync(HealthRecord record)
         {
-            System.Diagnostics.Debug.WriteLine(record.AppointmentId);
             var appointment = await _appointmentRepository.GetByIdAsync(record.AppointmentId);
 
             if (appointment == null)

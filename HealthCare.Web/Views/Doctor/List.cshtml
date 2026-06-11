@@ -44,11 +44,11 @@
                 <select name="specialization"
                         class="form-select"
                         style="width:180px;">
-                    <option value="">All Specialisations</option>
-                    <option value="Cardiologist" @(Request["specialization"] == "Cardiology" ? "selected" : "")>Cardiology</option>
-                    <option value="Dermatologist" @(Request["specialization"] == "Dermatology" ? "selected" : "")>Dermatology</option>
+                    <option value="" >All Specialisations</option>
+                    <option value="Cardiologist" @(Request["specialization"] == "Cardiologist" ? "selected" : "")>Cardiologist</option>
+                    <option value="Dermatologist" @(Request["specialization"] == "Dermatologist" ? "selected" : "")>Dermatologist</option>
                     <option value="Orthopedics" @(Request["specialization"] == "Orthopedics" ? "selected" : "")>Orthopedics</option>
-                    <option value="Pediatrician" @(Request["specialization"] == "Pediatrics" ? "selected" : "")>Pediatrics</option>
+                    <option value="Pediatrician" @(Request["specialization"] == "Pediatrician" ? "selected" : "")>Pediatrician</option>
                 </select>
 
                 <!--  Sort -->
@@ -77,6 +77,7 @@
 
                     <input type="number"
                            name="id"
+                           value="@Request["id"]"
                            class="form-control"
                            placeholder="Enter Doctor ID"
                            style="width:200px;" required />
