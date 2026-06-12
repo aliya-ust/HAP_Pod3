@@ -22,7 +22,8 @@ sonar.exclusions=\
 **/*.sln,\
 **/*.slnx,\
 **/favicon.ico,\
-**/packages/**
+**/packages/** \
+**/Areas/**
 
 # Coverage exclusions (ONLY measure Services)
 sonar.coverage.exclusions=\

@@ -86,7 +86,7 @@ namespace HealthCare.Tests
             var result = await _service.AddDoctorAsync(dto);
 
             Assert.IsNotNull(result);
-            Assert.AreEqual(true, result.IsActive);
+            Assert.IsTrue(result.IsActive);   //  FIXED
             Assert.AreEqual(1, result.DoctorId);
         }
 
@@ -132,10 +132,12 @@ namespace HealthCare.Tests
 
         //  GET BY SPECIALIZATION FAIL
         [TestMethod]
-        public async Task GetBySpecialization_ShouldThrow_WhenEmpty()
+        public async Task GetBySpecialization_ShouldReturnEmptyList_WhenEmpty()
         {
-            await Assert.ThrowsExceptionAsync<Exception>(() =>
-                _service.GetBySpecializationAsync(""));
+            var result = await _service.GetBySpecializationAsync("");
+
+            Assert.IsNotNull(result);          // result should not be null
+            Assert.AreEqual(0, result.Count);  // should be empty list
         }
 
         //  UPDATE SUCCESS

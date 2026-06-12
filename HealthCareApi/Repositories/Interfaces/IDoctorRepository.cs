@@ -1,5 +1,4 @@
-﻿//using HealthCareApi.Models;
-using HealthCare.Shared;
+﻿using HealthCare.Shared;
 using HealthCareApi.Repositories.Interfaces;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -17,5 +16,6 @@ namespace HealthCareApi.Repositories.Interfaces
         );
         Task<List<Doctor>> GetBySpecializationAsync(string specialization);
         Task AddRangeAsync(List<DoctorAvailableSlot> slots);
+        Task<bool> EmailExistsAsync(string email);
     }
 }

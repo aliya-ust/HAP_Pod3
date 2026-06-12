@@ -19,10 +19,10 @@
                 </p>
             </div>
 
-            <button class="btn btn-primary rounded-3"
-                    onclick="openModal('@Url.Action("AddPartial", "Doctor")')">
+            <a href="@Url.Action("Add", "Doctor")"
+               class="btn btn-primary rounded-3">
                 + Add Doctor
-            </button>
+            </a>
         </div>
     </div>
 
@@ -149,11 +149,15 @@
                                             </button>
 
                                             <!-- Edit -->
-                                            <button class="btn btn-sm btn-outline-warning"
-                                                    onclick="openModal('@Url.Action("EditPartial", "Doctor", new { id = doctor.DoctorId })')"
-                                                    title="Edit">
+                                            <a href="@Url.Action(
+            "Edit",
+            "Doctor",
+            new { id = doctor.DoctorId }
+        )"
+                                               class="btn btn-sm btn-outline-warning"
+                                               title="Edit">
                                                 <i class="bi bi-pencil-square"></i>
-                                            </button>
+                                            </a>
 
                                             <!-- Delete -->
                                             <button type="button"

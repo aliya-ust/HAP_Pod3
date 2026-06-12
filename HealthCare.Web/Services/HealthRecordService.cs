@@ -3,6 +3,7 @@ using HealthCare.Shared.DTOs.HealthRecord;
 using HealthCare.Web.Services.Interfaces;
 using Newtonsoft.Json;
 using System;
+using System.Configuration;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;

@@ -16,24 +16,20 @@ namespace HealthCare.Tests
     [TestClass]
     public class HealthRecordServiceTests
     {
-        private Mock<IHealthRecordRepository> _repoMock;
         private HealthRecordService _service;
 
         private Mock<IHealthRecordRepository> _healthRepoMock;
         private Mock<IAppointmentRepository> _apptRepoMock;
-        private Mock<HealthAppDbContext> _contextMock;
 
         [TestInitialize]
         public void Setup()
         {
             _healthRepoMock = new Mock<IHealthRecordRepository>();
             _apptRepoMock = new Mock<IAppointmentRepository>();
-            _contextMock = new Mock<HealthAppDbContext>();
 
             _service = new HealthRecordService(
                 _healthRepoMock.Object,
-                _apptRepoMock.Object,
-                _contextMock.Object
+                _apptRepoMock.Object
             );
         }
 
@@ -69,7 +65,7 @@ namespace HealthCare.Tests
 
         //  INVALID APPOINTMENT
         [TestMethod]
-        public async Task AddHealthRecord_ShouldThrow_WhenAppointmentInvalid()
+        public async Task AddHealthRecord_ShouldReturnNull_WhenAppointmentInvalid()
         {
             var record = new HealthRecord
             {
@@ -77,15 +73,16 @@ namespace HealthCare.Tests
             };
 
             _apptRepoMock.Setup(r => r.GetByIdAsync(1))
-                .Returns(Task.FromResult<Appointment>(null));
+                .ReturnsAsync((Appointment)null);
 
-            await Assert.ThrowsExceptionAsync<Exception>(() =>
-                _service.AddHealthRecordAsync(record));
+            var result = await _service.AddHealthRecordAsync(record);
+
+            Assert.IsNull(result);
         }
 
         //  ALREADY EXISTS
         [TestMethod]
-        public async Task AddHealthRecord_ShouldThrow_WhenRecordAlreadyExists()
+        public async Task AddHealthRecord_ShouldReturnNull_WhenRecordAlreadyExists()
         {
             var appointment = new Appointment
             {
@@ -99,13 +96,14 @@ namespace HealthCare.Tests
             };
 
             _apptRepoMock.Setup(r => r.GetByIdAsync(1))
-                .Returns(Task.FromResult(appointment));
+                .ReturnsAsync(appointment);
 
             _healthRepoMock.Setup(r => r.HealthRecordExistsAsync(1))
-                .Returns(Task.FromResult(true));
+                .ReturnsAsync(true);
 
-            await Assert.ThrowsExceptionAsync<Exception>(() =>
-                _service.AddHealthRecordAsync(record));
+            var result = await _service.AddHealthRecordAsync(record);
+
+            Assert.IsNull(result);
         }
 
         //  GET BY APPOINTMENT ID

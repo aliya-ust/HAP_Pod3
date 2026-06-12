@@ -1,5 +1,4 @@
-﻿//using HealthCareApi.Data.Context;
-using HealthCare.Web.Services;
+﻿using HealthCare.Web.Services;
 using HealthCare.Web.Services.Interfaces;
 using System.Web.Http;
 using System.Web.Mvc;

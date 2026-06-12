@@ -4,7 +4,7 @@ using HealthCare.Web.Services.Interfaces;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Drawing.Printing;
+using System.Configuration;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,14 +15,15 @@ namespace HealthCare.Web.Services
     {
         private readonly HttpClient _client;
 
+        //  Base URL from config (no hardcoding)
+        private readonly string baseUrl = "https://localhost:44373/api/appointments";
+
         public AppointmentService(HttpClient client)
         {
             _client = client;
         }
 
-        private readonly string baseUrl = "https://localhost:44373/api/appointments";
-
-        //  GET PATIENT APPOINTMENTS (PAGED)
+        // GET APPOINTMENTS (PATIENT / DOCTOR / UPCOMING)
         public async Task<PagedResult<AppointmentDto>> GetAppointmentsAsync(
             int? patientId,
             int? doctorId,
@@ -32,23 +33,19 @@ namespace HealthCare.Web.Services
         {
             string url;
 
-            //  Case 1: Patient search
             if (patientId.HasValue)
             {
                 url = $"{baseUrl}/patient/{patientId.Value}?pageNumber={pageNumber}&pageSize={pageSize}";
             }
-            //  Case 2: Doctor search
             else if (doctorId.HasValue)
             {
                 url = $"{baseUrl}/doctor/{doctorId.Value}?pageNumber={pageNumber}&pageSize={pageSize}";
             }
-            //  Case 3: Default → upcoming
             else
             {
                 url = $"{baseUrl}/upcoming?pageNumber={pageNumber}&pageSize={pageSize}";
             }
 
-            //  Add status filter if present
             if (!string.IsNullOrEmpty(status))
             {
                 url += $"&status={Uri.EscapeDataString(status)}";
@@ -65,18 +62,22 @@ namespace HealthCare.Web.Services
                    ?? new PagedResult<AppointmentDto>();
         }
 
-        //  BY DATE
+        // GET BY DATE
         public async Task<IEnumerable<AppointmentDto>> GetByDateAsync(DateTime date)
         {
-            var res = await _client.GetAsync($"{baseUrl}/date?date={date:yyyy-MM-dd}");
+            var url = $"{baseUrl}/date?date={date:yyyy-MM-dd}";
+            var res = await _client.GetAsync(url);
 
-            if (!res.IsSuccessStatusCode) return new List<AppointmentDto>();
+            if (!res.IsSuccessStatusCode)
+                return new List<AppointmentDto>();
 
             var json = await res.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<IEnumerable<AppointmentDto>>(json);
+
+            return JsonConvert.DeserializeObject<IEnumerable<AppointmentDto>>(json)
+                   ?? new List<AppointmentDto>();
         }
 
-        //  BOOK
+        // BOOK APPOINTMENT
         public async Task<bool> BookAsync(AppointmentDto dto)
         {
             var json = JsonConvert.SerializeObject(dto);
@@ -84,70 +85,58 @@ namespace HealthCare.Web.Services
 
             var res = await _client.PostAsync(baseUrl, content);
 
-            if (res.IsSuccessStatusCode)
-                return true;
-
-            // ✅ READ ERROR MESSAGE FROM API
-            var errorMessage = await res.Content.ReadAsStringAsync();
-
-            // Optional: clean it if API returns JSON
-            try
-            {
-                var errorObj = JsonConvert.DeserializeObject<dynamic>(errorMessage);
-                errorMessage = errorObj?.message ?? errorMessage;
-            }
-            catch
-            {
-                // keep raw message
-            }
-
-            throw new Exception(errorMessage); // 🔥 IMPORTANT
+            return res.IsSuccessStatusCode;
         }
 
-        //  CONFIRM
+        // CONFIRM APPOINTMENT
         public async Task<bool> ConfirmAsync(int id)
         {
             var res = await _client.PutAsync($"{baseUrl}/{id}/confirm", null);
             return res.IsSuccessStatusCode;
         }
 
-        //  CANCEL
+        // CANCEL APPOINTMENT
         public async Task<bool> CancelAsync(int id, string reason)
         {
             var obj = new { Reason = reason };
+
             var json = JsonConvert.SerializeObject(obj);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
             var res = await _client.PutAsync($"{baseUrl}/{id}/cancel", content);
+
             return res.IsSuccessStatusCode;
         }
 
-        //  Get available slots
+        // GET AVAILABLE SLOTS
         public async Task<List<string>> GetAvailableSlotsAsync(int doctorId, DateTime date)
         {
-            var response = await _client.GetAsync(
-                $"appointments/slots?doctorId={doctorId}&date={date:yyyy-MM-dd}");
+            var url = $"{baseUrl}/slots?doctorId={doctorId}&date={date:yyyy-MM-dd}";
+
+            var response = await _client.GetAsync(url);
 
             if (!response.IsSuccessStatusCode)
                 return new List<string>();
 
             var json = await response.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<List<string>>(json);
+
+            return JsonConvert.DeserializeObject<List<string>>(json)
+                   ?? new List<string>();
         }
 
-        // UPCOMING APPOINTMENTS (PAGED)
+        // GET UPCOMING APPOINTMENTS (PAGED)
         public async Task<PagedResult<AppointmentDto>> GetUpcomingAppointmentsAsync(
-    int? patientId,
-    int? doctorId,
-    string status,
-    int pageNumber,
-    int pageSize)
+            int? patientId,
+            int? doctorId,
+            string status,
+            int pageNumber,
+            int pageSize)
         {
             var queryParams = new List<string>
-    {
-        $"pageNumber={pageNumber}",
-        $"pageSize={pageSize}"
-    };
+            {
+                $"pageNumber={pageNumber}",
+                $"pageSize={pageSize}"
+            };
 
             if (patientId.HasValue)
                 queryParams.Add($"patientId={patientId.Value}");
@@ -158,7 +147,7 @@ namespace HealthCare.Web.Services
             if (!string.IsNullOrEmpty(status))
                 queryParams.Add($"status={Uri.EscapeDataString(status)}");
 
-            string url = $"{baseUrl}/upcoming?" + string.Join("&", queryParams);
+            var url = $"{baseUrl}/upcoming?" + string.Join("&", queryParams);
 
             var response = await _client.GetAsync(url);
 

@@ -1,7 +1,7 @@
-﻿//using HealthCareApi.Models;
-using AutoMapper;
-using HealthCare.Shared.DTOs.Doctor;
+﻿using AutoMapper;
 using HealthCare.Shared;
+using HealthCare.Shared.DTOs.Doctor;
+using HealthCareApi.Services.Implementations;
 using HealthCareApi.Services.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -12,7 +12,7 @@ using System.Web.Http.Cors;
 
 namespace HealthCareApi.Controllers
 {
-    [EnableCors(origins: "*", headers: "*", methods: "*")]
+    [EnableCors(origins: "https://localhost:44327.com", headers: " * ", methods: "*")]
     [RoutePrefix("api/doctors")]
     public class DoctorController : ApiController
     {
@@ -74,6 +74,20 @@ namespace HealthCareApi.Controllers
             {
                 return BadRequest(ex.Message);
             }
+        }
+
+        [HttpGet]
+        [Route("check-email")]
+        public async Task<IHttpActionResult> CheckEmail(string email)
+        {
+            if (string.IsNullOrWhiteSpace(email))
+                return BadRequest("Email is required");
+
+            var exists = await _doctorService.EmailExistsAsync(email);
+
+            //  IMPORTANT:
+            // return TRUE if available, FALSE if already exists
+            return Ok(!exists);
         }
 
 

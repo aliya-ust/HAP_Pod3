@@ -32,10 +32,10 @@
                 </p>
             </div>
 
-            <button class="btn btn-primary"
-                    onclick="openModal('@Url.Action("RegisterPartial", "Patient")')">
+            <a href="@Url.Action("Register", "Patient")"
+               class="btn btn-primary">
                 + Register Patient
-            </button>
+            </a>
         </div>
 
     </div>
@@ -141,11 +141,12 @@
                                             </button>
 
                                             <!-- Edit -->
-                                            <button class="btn btn-sm btn-outline-warning"
-                                                    onclick="openModal('@Url.Action("EditPartial", "Patient", new { id = patient.PatientId })')"
-                                                    title="Edit">
+                                            <a href="@Url.Action("Edit", "Patient", new { id = patient.PatientId })"
+                                               class="btn btn-sm btn-outline-warning"
+                                               title="Edit">
                                                 <i class="bi bi-pencil-square"></i>
-                                            </button>
+                                            </a>
+
 
                                             <!-- Delete -->
                                             <button type="button"
@@ -277,7 +278,7 @@
 </div>
 
 <div class="modal fade" id="mainModal" tabindex="-1">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
         <div class="modal-content p-4">
 
             <div id="modalContent">

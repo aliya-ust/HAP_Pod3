@@ -5,8 +5,6 @@ using HealthCareApi.Repositories.Implementations;
 using HealthCareApi.Repositories.Interfaces;
 using HealthCareApi.Services.Interfaces;
 using System;
-
-//using HealthCareApi.Models;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -68,10 +66,18 @@ namespace HealthCareApi.Services.Implementations
             return doctor;
         }
 
+        public async Task<bool> EmailExistsAsync(string email)
+        {
+            if (string.IsNullOrWhiteSpace(email))
+                return false;
+
+            return await _doctorRepository.EmailExistsAsync(email);
+        }
+
         public async Task<List<Doctor>> GetBySpecializationAsync(string specialization)
         {
             if (string.IsNullOrWhiteSpace(specialization))
-                throw new Exception("Specialization is required");
+                return new List<Doctor>();
 
             return await _doctorRepository
                 .GetBySpecializationAsync(specialization);

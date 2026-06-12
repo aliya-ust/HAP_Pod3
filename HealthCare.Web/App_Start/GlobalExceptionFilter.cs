@@ -2,41 +2,43 @@
 using System.Net;
 using System.Web.Mvc;
 
-public class GlobalExceptionFilter : HandleErrorAttribute
+namespace HealthCare.Web
 {
-    public override void OnException(ExceptionContext filterContext)
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false)]
+    public class GlobalExceptionFilterAttribute : HandleErrorAttribute
     {
-        if (filterContext.ExceptionHandled)
-            return;
-
-        var exception = filterContext.Exception;
-
-        // ✅ Default values
-        int statusCode = (int)HttpStatusCode.InternalServerError;
-        string message = "Something went wrong.";
-
-        // ✅ Custom handling
-        if (exception.Message.Contains("not found"))
+        public override void OnException(ExceptionContext filterContext)
         {
-            statusCode = (int)HttpStatusCode.NotFound;
-            message = "The requested resource was not found.";
-        }
-        else if (exception.Message.Contains("already booked"))
-        {
-            message = exception.Message; // keep API message
-        }
+            if (filterContext.ExceptionHandled)
+                return;
 
-        // ✅ Set response
-        filterContext.Result = new ViewResult
-        {
-            ViewName = statusCode == 404 ? "NotFound" : "Error",
-            ViewData = new ViewDataDictionary
+            var exception = filterContext.Exception;
+
+            int statusCode = (int)HttpStatusCode.InternalServerError;
+            string message = "Something went wrong.";
+
+            // Custom handling
+            if (exception.Message.Contains("not found"))
             {
-                { "ErrorMessage", message }
+                statusCode = (int)HttpStatusCode.NotFound;
+                message = "The requested resource was not found.";
             }
-        };
+            else if (exception.Message.Contains("already booked"))
+            {
+                message = exception.Message;
+            }
 
-        filterContext.HttpContext.Response.StatusCode = statusCode;
-        filterContext.ExceptionHandled = true;
+            filterContext.Result = new ViewResult
+            {
+                ViewName = statusCode == 404 ? "NotFound" : "Error",
+                ViewData = new ViewDataDictionary
+                {
+                    { "ErrorMessage", message }
+                }
+            };
+
+            filterContext.HttpContext.Response.StatusCode = statusCode;
+            filterContext.ExceptionHandled = true;
+        }
     }
 }

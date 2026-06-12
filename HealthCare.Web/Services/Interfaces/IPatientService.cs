@@ -14,8 +14,9 @@ namespace HealthCare.Web.Services.Interfaces
         Task<PagedResult<PatientDto>> GetPatientsAsync(string searchTerm, int pageNumber, int pageSize);
         Task<PagedResult<PatientDto>> GetByIdAsync(int id);
         Task<bool> CreateAsync(PatientDto patient);
-        Task<bool> UpdateAsync(PatientDto patient);
+        Task<bool> UpdateAsync(UpdatePatientDto patient);
         Task<bool> DeleteAsync(int id);
+        Task<bool> IsEmailAvailableAsync(string email);
 
     }
 }

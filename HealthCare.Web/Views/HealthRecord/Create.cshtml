@@ -6,7 +6,7 @@
 
 <div class="page-card">
 
-    <!-- ✅ HEADER -->
+    <!--   HEADER -->
     <div class="page-header">
         <div>
             <h2 class="page-title">Add Health Record</h2>
@@ -16,19 +16,12 @@
         </div>
     </div>
 
-    <!-- ✅ VISIT INFO -->
+    <!--   VISIT INFO -->
     <div class="profile-grid" style="margin-bottom:20px;">
-
-        <div class="profile-item">
-            <div class="profile-label">Visit Date</div>
-            <div class="profile-value">
-                @Model.VisitDate.ToString("dd-MMM-yyyy hh:mm tt")
-            </div>
-        </div>
 
     </div>
 
-    <!-- ✅ FORM -->
+    <!--   FORM -->
     @using (Html.BeginForm("Create", "HealthRecord", FormMethod.Post))
     {
         @Html.AntiForgeryToken()
@@ -37,7 +30,7 @@
         @Html.HiddenFor(m => m.PatientId)
         @Html.HiddenFor(m => m.DoctorId)
 
-        <!-- ✅ Diagnosis -->
+        <!--   Diagnosis -->
         <div class="form-group mb-3">
             @Html.LabelFor(m => m.Diagnosis, new { @class = "form-label fw-semibold" })
 
@@ -54,7 +47,7 @@
             @Html.ValidationMessageFor(m => m.Diagnosis, "", new { @class = "text-danger" })
         </div>
 
-        <!-- ✅ Prescription -->
+        <!--   Prescription -->
         <div class="form-group mb-3">
             @Html.LabelFor(m => m.Prescription, new { @class = "form-label fw-semibold" })
 
@@ -71,7 +64,7 @@
             @Html.ValidationMessageFor(m => m.Prescription, "", new { @class = "text-danger" })
         </div>
 
-        <!-- ✅ Notes -->
+        <!--   Notes -->
         <div class="form-group mb-3">
             @Html.LabelFor(m => m.Notes, new { @class = "form-label fw-semibold" })
 
@@ -86,7 +79,7 @@
             @Html.ValidationMessageFor(m => m.Notes, "", new { @class = "text-danger" })
         </div>
 
-        <!-- ✅ ACTIONS -->
+        <!--   ACTIONS -->
         <div class="d-flex gap-2">
 
             <button type="submit" class="btn btn-success">

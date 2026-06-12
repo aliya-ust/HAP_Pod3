@@ -11,7 +11,7 @@ using System.Web.Http.Cors;
 
 namespace HealthCareApi.Controllers
 {
-    [EnableCors(origins: "*", headers: "*", methods: "*")]
+    [EnableCors(origins: "https://localhost:44327.com", headers: " * ", methods: "*")]
     [RoutePrefix("api/appointments")]
     public class AppointmentController : ApiController
     {

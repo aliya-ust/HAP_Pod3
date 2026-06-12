@@ -14,6 +14,12 @@ namespace HealthCareApi.Repositories.Implementations
         {
         }
 
+        public async Task<bool> EmailExistsAsync(string email)
+        {
+            return await _context.Patients
+                .AnyAsync(p => p.Email.ToLower() == email.ToLower());
+        }
+
         public async Task<PagedResult<Patient>> GetPaginatedPatientsAsync(
             string searchTerm,
             int pageNumber,

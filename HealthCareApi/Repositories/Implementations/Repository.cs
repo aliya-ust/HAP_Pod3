@@ -1,5 +1,4 @@
-﻿//using HealthCareApi.Data.Context;
-using HealthCareApi.Repositories.Interfaces;
+﻿using HealthCareApi.Repositories.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -32,27 +31,13 @@ namespace HealthCareApi.Repositories.Implementations
 
         public async Task AddAsync(T entity)
         {
-            try
-            {
-            _dbSet.Add(entity);
-            await _context.SaveChangesAsync();
-
-            }
-            catch (DbEntityValidationException ex)
-            {
-                var errors = ex.EntityValidationErrors
-                    .SelectMany(e => e.ValidationErrors)
-                    .Select(e => $"Property: {e.PropertyName}, Error: {e.ErrorMessage}");
-
-                throw new Exception(string.Join(" | ", errors));
-            }
-            //await Task.CompletedTask; // EF6 doesn't have async Add
+                _dbSet.Add(entity);
+                await _context.SaveChangesAsync();
         }
 
         public async Task UpdateAsync(T entity)
         {
             await _context.SaveChangesAsync();
-            //await Task.CompletedTask;
         }
 
         public virtual async Task DeleteAsync(T entity)

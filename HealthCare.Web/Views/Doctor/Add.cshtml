@@ -1,0 +1,213 @@
+﻿@model HealthCare.Shared.DTOs.Doctor.CreateDoctorDto
+
+<style>
+    .field-validation-error {
+        font-size: 0.85rem;
+        margin-top: 4px;
+        display: block;
+    }
+
+    .input-validation-error {
+        border-color: #dc3545 !important;
+    }
+
+    .valid {
+        border-color: #198754 !important;
+    }
+
+    .form-control:focus {
+        box-shadow: 0 0 0 0.15rem rgba(13, 110, 253, 0.25);
+    }
+</style>
+
+<div id="doctorFormContainer">
+
+    @using (Html.BeginForm("Add", "Doctor", FormMethod.Post,
+        new { id = "addDoctorForm", novalidate = "novalidate" }))
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-4">
+
+                <div class="mb-3">
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger small" })
+                </div>
+
+                <div class="row g-3">
+
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Full Name *</label>
+                        @Html.TextBoxFor(m => m.FullName, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.FullName, "", new { @class = "text-danger small" })
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Specialisation *</label>
+                        @Html.DropDownListFor(m => m.Specialisation,
+                            new SelectList(new[] {
+                                "Cardiologist","Dermatologist","Neurologist","Pediatrician","Orthopedic"
+                            }),
+                            "Select Specialisation",
+                            new { @class = "form-select" })
+                        @Html.ValidationMessageFor(m => m.Specialisation, "", new { @class = "text-danger small" })
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Experience *</label>
+                        @Html.TextBoxFor(m => m.YearsOfExperience, new { type = "number", @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.YearsOfExperience, "", new { @class = "text-danger small" })
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Fee *</label>
+                        @Html.TextBoxFor(m => m.ConsultationFee, new { type = "number", @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.ConsultationFee, "", new { @class = "text-danger small" })
+                    </div>
+
+                    <!--  EMAIL (with icon like patient) -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Email *</label>
+
+                        <div class="position-relative">
+                            @Html.TextBoxFor(m => m.Email, new
+                            {
+                                type = "email",
+                                @class = "form-control",
+                                id = "Email"
+                            })
+                            <span id="emailStatusIcon"
+                                  class="position-absolute top-50 end-0 translate-middle-y me-3"></span>
+                        </div>
+
+                        @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger small" })
+                    </div>
+                </div>
+
+                <!-- TimeSlots -->
+                <div class="mt-3">
+                    <label class="form-label fw-semibold">Time Slots *</label>
+
+                    <div class="d-flex flex-wrap gap-3">
+                        @foreach (var slot in new[] { "9 AM", "10 AM", "11 AM", "12 PM", "1 PM", "2 PM", "3 PM", "4 PM", "5 PM" })
+                        {
+                            <div class="form-check">
+                                <input type="checkbox" name="TimeSlots" value="@slot" class="form-check-input" />
+                                <label class="form-check-label">@slot</label>
+                            </div>
+                        }
+                    </div>
+
+                    @Html.ValidationMessage("TimeSlots", "", new { @class = "text-danger small mt-2 d-block" })
+                </div>
+
+                <div class="mt-4 text-end">
+                    <button type="submit" class="btn btn-primary px-4">
+                        <span id="submitDoctorText">Register</span>
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    }
+</div>
+
+
+<script>
+    $(document).ready(function () {
+
+        function bindDoctorForm() {
+
+            var form = $("#addDoctorForm");
+
+            form.validate({
+                onkeyup: function (el) { $(el).valid(); },
+                onfocusout: function (el) { $(el).valid(); }
+            });
+
+            form.off("submit").on("submit", function (e) {
+                e.preventDefault();
+
+                if (!form.valid()) return;
+
+                var email = $("#Email").val();
+
+                //  EMAIL CHECK FIRST
+                $.get("/Doctor/IsEmailAvailable", { email: email }, function (isAvailable) {
+
+                    if (!isAvailable) {
+                        $("span[data-valmsg-for='Email']")
+                            .text("Email already exists")
+                            .show();
+
+                        $("#Email").addClass("input-validation-error");
+                        return;
+                    }
+
+                    //  TIMESLOT VALIDATION
+                    var selected = $('input[name="TimeSlots"]:checked');
+
+                    if (selected.length === 0) {
+                        $('[data-valmsg-for="TimeSlots"]')
+                            .text("Select at least one time slot")
+                            .addClass("field-validation-error");
+                        return;
+                    } else {
+                        $('[data-valmsg-for="TimeSlots"]').text("");
+                    }
+
+                    $("#submitDoctorText").text("Registering...");
+                    $("button[type='submit']").prop("disabled", true);
+
+                    $.ajax({
+                        url: form.attr("action"),
+                        type: "POST",
+                        data: form.serialize(),
+                        success: function (response) {
+
+                            if (response && response.success) {
+                                alert("Doctor added successfully");
+                                location.reload();
+                                return;
+                            }
+
+                            $("#doctorFormContainer").html(response);
+                            $.validator.unobtrusive.parse("#doctorFormContainer");
+                            bindDoctorForm();
+                        },
+                        complete: function () {
+                            $("#submitDoctorText").text("Register");
+                            $("button[type='submit']").prop("disabled", false);
+                        }
+                    });
+
+                });
+            });
+        }
+
+        bindDoctorForm();
+    });
+
+    $(document).on("blur", "#Email", function () {
+
+        var email = $(this).val();
+        if (!email) return;
+
+        var icon = $("#emailStatusIcon");
+        icon.html('<span class="text-muted small">Checking...</span>');
+
+        $.get("/Doctor/IsEmailAvailable", { email: email }, function (isAvailable) {
+
+            var msg = $("span[data-valmsg-for='Email']");
+
+            if (!isAvailable) {
+                msg.text("Email already exists").show();
+                icon.html('<span class="text-danger">✖</span>');
+            } else {
+                msg.text("").hide();
+                icon.html('<span class="text-success">✔</span>');
+            }
+
+        });
+    });
+</script>

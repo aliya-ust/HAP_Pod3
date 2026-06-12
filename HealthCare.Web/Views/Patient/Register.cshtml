@@ -1,0 +1,241 @@
+﻿@model HealthCare.Shared.DTOs.Patient.PatientDto
+
+@{
+    var maxDateOfBirth = DateTime.Today.AddDays(-1).ToString("yyyy-MM-dd");
+}
+
+<style>
+    .field-validation-error {
+        font-size: 0.85rem;
+        margin-top: 4px;
+        display: block;
+    }
+
+    .input-validation-error {
+        border-color: #dc3545 !important;
+    }
+
+    .valid {
+        border-color: #198754 !important;
+    }
+
+    .form-control:focus {
+        box-shadow: 0 0 0 0.15rem rgba(13, 110, 253, 0.25);
+    }
+</style>
+
+<div id="formContainer">
+
+    @using (Html.BeginForm("Register", "Patient", FormMethod.Post, new { id = "registerForm", novalidate = "novalidate" }) )
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-4">
+
+                <div class="mb-3">
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger small" })
+                </div>
+
+                <div class="row g-3">
+
+                    <!-- Full Name -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold mb-1">
+                            Full Name <span class="text-danger">*</span>
+                        </label>
+
+                        @Html.TextBoxFor(m => m.FullName, new
+                        {
+                            @class = "form-control",
+                            required = "required",
+                            minlength = "3",
+                            maxlength = "100"
+                        })
+
+                        @Html.ValidationMessageFor(m => m.FullName, "", new { @class = "text-danger small" })
+                    </div>
+
+                    <!-- Date of Birth -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold mb-1">
+                            Date of Birth <span class="text-danger">*</span>
+                        </label>
+
+                        @Html.TextBoxFor(m => m.DateOfBirth, "{0:yyyy-MM-dd}", new
+                        {
+                            @class = "form-control",
+                            type = "date",
+                            max = maxDateOfBirth,
+                            required = "required"
+                        })
+
+                        @Html.ValidationMessageFor(m => m.DateOfBirth, "", new { @class = "text-danger small" })
+                    </div>
+
+                    <!-- Gender -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold d-block mb-1">
+                            Gender <span class="text-danger">*</span>
+                        </label>
+
+                        <div class="d-flex gap-3">
+                            @foreach (var g in new[] { "Male", "Female", "Other" })
+                            {
+                                <div class="form-check">
+                                    @Html.RadioButtonFor(m => m.Gender, g, new
+                                    {
+                                        @class = "form-check-input",
+                                        required = "required"
+                                    })
+                                    <label class="form-check-label">@g</label>
+                                </div>
+                            }
+                        </div>
+
+                        @Html.ValidationMessageFor(m => m.Gender, "", new { @class = "text-danger small" })
+                    </div>
+
+                    <!-- Phone -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold mb-1">
+                            Phone Number <span class="text-danger">*</span>
+                        </label>
+
+                        @Html.TextBoxFor(m => m.PhoneNumber, new
+                        {
+                            @class = "form-control",
+                            pattern = "[0-9]{10}",
+                            maxlength = "10",
+                            required = "required"
+                        })
+
+                        @Html.ValidationMessageFor(m => m.PhoneNumber, "", new { @class = "text-danger small" })
+                    </div>
+
+                    <!-- Email -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold mb-1">
+                            Email Address <span class="text-danger">*</span>
+                        </label>
+
+                        <div class="position-relative">
+                            @Html.TextBoxFor(m => m.Email, new
+                            {
+                                @class = "form-control",
+                                type = "email",
+                                required = "required",
+                                id = "Email"
+                            })
+
+                            <span id="emailStatusIcon"
+                                  class="position-absolute top-50 end-0 translate-middle-y me-3"></span>
+                        </div>
+
+                        @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger small" })
+                    </div>
+
+                    <!-- Insurance -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold mb-1">
+                            Insurance ID
+                        </label>
+
+                        @Html.TextBoxFor(m => m.InsuranceId, new
+                        {
+                            @class = "form-control",
+                            maxlength = "50"
+                        })
+
+                        @Html.ValidationMessageFor(m => m.InsuranceId, "", new { @class = "text-danger small" })
+                    </div>
+
+                </div>
+
+                <!-- Actions -->
+                <div class="mt-4 text-end">
+                    <button type="reset" class="btn btn-outline-danger px-4 me-2">
+                        Clear
+                    </button>
+
+                    <button type="submit" class="btn btn-primary px-4">
+                        <span id="submitText">Register</span>
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    }
+</div>
+
+<script>
+    $(document).ready(function () {
+
+        function bindForm() {
+
+            var form = $("#registerForm");
+
+            form.off("submit").on("submit", function (e) {
+                e.preventDefault();
+
+                if (!form.valid()) return;
+
+                $("#submitText").text("Registering...");
+                $("button[type='submit']").prop("disabled", true);
+
+                $.ajax({
+                    url: form.attr("action"),
+                    type: "POST",
+                    data: form.serialize(),
+                    success: function (response) {
+
+                        if (response && response.success) {
+                            alert("Patient created successfully");
+                            location.reload();
+                            return;
+                        }
+
+                        $("#formContainer").html(response);
+
+                        $.validator.unobtrusive.parse("#formContainer");
+                        bindForm();
+                    },
+                    complete: function () {
+                        $("#submitText").text("Register");
+                        $("button[type='submit']").prop("disabled", false);
+                    }
+                });
+            });
+        }
+
+        bindForm();
+    });
+
+    //  Email uniqueness check
+    $(document).on("blur", "#Email", function () {
+
+        var email = $(this).val();
+        if (!email) return;
+
+        var icon = $("#emailStatusIcon");
+        icon.html('<span class="text-muted small">Checking...</span>');
+
+        $.get("/Patient/IsEmailAvailable", { email: email }, function (isAvailable) {
+
+            var msg = $("span[data-valmsg-for='Email']");
+
+            if (!isAvailable) {
+                msg.text("Email already exists").show();
+                icon.html('<span class="text-danger fw-bold">✖</span>');
+                $("#Email").addClass("input-validation-error").removeClass("valid");
+            } else {
+                msg.text("").hide();
+                icon.html('<span class="text-success fw-bold">✔</span>');
+                $("#Email").removeClass("input-validation-error").addClass("valid");
+            }
+
+        }).fail(function () {
+            icon.html('');
+        });
+    });
+</script>

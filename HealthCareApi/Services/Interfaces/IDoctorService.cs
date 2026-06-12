@@ -1,5 +1,4 @@
-﻿//using HealthCareApi.Models;
-using HealthCare.Shared;
+﻿using HealthCare.Shared;
 using HealthCare.Shared.DTOs.Doctor;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -19,5 +18,6 @@ namespace HealthCareApi.Services.Interfaces
         Task<List<Doctor>> GetBySpecializationAsync(string specialization);
         Task<bool> DeleteDoctorAsync(int id);
         Task<Doctor> AddDoctorAsync(CreateDoctorDto dto);
+        Task<bool> EmailExistsAsync(string email);
     }
 }

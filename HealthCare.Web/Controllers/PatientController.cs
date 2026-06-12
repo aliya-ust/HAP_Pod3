@@ -1,20 +1,30 @@
-﻿using HealthCare.Shared.DTOs.Patient;
+﻿using HealthCare.Shared;
+using HealthCare.Shared.DTOs.Patient;
 using HealthCare.Web.Services.Interfaces;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
-using HealthCare.Shared;
-using HealthCare.Web.Services;
 
 namespace HealthCare.Web.Controllers
 {
     public class PatientController : Controller
     {
         private readonly IPatientService _service;
+
         private const int PageSize = 10;
+        private const string RegisterView = "Register";
 
         public PatientController(IPatientService service)
         {
             _service = service;
+        }
+
+        private ActionResult ResultWithMessage(bool success, string successMsg, string errorMsg)
+        {
+            TempData[success ? "Success" : "Error"] =
+                success ? successMsg : errorMsg;
+
+            return RedirectToAction("List");
         }
 
         // LIST → Patient/List.cshtml
@@ -24,18 +34,10 @@ namespace HealthCare.Web.Controllers
             return View(result);
         }
 
-        // PROFILE → Patient/Profile.cshtml
-        public async Task<ActionResult> Profile(int id)
+        // REGISTER (GET)
+        public ActionResult Register()
         {
-            if (id == 0)
-                TempData["Error"] = "Patient does not exist.";
-
-            var patient = await _service.GetByIdAsync(id);
-
-            if (patient == null)
-                TempData["Error"] = "Patient does not exist.";
-
-            return View("List", patient);
+            return View(RegisterView);
         }
 
         // REGISTER (POST)
@@ -44,7 +46,15 @@ namespace HealthCare.Web.Controllers
         public async Task<ActionResult> Register(PatientDto dto)
         {
             if (!ModelState.IsValid)
-                return PartialView("_RegisterPartial", dto);
+                return View(RegisterView, dto);
+
+            var isAvailable = await _service.IsEmailAvailableAsync(dto.Email);
+
+            if (!isAvailable)
+            {
+                ModelState.AddModelError("Email", "Email already exists");
+                return View(RegisterView, dto);
+            }
 
             var result = await _service.CreateAsync(dto);
 
@@ -54,42 +64,47 @@ namespace HealthCare.Web.Controllers
                 return RedirectToAction("List");
             }
 
-            ModelState.AddModelError("", "");
-            return PartialView("_RegisterPartial", dto);
+            ModelState.AddModelError("", "Error creating patient");
+            return View(RegisterView, dto);
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> IsEmailAvailable(string Email)
+        {
+            var isAvailable = await _service.IsEmailAvailableAsync(Email);
+            return Json(isAvailable, JsonRequestBehavior.AllowGet);
         }
 
         // EDIT (GET)
+        [HttpGet]
         public async Task<ActionResult> Edit(int id)
         {
-            if (id == 0)
-                return PartialView("_EditPartial", id);
-
-            var patient = await _service.GetByIdAsync(id);
+            var result = await _service.GetByIdAsync(id);
+            var patient = result.Items.FirstOrDefault();
 
             if (patient == null)
-                return PartialView("_EditPartial", patient);
+                return RedirectToAction("List");
 
-            return PartialView("_EditPartial", patient);
+            return View(patient);
         }
 
         // EDIT (POST)
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(PagedResult<PatientDto> dto)
+        public async Task<ActionResult> Edit(UpdatePatientDto dto)
         {
             if (!ModelState.IsValid)
-                return PartialView("_EditPartial", dto);
+                return View(dto);
 
-            var result = await _service.UpdateAsync(dto.Items[0]);
+            var result = await _service.UpdateAsync(dto);
 
-            if (result)
+            if (!result)
             {
-                TempData["Success"] = "Patient updated successfully.";
-                return RedirectToAction("List");
+                ModelState.AddModelError("", "Update failed");
+                return View(dto);
             }
 
-            ModelState.AddModelError("", "Error updating patient");
-            return PartialView("_EditPartial", dto);
+            return ResultWithMessage(true, "Patient updated successfully", "");
         }
 
         // DELETE
@@ -98,18 +113,7 @@ namespace HealthCare.Web.Controllers
         public async Task<ActionResult> Delete(int id)
         {
             var result = await _service.DeleteAsync(id);
-
-            if (result)
-                TempData["Success"] = "Patient deleted.";
-            else
-                TempData["Error"] = "Delete failed.";
-
-            return RedirectToAction("List");
-        }
-
-        public ActionResult RegisterPartial()
-        {
-            return PartialView("_RegisterPartial");
+            return ResultWithMessage(result, "Patient deleted.", "Delete failed.");
         }
 
         public async Task<ActionResult> EditPartial(int id)

@@ -23,6 +23,14 @@ namespace HealthCareApi.Services.Implementations
             return await _patientRepository.GetByIdAsync(id);
         }
 
+        public async Task<bool> EmailExistsAsync(string email)
+        {
+            if (string.IsNullOrWhiteSpace(email))
+                return false;
+
+            return await _patientRepository.EmailExistsAsync(email);
+        }
+
         public async Task<PagedResult<Patient>> GetPaginatedPatientAsync(
             string searchTerm = null,
             int pageNumber = 1,
@@ -53,6 +61,7 @@ namespace HealthCareApi.Services.Implementations
             existingPatient.DateOfBirth = updatedPatient.DateOfBirth;
             existingPatient.Gender = updatedPatient.Gender;
             existingPatient.PhoneNumber = updatedPatient.PhoneNumber;
+            existingPatient.InsuranceId = updatedPatient.InsuranceId;
             existingPatient.IsActive = true;
 
             await _patientRepository.UpdateAsync(existingPatient);

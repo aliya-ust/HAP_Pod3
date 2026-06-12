@@ -1,0 +1,132 @@
+﻿@model HealthCare.Shared.DTOs.Doctor.DoctorDto
+
+<style>
+    .field-validation-error {
+        font-size: 0.85rem;
+        margin-top: 4px;
+        display: block;
+    }
+
+    .input-validation-error {
+        border-color: #dc3545 !important;
+    }
+
+    .valid {
+        border-color: #198754 !important;
+    }
+
+    .form-control:focus {
+        box-shadow: 0 0 0 0.15rem rgba(13, 110, 253, 0.25);
+    }
+</style>
+
+<div class="container mt-4">
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-4">
+
+            <h4 class="mb-3">Edit Doctor</h4>
+
+            @using (Html.BeginForm("Edit", "Doctor", FormMethod.Post, new { novalidate = "novalidate" }))
+            {
+                @Html.AntiForgeryToken()
+                @Html.HiddenFor(m => m.DoctorId)
+
+                <!--  Validation -->
+                <div class="mb-3">
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger small" })
+                </div>
+
+                <div class="row g-3">
+
+                    <!-- Full Name -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold mb-1">
+                            Full Name <span class="text-danger">*</span>
+                        </label>
+
+                        @Html.TextBoxFor(m => m.FullName, new { @class = "form-control" })
+
+                        @Html.ValidationMessageFor(m => m.FullName, "", new { @class = "text-danger small" })
+                    </div>
+
+                    <!-- Specialisation -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold mb-1">
+                            Specialisation <span class="text-danger">*</span>
+                        </label>
+
+                        @Html.DropDownListFor(m => m.Specialisation,
+                            new SelectList(new[]
+                            {
+                                "Cardiologist","Dermatologist","Neurologist",
+                                "Pediatrician","Orthopedic"
+                            }),
+                            "Select Specialisation",
+                            new { @class = "form-select" })
+
+                        @Html.ValidationMessageFor(m => m.Specialisation, "", new { @class = "text-danger small" })
+                    </div>
+
+                    <!-- Experience -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold mb-1">
+                            Experience (Years) <span class="text-danger">*</span>
+                        </label>
+
+                        @Html.TextBoxFor(m => m.YearsOfExperience, new
+                        {
+                            type = "number",
+                            @class = "form-control"
+                        })
+
+                        @Html.ValidationMessageFor(m => m.YearsOfExperience, "", new { @class = "text-danger small" })
+                    </div>
+
+                    <!-- Fee -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold mb-1">
+                            Consultation Fee <span class="text-danger">*</span>
+                        </label>
+
+                        @Html.TextBoxFor(m => m.ConsultationFee, new
+                        {
+                            type = "number",
+                            @class = "form-control"
+                        })
+
+                        @Html.ValidationMessageFor(m => m.ConsultationFee, "", new { @class = "text-danger small" })
+                    </div>
+
+                </div>
+
+                <!-- Actions -->
+                <div class="mt-4 text-end">
+                    <a href="@Url.Action("List", "Doctor")"
+                       class="btn btn-outline-secondary me-2">
+                        Cancel
+                    </a>
+
+                    <button type="submit" class="btn btn-primary px-4">
+                        Update
+                    </button>
+                </div>
+            }
+
+        </div>
+    </div>
+
+</div>
+
+<script>
+    $(document).ready(function () {
+
+        var form = $("form");
+
+        form.validate({
+            onkeyup: function (el) { $(el).valid(); },
+            onfocusout: function (el) { $(el).valid(); }
+        });
+
+    });
+</script>

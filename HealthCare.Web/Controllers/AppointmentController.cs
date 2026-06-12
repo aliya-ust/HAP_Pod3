@@ -64,13 +64,11 @@ namespace HealthCare.Web.Controllers
             }
             catch (Exception ex)
             {
-                // ✅ SHOW API ERROR HERE
+                //   SHOW API ERROR HERE
 
                 // Best: show under TimeSlot
                 ModelState.AddModelError("TimeSlot", ex.Message);
 
-                // OR (if you want top-level)
-                // ModelState.AddModelError("", ex.Message);
             }
 
             return View(dto);

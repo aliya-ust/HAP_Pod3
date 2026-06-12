@@ -17,6 +17,7 @@ namespace HealthCareApi.Services.Interfaces
         Task<Patient> AddPatientAsync(Patient patient);
         Task<Patient> UpdatePatientAsync(Patient updatedPatient);
         Task<bool> DeletePatientAsync(int id);
+        Task<bool> EmailExistsAsync(string email);
 
     }
 }

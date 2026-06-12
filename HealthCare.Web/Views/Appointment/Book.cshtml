@@ -20,7 +20,7 @@
 
                 <div class="row g-4">
 
-                    <!-- ✅ Patient -->
+                    <!--   Patient -->
                     <div class="col-md-6">
                         <label class="form-label fw-semibold">Patient</label>
 
@@ -38,7 +38,7 @@
                         @Html.ValidationMessageFor(m => m.PatientId, "", new { @class = "text-danger" })
                     </div>
 
-                    <!-- ✅ Date -->
+                    <!--   Date -->
                     <div class="col-md-6">
                         <label class="form-label fw-semibold">Select Date</label>
 
@@ -54,7 +54,7 @@
                         @Html.ValidationMessageFor(m => m.ScheduledDate, "", new { @class = "text-danger" })
                     </div>
 
-                    <!-- ✅ Specialization -->
+                    <!--   Specialization -->
                     <div class="col-md-6">
                         <label class="form-label fw-semibold">Specialization</label>
 
@@ -68,7 +68,7 @@
                         </select>
                     </div>
 
-                    <!-- ✅ Doctor -->
+                    <!--   Doctor -->
                     <div class="col-md-6">
                         <label class="form-label fw-semibold">Doctor</label>
 
@@ -86,7 +86,7 @@
                         @Html.ValidationMessageFor(m => m.DoctorId, "", new { @class = "text-danger" })
                     </div>
 
-                    <!-- ✅ Time Slot -->
+                    <!--   Time Slot -->
                     <div class="col-md-6">
                         <label class="form-label fw-semibold">Time Slot</label>
 
@@ -129,12 +129,12 @@
         var slotEl = document.getElementById("timeslot");
         var dateEl = document.getElementById("date");
 
-        // ✅ When specialization changes
+        //   When specialization changes
         specializationEl.addEventListener("change", function () {
 
             var specialization = this.value;
 
-            // ✅ Clear doctors + slots
+            //   Clear doctors + slots
             doctorEl.innerHTML = '<option value="">-- Select Doctor --</option>';
             doctorEl.disabled = true;
 
@@ -147,7 +147,7 @@
             }
 
 
-            // ✅ Load doctors
+            //   Load doctors
             doctorEl.innerHTML = '<option>Loading doctors...</option>';
 
             fetch('https://localhost:44373/api/doctors?specialization=' + specialization)
@@ -172,7 +172,7 @@
                 });
         });
 
-        // ✅ When doctor changes → clear slots first
+        //   When doctor changes → clear slots first
         doctorEl.addEventListener("change", function () {
 
             slotEl.innerHTML = '<option value="">-- Select Time Slot --</option>';
@@ -181,7 +181,7 @@
             loadSlots();
         });
 
-        // ✅ When date changes → reload slots
+        //   When date changes → reload slots
         dateEl.addEventListener("change", loadSlots);
 
         function loadSlots() {

@@ -16,18 +16,15 @@ namespace HealthCare.Tests
     public class AppointmentServiceTests
     {
         private Mock<IAppointmentRepository> _repoMock;
-        private Mock<HealthAppDbContext> _contextMock;
         private AppointmentService _service;
 
         [TestInitialize]
         public void Setup()
         {
             _repoMock = new Mock<IAppointmentRepository>();
-            _contextMock = new Mock<HealthAppDbContext>();
 
             _service = new AppointmentService(
-                _repoMock.Object,
-                _contextMock.Object
+                _repoMock.Object
             );
         }
 
@@ -64,7 +61,7 @@ namespace HealthCare.Tests
 
         //  INVALID PATIENT
         [TestMethod]
-        public async Task BookAppointment_ShouldThrow_WhenPatientInvalid()
+        public async Task BookAppointment_ShouldReturnNull_WhenPatientInvalid()
         {
             var appt = new Appointment
             {
@@ -72,16 +69,17 @@ namespace HealthCare.Tests
                 DoctorId = 2
             };
 
-            //  FIX
             _repoMock.Setup(r => r.PatientExistsAsync(1)).ReturnsAsync(false);
 
-            await Assert.ThrowsExceptionAsync<Exception>(() =>
-                _service.BookAppointmentAsync(appt));
+            var result = await _service.BookAppointmentAsync(appt);
+
+            Assert.IsNull(result);
         }
+
 
         //  SLOT ALREADY BOOKED
         [TestMethod]
-        public async Task BookAppointment_ShouldThrow_WhenSlotAlreadyBooked()
+        public async Task BookAppointment_ShouldReturnNull_WhenSlotAlreadyBooked()
         {
             var appt = new Appointment
             {
@@ -91,18 +89,17 @@ namespace HealthCare.Tests
                 TimeSlot = "10:00-10:30"
             };
 
-            //  FIX
             _repoMock.Setup(r => r.PatientExistsAsync(1)).ReturnsAsync(true);
             _repoMock.Setup(r => r.DoctorExistsAsync(2)).ReturnsAsync(true);
+            _repoMock.Setup(r => r.SlotExistsAsync(2, "10:00-10:30")).ReturnsAsync(true);
 
-            _repoMock.Setup(r => r.SlotExistsAsync(2, "10:00-10:30"))
+            _repoMock.Setup(r =>
+                r.IsSlotBookedAsync(2, appt.ScheduledDate, "10:00-10:30"))
                 .ReturnsAsync(true);
 
-            _repoMock.Setup(r => r.IsSlotBookedAsync(2, appt.ScheduledDate, "10:00-10:30"))
-                .ReturnsAsync(true);
+            var result = await _service.BookAppointmentAsync(appt);
 
-            await Assert.ThrowsExceptionAsync<Exception>(() =>
-                _service.BookAppointmentAsync(appt));
+            Assert.IsNull(result);
         }
 
         //  CONFIRM SUCCESS
@@ -125,7 +122,7 @@ namespace HealthCare.Tests
 
         //  CONFIRM FAIL (Cancelled)
         [TestMethod]
-        public async Task ConfirmAppointment_ShouldThrow_WhenCancelled()
+        public async Task ConfirmAppointment_ShouldReturnNull_WhenCancelled()
         {
             var appt = new Appointment
             {
@@ -135,8 +132,9 @@ namespace HealthCare.Tests
 
             _repoMock.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(appt);
 
-            await Assert.ThrowsExceptionAsync<Exception>(() =>
-                _service.ConfirmAppointmentAsync(1));
+            var result = await _service.ConfirmAppointmentAsync(1);
+
+            Assert.IsNull(result);
         }
 
         //  CANCEL SUCCESS
@@ -160,7 +158,7 @@ namespace HealthCare.Tests
 
         //  CANCEL FAIL (No reason)
         [TestMethod]
-        public async Task CancelAppointment_ShouldThrow_WhenReasonEmpty()
+        public async Task CancelAppointment_ShouldReturnNull_WhenReasonEmpty()
         {
             var appt = new Appointment
             {
@@ -170,9 +168,11 @@ namespace HealthCare.Tests
 
             _repoMock.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(appt);
 
-            await Assert.ThrowsExceptionAsync<Exception>(() =>
-                _service.CancelAppointmentAsync(1, ""));
+            var result = await _service.CancelAppointmentAsync(1, "");
+
+            Assert.IsNull(result);
         }
+
 
         //  AVAILABLE SLOTS
         [TestMethod]

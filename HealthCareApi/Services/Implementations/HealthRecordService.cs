@@ -1,10 +1,6 @@
 ﻿using HealthCare.Shared;
 using HealthCareApi.Repositories.Interfaces;
 using HealthCareApi.Services.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace HealthCareApi.Services.Implementations
@@ -13,42 +9,33 @@ namespace HealthCareApi.Services.Implementations
     {
         private readonly IHealthRecordRepository _healthRecordRepository;
         private readonly IAppointmentRepository _appointmentRepository;
-        private readonly HealthAppDbContext _context;
 
         public HealthRecordService(
             IHealthRecordRepository healthRecordRepository,
-            IAppointmentRepository appointmentRepository,
-            HealthAppDbContext context)
+            IAppointmentRepository appointmentRepository)
         {
             _healthRecordRepository = healthRecordRepository;
             _appointmentRepository = appointmentRepository;
-            _context = context;
         }
-
 
         // ADD HEALTH RECORD
         public async Task<HealthRecord> AddHealthRecordAsync(HealthRecord record)
         {
-            var appointment = await _appointmentRepository.GetByIdAsync(record.AppointmentId);
+            var appointment = await _appointmentRepository
+                .GetByIdAsync(record.AppointmentId);
 
             if (appointment == null)
-                throw new Exception("Invalid appointment");
+                return null;
 
-            // Allow only if NOT already completed? NO ❌
-            // Check if already has record (UNIQUE constraint)
             var exists = await _healthRecordRepository
                 .HealthRecordExistsAsync(record.AppointmentId);
 
             if (exists)
-                throw new Exception("Health record already exists for this appointment");
-
-            // NO need to check "Completed"
+                return null;
 
             record.VisitDate = appointment.ScheduledDate;
 
             await _healthRecordRepository.AddAsync(record);
-
-            // Trigger will handle status update
 
             return record;
         }

@@ -8,65 +8,104 @@ using System.Drawing;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 
-public class HealthRecordController : Controller
+namespace HealthCare.Web.Controllers
 {
-    private readonly IHealthRecordService _service;
-    private const int PageSize = 10;
-
-    public HealthRecordController(IHealthRecordService service)
+    public class HealthRecordController : Controller
     {
-        _service = service;
-    }
+        private readonly IHealthRecordService _service;
+        private const int PageSize = 10;
 
-    //  LIST / HISTORY
-    // → HealthRecord/List.cshtml
-    public async Task<ActionResult> List(int? patientId, int pageNumber = 1)
-    {
-        if (!patientId.HasValue)
+        public HealthRecordController(IHealthRecordService service)
         {
-            return View(new PagedResult<HealthRecordDto>
+            _service = service;
+        }
+
+        private ActionResult BuildListView(HealthRecordDto record, string errorMessage = null)
+        {
+            if (!string.IsNullOrEmpty(errorMessage))
             {
-                Items = new List<HealthRecordDto>(),
+                ViewBag.Error = errorMessage;
+
+                return View("List", new PagedResult<HealthRecordDto>
+                {
+                    Items = new List<HealthRecordDto>(),
+                    PageNumber = 1,
+                    PageSize = PageSize,
+                    TotalCount = 0
+                });
+            }
+
+            if (record == null)
+            {
+                ViewBag.Error = "Health record not found.";
+
+                return View("List", new PagedResult<HealthRecordDto>
+                {
+                    Items = new List<HealthRecordDto>(),
+                    PageNumber = 1,
+                    PageSize = PageSize,
+                    TotalCount = 0
+                });
+            }
+
+            return View("List", new PagedResult<HealthRecordDto>
+            {
+                Items = new List<HealthRecordDto> { record },
                 PageNumber = 1,
-                PageSize = PageSize
+                PageSize = 1,
+                TotalCount = 1
             });
         }
 
-        var result = await _service.GetPatientHealthHistoryAsync(
-            patientId.Value,
-            pageNumber,
-            PageSize);
-
-        return View("List", result);
-    }
-
-    //  ADD (GET)
-    // → HealthRecord/Create.cshtml
-    public ActionResult Create(int appointmentId, int patientId, int doctorId)
-    {
-        var model = new CreateHealthRecordDto
+        //  LIST / HISTORY
+        // → HealthRecord/List.cshtml
+        public async Task<ActionResult> List(int? patientId, int pageNumber = 1)
         {
-            AppointmentId = appointmentId,
-            PatientId = patientId,
-            DoctorId = doctorId,
-        };
+            if (!patientId.HasValue)
+            {
+                return View(new PagedResult<HealthRecordDto>
+                {
+                    Items = new List<HealthRecordDto>(),
+                    PageNumber = 1,
+                    PageSize = PageSize
+                });
+            }
 
-        return View(model);
-    }
+            var result = await _service.GetPatientHealthHistoryAsync(
+                patientId.Value,
+                pageNumber,
+                PageSize);
+
+            return View("List", result);
+        }
+
+        //  ADD (GET)
+        // → HealthRecord/Create.cshtml
+        public ActionResult Create(int appointmentId, int patientId, int doctorId)
+        {
+            var model = new CreateHealthRecordDto
+            {
+                AppointmentId = appointmentId,
+                PatientId = patientId,
+                DoctorId = doctorId,
+            };
+
+            return View(model);
+        }
 
 
-    //  ADD (POST)
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<ActionResult> Create(CreateHealthRecordDto dto)
-    {
-        System.Diagnostics.Debug.WriteLine(dto.AppointmentId);
-        if (!ModelState.IsValid)
-            return View("Create", dto);
+        //  ADD (POST)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Create(CreateHealthRecordDto dto)
+        {
+            System.Diagnostics.Debug.WriteLine(dto.AppointmentId);
+            if (!ModelState.IsValid)
+                return View("Create", dto);
 
             var result = await _service.CreateAsync(dto);
 
-            if (result != null)
+            if (result)
             {
                 TempData["Success"] = "Health record added successfully.";
                 return RedirectToAction("List", new { patientId = dto.PatientId });
@@ -74,87 +113,32 @@ public class HealthRecordController : Controller
 
             ModelState.AddModelError("", "Failed to create record");
             return View("Create", dto);
-    }
+        }
 
-    public async Task<ActionResult> Single(int id)
-    {
-        try
+        public async Task<ActionResult> Single(int id)
         {
-            var record = await _service.GetByAppointmentIdAsync(id);
-
-            if (record == null)
+            try
             {
-                ViewBag.Error = "Health record not found.";
-
-                return View("List", new PagedResult<HealthRecordDto>
-                {
-                    Items = new List<HealthRecordDto>(),
-                    PageNumber = 1,
-                    PageSize = PageSize,
-                    TotalCount = 0
-                });
+                var record = await _service.GetByAppointmentIdAsync(id);
+                return BuildListView(record);
             }
-
-            return View("List", new PagedResult<HealthRecordDto>
+            catch (Exception ex)
             {
-                Items = new List<HealthRecordDto> { record },
-                PageNumber = 1,
-                PageSize = 1,
-                TotalCount = 1
-            });
-        }
-        catch (Exception ex)
-        {
-            ViewBag.Error = ex.Message;
-
-            return View("List", new PagedResult<HealthRecordDto>
-            {
-                Items = new List<HealthRecordDto>(),
-                PageNumber = 1,
-                PageSize = PageSize,
-                TotalCount = 0
-            });
-        }
-    }
-
-    public async Task<ActionResult> GetRecord(int id)
-    {
-        try
-        {
-            var record = await _service.GetByIdAsync(id);
-
-            if (record == null)
-            {
-                ViewBag.Error = "Health record not found.";
-
-                return View("List", new PagedResult<HealthRecordDto>
-                {
-                    Items = new List<HealthRecordDto>(),
-                    PageNumber = 1,
-                    PageSize = PageSize,
-                    TotalCount = 0
-                });
+                return BuildListView(null, ex.Message);
             }
-
-            return View("List", new PagedResult<HealthRecordDto>
-            {
-                Items = new List<HealthRecordDto> { record },
-                PageNumber = 1,
-                PageSize = 1,
-                TotalCount = 1
-            });
         }
-        catch (Exception ex)
-        {
-            ViewBag.Error = ex.Message;
 
-            return View("List", new PagedResult<HealthRecordDto>
+        public async Task<ActionResult> GetRecord(int id)
+        {
+            try
             {
-                Items = new List<HealthRecordDto>(),
-                PageNumber = 1,
-                PageSize = PageSize,
-                TotalCount = 0
-            });
+                var record = await _service.GetByIdAsync(id);
+                return BuildListView(record);
+            }
+            catch (Exception ex)
+            {
+                return BuildListView(null, ex.Message);
+            }
         }
     }
 }

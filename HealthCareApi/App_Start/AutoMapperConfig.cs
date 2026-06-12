@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-//using HealthCareApi.Mapping;
+using HealthCare.Api.Mapping;
 
 namespace HealthCareApi.App_Start
 {

@@ -2,7 +2,9 @@
 using HealthCare.Shared.DTOs.Doctor;
 using HealthCare.Web.Services.Interfaces;
 using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -88,6 +90,23 @@ namespace HealthCare.Web.Services
             var response = await _client.DeleteAsync($"{baseUrl}/{id}");
 
             return response.IsSuccessStatusCode;
+        }
+
+        public async Task<bool> IsEmailAvailableAsync(string email)
+        {
+            if (string.IsNullOrWhiteSpace(email))
+                return false;
+
+            var encodedEmail = Uri.EscapeDataString(email);
+
+            var response = await _client.GetAsync($"{baseUrl}/check-email?email={encodedEmail}");
+
+            if (!response.IsSuccessStatusCode)
+                return false; // safe fallback
+
+            var json = await response.Content.ReadAsStringAsync();
+
+            return JsonConvert.DeserializeObject<bool>(json);
         }
 
         //  Get doctors by specialization

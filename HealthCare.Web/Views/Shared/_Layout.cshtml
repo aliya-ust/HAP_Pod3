@@ -217,13 +217,13 @@
         @Html.Partial("_Sidebar")
 
         <main class="main-content">
-            <div class="topbar">
+            <div class="topbar" style="margin-left: 10px">
                 <div>
                     <strong>@pageTitle</strong>
                 </div>
             </div>
 
-            <div class="page-container">
+            <div class="page-container" style="margin-left: 10px">
                 @if (TempData["Success"] != null)
                 {
                     <div class="alert alert-success">
@@ -243,19 +243,8 @@
         </main>
     </div>
 
-    @Html.Partial("_ConfirmModal")
-
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
-
-    <script>
-        function openConfirmModal(title, message, actionUrl) {
-            $("#confirmModalTitle").text(title);
-            $("#confirmModalMessage").text(message);
-            $("#confirmModalForm").attr("action", actionUrl);
-            $("#confirmModal").modal("show");
-        }
-    </script>
 
     @RenderSection("scripts", required: false)
 </body>

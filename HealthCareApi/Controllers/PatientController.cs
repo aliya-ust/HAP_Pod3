@@ -77,6 +77,21 @@ namespace HealthCareApi.Controllers
             return Created($"api/patients/{dto.PatientId}", dto);
         }
 
+        // GET: api/patients/check-email?email=test@test.com
+        [HttpGet]
+        [Route("check-email")]
+        public async Task<IHttpActionResult> CheckEmail(string email)
+        {
+            if (string.IsNullOrWhiteSpace(email))
+                return BadRequest("Email is required");
+
+            var exists = await _patientService.EmailExistsAsync(email);
+
+            //  IMPORTANT:
+            // return TRUE if available, FALSE if already exists
+            return Ok(!exists);
+        }
+
         // PUT: api/patients/5
         [HttpPut]
         [Route("{id:int}")]

@@ -10,5 +10,6 @@ namespace HealthCareApi.Repositories.Interfaces
     public interface IPatientRepository : IRepository<Patient>
     {
         Task<PagedResult<Patient>> GetPaginatedPatientsAsync(string searchTerm, int pageNumber, int pageSize);
+        Task<bool> EmailExistsAsync(string email);
     }
 }

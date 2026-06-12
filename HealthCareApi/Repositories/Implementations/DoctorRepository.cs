@@ -1,5 +1,4 @@
-﻿//using HealthCareApi.Data.Context;
-using HealthCare.Shared;
+﻿using HealthCare.Shared;
 using HealthCareApi.Repositories.Implementations;
 using HealthCareApi.Repositories.Interfaces;
 using System;
@@ -7,7 +6,6 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
-//using HealthCareApi.Models;
 
 namespace HealthCareApi.Repositories.Implementations
 {
@@ -77,6 +75,12 @@ namespace HealthCareApi.Repositories.Implementations
                 .Where(d => d.Specialisation == specialization && d.IsActive)
                 .OrderBy(d => d.FullName)
                 .ToListAsync();
+        }
+
+        public async Task<bool> EmailExistsAsync(string email)
+        {
+            return await _context.Doctors
+                .AnyAsync(p => p.Email.ToLower() == email.ToLower());
         }
 
         public override async Task DeleteAsync(Doctor doctor)

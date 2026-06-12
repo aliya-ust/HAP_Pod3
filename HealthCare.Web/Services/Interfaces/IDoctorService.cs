@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
+using System.Web.Mvc;
 
 namespace HealthCare.Web.Services.Interfaces
 {
@@ -22,6 +23,7 @@ namespace HealthCare.Web.Services.Interfaces
         Task<List<DoctorLookupDto>> GetDoctorsBySpecializationAsync(string specialization);
         Task<bool> UpdateAsync(UpdateDoctorDto dto);
         Task<bool> DeleteAsync(int id);
+        Task<bool> IsEmailAvailableAsync(string email);
 
     }
 }

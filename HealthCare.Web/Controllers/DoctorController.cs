@@ -18,6 +18,12 @@ namespace HealthCare.Web.Controllers
             _service = service;
         }
 
+        private ActionResult RedirectWithMessage(bool success, string successMsg, string errorMsg)
+        {
+            TempData[success ? "Success" : "Error"] = success ? successMsg : errorMsg;
+            return RedirectToAction("List");
+        }
+
         //  LIST → Doctor/List.cshtml
         public async Task<ActionResult> List(
             string specialization,
@@ -33,17 +39,6 @@ namespace HealthCare.Web.Controllers
                 PageSize);
 
             return View("List", result);
-        }
-
-        //  PROFILE → Doctor/Profile.cshtml
-        public async Task<ActionResult> Profile(int id)
-        {
-            var doctor = await _service.GetByIdAsync(id);
-
-            if (doctor == null)
-                TempData["Error"] = "Doctor does not exist.";
-
-            return View("List", doctor);
         }
 
         //  CREATE (GET) → Doctor/Register.cshtml
@@ -63,7 +58,7 @@ namespace HealthCare.Web.Controllers
             }
 
             if (!ModelState.IsValid)
-                return PartialView("_EditPartial", dto);
+                return View("Add", dto);
 
             var result = await _service.CreateAsync(dto);
 
@@ -74,39 +69,42 @@ namespace HealthCare.Web.Controllers
             }
 
             ModelState.AddModelError("", "Error creating doctor");
-            return PartialView("_EditPartial", dto);
+            return View("Add", dto);
         }
 
         //  EDIT (GET) → Doctor/Edit.cshtml
+        [HttpGet]
         public async Task<ActionResult> Edit(int id)
         {
-            var doctor = await _service.GetByIdAsync(id);
+            var result = await _service.GetByIdAsync(id);
+
+            var doctor = result.Items.FirstOrDefault();
 
             if (doctor == null)
-                return View("NotFound");;
+                return RedirectToAction("List");
 
-            return View("Edit", doctor);
+            return View(doctor);
         }
 
         //  EDIT (POST)
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(PagedResult<UpdateDoctorDto> dto)
+        public async Task<ActionResult> Edit(UpdateDoctorDto dto)
         {
             if (!ModelState.IsValid)
-                return PartialView("_EditPartial", dto);
+                return View(dto);
 
-            var result = await _service.UpdateAsync(dto.Items[0]);
+            var result = await _service.UpdateAsync(dto);
 
-            if (result)
+            if (!result)
             {
-                TempData["Success"] = "Doctor updated successfully.";
-                return RedirectToAction("List", new { id = dto.Items[0].DoctorId });
+                ModelState.AddModelError("", "Update failed");
+                return View(dto);
             }
 
-            ModelState.AddModelError("", "Error updating doctor");
-            return PartialView("_EditPartial", dto);
+            return RedirectWithMessage(true, "Doctor updated successfully", "");
         }
+
 
         //  DELETE
         [HttpPost]
@@ -114,13 +112,7 @@ namespace HealthCare.Web.Controllers
         public async Task<ActionResult> Delete(int id)
         {
             var result = await _service.DeleteAsync(id);
-
-            if (result)
-                TempData["Success"] = "Doctor deleted.";
-            else
-                TempData["Error"] = "Delete failed.";
-
-            return RedirectToAction("List");
+            return RedirectWithMessage(result, "Doctor deleted.", "Delete failed.");
         }
 
         [HttpGet]
@@ -132,15 +124,24 @@ namespace HealthCare.Web.Controllers
             return Json(doctors, JsonRequestBehavior.AllowGet);
         }
 
+        [HttpGet]
+        public async Task<ActionResult> IsEmailAvailable(string Email)
+        {
+            var isAvailable = await _service.IsEmailAvailableAsync(Email);
+
+            //  already returns true/false correctly
+            return Json(isAvailable, JsonRequestBehavior.AllowGet);
+        }
+
         public ActionResult AddPartial()
         {
-            return PartialView("_AddPartial");
+            return View("Add");
         }
 
         public async Task<ActionResult> EditPartial(int id)
         {
             var doctor = await _service.GetByIdAsync(id);
-            return PartialView("_EditPartial", doctor);
+            return View("Edit", doctor);
         }
 
         public async Task<ActionResult> ViewPartial(int id)
