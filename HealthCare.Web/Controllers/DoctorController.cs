@@ -133,6 +133,18 @@ namespace HealthCare.Web.Controllers
             return Json(isAvailable, JsonRequestBehavior.AllowGet);
         }
 
+        public async Task<ActionResult> Profile(int id)
+        {
+            var doctor = await _service.GetByIdAsync(id);
+
+            if (doctor == null)
+            {
+                TempData["Error"] = "Doctor does not exist.";
+            }
+
+            return View("List", doctor);
+        }
+
         public ActionResult AddPartial()
         {
             return View("Add");

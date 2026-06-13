@@ -107,6 +107,19 @@ namespace HealthCare.Web.Controllers
             return ResultWithMessage(true, "Patient updated successfully", "");
         }
 
+        public async Task<ActionResult> Profile(int id)
+        {
+            if (id == 0)
+                TempData["Error"] = "Patient does not exist.";
+
+            var patient = await _service.GetByIdAsync(id);
+
+            if (patient == null)
+                TempData["Error"] = "Patient does not exist.";
+
+            return View("List", patient);
+        }
+
         // DELETE
         [HttpPost]
         [ValidateAntiForgeryToken]
