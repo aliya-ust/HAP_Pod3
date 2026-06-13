@@ -13,3 +13,6 @@
 
 *.lscache
 coverage.xml
+
+packages
+TestResults
