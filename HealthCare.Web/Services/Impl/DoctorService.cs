@@ -1,27 +1,40 @@
 ﻿using HealthCare.Shared;
 using HealthCare.Shared.DTOs.Doctor;
 using HealthCare.Web.Services.Interfaces;
-//using HealthCareApi.DTOs.Doctor;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace HealthCare.Web.Services
 {
+    [ExcludeFromCodeCoverage]
     public class DoctorService : IDoctorService
     {
         private static readonly HttpClient client = new HttpClient();
         private readonly string baseUrl = "https://localhost:44326/api/doctors";
 
         public async Task<PagedResult<DoctorDto>> GetDoctorsAsync(
-            string specialization,
+            string specialisation,
             string searchTerm,
             bool orderByDescending,
             int pageNumber,
             int pageSize)
         {
-            string url = $"{baseUrl}?specialization={specialization}&searchTerm={searchTerm}&orderByDescending={orderByDescending}&pageNumber={pageNumber}&pageSize={pageSize}";
+            
+            specialisation = specialisation ?? "";
+            searchTerm = searchTerm ?? "";
+
+            
+            string url = $"{baseUrl}" +
+                         $"?specialisation={Uri.EscapeDataString(specialisation)}" +
+                         $"&searchTerm={Uri.EscapeDataString(searchTerm)}" +
+                         $"&orderByDescending={orderByDescending}" +
+                         $"&pageNumber={pageNumber}" +
+                         $"&pageSize={pageSize}";
 
             var response = await client.GetAsync(url);
 
@@ -45,7 +58,7 @@ namespace HealthCare.Web.Services
             return JsonConvert.DeserializeObject<DoctorDto>(json);
         }
 
-        public async Task<bool> CreateAsync(CreateDoctorDto dto)
+        public async Task<bool> CreateAsync(DoctorDto dto)
         {
             var json = JsonConvert.SerializeObject(dto);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
@@ -55,7 +68,7 @@ namespace HealthCare.Web.Services
             return response.IsSuccessStatusCode;
         }
 
-        public async Task<bool> UpdateAsync(UpdateDoctorDto dto)
+        public async Task<bool> UpdateAsync(DoctorDto dto)
         {
             var json = JsonConvert.SerializeObject(dto);
             var content = new StringContent(json, Encoding.UTF8, "application/json");

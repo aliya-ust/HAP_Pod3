@@ -1,8 +1,10 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace HealthCare.Shared.DTOs.Appointment
 {
+    [ExcludeFromCodeCoverage]
     public class CreateAppointmentDto
     {
         [Required]

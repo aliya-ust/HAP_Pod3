@@ -12,46 +12,28 @@ namespace HealthCareApi.Services.Implementations
     public class HealthRecordService : IHealthRecordService
     {
         private readonly IHealthRecordRepository _healthRecordRepository;
-        private readonly HealthAppDbContext _context;
 
         public HealthRecordService(
-            IHealthRecordRepository healthRecordRepository,
-            HealthAppDbContext context)
+            IHealthRecordRepository healthRecordRepository)
         {
             _healthRecordRepository = healthRecordRepository;
-            _context = context;
         }
 
         // ADD HEALTH RECORD
         public async Task<HealthRecord> CreateAsync(HealthRecord record)
         {
-            System.Diagnostics.Debug.WriteLine(record.AppointmentId);
-            var appointment = await _context.Appointments
-                .FirstOrDefaultAsync(a => a.AppointmentId == record.AppointmentId);
-
-            if (appointment == null)
-                throw new Exception("Invalid appointment");
-
-            // Allow only if NOT already completed? NO ❌
-            // Check if already has record (UNIQUE constraint)
             var exists = await _healthRecordRepository
                 .HealthRecordExistsAsync(record.AppointmentId);
 
             if (exists)
-                throw new Exception("Health record already exists for this appointment");
-
-            // NO need to check "Completed"
-
-            record.VisitDate = appointment.ScheduledDate;
+                throw new Exception("Health record already exists for this appointment");           
 
             await _healthRecordRepository.AddAsync(record);
-
-            // Trigger will handle status update
 
             return record;
         }
 
-        // GET PATIENT HEALTH HISTORY (VIEW)
+        // GET PATIENT HEALTH HISTORY
         public async Task<PagedResult<vw_PatientHealthHistory>> GetPatientHealthHistoryAsync(
             int patientId,
             int pageNumber = 1,
@@ -65,5 +47,11 @@ namespace HealthCareApi.Services.Implementations
         {
             return await _healthRecordRepository.GetByAppointmentIdAsync(id);
         }
+
+        public async Task<IEnumerable<HealthRecord>> GetAllAsync()
+        {
+            return await _healthRecordRepository.GetAllAsync();
+        }
+
     }
 }

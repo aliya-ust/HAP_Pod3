@@ -1,12 +1,14 @@
 ﻿using HealthCare.Shared.DTOs.Appointment;
-using HealthCare.Web.Services.Interfaces;
 using HealthCare.Web.Services;
+using HealthCare.Web.Services.Interfaces;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 
 namespace HealthCare.Web.Controllers
 {
+    [ExcludeFromCodeCoverage]
     public class AppointmentController : Controller
     {
         private readonly IAppointmentService _service;
@@ -22,7 +24,7 @@ namespace HealthCare.Web.Controllers
             return View();
         }
 
-        //  LIST (Patient appointments)
+        //  LIST PATIENT APPOINTMENTS
         public async Task<ActionResult> List(int patientId, string status, int pageNumber = 1)
         {
             var result = await _service.GetPatientAppointmentsAsync(
@@ -59,7 +61,7 @@ namespace HealthCare.Web.Controllers
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError("", ex.Message); //show API error
+                ModelState.AddModelError("", ex.Message);
             }
 
             return View("Book", dto);

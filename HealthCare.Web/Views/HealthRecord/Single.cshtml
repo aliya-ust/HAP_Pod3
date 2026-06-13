@@ -6,7 +6,7 @@
 
 <div class="container-fluid">
 
-    <!-- ✅ HEADER -->
+    <!-- HEADER -->
     <div class="mb-4">
         <h2 class="fw-bold">Health Record</h2>
         <p class="text-muted">
@@ -14,7 +14,7 @@
         </p>
     </div>
 
-    <!-- ✅ ERROR -->
+    <!-- ERROR -->
     @if (ViewBag.Error != null)
     {
         <div class="alert alert-danger">
@@ -22,13 +22,13 @@
         </div>
     }
 
-    <!-- ✅ MAIN CARD -->
+    <!-- MAIN CARD -->
     @if (Model != null)
     {
         <div class="card border-0 shadow-sm rounded-4">
             <div class="card-body p-5">
 
-                <!-- ✅ HEADER INFO -->
+                <!-- HEADER INFO -->
                 <div class="row mb-4">
 
                     <div class="col-md-4">
@@ -50,7 +50,7 @@
 
                 <hr />
 
-                <!-- ✅ DIAGNOSIS -->
+                <!-- DIAGNOSIS -->
                 <div class="mb-4">
                     <label class="fw-bold">Diagnosis</label>
                     <div class="p-3 bg-light rounded-3">
@@ -58,7 +58,7 @@
                     </div>
                 </div>
 
-                <!-- ✅ PRESCRIPTION -->
+                <!-- PRESCRIPTION -->
                 <div class="mb-4">
                     <label class="fw-bold">Prescription</label>
                     <div class="p-3 bg-light rounded-3">
@@ -66,7 +66,7 @@
                     </div>
                 </div>
 
-                <!-- ✅ NOTES -->
+                <!-- NOTES -->
                 <div class="mb-4">
                     <label class="fw-bold">Doctor Notes</label>
                     <div class="p-3 bg-light rounded-3">
@@ -76,7 +76,7 @@
 
                 <hr />
 
-                <!-- ✅ ACTIONS -->
+                <!-- ACTIONS -->
                 <div class="text-end">
 
                     <!-- Back to appointments -->

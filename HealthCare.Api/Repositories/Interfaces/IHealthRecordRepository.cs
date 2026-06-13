@@ -15,5 +15,6 @@ namespace HealthCareApi.Repositories.Interfaces
              int pageNumber,
              int pageSize);
         Task<HealthRecord> GetByAppointmentIdAsync(int appointmentId);
+        Task<IEnumerable<HealthRecord>> GetAllAsync();
     }
 }

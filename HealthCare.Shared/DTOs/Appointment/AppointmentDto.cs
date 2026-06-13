@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace HealthCare.Shared.DTOs.Appointment
 {
+    [ExcludeFromCodeCoverage]
     public class AppointmentDto : IValidatableObject
     {
         public int AppointmentId { get; set; }

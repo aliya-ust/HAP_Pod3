@@ -242,7 +242,6 @@ warning 6002: The table/view 'HealthAppDb.dbo.vw_PatientHealthHistory' does not 
           </Key>
           <Property Name="DoctorId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="FullName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="Specialisation" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="YearsOfExperience" Type="Int32" Nullable="false" />
           <Property Name="ConsultationFee" Type="Decimal" Precision="10" Scale="2" Nullable="false" />
           <Property Name="IsActive" Type="Boolean" Nullable="false" />
@@ -250,6 +249,7 @@ warning 6002: The table/view 'HealthAppDb.dbo.vw_PatientHealthHistory' does not 
           <NavigationProperty Name="Appointments" Relationship="Self.FK__Appointme__Docto__73BA3083" FromRole="Doctors" ToRole="Appointments" />
           <NavigationProperty Name="DoctorAvailableSlots" Relationship="Self.FK__DoctorAva__Docto__7C4F7684" FromRole="Doctors" ToRole="DoctorAvailableSlots" />
           <NavigationProperty Name="DoctorLeaves" Relationship="Self.FK__DoctorLea__Docto__00200768" FromRole="Doctors" ToRole="DoctorLeaves" />
+          <Property Name="Specialisation" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="HealthRecord">
           <Key>
@@ -374,20 +374,20 @@ warning 6002: The table/view 'HealthAppDb.dbo.vw_PatientHealthHistory' does not 
             <PropertyRef Name="PatientId" />
             <PropertyRef Name="PatientName" />
             <PropertyRef Name="DoctorName" />
-            <PropertyRef Name="Specialisation" />
             <PropertyRef Name="VisitDate" />
             <PropertyRef Name="Diagnosis" />
             <PropertyRef Name="Prescription" />
+            <PropertyRef Name="Specialisation" />
           </Key>
           <Property Name="RecordId" Type="Int32" Nullable="false" />
           <Property Name="PatientId" Type="Int32" Nullable="false" />
           <Property Name="PatientName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="DoctorName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="Specialisation" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="VisitDate" Type="DateTime" Nullable="false" Precision="7" />
           <Property Name="Diagnosis" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="Prescription" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="Notes" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="Specialisation" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -431,9 +431,9 @@ warning 6002: The table/view 'HealthAppDb.dbo.vw_PatientHealthHistory' does not 
           <EntitySetMapping Name="Doctors">
             <EntityTypeMapping TypeName="HealthAppDb.Doctor">
               <MappingFragment StoreEntitySet="Doctors">
+                <ScalarProperty Name="Specialisation" ColumnName="Specialisation" />
                 <ScalarProperty Name="DoctorId" ColumnName="DoctorId" />
                 <ScalarProperty Name="FullName" ColumnName="FullName" />
-                <ScalarProperty Name="Specialisation" ColumnName="Specialisation" />
                 <ScalarProperty Name="YearsOfExperience" ColumnName="YearsOfExperience" />
                 <ScalarProperty Name="ConsultationFee" ColumnName="ConsultationFee" />
                 <ScalarProperty Name="IsActive" ColumnName="IsActive" />
@@ -472,11 +472,11 @@ warning 6002: The table/view 'HealthAppDb.dbo.vw_PatientHealthHistory' does not 
           <EntitySetMapping Name="vw_PatientHealthHistory">
             <EntityTypeMapping TypeName="HealthAppDb.vw_PatientHealthHistory">
               <MappingFragment StoreEntitySet="vw_PatientHealthHistory">
+                <ScalarProperty Name="Specialisation" ColumnName="Specialisation" />
                 <ScalarProperty Name="Notes" ColumnName="Notes" />
                 <ScalarProperty Name="Prescription" ColumnName="Prescription" />
                 <ScalarProperty Name="Diagnosis" ColumnName="Diagnosis" />
                 <ScalarProperty Name="VisitDate" ColumnName="VisitDate" />
-                <ScalarProperty Name="Specialisation" ColumnName="Specialisation" />
                 <ScalarProperty Name="DoctorName" ColumnName="DoctorName" />
                 <ScalarProperty Name="PatientName" ColumnName="PatientName" />
                 <ScalarProperty Name="PatientId" ColumnName="PatientId" />

@@ -14,36 +14,80 @@
     {
         @Html.AntiForgeryToken()
 
+        <!-- FULL NAME -->
         <div class="mb-2">
-            @Html.TextBoxFor(m => m.FullName, new { @class = "form-control", placeholder = "Full Name" })
+            @Html.TextBoxFor(m => m.FullName, new
+            {
+                @class = "form-control",
+                placeholder = "Full Name",
+                pattern = "^[A-Za-z ]+$",
+                title = "Only letters and spaces allowed"
+            })
             @Html.ValidationMessageFor(m => m.FullName, "", new { @class = "text-danger" })
         </div>
 
-        <div class="mb-2">
-            @Html.TextBoxFor(m => m.DateOfBirth, new { @class = "form-control", type = "date" })
-            @Html.ValidationMessageFor(m => m.DateOfBirth, "", new { @class = "text-danger" })
-        </div>
+        <!-- DATE OF BIRTH -->
+<div class="mb-2">
+    @Html.TextBoxFor(m => m.DateOfBirth, new
+{
+@class = "form-control",
+type = "date",
+id = "date",
+max = DateTime.Now.ToString("yyyy-MM-dd")
+})
+    @Html.ValidationMessageFor(m => m.DateOfBirth, "", new { @class = "text-danger" })
+</div>
 
+        <!-- GENDER (Radio Button UI) -->
         <div class="mb-2">
-            @Html.TextBoxFor(m => m.Gender, new { @class = "form-control", placeholder = "Gender" })
+            <label class="form-label">Gender</label>
+
+            <div class="btn-group" role="group">
+
+                @Html.RadioButtonFor(m => m.Gender, "Male", new { @class = "btn-check", id = "male" })
+                <label class="btn btn-outline-primary" for="male">Male</label>
+
+                @Html.RadioButtonFor(m => m.Gender, "Female", new { @class = "btn-check", id = "female" })
+                <label class="btn btn-outline-primary" for="female">Female</label>
+
+                @Html.RadioButtonFor(m => m.Gender, "Other", new { @class = "btn-check", id = "other" })
+                <label class="btn btn-outline-primary" for="other">Other</label>
+
+            </div>
+
             @Html.ValidationMessageFor(m => m.Gender, "", new { @class = "text-danger" })
         </div>
 
+        <!-- PHONE NUMBER -->
         <div class="mb-2">
-            @Html.TextBoxFor(m => m.PhoneNumber, new { @class = "form-control", placeholder = "Phone" })
+            @Html.TextBoxFor(m => m.PhoneNumber, new
+            {
+                @class = "form-control",
+                placeholder = "Phone Number",
+                pattern = "[0-9]{10}",
+                title = "Enter a valid 10-digit phone number"
+            })
             @Html.ValidationMessageFor(m => m.PhoneNumber, "", new { @class = "text-danger" })
         </div>
 
+        <!-- EMAIL -->
         <div class="mb-2">
-            @Html.TextBoxFor(m => m.Email, new { @class = "form-control", placeholder = "Email" })
+            @Html.TextBoxFor(m => m.Email, new
+            {
+                @class = "form-control",
+                placeholder = "Email",
+                type = "email"
+            })
             @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
         </div>
 
-        <div class="mb-2">
-            @Html.TextBoxFor(m => m.InsuranceId, new { @class = "form-control", placeholder = "Insurance ID" })
-            @Html.ValidationMessageFor(m => m.InsuranceId, "", new { @class = "text-danger" })
-        </div>
+        <!-- INSURANCE ID -->
+<div class="mb-2">
+    @Html.TextBoxFor(m => m.InsuranceId, new { @class = "form-control", placeholder = "Insurance ID" })
+    @Html.ValidationMessageFor(m => m.InsuranceId, "", new { @class = "text-danger" })
+</div>
 
+        <!-- BUTTONS -->
         <button type="submit" class="btn btn-primary">Register</button>
 
         <a href="@Url.Action("Index", "Patient")" class="btn btn-secondary">

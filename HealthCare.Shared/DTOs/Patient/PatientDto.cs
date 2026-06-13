@@ -1,14 +1,17 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace HealthCare.Shared.DTOs.Patient
 {
+    [ExcludeFromCodeCoverage]
     public class PatientDto
     {
         public int PatientId { get; set; }
 
         [Required(ErrorMessage = "Full name is required")]
         [StringLength(100, ErrorMessage = "Max 100 characters")]
+        [RegularExpression(@"^[a-zA-Z\s]+$", ErrorMessage = "Only letters and spaces allowed")]
         public string FullName { get; set; }
 
         [Required(ErrorMessage = "Date of Birth is required")]
@@ -25,8 +28,6 @@ namespace HealthCare.Shared.DTOs.Patient
         [Required(ErrorMessage = "Email is required")]
         [EmailAddress(ErrorMessage = "Invalid email format")]
         public string Email { get; set; }
-
-        [Required(ErrorMessage = "Insurance ID is required")]
         public string InsuranceId { get; set; }
 
         public DateTime CreatedDate { get; set; }

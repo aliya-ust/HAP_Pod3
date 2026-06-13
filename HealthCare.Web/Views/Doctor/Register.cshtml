@@ -4,50 +4,100 @@
 
     <h3>Add Doctor</h3>
 
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
     @using (Html.BeginForm())
     {
         @Html.AntiForgeryToken()
 
-        <div class="form-group">
-            <label>Full Name</label>
-            @Html.TextBoxFor(m => m.FullName, new { @class = "form-control" })
-            @Html.ValidationMessageFor(m => m.FullName, "", new { @class = "text-danger" })
-        </div>
+        <!-- NAME -->
+<div class="form-group">
+    <label>Full Name</label>
 
+
+    @Html.TextBoxFor(m => m.FullName, new
+    {
+        @class = "form-control",
+        placeholder = "Full Name",
+        pattern = @"^[a-zA-Z\s]+$",
+        title = "Only letters and spaces allowed"
+    })
+
+    @Html.ValidationMessageFor(m => m.FullName, "",
+        new { @class = "text-danger" })
+</div>
+
+        <!-- SPECIALISATION DROPDOWN -->
         <div class="form-group">
             <label>Specialisation</label>
-            @Html.TextBoxFor(m => m.Specialisation, new { @class = "form-control" })
-            @Html.ValidationMessageFor(m => m.Specialisation, "", new { @class = "text-danger" })
+
+            @Html.DropDownListFor(m => m.Specialisation,
+                new SelectList(new[] {
+                    "Cardiology",
+                    "Dermatology",
+                    "Neurology",
+                    "Orthopedics"
+                }),
+                "-- Select Specialisation --",
+                new { @class = "form-control" })
+
+            @Html.ValidationMessageFor(m => m.Specialisation, "",
+                new { @class = "text-danger" })
         </div>
 
+        <!-- EXPERIENCE -->
         <div class="form-group">
-            <label>Experience</label>
-            @Html.TextBoxFor(m => m.YearsOfExperience, new { @class = "form-control" })
-            @Html.ValidationMessageFor(m => m.YearsOfExperience, "", new { @class = "text-danger" })
+            <label>Experience (Years)</label>
+
+            @Html.TextBoxFor(m => m.YearsOfExperience, new
+            {
+                @class = "form-control",
+                type = "number",
+                min = "0",
+                max = "50"
+            })
+
+            @Html.ValidationMessageFor(m => m.YearsOfExperience, "",
+                new { @class = "text-danger" })
         </div>
 
+        <!- FEE -->
         <div class="form-group">
-            <label>Fee</label>
-            @Html.TextBoxFor(m => m.ConsultationFee, new { @class = "form-control" })
-            @Html.ValidationMessageFor(m => m.ConsultationFee, "", new { @class = "text-danger" })
+            <label>Consultation Fee</label>
+
+            @Html.TextBoxFor(m => m.ConsultationFee, new
+            {
+                @class = "form-control",
+                type = "number",
+                min = "0"
+            })
+
+            @Html.ValidationMessageFor(m => m.ConsultationFee, "",
+                new { @class = "text-danger" })
         </div>
+
+        <!-- AVAILABLE SLOTS -->
         <div class="form-group mt-3">
             <label>Available Slots</label><br />
 
             @foreach (var time in new[]
             {
-        "10:00 AM","11:00 AM","12:00 PM",
-        "1:00 PM","2:00 PM","3:00 PM",
-        "4:00 PM","5:00 PM"
+                "10:00 AM","11:00 AM","12:00 PM",
+                "1:00 PM","2:00 PM","3:00 PM",
+                "4:00 PM","5:00 PM"
             })
             {
                 <label class="me-2">
-                    <input type="checkbox" name="AvailableSlots" value="@time" /> @time
+                    <input type="checkbox" name="DoctorAvailableSlots" value="@time" />
+                    @time
                 </label>
             }
         </div>
 
-        <button type="submit" class="btn btn-primary mt-3">Create</button>
+        <!-- SUBMIT -->
+        <button type="submit" class="btn btn-primary mt-3">
+            Create
+        </button>
     }
 
 </div>

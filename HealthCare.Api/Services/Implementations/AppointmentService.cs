@@ -1,6 +1,5 @@
 ﻿using HealthCare.Api;
 using HealthCare.Shared;
-//using HealthCareApi.Helper;
 using HealthCareApi.Repositories.Interfaces;
 using HealthCareApi.Services.Interfaces;
 using System;
@@ -70,6 +69,20 @@ namespace HealthCareApi.Services.Implementations
             // 7. Save
             await _appointmentRepository.AddAsync(appointment);
 
+
+            // 8. Mark slot as booked
+            var slot = await _context.DoctorAvailableSlots
+                .FirstOrDefaultAsync(s =>
+                    s.DoctorId == appointment.DoctorId &&
+                    s.TimeSlot == appointment.TimeSlot);
+
+            if (slot != null)
+            {
+                slot.IsBooked = true;
+                await _context.SaveChangesAsync();
+            }
+
+
             return appointment;
         }
 
@@ -86,15 +99,22 @@ namespace HealthCareApi.Services.Implementations
                 pageSize);
         }
 
-
-        public async Task<IEnumerable<Appointment>> GetTodayAppointmentsAsync(int doctorId)
+        public async Task<List<string>> GetAvailableSlotsAsync(int doctorId, DateTime date)
         {
-            return await _appointmentRepository.GetTodayAppointmentsAsync(doctorId);
-        }
+            //  Step 1: Get working slots
+            var allSlots = await _appointmentRepository
+                .GetDoctorSlotsAsync(doctorId);
 
-        public async Task<IEnumerable<Appointment>> GetWeeklyAppointmentsAsync(int doctorId)
-        {
-            return await _appointmentRepository.GetWeeklyAppointmentsAsync(doctorId);
+            //  Step 2: Get booked slots
+            var bookedSlots = await _appointmentRepository
+                .GetBookedSlotsAsync(doctorId, date);
+
+            //  Step 3: Remove booked slots
+            var availableSlots = allSlots
+                .Except(bookedSlots)
+                .ToList();
+
+            return availableSlots;
         }
 
         public async Task<IEnumerable<Appointment>> GetAppointmentsByDateAsync(DateTime date)
@@ -115,7 +135,7 @@ namespace HealthCareApi.Services.Implementations
             if (appointment.Status == "Completed")
                 throw new Exception("Appointment already completed");
 
-            // Update status
+          
             appointment.Status = "Confirmed";
 
             await _appointmentRepository.UpdateAsync(appointment);
@@ -136,7 +156,7 @@ namespace HealthCareApi.Services.Implementations
             if (string.IsNullOrWhiteSpace(reason))
                 throw new Exception("Cancellation reason is required");
 
-            // Update fields
+           
             appointment.Status = "Cancelled";
             appointment.CancellationReason = reason;
 

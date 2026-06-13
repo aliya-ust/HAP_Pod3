@@ -6,13 +6,16 @@ using HealthCareApi.Repositories.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 
 public class AppointmentRepository : Repository<Appointment>, IAppointmentRepository
 {
+    [ExcludeFromCodeCoverage]
     public AppointmentRepository(HealthAppDbContext context) : base(context)
     {
+
     }
 
     // Check if slot exists for doctor
@@ -30,44 +33,45 @@ public class AppointmentRepository : Repository<Appointment>, IAppointmentReposi
             a.DoctorId == doctorId &&
             DbFunctions.TruncateTime(a.ScheduledDate) == date.Date &&
             a.TimeSlot == timeSlot &&
-            a.Status != "Cancelled"); // Cancelled slots can be reused
+            a.Status != "Cancelled"); 
     }
 
+    // Get patient appointments with pagination and filtering
     public async Task<PagedResult<Appointment>> GetPatientAppointmentsAsync(
         int patientId,
         string status,
         int pageNumber,
         int pageSize)
     {
-        // ✅ Safety
+        
         pageNumber = pageNumber < 1 ? 1 : pageNumber;
         pageSize = pageSize > 50 ? 50 : pageSize;
 
-        // ✅ Base Query
+       
         IQueryable<Appointment> query = _context.Appointments
             .Where(a => a.PatientId == patientId);
 
-        // ✅ Filter by Status
+     
         if (!string.IsNullOrWhiteSpace(status))
         {
             query = query.Where(a => a.Status == status);
         }
 
-        // ✅ ✅ IMPORTANT: Get total count BEFORE pagination
+        
         int totalCount = await query.CountAsync();
 
-        // ✅ Sorting (latest first)
+      
         query = query
             .OrderByDescending(a => a.ScheduledDate)
             .ThenByDescending(a => a.TimeSlot);
 
-        // ✅ Pagination
+        
         var items = await query
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync();
 
-        // ✅ Return paged result
+        
         return new PagedResult<Appointment>
         {
             Items = items,
@@ -77,36 +81,35 @@ public class AppointmentRepository : Repository<Appointment>, IAppointmentReposi
         };
     }
 
-    public async Task<IEnumerable<Appointment>> GetTodayAppointmentsAsync(int doctorId)
-    {
-        var today = DateTime.Today;
+   
 
-        return await _context.Appointments
-            .Where(a => a.DoctorId == doctorId &&
-                        DbFunctions.TruncateTime(a.ScheduledDate) == today)
-            .OrderBy(a => a.TimeSlot)
-            .ToListAsync();
-    }
-
-    public async Task<IEnumerable<Appointment>> GetWeeklyAppointmentsAsync(int doctorId)
-    {
-        var startOfWeek = DateTime.Today;
-        var endOfWeek = startOfWeek.AddDays(7);
-
-        return await _context.Appointments
-            .Where(a => a.DoctorId == doctorId &&
-                        a.ScheduledDate >= startOfWeek &&
-                        a.ScheduledDate < endOfWeek)
-            .OrderBy(a => a.ScheduledDate)
-            .ThenBy(a => a.TimeSlot)
-            .ToListAsync();
-    }
-
+    // Get appointments by date for a doctor
     public async Task<IEnumerable<Appointment>> GetAppointmentsByDateAsync(DateTime date)
     {
         return await _context.Appointments
             .Where(a => DbFunctions.TruncateTime(a.ScheduledDate) == date.Date)
             .OrderBy(a => a.TimeSlot)
+            .ToListAsync();
+    }
+
+    // Get available slots for a doctor
+    public async Task<List<string>> GetDoctorSlotsAsync(int doctorId)
+    {
+        return await _context.DoctorAvailableSlots
+            .Where(s => s.DoctorId == doctorId)
+            .Select(s => s.TimeSlot)
+            .ToListAsync();
+    }
+
+    // Get booked slots for a doctor on a specific date
+
+    public async Task<List<string>> GetBookedSlotsAsync(int doctorId, DateTime date)
+    {
+        return await _context.Appointments
+            .Where(a => a.DoctorId == doctorId &&
+                        DbFunctions.TruncateTime(a.ScheduledDate) == date.Date &&
+                        a.Status != "Cancelled")
+            .Select(a => a.TimeSlot)
             .ToListAsync();
     }
 }

@@ -1,5 +1,6 @@
 ﻿using HealthCare.Api;
 using HealthCare.Shared;
+using HealthCare.Shared.DTOs.Doctor;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,8 +17,7 @@ namespace HealthCareApi.Services.Interfaces
             string status = null,
             int pageNumber = 1,
             int pageSize = 10);
-        Task<IEnumerable<Appointment>> GetTodayAppointmentsAsync(int doctorId);
-        Task<IEnumerable<Appointment>> GetWeeklyAppointmentsAsync(int doctorId);
+        Task<List<string>> GetAvailableSlotsAsync(int doctorId, DateTime date);
         Task<IEnumerable<Appointment>> GetAppointmentsByDateAsync(DateTime date);
         Task<Appointment> ConfirmAppointmentAsync(int appointmentId);
         Task<Appointment> CancelAppointmentAsync(int appointmentId, string reason);

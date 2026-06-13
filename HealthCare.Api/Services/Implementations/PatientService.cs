@@ -51,12 +51,12 @@ namespace HealthCareApi.Services.Implementations
             if (existingPatient == null)
                 return null;
 
-            // Controlled update
+          
             existingPatient.FullName = updatedPatient.FullName;
             existingPatient.DateOfBirth = updatedPatient.DateOfBirth;
             existingPatient.Gender = updatedPatient.Gender;
             existingPatient.PhoneNumber = updatedPatient.PhoneNumber;
-            //existingPatient.IsActive = updatedPatient.IsActive;
+            
 
             await _patientRepository.UpdateAsync(existingPatient);
 
@@ -70,7 +70,7 @@ namespace HealthCareApi.Services.Implementations
             if (patient == null)
                 return false;
 
-            // Soft delete
+          
             patient.IsActive = false;
 
             await _patientRepository.UpdateAsync(patient);

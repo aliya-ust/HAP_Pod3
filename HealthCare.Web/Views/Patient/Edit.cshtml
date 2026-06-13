@@ -16,42 +16,80 @@
 
         @Html.HiddenFor(m => m.PatientId)
 
-<div class="mb-2">
-    @Html.LabelFor(m => m.FullName)
-    @Html.TextBoxFor(m => m.FullName, new { @class = "form-control" })
-    @Html.ValidationMessageFor(m => m.FullName, "", new { @class = "text-danger" })
-</div>
+        <!--FULL NAME-->
+        <div class="mb-2">
+            @Html.LabelFor(m => m.FullName)
+            @Html.TextBoxFor(m => m.FullName, new
+            {
+                @class = "form-control",
+                pattern = @"^[a-zA-Z\s]+$",
+                title = "Only letters and spaces allowed"
+            })
+            @Html.ValidationMessageFor(m => m.FullName, "", new { @class = "text-danger" })
+        </div>
 
-<div class="mb-2">
-    @Html.LabelFor(m => m.DateOfBirth)
-    @Html.TextBoxFor(m => m.DateOfBirth, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
-    @Html.ValidationMessageFor(m => m.DateOfBirth, "", new { @class = "text-danger" })
-</div>
+        <!--DATE OF BIRTH-->
+        <div class="mb-2">
+            @Html.LabelFor(m => m.DateOfBirth)
+            @Html.TextBoxFor(m => m.DateOfBirth, "{0:yyyy-MM-dd}", new
+            {
+                @class = "form-control",
+                type = "date"
+            })
+            @Html.ValidationMessageFor(m => m.DateOfBirth, "", new { @class = "text-danger" })
+        </div>
 
-<div class="mb-2">
-    @Html.LabelFor(m => m.Gender)
-    @Html.TextBoxFor(m => m.Gender, new { @class = "form-control" })
-    @Html.ValidationMessageFor(m => m.Gender, "", new { @class = "text-danger" })
-</div>
+        <!--GENDER -->
+        <div class="mb-2">
+            <label class="form-label">Gender</label>
 
-<div class="mb-2">
-    @Html.LabelFor(m => m.PhoneNumber)
-    @Html.TextBoxFor(m => m.PhoneNumber, new { @class = "form-control" })
-    @Html.ValidationMessageFor(m => m.PhoneNumber, "", new { @class = "text-danger" })
-</div>
+            <div class="btn-group" role="group">
 
-<div class="mb-2">
-    @Html.LabelFor(m => m.Email)
-    @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
-    @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
-</div>
+                @Html.RadioButtonFor(m => m.Gender, "Male", new { @class = "btn-check", id = "male" })
+                <label class="btn btn-outline-primary" for="male">Male</label>
 
-<div class="mb-2">
-    @Html.LabelFor(m => m.InsuranceId)
-    @Html.TextBoxFor(m => m.InsuranceId, new { @class = "form-control" })
-    @Html.ValidationMessageFor(m => m.InsuranceId, "", new { @class = "text-danger" })
-</div>
+                @Html.RadioButtonFor(m => m.Gender, "Female", new { @class = "btn-check", id = "female" })
+                <label class="btn btn-outline-primary" for="female">Female</label>
 
+                @Html.RadioButtonFor(m => m.Gender, "Other", new { @class = "btn-check", id = "other" })
+                <label class="btn btn-outline-primary" for="other">Other</label>
+
+            </div>
+
+            @Html.ValidationMessageFor(m => m.Gender, "", new { @class = "text-danger" })
+        </div>
+
+        <!--PHONE NUMBER-->
+        <div class="mb-2">
+            @Html.LabelFor(m => m.PhoneNumber)
+            @Html.TextBoxFor(m => m.PhoneNumber, new
+            {
+                @class = "form-control",
+                pattern = "[0-9]{10}",
+                title = "Enter a valid 10-digit phone number"
+            })
+            @Html.ValidationMessageFor(m => m.PhoneNumber, "", new { @class = "text-danger" })
+        </div>
+
+        <!--EMAIL-->
+        <div class="mb-2">
+            @Html.LabelFor(m => m.Email)
+            @Html.TextBoxFor(m => m.Email, new
+            {
+                @class = "form-control",
+                type = "email"
+            })
+            @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+        </div>
+
+        <!--INSURANCE ID-->
+        <div class="mb-2">
+            @Html.LabelFor(m => m.InsuranceId)
+            @Html.TextBoxFor(m => m.InsuranceId, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.InsuranceId, "", new { @class = "text-danger" })
+        </div>
+
+        <!--BUTTONS-->
         <button type="submit" class="btn btn-success">Save</button>
 
         <a href="@Url.Action("Index", "Patient")" class="btn btn-secondary">

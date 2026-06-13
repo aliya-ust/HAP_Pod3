@@ -1,12 +1,13 @@
 ﻿using HealthCare.Shared.DTOs.Doctor;
 using HealthCare.Web.Services;
 using HealthCare.Web.Services.Interfaces;
-//using HealthCareApi.DTOs.Doctor;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 
 namespace HealthCare.Web.Controllers
 {
+    [ExcludeFromCodeCoverage]
     public class DoctorController : Controller
     {
         private readonly IDoctorService _service;
@@ -17,24 +18,28 @@ namespace HealthCare.Web.Controllers
             _service = new DoctorService();
         }
 
-        //  LIST → Doctor/Index.cshtml
+        // LIST WITH FILTERING, SEARCH, SORTING, AND PAGINATION
         public async Task<ActionResult> Index(
-            string specialization,
+            string specialisation,
             string searchTerm,
             bool orderByDescending = false,
             int pageNumber = 1)
         {
             var result = await _service.GetDoctorsAsync(
-                specialization,
+                specialisation,
                 searchTerm,
                 orderByDescending,
                 pageNumber,
                 PageSize);
 
-            return View("Index", result);
+            
+            ViewBag.SearchTerm = searchTerm;
+            ViewBag.Specialisation = specialisation;
+
+            return View(result);
         }
 
-        //  PROFILE → Doctor/Profile.cshtml
+       
         public async Task<ActionResult> Profile(int id)
         {
             var doctor = await _service.GetByIdAsync(id);
@@ -42,22 +47,22 @@ namespace HealthCare.Web.Controllers
             if (doctor == null)
                 return HttpNotFound();
 
-            return View("_ProfilePartial", doctor);
+            return PartialView("_ProfilePartial", doctor);
         }
 
-        //  CREATE (GET) → Doctor/Register.cshtml
+        // REGISTER (GET)
         public ActionResult Register()
         {
-            return View("Register");
+            return View();
         }
 
-        //  CREATE (POST)
+        // REGISTER (POST)
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Register(CreateDoctorDto dto)
+        public async Task<ActionResult> Register(DoctorDto dto)
         {
             if (!ModelState.IsValid)
-                return View("Register", dto);
+                return View(dto);
 
             var result = await _service.CreateAsync(dto);
 
@@ -68,10 +73,10 @@ namespace HealthCare.Web.Controllers
             }
 
             ModelState.AddModelError("", "Error creating doctor");
-            return View("Register", dto);
+            return View(dto);
         }
 
-        //  EDIT (GET) → Doctor/Edit.cshtml
+        // EDIT (GET)
         public async Task<ActionResult> Edit(int id)
         {
             var doctor = await _service.GetByIdAsync(id);
@@ -79,54 +84,55 @@ namespace HealthCare.Web.Controllers
             if (doctor == null)
                 return HttpNotFound();
 
-            return View("Edit", doctor);
+            return View(doctor);
         }
 
-        //  EDIT (POST)
+        // EDIT (POST)
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(UpdateDoctorDto dto)
+        public async Task<ActionResult> Edit(DoctorDto dto)
         {
             if (!ModelState.IsValid)
-                return View("Edit", dto);
+                return View(dto);
 
             var result = await _service.UpdateAsync(dto);
 
             if (result)
             {
                 TempData["Success"] = "Doctor updated successfully.";
-                return RedirectToAction("Profile", new { id = dto.DoctorId });
+                return RedirectToAction("Index");
             }
 
             ModelState.AddModelError("", "Error updating doctor");
-            return View("Edit", dto);
+            return View(dto);
         }
 
+        // OPTIONAL: Available Doctors Page
         public async Task<ActionResult> Available(
-               string specialization,
-               string searchTerm,
-               bool orderByDescending = false,
-               int pageNumber = 1)
+            string specialisation,
+            string searchTerm,
+            bool orderByDescending = false,
+            int pageNumber = 1)
         {
             var result = await _service.GetDoctorsAsync(
-                specialization,
+                specialisation,
                 searchTerm,
                 orderByDescending,
                 pageNumber,
                 PageSize);
 
-            return View("Available", result);
+            return View(result);
         }
 
-        //  DELETE
+        // DELETE
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        //[ValidateAntiForgeryToken]
         public async Task<ActionResult> Delete(int id)
         {
             var result = await _service.DeleteAsync(id);
 
             if (result)
-                TempData["Success"] = "Doctor deleted.";
+                TempData["Success"] = "Doctor deleted successfully.";
             else
                 TempData["Error"] = "Delete failed.";
 

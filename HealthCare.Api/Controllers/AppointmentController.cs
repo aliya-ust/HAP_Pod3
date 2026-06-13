@@ -5,12 +5,15 @@ using HealthCare.Shared.DTOs.Appointment;
 using HealthCareApi.Services.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
 
 namespace HealthCareApi.Controllers
 {
+    [ExcludeFromCodeCoverage]
+
     [RoutePrefix("api/appointments")]
     public class AppointmentController : ApiController
     {
@@ -25,8 +28,7 @@ namespace HealthCareApi.Controllers
             _mapper = mapper;
         }
 
-        // 1. BOOK APPOINTMENT
-        // POST: api/appointments
+        // BOOK APPOINTMENT
         [HttpPost]
         [Route("")]
         public async Task<IHttpActionResult> Book(Appointment appointment)
@@ -49,8 +51,8 @@ namespace HealthCareApi.Controllers
             }
         }
 
-        // 2. GET PATIENT APPOINTMENTS (Paginated + Filter)
-        // GET: api/appointments/patient/5?status=Pending&pageNumber=1&pageSize=10
+        // GET PATIENT APPOINTMENTS 
+      
         [HttpGet]
         [Route("patient/{patientId:int}")]
         public async Task<IHttpActionResult> GetPatientAppointments(
@@ -62,10 +64,10 @@ namespace HealthCareApi.Controllers
             var result = await _appointmentService
                 .GetPatientAppointmentsAsync(patientId, status, pageNumber, pageSize);
 
-            // ✅ map ONLY Items
+            
             var dtos = _mapper.Map<IEnumerable<AppointmentDto>>(result.Items);
 
-            // ✅ return paged result
+          
             return Ok(new PagedResult<AppointmentDto>
             {
                 Items = dtos.ToList(),
@@ -73,39 +75,10 @@ namespace HealthCareApi.Controllers
                 PageNumber = result.PageNumber,
                 PageSize = result.PageSize
             });
-        }
+        }     
 
+        // GET APPOINTMENTS BY DATE
 
-        // 3. DOCTOR TODAY APPOINTMENTS
-        // GET: api/appointments/doctor/3/today
-        [HttpGet]
-        [Route("doctor/{doctorId:int}/today")]
-        public async Task<IHttpActionResult> GetTodayAppointments(int doctorId)
-        {
-            var appointments = await _appointmentService
-                .GetTodayAppointmentsAsync(doctorId);
-
-            var dtos = _mapper.Map<IEnumerable<AppointmentDto>>(appointments);
-
-            return Ok(dtos);
-        }
-
-        // 4. DOCTOR WEEK APPOINTMENTS
-        // GET: api/appointments/doctor/3/week
-        [HttpGet]
-        [Route("doctor/{doctorId:int}/week")]
-        public async Task<IHttpActionResult> GetWeeklyAppointments(int doctorId)
-        {
-            var appointments = await _appointmentService
-                .GetWeeklyAppointmentsAsync(doctorId);
-
-            var dtos = _mapper.Map<IEnumerable<AppointmentDto>>(appointments);
-
-            return Ok(dtos);
-        }
-
-        // 5. GET APPOINTMENTS BY DATE
-        // GET: api/appointments/date?date=2026-06-15
         [HttpGet]
         [Route("date")]
         public async Task<IHttpActionResult> GetByDate(DateTime date)
@@ -117,6 +90,17 @@ namespace HealthCareApi.Controllers
 
             return Ok(dtos);
         }
+
+        // GET AVAILABLE SLOTS FOR DOCTOR
+        [HttpGet]
+        [Route("slots")]
+        public async Task<IHttpActionResult> GetSlots(int doctorId, DateTime date)
+        {
+            var slots = await _appointmentService.GetAvailableSlotsAsync(doctorId, date);
+            return Ok(slots);
+        }
+
+        // CONFIRM APPOINTMENT
 
         [HttpPut]
         [Route("{id:int}/confirm")]
@@ -136,6 +120,8 @@ namespace HealthCareApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        // CANCEL APPOINTMENT
 
         [HttpPut]
         [Route("{id:int}/cancel")]

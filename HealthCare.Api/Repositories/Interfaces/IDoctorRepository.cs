@@ -10,14 +10,16 @@ namespace HealthCareApi.Repositories.Interfaces
     public interface IDoctorRepository : IRepository<Doctor>
     {
         Task<PagedResult<Doctor>> GetDoctorsAsync(
-            string specialization = null,
+            string specialisation = null,
             string searchTerm = null,
             bool orderByDescending = false,
             int pageNumber = 1,
             int pageSize = 10
         );
 
-        Task AddDoctorSlotAsync(DoctorAvailableSlot slot);
+        Task AddDoctorSlotAsync(List<DoctorAvailableSlot> slots);
 
+        Task<List<Doctor>> DoctorBySpecializationAsync(string specialisation);
+        
     }
 }

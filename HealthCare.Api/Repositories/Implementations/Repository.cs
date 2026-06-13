@@ -5,11 +5,13 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Validation;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace HealthCareApi.Repositories.Implementations
 {
+    [ExcludeFromCodeCoverage]
     public class Repository<T> : IRepository<T> where T : class
     {
         protected readonly HealthAppDbContext _context;

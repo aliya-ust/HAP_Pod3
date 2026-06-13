@@ -18,10 +18,10 @@ namespace HealthCare.Api
         public int PatientId { get; set; }
         public string PatientName { get; set; }
         public string DoctorName { get; set; }
-        public string Specialisation { get; set; }
         public System.DateTime VisitDate { get; set; }
         public string Diagnosis { get; set; }
         public string Prescription { get; set; }
         public string Notes { get; set; }
+        public string Specialisation { get; set; }
     }
 }

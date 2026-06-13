@@ -16,7 +16,7 @@
         <AssociationConnector Association="HealthAppDb.FK__HealthRec__Appoi__787EE5A0" ManuallyRouted="false" />
         <AssociationConnector Association="HealthAppDb.FK__DoctorAva__Docto__7C4F7684" ManuallyRouted="false" />
         <AssociationConnector Association="HealthAppDb.FK__DoctorLea__Docto__00200768" ManuallyRouted="false" />
-        <EntityTypeShape EntityType="HealthAppDb.vw_PatientHealthHistory" Width="1.5" PointX="7.375" PointY="7.75" />
+        <EntityTypeShape EntityType="HealthAppDb.vw_PatientHealthHistory" Width="1.5" PointX="7.375" PointY="8.625" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

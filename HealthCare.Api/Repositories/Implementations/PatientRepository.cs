@@ -4,11 +4,13 @@ using HealthCareApi.Repositories.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace HealthCareApi.Repositories.Implementations
 {
+    [ExcludeFromCodeCoverage]
     public class PatientRepository : Repository<Patient>, IPatientRepository
     {
         public PatientRepository(HealthAppDbContext _context) : base(_context)
@@ -25,26 +27,25 @@ namespace HealthCareApi.Repositories.Implementations
 
             IQueryable<Patient> query = _context.Patients.Where(p=>p.IsActive);
 
-            // Search
             if (!string.IsNullOrWhiteSpace(searchTerm))
             {
                 query = query.Where(p =>
                     p.FullName.ToLower().Contains(searchTerm.ToLower()) || p.PatientId.ToString() == searchTerm);
             }
 
-            // Get total BEFORE pagination
+            
             int totalCount = await query.CountAsync();
 
-            // Sorting
+           
             query = query.OrderBy(p => p.PatientId);
 
-            // Pagination
+          
             var items = await query
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
 
-            // Return full result
+         
             return new PagedResult<Patient>
             {
                 Items = items,

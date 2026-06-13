@@ -19,5 +19,6 @@ namespace HealthCare.Api
         public string TimeSlot { get; set; }
     
         public virtual Doctor Doctor { get; set; }
+        public bool IsBooked { get; internal set; }
     }
 }

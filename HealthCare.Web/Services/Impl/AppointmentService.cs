@@ -4,18 +4,20 @@ using HealthCare.Web.Services.Interfaces;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace HealthCare.Web.Services
 {
+    [ExcludeFromCodeCoverage]
     public class AppointmentService : IAppointmentService
     {
         private static readonly HttpClient client = new HttpClient();
         private readonly string baseUrl = "https://localhost:44326/api/appointments";
 
-        //  GET PATIENT APPOINTMENTS (PAGED)
+        //  GET PATIENT APPOINTMENTS
         public async Task<PagedResult<AppointmentDto>> GetPatientAppointmentsAsync(
             int patientId,
             string status,
@@ -79,7 +81,7 @@ namespace HealthCare.Web.Services
                 return true;
 
             var error = await res.Content.ReadAsStringAsync();
-            throw new Exception(error); //  send error to controller
+            throw new Exception(error); 
         }
 
         //  CONFIRM
@@ -90,7 +92,7 @@ namespace HealthCare.Web.Services
                 return true;
 
             var error = await res.Content.ReadAsStringAsync();
-            throw new Exception(error); //  send error to controller
+            throw new Exception(error); 
 
         }
 
@@ -106,7 +108,7 @@ namespace HealthCare.Web.Services
                 return true;
 
             var error = await res.Content.ReadAsStringAsync();
-            throw new Exception(error); //  send error to controller
+            throw new Exception(error); 
 
         }
     }

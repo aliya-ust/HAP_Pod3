@@ -17,8 +17,8 @@ namespace HealthCareApi.Repositories.Interfaces
          string status,
          int pageNumber,
          int pageSize);
-        Task<IEnumerable<Appointment>> GetTodayAppointmentsAsync(int doctorId);
-        Task<IEnumerable<Appointment>> GetWeeklyAppointmentsAsync(int doctorId);
         Task<IEnumerable<Appointment>> GetAppointmentsByDateAsync(DateTime date);
+        Task<List<string>> GetBookedSlotsAsync(int doctorId, DateTime date);
+        Task<List<string>> GetDoctorSlotsAsync(int doctorId);
     }
 }

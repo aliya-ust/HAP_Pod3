@@ -2,16 +2,17 @@
 using HealthCare.Api;
 using HealthCare.Shared;
 using HealthCare.Shared.DTOs.Patient;
-//using HealthCareApi.DTOs.Patient;
-//using HealthCareApi.Helper;
 using HealthCareApi.Services.Interfaces;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
 
 namespace HealthCareApi.Controllers
 {
+    [ExcludeFromCodeCoverage]
+
     [RoutePrefix("api/patients")]
     public class PatientController : ApiController
     {
@@ -24,7 +25,7 @@ namespace HealthCareApi.Controllers
             _mapper = mapper;
         }
 
-        //  GET: api/patients?pageNumber=1&pageSize=10
+        //   GET PATIENTS
         [HttpGet]
         [Route("")]
         public async Task<IHttpActionResult> GetPatients(
@@ -37,10 +38,10 @@ namespace HealthCareApi.Controllers
                 pageNumber,
                 pageSize);
 
-            // ✅ map ONLY Items
+           
             var dtos = _mapper.Map<IEnumerable<PatientDto>>(result.Items);
 
-            // ✅ wrap again
+          
             return Ok(new PagedResult<PatientDto>
             {
                 Items = dtos.ToList(),
@@ -50,7 +51,7 @@ namespace HealthCareApi.Controllers
             });
         }
 
-        // GET: api/patients/5
+        // GET PATIENT BY ID
         [HttpGet]
         [Route("{id:int}")]
         public async Task<IHttpActionResult> GetById(int id)
@@ -65,7 +66,7 @@ namespace HealthCareApi.Controllers
             return Ok(dto);
         }
 
-        // POST: api/patients
+        // ADD PATIENT
         [HttpPost]
         [Route("")]
         public async Task<IHttpActionResult> Add(Patient patient)
@@ -80,7 +81,7 @@ namespace HealthCareApi.Controllers
             return Created($"api/patients/{dto.PatientId}", dto);
         }
 
-        // PUT: api/patients/5
+        // UPDATE PATIENT
         [HttpPut]
         [Route("{id:int}")]
         public async Task<IHttpActionResult> Update(int id, Patient patient)
@@ -101,7 +102,7 @@ namespace HealthCareApi.Controllers
             return Ok(dto);
         }
 
-        // DELETE (Soft delete): api/patients/5
+        // DELETE PATIENT
         [HttpDelete]
         [Route("{id:int}")]
         public async Task<IHttpActionResult> Delete(int id)

@@ -3,17 +3,20 @@ using AutoMapper;
 using HealthCare.Api;
 using HealthCare.Shared;
 using HealthCare.Shared.DTOs.Doctor;
-
-//using HealthCareApi.DTOs.Doctor;
 using HealthCareApi.Services.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
+using System.Web.Http.Cors;
 
 namespace HealthCareApi.Controllers
 {
+    [ExcludeFromCodeCoverage]
+
+    [EnableCors(origins: "*", headers: "*", methods: "*")]
     [RoutePrefix("api/doctors")]
     public class DoctorController : ApiController
     {
@@ -26,26 +29,27 @@ namespace HealthCareApi.Controllers
             _mapper = mapper;
         }
 
+        // GET DOCTORS WITH FILTERING, SEARCH, SORTING, AND PAGINATION
         [HttpGet]
         [Route("")]
         public async Task<IHttpActionResult> GetDoctors(
-            [FromUri] string specialization = null,
+            [FromUri] string specialisation = null,
             [FromUri] string searchTerm = null,
             [FromUri] bool orderByDescending = false,
             [FromUri] int pageNumber = 1,
             [FromUri] int pageSize = 10)
         {
             var result = await _doctorService.GetFilteredDoctorsAsync(
-                specialization,
+                specialisation,
                 searchTerm,
                 orderByDescending,
                 pageNumber,
                 pageSize);
 
-            // ✅ map ONLY Items
+         
             var doctorDtos = _mapper.Map<IEnumerable<DoctorDto>>(result.Items);
 
-            // ✅ wrap in paged result
+           
             return Ok(new PagedResult<DoctorDto>
             {
                 Items = doctorDtos.ToList(),
@@ -55,8 +59,24 @@ namespace HealthCareApi.Controllers
             });
         }
 
+        // GET DOCTORS BY SPECIALISATION
+        [HttpGet]
+        [Route("api/doctors/specialisation/{specialisation}")]
+        public async Task<IHttpActionResult> GetBySpecialization(string specialisation)
+        {
+            var doctors = await _doctorService.GetDoctorBySpecializationAsync(specialisation);
+
+            var result = doctors.Select(d => new
+            {
+                d.DoctorId,
+                d.FullName
+            });
 
 
+            return Ok(result);
+        }
+
+        //  GET DOCTOR BY ID
         [HttpGet]
         [Route("{id:int}")]
         public async Task<IHttpActionResult> GetById(int id)
@@ -69,9 +89,10 @@ namespace HealthCareApi.Controllers
             return Ok(doctorDto);
         }
 
+        // CREATE NEW DOCTOR
         [HttpPost]
         [Route("")]
-        public async Task<IHttpActionResult> Add(Doctor doctor)
+        public async Task<IHttpActionResult> Add(DoctorDto doctor)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -80,9 +101,11 @@ namespace HealthCareApi.Controllers
 
             var dto = _mapper.Map<DoctorDto>(createdDoctor);
 
-            // ✅ Correct REST response
+           
             return Created($"api/doctors/{dto.DoctorId}", dto);
         }
+
+        // UPDATE DOCTOR
 
         [HttpPut]
         [Route("{id:int}")]
@@ -104,6 +127,7 @@ namespace HealthCareApi.Controllers
             return Ok(dto);
         }
 
+        //  DELETE DOCTOR
         [HttpDelete]
         [Route("{id:int}")]
         public async Task<IHttpActionResult> Delete(int id)

@@ -9,7 +9,7 @@
 
 <div class="container-fluid">
 
-    <!-- ✅ HEADER -->
+    <!-- HEADER -->
     <div class="mb-4 d-flex justify-content-between align-items-center">
 
         <div>
@@ -17,18 +17,12 @@
             <p class="text-muted">Manage patient health records.</p>
         </div>
 
-        <!-- ✅ ADD BUTTON -->
-        <a href="@Url.Action("Create", "HealthRecord", new {patientId = 1})"
-           class="btn btn-success px-4">
-            + Add Health Record
-        </a>
-
     </div>
 
-    <!-- ✅ SEARCH SECTION -->
+    <!-- SEARCH SECTION -->
     <div class="mb-4 d-flex flex-wrap gap-3">
 
-        <!-- ✅ Search by Patient -->
+        <!-- Search by Patient -->
         @using (Html.BeginForm("List", "HealthRecord", FormMethod.Get))
         {
             <div class="d-flex gap-2">
@@ -44,7 +38,7 @@
             </div>
         }
 
-        <!-- ✅ Search by Record -->
+        <!-- Search by Record -->
         @using (Html.BeginForm("GetById", "HealthRecord", FormMethod.Get))
         {
             <div class="d-flex gap-2">
@@ -62,7 +56,7 @@
 
     </div>
 
-    <!-- ✅ TABLE -->
+    <!-- TABLE -->
     <div class="card border-0 shadow-sm rounded-4">
         <div class="card-body p-0">
 
@@ -117,7 +111,7 @@
         </div>
     </div>
 
-    <!-- ✅ PAGINATION -->
+    <!-- PAGINATION -->
     <nav class="mt-4">
         <ul class="pagination justify-content-center">
 

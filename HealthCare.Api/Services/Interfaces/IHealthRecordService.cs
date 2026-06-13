@@ -14,5 +14,6 @@ namespace HealthCareApi.Services.Interfaces
             int pageSize = 10);
         Task<HealthRecord> GetByAppointmentIdAsync(int id);
         Task<HealthRecord> CreateAsync(HealthRecord record);
+        Task<IEnumerable<HealthRecord>> GetAllAsync();
     }
 }

@@ -1,8 +1,10 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace HealthCare.Shared.DTOs.HealthRecord
 {
+    [ExcludeFromCodeCoverage]
     public class HealthRecordDto
     {
         public int RecordId { get; set; }

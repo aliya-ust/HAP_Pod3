@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
 
 namespace HealthCare.Web.Controllers
 {
+    [ExcludeFromCodeCoverage]
     public class HomeController : Controller
     {
         public ActionResult Index()

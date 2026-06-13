@@ -1,7 +1,5 @@
-//using HealthCareApi.Data.Context;
 using AutoMapper;
 using HealthCare.Api;
-//using HealthCare.Api.Services.Implementations;
 using HealthCareApi.Repositories.Implementations;
 using HealthCareApi.Repositories.Interfaces;
 using HealthCareApi.Services.Implementations;
@@ -9,8 +7,10 @@ using HealthCareApi.Services.Interfaces;
 using System.Web.Http;
 using Unity;
 using Unity.WebApi;
+using System.Web.Http;
+using System.Web.Http.Cors;
 
-namespace HealthCareApi
+namespace HealthCare.Api
 {
     public static class UnityConfig
     {
@@ -20,7 +20,6 @@ namespace HealthCareApi
 
             // register all your components with the container here
             // it is NOT necessary to register your controllers
-
 
 
             var mapperConfig = new MapperConfiguration(cfg =>

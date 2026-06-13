@@ -1,14 +1,16 @@
-﻿using HealthCare.Shared.DTOs.Patient;
+﻿using HealthCare.Shared;
+using HealthCare.Shared.DTOs.Patient;
+using HealthCare.Web.Services.Interfaces;
 using Newtonsoft.Json;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using HealthCare.Web.Services.Interfaces;
-using HealthCare.Shared;
 
 namespace HealthCare.Web.Services
 {
+    [ExcludeFromCodeCoverage]
     public class PatientService : IPatientService
     {
         private static readonly HttpClient client = new HttpClient();

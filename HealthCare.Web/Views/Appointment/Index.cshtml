@@ -6,174 +6,199 @@
     int? patientId = Request.QueryString["patientId"] != null
         ? Convert.ToInt32(Request.QueryString["patientId"]) : (int?)null;
 
-    int? doctorId = Request.QueryString["doctorId"] != null
-        ? Convert.ToInt32(Request.QueryString["doctorId"]) : (int?)null;
+    int currentPage = Model?.PageNumber ?? 1;
+    int totalPages = Model != null && Model.PageSize > 0
+        ? (int)Math.Ceiling((double)Model.TotalCount / Model.PageSize)
+        : 1;
 }
 
 <div class="container mt-4">
 
     <h2 class="mb-4">Appointment Management</h2>
 
-    <!-- SEARCH SECTION -->
-    <div class="card p-3 mb-4">
-        <form method="get" id="searchForm">
+    <!-- SEARCH -->
+    <form method="get" action="@Url.Action("List", "Appointment")" class="card p-3 mb-4">
+        <div class="row">
 
-            <div class="row">
-
-                <!-- Patient Search -->
-                <div class="col-md-5">
-                    <label>Search by Patient Id</label>
-                    <input type="number" class="form-control"
-                           id="patientId"
-                           name="patientId"
-                           value="@patientId"
-                           placeholder="Enter Patient Id" />
-                </div>
-
-                <div class="col-md-2 text-center mt-4 fw-bold">
-                    OR
-                </div>
-
-                <!-- Doctor Search -->
-                <div class="col-md-5">
-                    <label>Search by Doctor Id</label>
-                    <input type="number" class="form-control"
-                           id="doctorId"
-                           name="doctorId"
-                           value="@doctorId"
-                           placeholder="Enter Doctor Id" />
-                </div>
-
+            <div class="col-md-6">
+                <input type="number" class="form-control"
+                       name="patientId"
+                       value="@patientId"
+                       placeholder="Enter Patient ID" />
             </div>
 
-            <div class="mt-3">
+            <div class="col-md-6">
                 <button type="submit" class="btn btn-primary">Search</button>
-                <a href="@Url.Action("Index","Appointment")" class="btn btn-secondary">Reset</a>
-                <a href="@Url.Action("Book","Appointment")" class="btn btn-success">Book Appointment</a>
+
+                <a href="@Url.Action("Index", "Appointment")"
+                   class="btn btn-secondary">
+                    Reset
+                </a>
+
+                <a href="@Url.Action("Book", "Appointment")"
+                   class="btn btn-success">
+                    Book Appointment
+                </a>
             </div>
 
-            <small id="errorMsg" class="text-danger"></small>
-        </form>
-    </div>
+        </div>
+    </form>
 
-    <!-- RESULTS TABLE -->
-    <div class="card p-3">
+    <!-- TABLE -->
+    <table class="table table-bordered">
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Patient</th>
+                <th>Doctor</th>
+                <th>Date</th>
+                <th>Slot</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
 
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>Appointment Id</th>
-                    <th>Patient Id</th>
-                    <th>Doctor Id</th>
-                    <th>Date</th>
-                    <th>Time Slot</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-
-            <tbody>
-                @if (Model?.Items != null && Model.Items.Any())
-                {
-                    foreach (var item in Model.Items)
-                    {
-                        <tr>
-                            <td>@item.AppointmentId</td>
-                            <td>@item.PatientId</td>
-                            <td>@item.DoctorId</td>
-                            <td>@item.ScheduledDate.ToString("yyyy-MM-dd")</td>
-                            <td>@item.TimeSlot</td>
-                            <td>
-                                <span class="badge
-                                    @(item.Status == "Confirmed" ? "bg-success" :
-                                      item.Status == "Cancelled" ? "bg-danger" :
-                                      "bg-warning")">
-                                    @item.Status
-                                </span>
-                            </td>
-
-                            <td>
-
-                                <!-- CONFIRM -->
-                                @if (item.Status == "Pending")
-                                {
-                                    <form method="post" action="@Url.Action("Confirm","Appointment")" style="display:inline;">
-                                        @Html.AntiForgeryToken()
-                                        <input type="hidden" name="id" value="@item.AppointmentId" />
-                                        <input type="hidden" name="patientId" value="@item.PatientId" />
-                                        <button class="btn btn-sm btn-success">Confirm</button>
-                                    </form>
-                                }
-
-                                <!-- CANCEL -->
-                                @if (item.Status != "Cancelled")
-                                {
-                                    <button class="btn btn-sm btn-danger"
-                                            onclick="cancelAppointment(@item.AppointmentId, @item.PatientId)">
-                                        Cancel
-                                    </button>
-                                }
-
-                            </td>
-                        </tr>
-                    }
-                }
-                else
+        <tbody>
+            @if (Model?.Items != null && Model.Items.Any())
+            {
+                foreach (var item in Model.Items)
                 {
                     <tr>
-                        <td colspan="7" class="text-center text-muted">
-                            No appointments found
+                        <td>@item.AppointmentId</td>
+                        <td>@item.PatientId</td>
+                        <td>@item.DoctorId</td>
+                        <td>@item.ScheduledDate.ToString("yyyy-MM-dd")</td>
+                        <td>@item.TimeSlot</td>
+
+                        <td>
+                            <span class="badge
+                                @(item.Status == "Confirmed" ? "bg-success" :
+                                  item.Status == "Cancelled" ? "bg-danger" :
+                                  "bg-warning")">
+                                @item.Status
+                            </span>
+                        </td>
+
+                        <td>
+
+                            
+                            @if (item.Status == "Pending")
+                            {
+                                <form method="post"
+                                      action="@Url.Action("Confirm","Appointment")"
+                                      style="display:inline;">
+                                    @Html.AntiForgeryToken()
+
+                                    <input type="hidden" name="id" value="@item.AppointmentId" />
+                                    <input type="hidden" name="patientId" value="@item.PatientId" />
+
+                                    <button class="btn btn-sm btn-success">
+                                        Confirm
+                                    </button>
+                                </form>
+                            }
+
+                          
+                            @if (item.Status != "Cancelled" && item.Status != "Completed")
+                            {
+                                <button class="btn btn-sm btn-danger"
+                                        onclick="cancelAppointment(@item.AppointmentId, @item.PatientId)">
+                                    Cancel
+                                </button>
+                            }
+
+                            
+                            @if (item.Status == "Confirmed")
+                            {
+                                <a href="@Url.Action("Create", "HealthRecord",
+                new { appointmentId = item.AppointmentId })"
+                                   class="btn btn-sm btn-primary">
+                                    Add Record
+                                </a>
+                            }
+
+                            
+                            @if (item.Status == "Completed")
+                            {
+                                <a href="@Url.Action("List", "HealthRecord",
+                new { patientId = item.PatientId })"
+                                   class="btn btn-sm btn-info">
+                                    View Record
+                                </a>
+                            }
+
                         </td>
                     </tr>
                 }
-            </tbody>
-        </table>
+            }
+            else
+            {
+                <tr>
+                    <td colspan="7" class="text-center text-muted">
+                        No appointments found
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
 
-        <!-- PAGINATION -->
-        @*<div class="d-flex justify-content-between">
-            <span>
-                Page @Model?.PageNumber of
-                @((Model?.TotalCount + Model?.PageSize - 1) / Model?.PageSize)
-            </span>
+    <!-- PAGINATION -->
+    @if (Model != null && totalPages > 1)
+    {
+        <nav>
+            <ul class="pagination justify-content-center">
 
-            <div>
-                @if (Model?.PageNumber > 1)
-                {
-                    <a class="btn btn-sm btn-primary"
-                       href="@Url.Action("List", new {
+                <!-- PREV -->
+                <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+                    <a class="page-link"
+                       href="@Url.Action("Index", "Appointment", new {
                             patientId = patientId,
-                            doctorId = doctorId,
-                            pageNumber = Model.PageNumber - 1
+                            pageNumber = currentPage - 1
                        })">
                         Prev
                     </a>
+                </li>
+
+                <!-- PAGE NUMBERS -->
+                @for (int i = 1; i <= totalPages; i++)
+                {
+                    <li class="page-item @(i == currentPage ? "active" : "")">
+                        <a class="page-link"
+                           href="@Url.Action("Index", "Appointment", new {
+                                patientId = patientId,
+                                pageNumber = i
+                           })">
+                            @i
+                        </a>
+                    </li>
                 }
 
-                @if (Model?.PageNumber * Model?.PageSize < Model?.TotalCount)
-                {
-                    <a class="btn btn-sm btn-primary"
-                       href="@Url.Action("List", new {
+                <!-- NEXT -->
+                <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
+                    <a class="page-link"
+                       href="@Url.Action("Index", "Appointment", new {
                             patientId = patientId,
-                            doctorId = doctorId,
-                            pageNumber = Model.PageNumber + 1
+                            pageNumber = currentPage + 1
                        })">
                         Next
                     </a>
-                }
-            </div>
-        </div>*@
+                </li>
 
-    </div>
+            </ul>
+        </nav>
+    }
+
 </div>
 
-<!-- CANCEL CONFIRM POPUP -->
+<!-- CANCEL SCRIPT -->
 <script>
     function cancelAppointment(id, patientId) {
+
         if (confirm("Are you sure you want to cancel this appointment?")) {
 
             var form = document.createElement("form");
             form.method = "POST";
-            form.action = '@Url.Action("Cancel","Appointment")';
+            form.action = '@Url.Action("Cancel", "Appointment")';
 
             form.innerHTML =
                 '<input type="hidden" name="id" value="' + id + '" />' +
@@ -185,19 +210,4 @@
             form.submit();
         }
     }
-</script>
-
-<!-- MUTUAL EXCLUSIVE SEARCH -->
-<script>
-    document.getElementById("searchForm").addEventListener("submit", function (e) {
-
-        var patient = document.getElementById("patientId").value;
-        var doctor = document.getElementById("doctorId").value;
-
-        if (patient && doctor) {
-            e.preventDefault();
-            document.getElementById("errorMsg").innerText =
-                "Please search by either Patient Id OR Doctor Id, not both.";
-        }
-    });
 </script>

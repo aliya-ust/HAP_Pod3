@@ -10,7 +10,7 @@
 
     <div class="card shadow-sm">
         <div class="card-body">
-
+            
             <table class="table table-bordered">
                 <tr><th>ID</th><td>@Model.PatientId</td></tr>
                 <tr><th>Full Name</th><td>@Model.FullName</td></tr>
@@ -22,11 +22,12 @@
                 <tr><th>Created</th><td>@Model.CreatedDate</td></tr>
             </table>
 
+          
             <a href="@Url.Action("Edit", "Patient", new { id = Model.PatientId })"
                class="btn btn-warning">
                 Edit
             </a>
-
+            
             <a href="@Url.Action("Index", "Patient")"
                class="btn btn-secondary">
                 Back

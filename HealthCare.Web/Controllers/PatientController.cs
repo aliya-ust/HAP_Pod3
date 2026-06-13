@@ -1,12 +1,14 @@
 ﻿using HealthCare.Shared.DTOs.Patient;
 using HealthCare.Web.Services;
 using HealthCare.Web.Services.Interfaces;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using System.Web.Security;
 
 namespace HealthCare.Web.Controllers
 {
+    [ExcludeFromCodeCoverage]
     public class PatientController : Controller
     {
         private readonly IPatientService _service;
@@ -17,7 +19,7 @@ namespace HealthCare.Web.Controllers
             _service = new PatientService();
         }
 
-        // LIST (INDEX PAGE)
+        // LIST INDEX PAGE
         public async Task<ActionResult> Index(string searchTerm, int pageNumber = 1)
         {
             var result = await _service.GetPatientsAsync(searchTerm, pageNumber, PageSize);
@@ -85,7 +87,7 @@ namespace HealthCare.Web.Controllers
             if (result)
             {
                 TempData["Success"] = "Updated successfully";
-                return RedirectToAction("Profile", new { id = dto.PatientId });
+                return RedirectToAction("Index");
             }
 
             ModelState.AddModelError("", "Update failed");

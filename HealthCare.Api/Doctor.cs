@@ -24,11 +24,11 @@ namespace HealthCare.Api
     
         public int DoctorId { get; set; }
         public string FullName { get; set; }
-        public string Specialisation { get; set; }
         public int YearsOfExperience { get; set; }
         public decimal ConsultationFee { get; set; }
         public bool IsActive { get; set; }
         public System.DateTime CreatedDate { get; set; }
+        public string Specialisation { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Appointment> Appointments { get; set; }

@@ -1,8 +1,8 @@
 ﻿using HealthCare.Api;
 using HealthCare.Shared;
+using HealthCare.Shared.DTOs.Doctor;
 using HealthCareApi.Repositories.Interfaces;
 using HealthCareApi.Services.Interfaces;
-//using HealthCareApi.Models;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -24,42 +24,70 @@ namespace HealthCareApi.Services.Implementations
         }
 
         public async Task<PagedResult<Doctor>> GetFilteredDoctorsAsync(
-            string specialization = null,
+            string specialisation = null,
             string searchTerm = null,
             bool orderByDescending = true,
             int pageNumber = 1,
             int pageSize = 10)
         {
             return await _doctorRepository.GetDoctorsAsync(
-                specialization,
+                specialisation,
                 searchTerm,
                 orderByDescending,
                 pageNumber,
                 pageSize);
         }
 
-        public async Task<Doctor> AddDoctorAsync(Doctor doctor)
+        public async Task<Doctor> AddDoctorAsync(DoctorDto doctorDto)
         {
-            doctor.IsActive = true;
+            var doctor = new Doctor
+            {
+                FullName = doctorDto.FullName,
+                Specialisation = doctorDto.Specialisation,
+                YearsOfExperience = doctorDto.YearsOfExperience,
+                ConsultationFee = doctorDto.ConsultationFee,
+                IsActive = true
+            };
+
+            // Save doctor first
             await _doctorRepository.AddAsync(doctor);
+
+            // Now doctor.DoctorId is available
+
+            if (doctorDto.DoctorAvailableSlots != null && doctorDto.DoctorAvailableSlots.Any())
+            {
+                var slots = doctorDto.DoctorAvailableSlots.Select(slot => new DoctorAvailableSlot
+                {
+                    DoctorId = doctor.DoctorId,
+                    TimeSlot = slot
+                }).ToList();
+
+                await _doctorRepository.AddDoctorSlotAsync(slots);
+            }
+
             return doctor;
+        }
+
+        public async Task<List<Doctor>> GetDoctorBySpecializationAsync(string specialisation)
+        {
+            return await _doctorRepository.DoctorBySpecializationAsync(specialisation);
         }
 
         public async Task<Doctor> UpdateDoctorAsync(Doctor updatedDoctor)
         {
-            // Step 1: Get existing data via repo
+            // Get existing data via repo
             var existingDoctor = await _doctorRepository.GetByIdAsync(updatedDoctor.DoctorId);
 
             if (existingDoctor == null)
                 return null;
 
-            // Step 2: Update only allowed fields
+            // Update only allowed fields
             existingDoctor.FullName = updatedDoctor.FullName;
             existingDoctor.Specialisation = updatedDoctor.Specialisation;
             existingDoctor.YearsOfExperience = updatedDoctor.YearsOfExperience;
             existingDoctor.ConsultationFee = updatedDoctor.ConsultationFee;
 
-            // Step 3: Call repo to save
+            // Call repo to save
             await _doctorRepository.UpdateAsync(existingDoctor);
 
             return existingDoctor;
@@ -72,10 +100,7 @@ namespace HealthCareApi.Services.Implementations
             if (doctor == null)
                 return false;
 
-            // Soft delete
-            doctor.IsActive = false;
-
-            await _doctorRepository.UpdateAsync(doctor);
+            await _doctorRepository.DeleteAsync(doctor);
 
             return true;
         }
