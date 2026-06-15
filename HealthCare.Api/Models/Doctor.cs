@@ -40,7 +40,7 @@ namespace HealthCare.Api.Models
 
         public ICollection<Appointment> Appointments { get; set; } = [];
         public ICollection<HealthRecord> HealthRecords { get; set; } = [];
-        public ICollection<AvailableSlot> AvailableSlots { get; set; } = [];
-        public ICollection<DoctorLeave> Leaves { get; set; } = [];
+        public ICollection<AvailableSlots> AvailableSlots { get; set; } = [];
+        public ICollection<DoctorLeaves> Leaves { get; set; } = [];
     }
 }

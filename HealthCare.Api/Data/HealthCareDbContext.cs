@@ -90,19 +90,31 @@ namespace HealthCare.Api.Data
 
         private static void SeedData(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<User>().HasData(
+            new User
+            {
+                UserId = 1,
+                Email = "doctor1@test.com",
+                PasswordHash = "$2a$12$3QNBAyYA6NKZfqyX9v14Eexx1qywJJPm1rXPK8ow/fWq6jpnk.1FS",
+                Role = "Doctor",
+                CreatedDate = new DateTime(2024, 1, 1)
+            },
+            new User
+            {
+                UserId = 2,
+                Email = "patient1@test.com",
+                PasswordHash = "$2a$12$3QNBAyYA6NKZfqyX9v14Eexx1qywJJPm1rXPK8ow/fWq6jpnk.1FS",
+                Role = "Patient",
+                CreatedDate = new DateTime(2024, 1, 1)
+            }
+);
             modelBuilder.Entity<Doctor>().HasData(
-                new Doctor { DoctorId = 1, FullName = "Dr. Anil Mehta", Specialisation = "Cardiology", YearsOfExperience = 12, ConsultationFee = 800, IsActive = true, CreatedDate = new DateTime(2024, 1, 1) },
-                new Doctor { DoctorId = 2, FullName = "Dr. Priya Sharma", Specialisation = "Neurology", YearsOfExperience = 9, ConsultationFee = 750, IsActive = true, CreatedDate = new DateTime(2024, 1, 1) },
-                new Doctor { DoctorId = 3, FullName = "Dr. Ravi Kumar", Specialisation = "Orthopaedics", YearsOfExperience = 15, ConsultationFee = 600, IsActive = true, CreatedDate = new DateTime(2024, 1, 1) },
-                new Doctor { DoctorId = 4, FullName = "Dr. Sneha Patel", Specialisation = "Dermatology", YearsOfExperience = 7, ConsultationFee = 500, IsActive = true, CreatedDate = new DateTime(2024, 1, 1) },
-                new Doctor { DoctorId = 5, FullName = "Dr. Vikram Nair", Specialisation = "General Medicine", YearsOfExperience = 10, ConsultationFee = 400, IsActive = true, CreatedDate = new DateTime(2024, 1, 1) }
-            );
+                new Doctor { DoctorId = 1, UserId = 1, FullName = "Dr. Anil Mehta", Specialisation = "Cardiology", YearsOfExperience = 12, ConsultationFee = 800, IsActive = true, CreatedDate = new DateTime(2024, 1, 1) },
+                );
 
             modelBuilder.Entity<Patient>().HasData(
-                new Patient { PatientId = 1, FullName = "Arjun Raj", DateOfBirth = new DateOnly(1990, 5, 12), Gender = "Male", PhoneNumber = "9876543210", CreatedDate = new DateTime(2024, 1, 1) },
-                new Patient { PatientId = 2, FullName = "Meena Das", DateOfBirth = new DateOnly(1985, 8, 24), Gender = "Female", PhoneNumber = "9123456780", CreatedDate = new DateTime(2024, 1, 1) },
-                new Patient { PatientId = 3, FullName = "Suresh Iyer", DateOfBirth = new DateOnly(2000, 1, 3), Gender = "Male", PhoneNumber = "9988776655", CreatedDate = new DateTime(2024, 1, 1) }
-            );
+                new Patient { PatientId = 1, UserId = 2, FullName = "Arjun Raj", DateOfBirth = new DateOnly(1990, 5, 12), Gender = "Male", PhoneNumber = "9876543210", CreatedDate = new DateTime(2024, 1, 1) },
+                );
         }
     }
 }
