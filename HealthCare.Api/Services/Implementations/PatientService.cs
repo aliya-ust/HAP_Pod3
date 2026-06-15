@@ -5,7 +5,7 @@ using HealthCare.Api.Repositories.Interfaces;
 using HealthCare.Api.Services.Interfaces;
 using HealthCare.Api.DTOs.Patient;
 
-namespace HealthCare.Api.Services.Implementation
+namespace HealthCare.Api.Services.Implementations
 {
     public class PatientService : IPatientService
     {

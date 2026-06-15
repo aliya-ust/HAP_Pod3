@@ -1,13 +1,14 @@
-﻿using HealthCare.Api.Models;
+﻿using HealthCare.Api.DTOs.Appointment;
+using HealthCare.Api.Models;
 
 namespace HealthCare.Api.Services.Interfaces
 {
     public interface IAppointmentService
     {
-        Task<Appointment?> GetByIdAsync(int id);
-        Task<IEnumerable<Appointment>> GetAllAsync();
-        Task AddAsync(Appointment appointment);
-        Task UpdateAsync(Appointment appointment);
+        Task<AppointmentListDto?> GetByIdAsync(int id);
+        Task<IEnumerable<AppointmentListDto>> GetAllAsync();
+        Task AddAsync(CreateAppointmentDto dto);
+        Task UpdateAsync(int id, UpdateAppointmentDto dto);
         Task DeleteAsync(int id);
     }
 }
