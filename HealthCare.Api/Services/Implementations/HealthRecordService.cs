@@ -1,42 +1,57 @@
-﻿using HealthCare.Api.Data;
+﻿using AutoMapper;
+using HealthCare.Api.Data;
+using HealthCare.Api.DTOs.HealthRecord;
 using HealthCare.Api.Models;
 using HealthCare.Api.Repositories.Interfaces;
 using HealthCare.Api.Services.Interfaces;
 
-namespace HealthApp.Infrastructure.Services;
-
-public class HealthRecordService : IHealthRecordService
+namespace HealthApp.Infrastructure.Services
 {
-    private readonly IRepository<HealthRecord> _repository;
-    private readonly HealthCareDbContext _context;
-
-    public HealthRecordService(IRepository<HealthRecord> repository, HealthCareDbContext context)
+    public class HealthRecordService : IHealthRecordService
     {
-        _repository = repository;
-        _context = context;
-    }
+        private readonly IRepository<HealthRecord> _repository;
+        private readonly HealthCareDbContext _context;
+        private readonly IMapper _mapper;
 
-    public async Task<HealthRecord?> GetByIdAsync(int id) =>
-        await _repository.GetByIdAsync(id);
+        public HealthRecordService(IRepository<HealthRecord> repository, HealthCareDbContext context, IMapper mapper)
+        {
+            _repository = repository;
+            _context = context;
+            _mapper = mapper;
+        }
 
-    public async Task<IEnumerable<HealthRecord>> GetAllAsync() =>
-        await _repository.GetAllAsync();
+        public async Task<HealthRecordListDto?> GetByIdAsync(int id)
+        {
+            var record = await _repository.GetByIdAsync(id);
+            return record is null ? null : _mapper.Map<HealthRecordListDto>(record);
+        }
 
-    public async Task AddAsync(HealthRecord healthRecord)
-    {
-        await _repository.AddAsync(healthRecord);
-        await _context.SaveChangesAsync();
-    }
+        public async Task<IEnumerable<HealthRecordListDto>> GetAllAsync()
+        {
+            var records = await _repository.GetAllAsync();
+            return _mapper.Map<IEnumerable<HealthRecordListDto>>(records);
+        }
 
-    public async Task UpdateAsync(HealthRecord healthRecord)
-    {
-        await _repository.UpdateAsync(healthRecord);
-        await _context.SaveChangesAsync();
-    }
+        public async Task AddAsync(CreateHealthRecordDto dto)
+        {
+            var record = _mapper.Map<HealthRecord>(dto);
+            await _repository.AddAsync(record);
+            await _context.SaveChangesAsync();
+        }
 
-    public async Task DeleteAsync(int id)
-    {
-        await _repository.DeleteAsync(id);
-        await _context.SaveChangesAsync();
+        public async Task UpdateAsync(int id, UpdateHealthRecordDto dto)
+        {
+            var record = await _repository.GetByIdAsync(id);
+            if (record is null) return;
+            _mapper.Map(dto, record);
+            await _repository.UpdateAsync(record);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task DeleteAsync(int id)
+        {
+            await _repository.DeleteAsync(id);
+            await _context.SaveChangesAsync();
+        }
     }
 }

@@ -1,13 +1,13 @@
-﻿using HealthCare.Api.Models;
+﻿using HealthCare.Api.DTOs.HealthRecord;
 
 namespace HealthCare.Api.Services.Interfaces
 {
     public interface IHealthRecordService
     {
-        Task<HealthRecord?> GetByIdAsync(int id);
-        Task<IEnumerable<HealthRecord>> GetAllAsync();
-        Task AddAsync(HealthRecord healthRecord);
-        Task UpdateAsync(HealthRecord healthRecord);
+        Task<HealthRecordListDto?> GetByIdAsync(int id);
+        Task<IEnumerable<HealthRecordListDto>> GetAllAsync();
+        Task AddAsync(CreateHealthRecordDto dto);
+        Task UpdateAsync(int id, UpdateHealthRecordDto dto);
         Task DeleteAsync(int id);
     }
 }
