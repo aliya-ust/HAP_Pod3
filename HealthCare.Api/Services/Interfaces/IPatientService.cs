@@ -7,8 +7,8 @@ namespace HealthCare.Api.Services.Interfaces
     {
         Task<PatientListDto?> GetByIdAsync(int id);
         Task<IEnumerable<PatientListDto>> GetAllAsync();
-        Task AddAsync(CreatePatientDto patient);
-        Task UpdateAsync(int id, UpdatePatientDto patient);
+        Task AddAsync(CreatePatientDto dto);
+        Task UpdateAsync(int id, UpdatePatientDto dto);
         Task DeleteAsync(int id);
     }
 }

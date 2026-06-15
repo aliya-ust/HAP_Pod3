@@ -1,13 +1,14 @@
-﻿using HealthCare.Api.Models;
+﻿using HealthCare.Api.DTOs.Doctor;
+using HealthCare.Api.Models;
 
 namespace HealthCare.Api.Services.Interfaces
 {
     public interface IDoctorService
     {
-        Task<Doctor?> GetByIdAsync(int id);
-        Task<IEnumerable<Doctor>> GetAllAsync();
-        Task AddAsync(Doctor doctor);
-        Task UpdateAsync(Doctor doctor);
+        Task<DoctorListDto?> GetByIdAsync(int id);
+        Task<IEnumerable<DoctorListDto>> GetAllAsync();
+        Task AddAsync(CreateDoctorDto dto);
+        Task UpdateAsync(int id, UpdateDoctorDto dto);
         Task DeleteAsync(int id);
     }
 }
