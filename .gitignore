@@ -2,4 +2,7 @@
 bin/
 obj/
 
+.sonarqube/
+run-sonar.bat
+
 appsettings.Development.json
