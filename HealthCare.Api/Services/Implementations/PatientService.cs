@@ -1,7 +1,9 @@
-﻿using HealthCare.Api.Data;
+﻿using AutoMapper;
+using HealthCare.Api.Data;
 using HealthCare.Api.Models;
 using HealthCare.Api.Repositories.Interfaces;
 using HealthCare.Api.Services.Interfaces;
+using HealthCare.Api.DTOs.Patient;
 
 namespace HealthCare.Api.Services.Implementation
 {
@@ -9,27 +11,39 @@ namespace HealthCare.Api.Services.Implementation
     {
         private readonly IRepository<Patient> _repository;
         private readonly HealthCareDbContext _context;
+        private readonly IMapper _mapper;
 
-        public PatientService(IRepository<Patient> repository, HealthCareDbContext context)
+        public PatientService(IRepository<Patient> repository, HealthCareDbContext context, IMapper mapper)
         {
             _repository = repository;
             _context = context;
+            _mapper = mapper;
         }
 
-        public async Task<Patient?> GetByIdAsync(int id) =>
-            await _repository.GetByIdAsync(id);
-
-        public async Task<IEnumerable<Patient>> GetAllAsync() =>
-            await _repository.GetAllAsync();
-
-        public async Task AddAsync(Patient patient)
+        public async Task<PatientListDto?> GetByIdAsync(int id)
         {
+            var patient = await _repository.GetByIdAsync(id);
+            return patient is null ? null : _mapper.Map<PatientListDto>(patient);
+        }
+
+        public async Task<IEnumerable<PatientListDto>> GetAllAsync()
+        {
+            var patients = await _repository.GetAllAsync();
+            return _mapper.Map<IEnumerable<PatientListDto>>(patients);
+        }
+
+        public async Task AddAsync(CreatePatientDto dto)
+        {
+            var patient = _mapper.Map<Patient>(dto);
             await _repository.AddAsync(patient);
             await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateAsync(Patient patient)
+        public async Task UpdateAsync(int id, UpdatePatientDto dto)
         {
+            var patient = await _repository.GetByIdAsync(id);
+            if (patient is null) return;
+            _mapper.Map(dto, patient);  // maps onto the tracked entity — EF picks up the changes
             await _repository.UpdateAsync(patient);
             await _context.SaveChangesAsync();
         }

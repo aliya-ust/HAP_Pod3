@@ -2,7 +2,7 @@
 
 namespace HealthCare.Api.DTOs.HealthRecord
 {
-    public class UpdateHealthRecord
+    public class UpdateHealthRecordDto
     {
         [Required]
         [MaxLength(500)]

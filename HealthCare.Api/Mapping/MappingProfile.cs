@@ -12,9 +12,9 @@ namespace HealthCare.Api.Mapping
         public MappingProfile()
         {
             // Patient DTO mappings
-            CreateMap<CreatePatientDto, Doctor>();
-            CreateMap<UpdatePatientDto, Doctor>();
-            CreateMap<PatientListDto, Doctor>();
+            CreateMap<CreatePatientDto, Patient>();
+            CreateMap<UpdatePatientDto, Patient>();
+            CreateMap<PatientListDto, Patient>();
 
             // Doctor DTO mappings
             CreateMap<CreateDoctorDto, Doctor>();
@@ -22,14 +22,14 @@ namespace HealthCare.Api.Mapping
             CreateMap<DoctorListDto, Doctor>();
 
             // Appointment DTO mappings
-            CreateMap<CreateAppointmentDto, Doctor>();
-            CreateMap<UpdateAppointmentDto, Doctor>();
-            CreateMap<AppointmentListDto, Doctor>();
+            CreateMap<CreateAppointmentDto, Appointment>();
+            CreateMap<UpdateAppointmentDto, Appointment>();
+            CreateMap<AppointmentListDto, Appointment>();
 
             // Health Record DTO mappings
-            CreateMap<CreateHealthRecordDto, Doctor>();
-            CreateMap<UpdateHealthRecordDto, Doctor>();
-            CreateMap<HealthRecordListDto, Doctor>();
+            CreateMap<CreateHealthRecordDto, HealthRecord>();
+            CreateMap<UpdateHealthRecordDto, HealthRecord>();
+            CreateMap<HealthRecordListDto, HealthRecord>();
         }
     }
 }

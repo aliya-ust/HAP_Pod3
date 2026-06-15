@@ -2,7 +2,7 @@
 
 namespace HealthCare.Api.DTOs.HealthRecord
 {
-    public class CreateHealthRecord
+    public class CreateHealthRecordDto
     {
         [Required]
         public int AppointmentId { get; set; }
