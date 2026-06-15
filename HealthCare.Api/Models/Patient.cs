@@ -32,7 +32,7 @@ namespace HealthCare.Api.Models
 
         public bool IsActive { get; set; } = true;
 
-        public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
+        public DateTimeOffset CreatedDate { get; set; } = DateTimeOffset.UtcNow;
 
         // Navigation
         [ForeignKey(nameof(UserId))]

@@ -28,7 +28,7 @@ namespace HealthCare.Api.Models
 
         public DateTime? RefreshTokenExpiry { get; set; }
 
-        public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
+        public DateTimeOffset CreatedDate { get; set; } = DateTimeOffset.UtcNow;
 
         // Navigation
         public Patient? Patient { get; set; }
