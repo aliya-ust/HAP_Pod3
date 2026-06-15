@@ -109,11 +109,11 @@ namespace HealthCare.Api.Data
             }
 );
             modelBuilder.Entity<Doctor>().HasData(
-                new Doctor { DoctorId = 1, UserId = 1, FullName = "Dr. Anil Mehta", Specialisation = "Cardiology", YearsOfExperience = 12, ConsultationFee = 800, IsActive = true, CreatedDate = new DateTime(2024, 1, 1) },
+                new Doctor { DoctorId = 1, UserId = 1, FullName = "Dr. Anil Mehta", Specialisation = "Cardiology", YearsOfExperience = 12, ConsultationFee = 800, IsActive = true, CreatedDate = new DateTime(2024, 1, 1) }
                 );
 
             modelBuilder.Entity<Patient>().HasData(
-                new Patient { PatientId = 1, UserId = 2, FullName = "Arjun Raj", DateOfBirth = new DateOnly(1990, 5, 12), Gender = "Male", PhoneNumber = "9876543210", CreatedDate = new DateTime(2024, 1, 1) },
+                new Patient { PatientId = 1, UserId = 2, FullName = "Arjun Raj", DateOfBirth = new DateOnly(1990, 5, 12), Gender = "Male", PhoneNumber = "9876543210", CreatedDate = new DateTime(2024, 1, 1) }
                 );
         }
     }

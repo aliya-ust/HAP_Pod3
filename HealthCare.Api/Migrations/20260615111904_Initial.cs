@@ -195,26 +195,23 @@ namespace HealthCare.Api.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "Doctors",
-                columns: new[] { "DoctorId", "ConsultationFee", "CreatedDate", "FullName", "IsActive", "Specialisation", "UserId", "YearsOfExperience" },
+                table: "Users",
+                columns: new[] { "UserId", "CreatedDate", "Email", "PasswordHash", "RefreshToken", "RefreshTokenExpiry", "Role" },
                 values: new object[,]
                 {
-                    { 1, 800m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Dr. Anil Mehta", true, "Cardiology", 0, 12 },
-                    { 2, 750m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Dr. Priya Sharma", true, "Neurology", 0, 9 },
-                    { 3, 600m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Dr. Ravi Kumar", true, "Orthopaedics", 0, 15 },
-                    { 4, 500m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Dr. Sneha Patel", true, "Dermatology", 0, 7 },
-                    { 5, 400m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Dr. Vikram Nair", true, "General Medicine", 0, 10 }
+                    { 1, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "doctor1@test.com", "$2a$12$3QNBAyYA6NKZfqyX9v14Eexx1qywJJPm1rXPK8ow/fWq6jpnk.1FS", null, null, "Doctor" },
+                    { 2, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "patient1@test.com", "$2a$12$3QNBAyYA6NKZfqyX9v14Eexx1qywJJPm1rXPK8ow/fWq6jpnk.1FS", null, null, "Patient" }
                 });
+
+            migrationBuilder.InsertData(
+                table: "Doctors",
+                columns: new[] { "DoctorId", "ConsultationFee", "CreatedDate", "FullName", "IsActive", "Specialisation", "UserId", "YearsOfExperience" },
+                values: new object[] { 1, 800m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Dr. Anil Mehta", true, "Cardiology", 1, 12 });
 
             migrationBuilder.InsertData(
                 table: "Patients",
                 columns: new[] { "PatientId", "CreatedDate", "DateOfBirth", "FullName", "Gender", "InsuranceId", "IsActive", "PhoneNumber", "UserId" },
-                values: new object[,]
-                {
-                    { 1, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateOnly(1990, 5, 12), "Arjun Raj", "Male", null, true, "9876543210", 0 },
-                    { 2, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateOnly(1985, 8, 24), "Meena Das", "Female", null, true, "9123456780", 0 },
-                    { 3, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateOnly(2000, 1, 3), "Suresh Iyer", "Male", null, true, "9988776655", 0 }
-                });
+                values: new object[] { 1, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateOnly(1990, 5, 12), "Arjun Raj", "Male", null, true, "9876543210", 2 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Appointments_Doctor_Date",

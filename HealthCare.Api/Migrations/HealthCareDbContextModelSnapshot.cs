@@ -149,52 +149,8 @@ namespace HealthCare.Api.Migrations
                             FullName = "Dr. Anil Mehta",
                             IsActive = true,
                             Specialisation = "Cardiology",
-                            UserId = 0,
+                            UserId = 1,
                             YearsOfExperience = 12
-                        },
-                        new
-                        {
-                            DoctorId = 2,
-                            ConsultationFee = 750m,
-                            CreatedDate = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            FullName = "Dr. Priya Sharma",
-                            IsActive = true,
-                            Specialisation = "Neurology",
-                            UserId = 0,
-                            YearsOfExperience = 9
-                        },
-                        new
-                        {
-                            DoctorId = 3,
-                            ConsultationFee = 600m,
-                            CreatedDate = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            FullName = "Dr. Ravi Kumar",
-                            IsActive = true,
-                            Specialisation = "Orthopaedics",
-                            UserId = 0,
-                            YearsOfExperience = 15
-                        },
-                        new
-                        {
-                            DoctorId = 4,
-                            ConsultationFee = 500m,
-                            CreatedDate = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            FullName = "Dr. Sneha Patel",
-                            IsActive = true,
-                            Specialisation = "Dermatology",
-                            UserId = 0,
-                            YearsOfExperience = 7
-                        },
-                        new
-                        {
-                            DoctorId = 5,
-                            ConsultationFee = 400m,
-                            CreatedDate = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            FullName = "Dr. Vikram Nair",
-                            IsActive = true,
-                            Specialisation = "General Medicine",
-                            UserId = 0,
-                            YearsOfExperience = 10
                         });
                 });
 
@@ -332,29 +288,7 @@ namespace HealthCare.Api.Migrations
                             Gender = "Male",
                             IsActive = true,
                             PhoneNumber = "9876543210",
-                            UserId = 0
-                        },
-                        new
-                        {
-                            PatientId = 2,
-                            CreatedDate = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DateOfBirth = new DateOnly(1985, 8, 24),
-                            FullName = "Meena Das",
-                            Gender = "Female",
-                            IsActive = true,
-                            PhoneNumber = "9123456780",
-                            UserId = 0
-                        },
-                        new
-                        {
-                            PatientId = 3,
-                            CreatedDate = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DateOfBirth = new DateOnly(2000, 1, 3),
-                            FullName = "Suresh Iyer",
-                            Gender = "Male",
-                            IsActive = true,
-                            PhoneNumber = "9988776655",
-                            UserId = 0
+                            UserId = 2
                         });
                 });
 
@@ -397,6 +331,24 @@ namespace HealthCare.Api.Migrations
                         .IsUnique();
 
                     b.ToTable("Users");
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = 1,
+                            CreatedDate = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "doctor1@test.com",
+                            PasswordHash = "$2a$12$3QNBAyYA6NKZfqyX9v14Eexx1qywJJPm1rXPK8ow/fWq6jpnk.1FS",
+                            Role = "Doctor"
+                        },
+                        new
+                        {
+                            UserId = 2,
+                            CreatedDate = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "patient1@test.com",
+                            PasswordHash = "$2a$12$3QNBAyYA6NKZfqyX9v14Eexx1qywJJPm1rXPK8ow/fWq6jpnk.1FS",
+                            Role = "Patient"
+                        });
                 });
 
             modelBuilder.Entity("HealthCare.Api.Models.Appointment", b =>
