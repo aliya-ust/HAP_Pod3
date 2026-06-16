@@ -28,6 +28,9 @@ namespace HealthCare.Api.DTOs.Patient
         [EmailAddress]
         public string Email { get; set; } = null!;
 
+        [Required]
+        public string Password { get; set; } = null!;
+
         [MaxLength(50)]
         [RegularExpression(@"^[A-Za-z0-9]+$", ErrorMessage = "Insurance ID must be alphanumeric.")]
         public string? InsuranceId { get; set; }

@@ -14,6 +14,14 @@ namespace HealthCare.Api.DTOs.Doctor
         public string Specialisation { get; set; } = null!;
 
         [Required]
+        [MaxLength(100)]
+        [EmailAddress]
+        public string Email { get; set; } = null!;
+
+        [Required]
+        public string Password { get; set; } = null!;
+
+        [Required]
         [Range(0, 60)]
         public int YearsOfExperience { get; set; }
 
