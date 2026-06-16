@@ -1,14 +1,16 @@
 ﻿using HealthCare.Api.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace HealthCare.Api.Data
 {
-    public class HealthCareDbContext : DbContext
+    public class HealthCareDbContext : IdentityDbContext<IdentityUser>
     {
         // Db Context connection setup
         public HealthCareDbContext(DbContextOptions<HealthCareDbContext> options) : base(options) { }
 
-        public DbSet<User> Users => Set<User>();
+        public DbSet<User> AppUsers => Set<User>();
         public DbSet<Patient> Patients => Set<Patient>();
         public DbSet<Doctor> Doctors => Set<Doctor>();
         public DbSet<Appointment> Appointments => Set<Appointment>();
