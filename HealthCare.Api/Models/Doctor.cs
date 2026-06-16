@@ -11,7 +11,7 @@ namespace HealthCare.Api.Models
         [Key]
         public int DoctorId { get; set; }
 
-        public string UserId { get; set; }
+        public string? UserId { get; set; }
 
         [Required]
         [MaxLength(100)]
@@ -32,7 +32,7 @@ namespace HealthCare.Api.Models
 
         public bool IsActive { get; set; } = true;
 
-        public DateTimeOffset CreatedDate { get; set; } = DateTimeOffset.UtcNow;
+        public DateTimeOffset CreatedDate { get; set; }
 
         // Navigation
         [ForeignKey(nameof(UserId))]

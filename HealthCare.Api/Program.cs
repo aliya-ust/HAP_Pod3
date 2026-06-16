@@ -1,5 +1,6 @@
 using HealthCare.Api.Data;
 using HealthCare.Api.Mapping;
+using HealthCare.Api.Models;
 using HealthCare.Api.Repositories.Implementations;
 using HealthCare.Api.Repositories.Interfaces;
 using HealthCare.Api.Services.Implementations;
@@ -24,6 +25,11 @@ builder.Services.AddAutoMapper(cfg =>
 builder.Services.AddDbContext<HealthCareDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("HealthCareDbConnection"))
 );
+
+builder.Services
+    .AddIdentity<User, IdentityRole>()
+    .AddEntityFrameworkStores<HealthCareDbContext>()
+    .AddDefaultTokenProviders();
 
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
 {
