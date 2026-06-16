@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using HealthCare.Api.Services.Interfaces;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -6,9 +7,8 @@ using System.Text;
 
 namespace HealthCare.Api.Services.Implementations
 {
-    public class JwtService
+    public class JwtService : IJwtService
     {
-
         private readonly IConfiguration _config;
         private readonly UserManager<IdentityUser> _userManager;
 
@@ -18,7 +18,7 @@ namespace HealthCare.Api.Services.Implementations
             _userManager = userManager;
         }
 
-        private async Task<string> GenerateToken(IdentityUser user)
+        public async Task<string> GenerateToken(IdentityUser user)
         {
             var jwtSettings = _config.GetSection("Jwt");
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["Key"]!));

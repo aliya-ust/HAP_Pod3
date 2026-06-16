@@ -111,7 +111,7 @@ namespace HealthCare.Api.Services.Implementations
             var roles = await _userManager.GetRolesAsync(user);
 
             // Generate JWT
-            var token = _jwtService.GenerateToken(user, roles);
+            var token = await _jwtService.GenerateToken(user);
 
             return new AuthResponseDto
             {
