@@ -5,7 +5,7 @@ using HealthCare.Api.Models;
 using HealthCare.Api.Repositories.Interfaces;
 using HealthCare.Api.Services.Interfaces;
 
-namespace HealthApp.Infrastructure.Services
+namespace HealthCare.Api.Services.Implementations
 {
     public class HealthRecordService : IHealthRecordService
     {

@@ -1,4 +1,3 @@
-using HealthApp.Infrastructure.Services;
 using HealthCare.Api.Data;
 using HealthCare.Api.Mapping;
 using HealthCare.Api.Repositories.Implementations;
