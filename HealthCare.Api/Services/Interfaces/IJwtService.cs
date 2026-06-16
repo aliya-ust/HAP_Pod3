@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using HealthCare.Api.Models;
 
 namespace HealthCare.Api.Services.Interfaces
 {
     public interface IJwtService
     {
-        Task<string> GenerateToken(IdentityUser user);
+        Task<string> GenerateToken(User user);
     }
 }

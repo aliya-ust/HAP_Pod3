@@ -26,12 +26,7 @@ builder.Services.AddDbContext<HealthCareDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("HealthCareDbConnection"))
 );
 
-builder.Services
-    .AddIdentity<User, IdentityRole>()
-    .AddEntityFrameworkStores<HealthCareDbContext>()
-    .AddDefaultTokenProviders();
-
-builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
+builder.Services.AddIdentity<User, IdentityRole>(options =>
 {
     options.User.RequireUniqueEmail = true;
     options.Password.RequireDigit = true;
