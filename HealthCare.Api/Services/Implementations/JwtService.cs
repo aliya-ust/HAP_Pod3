@@ -1,0 +1,58 @@
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+
+namespace HealthCare.Api.Services.Implementations
+{
+    public class JwtService
+    {
+
+        private readonly IConfiguration _config;
+        private readonly UserManager<IdentityUser> _userManager;
+
+        public JwtService(IConfiguration config, UserManager<IdentityUser> userManager)
+        {
+            _config = config;
+            _userManager = userManager;
+        }
+
+        private async Task<string> GenerateToken(IdentityUser user)
+        {
+            var jwtSettings = _config.GetSection("Jwt");
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["Key"]!));
+            var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            var roles = await _userManager.GetRolesAsync(user);
+
+            var claims = new List<Claim>
+            {
+                new Claim(JwtRegisteredClaimNames.Sub,user.Id),
+                new Claim(JwtRegisteredClaimNames.Email,user.Email),
+                new Claim(JwtRegisteredClaimNames.Jti,Guid.NewGuid().ToString()),
+                new Claim(ClaimTypes.NameIdentifier,user.Id)
+
+            };
+
+            foreach (var role in roles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role));
+            }
+
+            var expirationMinutes = int.Parse(jwtSettings["AccessTokenExpirationMinutes"]!);
+
+            var token = new JwtSecurityToken(
+
+                issuer: jwtSettings["Issuer"],
+                audience: jwtSettings["Audience"],
+                claims: claims,
+                expires: DateTime.UtcNow.AddMinutes(expirationMinutes),
+                signingCredentials: credentials
+
+
+                );
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+    }
+}
