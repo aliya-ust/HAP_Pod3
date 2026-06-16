@@ -11,7 +11,7 @@ namespace HealthCare.Api.DTOs.Appointment
         public int DoctorId { get; set; }
 
         [Required]
-        [FutureDateValidation]
+        [FutureDateValidationAttribute]
         public DateOnly ScheduledDate { get; set; }
 
         [Required]
@@ -19,16 +19,15 @@ namespace HealthCare.Api.DTOs.Appointment
         public string TimeSlot { get; set; } = null!;
     }
 
-    public class FutureDateValidation : ValidationAttribute
+    [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false)]
+    public class FutureDateValidationAttribute : ValidationAttribute
     {
-        protected override ValidationResult? IsValid(object? value, ValidationContext context)
+        protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
         {
-            if (value is DateOnly date)
+
+            if (value is DateOnly date && date <= DateOnly.FromDateTime(DateTime.Today))
             {
-                if (date <= DateOnly.FromDateTime(DateTime.Today))
-                {
-                    return new ValidationResult("Scheduled date must be in the future.");
-                }
+                return new ValidationResult("Scheduled date must be in the future.");
             }
 
             return ValidationResult.Success;

@@ -14,7 +14,7 @@ namespace HealthCare.Api.DTOs.HealthRecord
         public int DoctorId { get; set; }
 
         [Required]
-        [PastOrTodayDateValidation]
+        [PastOrTodayDateValidationAttribute]
         public DateTime VisitDate { get; set; }
 
         [Required]
@@ -32,22 +32,14 @@ namespace HealthCare.Api.DTOs.HealthRecord
         public string? Notes { get; set; }
     }
 
-
-    public class PastOrTodayDateValidation : ValidationAttribute
+    [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false)]
+    public class PastOrTodayDateValidationAttribute : ValidationAttribute
     {
-        protected override ValidationResult? IsValid(object? value, ValidationContext context)
+        protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
         {
-            if (value is DateTime visitDate)
+            if (value is DateTime visitDate && visitDate.Date > DateTime.Today)
             {
-                // Compare only the date part (ignore time)
-                var today = DateTime.Today;
-
-                if (visitDate.Date > today)
-                {
-                    return new ValidationResult("Visit date must be today or in the past.");
-
-                }
-
+                return new ValidationResult("Visit date must be today or in the past.");
             }
 
             return ValidationResult.Success;

@@ -10,7 +10,7 @@ namespace HealthCare.Api.DTOs.Patient
         public string FullName { get; set; } = null!;
 
         [Required]
-        [CustomDateOfBirthValidation]
+        [CustomDateOfBirthValidationAttribute]
         public DateOnly DateOfBirth { get; set; }
 
         [Required]
@@ -33,16 +33,14 @@ namespace HealthCare.Api.DTOs.Patient
         public string? InsuranceId { get; set; }
     }
 
-    public class CustomDateOfBirthValidation : ValidationAttribute
+    [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false)]
+    public class CustomDateOfBirthValidationAttribute : ValidationAttribute
     {
         protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
         {
-            if (value is DateOnly dob)
+            if (value is DateOnly dob && dob >= DateOnly.FromDateTime(DateTime.Today))
             {
-                if (dob >= DateOnly.FromDateTime(DateTime.Today))
-                {
-                    return new ValidationResult("Date of Birth must be in the past.");
-                }
+                return new ValidationResult("Date of Birth must be in the past.");
             }
 
             return ValidationResult.Success;
