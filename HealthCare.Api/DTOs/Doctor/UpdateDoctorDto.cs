@@ -7,6 +7,7 @@ namespace HealthCare.Api.DTOs.Doctor
     {
         [Required]
         [MaxLength(100)]
+        [RegularExpression(@"^[A-Za-z\s]+$", ErrorMessage = "Full name must contain only alphabets.")]
         public string FullName { get; set; } = null!;
 
         [Required]
@@ -16,7 +17,7 @@ namespace HealthCare.Api.DTOs.Doctor
         [Range(0, 60)]
         public int YearsOfExperience { get; set; }
 
-        [Range(0.01, 100000)]
+        [Range(0.01, 5000, ErrorMessage = "Consultation fee cannot exceed 5000.")]
         public decimal ConsultationFee { get; set; }
     }
 }
