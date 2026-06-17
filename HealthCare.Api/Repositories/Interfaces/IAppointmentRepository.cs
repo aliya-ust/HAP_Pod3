@@ -5,7 +5,7 @@ namespace HealthCare.Api.Repositories.Interfaces
 {
     public interface IAppointmentRepository : IRepository<Appointment>
     {
-        Task<List<string>> AvailableTimeSlots(DateOnly date, int doctorId);
+        Task<List<string>> BookedTimeSlots(DateOnly date, int doctorId);
         Task<bool> IsAvailable(DateOnly date, int doctorId, string timeSlot);
         Task<List<AppointmentReportDto>> GetDailyReport();
         Task<List<AppointmentListDto>> GetDoctorSchedule(DateOnly date, int id);

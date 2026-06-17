@@ -10,7 +10,7 @@ namespace HealthCare.Api.Repositories.Implementations
     {
         public AppointmentRepository(HealthCareDbContext context) : base(context) { }
 
-        public async Task<List<string>> AvailableTimeSlots(DateOnly date, int doctorId) =>
+        public async Task<List<string>> BookedTimeSlots(DateOnly date, int doctorId) =>
             await _dbSet
                 .Where(a => a.ScheduledDate == date
                          && a.DoctorId == doctorId

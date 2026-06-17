@@ -115,7 +115,7 @@ namespace HealthCare.Api.Services.Implementations
                 throw new InvalidOperationException("Cannot check availability for a past date.");
 
             var allSlots = await _doctorService.GetSlots(doctorId);
-            var bookedSlots = await _repository.AvailableTimeSlots(date, doctorId);
+            var bookedSlots = await _repository.BookedTimeSlots(date, doctorId);
 
             var freeSlots = allSlots.Except(bookedSlots).ToList();
 
