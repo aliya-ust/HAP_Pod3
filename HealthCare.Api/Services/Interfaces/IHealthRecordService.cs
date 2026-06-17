@@ -1,11 +1,12 @@
-﻿using HealthCare.Api.DTOs.HealthRecord;
+﻿using HealthCare.Api.DTOs;
+using HealthCare.Api.DTOs.HealthRecord;
 
 namespace HealthCare.Api.Services.Interfaces
 {
     public interface IHealthRecordService
     {
         Task<HealthRecordListDto?> GetByIdAsync(int id);
-        Task<IEnumerable<HealthRecordListDto>> GetAllAsync();
+        Task<PagedResult<HealthRecordListDto>> GetAllAsync(HealthRecordFilter filter);
         Task AddAsync(CreateHealthRecordDto dto);
         Task UpdateAsync(int id, UpdateHealthRecordDto dto);
         Task DeleteAsync(int id);

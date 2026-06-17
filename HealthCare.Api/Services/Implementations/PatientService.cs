@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using HealthCare.Api.Data;
+using HealthCare.Api.DTOs;
+using HealthCare.Api.DTOs.Patient;
 using HealthCare.Api.Models;
 using HealthCare.Api.Repositories.Interfaces;
 using HealthCare.Api.Services.Interfaces;
-using HealthCare.Api.DTOs.Patient;
+using System.Linq.Expressions;
 
 namespace HealthCare.Api.Services.Implementations
 {
@@ -26,10 +28,35 @@ namespace HealthCare.Api.Services.Implementations
             return patient is null ? null : _mapper.Map<PatientListDto>(patient);
         }
 
-        public async Task<IEnumerable<PatientListDto>> GetAllAsync()
+        public async Task<PagedResult<PatientListDto>> GetAllAsync(PatientFilter filter)
         {
-            var patients = await _repository.GetAllAsync();
-            return _mapper.Map<IEnumerable<PatientListDto>>(patients);
+            // Build predicate
+            Expression<Func<Patient, bool>>? predicate = null;
+
+            if (filter.HasInsurance == true)
+            {
+                predicate = p => p.InsuranceId != null;
+            }
+            else if (filter.HasInsurance == false)
+            {
+                predicate = p => p.InsuranceId == null;
+            }
+
+            // Call repository (no ordering needed here)
+            var pagedResult = await _repository.GetAllAsync(
+                filter.PageNumber,
+                filter.PageSize,
+                predicate
+            );
+
+            // Map result
+            return new PagedResult<PatientListDto>
+            {
+                Items = _mapper.Map<IEnumerable<PatientListDto>>(pagedResult.Items),
+                PageNumber = pagedResult.PageNumber,
+                PageSize = pagedResult.PageSize,
+                TotalCount = pagedResult.TotalCount
+            };
         }
 
         public async Task AddAsync(CreatePatientDto dto)

@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using HealthCare.Api.Data;
+using HealthCare.Api.DTOs;
 using HealthCare.Api.DTOs.HealthRecord;
 using HealthCare.Api.Models;
 using HealthCare.Api.Repositories.Interfaces;
 using HealthCare.Api.Services.Interfaces;
+using System.Linq.Expressions;
 
 namespace HealthCare.Api.Services.Implementations
 {
@@ -26,10 +28,39 @@ namespace HealthCare.Api.Services.Implementations
             return record is null ? null : _mapper.Map<HealthRecordListDto>(record);
         }
 
-        public async Task<IEnumerable<HealthRecordListDto>> GetAllAsync()
+        public async Task<PagedResult<HealthRecordListDto>> GetAllAsync(HealthRecordFilter filter)
         {
-            var records = await _repository.GetAllAsync();
-            return _mapper.Map<IEnumerable<HealthRecordListDto>>(records);
+            // Build predicate (date filtering)
+            Expression<Func<HealthRecord, bool>>? predicate = null;
+
+            if (filter.VisitDate.HasValue)
+            {
+                var start = filter.VisitDate.Value.ToDateTime(TimeOnly.MinValue); // 00:00
+                var end = start.AddDays(1); // next day
+
+                predicate = hr => hr.VisitDate >= start && hr.VisitDate < end;
+            }
+
+            // Ordering (by VisitDate)
+            Func<IQueryable<HealthRecord>, IOrderedQueryable<HealthRecord>> orderBy =
+                q => q.OrderBy(hr => hr.VisitDate);
+
+            // Call repository
+            var pagedResult = await _repository.GetAllAsync(
+                filter.PageNumber,
+                filter.PageSize,
+                predicate,
+                orderBy
+            );
+
+            // Map result
+            return new PagedResult<HealthRecordListDto>
+            {
+                Items = _mapper.Map<IEnumerable<HealthRecordListDto>>(pagedResult.Items),
+                PageNumber = pagedResult.PageNumber,
+                PageSize = pagedResult.PageSize,
+                TotalCount = pagedResult.TotalCount
+            };
         }
 
         public async Task AddAsync(CreateHealthRecordDto dto)
