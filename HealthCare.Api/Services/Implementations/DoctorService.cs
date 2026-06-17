@@ -11,11 +11,11 @@ namespace HealthCare.Api.Services.Implementations
 {
     public class DoctorService : IDoctorService
     {
-        private readonly IRepository<Doctor> _repository;
+        private readonly IDoctorRepository _repository;
         private readonly HealthCareDbContext _context;
         private readonly IMapper _mapper;
 
-        public DoctorService(IRepository<Doctor> repository, HealthCareDbContext context, IMapper mapper)
+        public DoctorService(IDoctorRepository repository, HealthCareDbContext context, IMapper mapper)
         {
             _repository = repository;
             _context = context;
@@ -89,6 +89,16 @@ namespace HealthCare.Api.Services.Implementations
         {
             await _repository.DeleteAsync(id);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<List<string>> GetSlots(int doctorId)
+        {
+            var slots = await _repository.GetSlots(doctorId);
+
+            if (slots.Count == 0)
+                throw new InvalidOperationException("No available slots found for this doctor.");
+
+            return slots;
         }
     }
 }

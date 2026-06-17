@@ -11,5 +11,6 @@ namespace HealthCare.Api.Services.Interfaces
         Task AddAsync(CreateDoctorDto dto);
         Task UpdateAsync(int id, UpdateDoctorDto dto);
         Task DeleteAsync(int id);
+        Task<List<string>> GetSlots(int doctorId);
     }
 }
