@@ -5,19 +5,22 @@ using HealthCare.Api.DTOs.Appointment;
 using HealthCare.Api.Models;
 using HealthCare.Api.Repositories.Interfaces;
 using HealthCare.Api.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
 namespace HealthCare.Api.Services.Implementations
 {
     public class AppointmentService : IAppointmentService
     {
-        private readonly IRepository<Appointment> _repository;
+        private readonly IAppointmentRepository _repository;
+        private readonly IDoctorService _doctorService;
         private readonly HealthCareDbContext _context;
         private readonly IMapper _mapper;
 
-        public AppointmentService(IRepository<Appointment> repository, HealthCareDbContext context, IMapper mapper)
+        public AppointmentService(IAppointmentRepository repository, IDoctorService doctorService, HealthCareDbContext context, IMapper mapper)
         {
             _repository = repository;
+            _doctorService = doctorService;
             _context = context;
             _mapper = mapper;
         }
@@ -70,11 +73,25 @@ namespace HealthCare.Api.Services.Implementations
             };
         }
 
-        public async Task AddAsync(CreateAppointmentDto dto)
+        public async Task AddAsync(CreateAppointmentDto dto, int patientId)
         {
+            if (dto.ScheduledDate < DateOnly.FromDateTime(DateTime.Today))
+                throw new InvalidOperationException("Cannot book an appointment for a past date.");
+
+            await IsAvailable(dto.ScheduledDate, dto.DoctorId, dto.TimeSlot);
+
             var appointment = _mapper.Map<Appointment>(dto);
-            await _repository.AddAsync(appointment);
-            await _context.SaveChangesAsync();
+            appointment.PatientId = patientId;
+
+            try
+            {
+                await _repository.AddAsync(appointment);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+                throw new InvalidOperationException("Failed to book the appointment.", ex);
+            }
         }
 
         public async Task UpdateAsync(int id, UpdateAppointmentDto dto)
@@ -90,6 +107,59 @@ namespace HealthCare.Api.Services.Implementations
         {
             await _repository.DeleteAsync(id);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<List<string>> AvailableTimeSlots(DateOnly date, int doctorId)
+        {
+            if (date < DateOnly.FromDateTime(DateTime.Today))
+                throw new InvalidOperationException("Cannot check availability for a past date.");
+
+            var allSlots = await _doctorService.GetSlots(doctorId);
+            var bookedSlots = await _repository.AvailableTimeSlots(date, doctorId);
+
+            var freeSlots = allSlots.Except(bookedSlots).ToList();
+
+            return freeSlots;
+        }
+
+        public async Task<bool> IsAvailable(DateOnly date, int doctorId, string timeSlot)
+        {
+            var available = await _repository.IsAvailable(date, doctorId, timeSlot);
+
+            if (!available)
+                throw new InvalidOperationException("This time slot is already booked.");
+
+            return true;
+        }
+
+        public async Task<List<AppointmentReportDto>> GetDailyReport()
+        {
+            var report = await _repository.GetDailyReport();
+            return report.Count == 0 ? new List<AppointmentReportDto>() : report;
+        }
+
+        public async Task<List<AppointmentListDto>> GetDoctorSchedule(DateOnly date, int id)
+        {
+            var schedule = await _repository.GetDoctorSchedule(date, id);
+            return schedule.Count == 0 ? new List<AppointmentListDto>() : schedule;
+        }
+
+        public async Task<List<AppointmentListDto>> GetPatientSchedule(DateOnly date, int id)
+        {
+            var schedule = await _repository.GetPatientSchedule(date, id);
+            return schedule.Count == 0 ? new List<AppointmentListDto>() : schedule;
+        }
+
+        public async Task<List<AppointmentListDto>> GetAppointmentByPatient(int id)
+        {
+            var appointments = await _repository.GetAppointmentByPatient(id);
+            return appointments.Count == 0 ? new List<AppointmentListDto>() : appointments;
+        }
+
+        public async Task<List<AppointmentListDto>> GetAppointmentByDoctor(int id)
+        {
+            var appointments = await _repository.GetAppointmentByDoctor(id);
+            return appointments.Count == 0 ? new List<AppointmentListDto>() : appointments;
         }
     }
 }
