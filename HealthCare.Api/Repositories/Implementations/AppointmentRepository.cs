@@ -31,6 +31,7 @@ namespace HealthCare.Api.Repositories.Implementations
 
         public async Task<List<AppointmentReportDto>> GetDailyReport() =>
             await _dbSet
+                .Where(a => a.ScheduledDate >= DateOnly.FromDateTime(DateTime.Today.AddDays(-30)))
                 .GroupBy(a => a.ScheduledDate)
                 .Select(g => new AppointmentReportDto
                 {

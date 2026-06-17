@@ -1,4 +1,5 @@
 ﻿using HealthCare.Api.Data;
+using HealthCare.Api.DTOs.HealthRecord;
 using HealthCare.Api.Models;
 using HealthCare.Api.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -9,14 +10,34 @@ namespace HealthCare.Api.Repositories.Implementations
     {
         public HealthRecordRepository(HealthCareDbContext context) : base(context) { }
 
-        public async Task<List<HealthRecord>> GetHealthRecordByPatient(int id) =>
+        public async Task<List<HealthRecordListDto>> GetHealthRecordByPatient(int id) =>
             await _dbSet
                 .Where(hr => hr.PatientId == id)
+                .Select(hr => new HealthRecordListDto
+                {
+                    RecordId = hr.RecordId,
+                    PatientName = hr.Patient.FullName,
+                    DoctorName = hr.Doctor.FullName,
+                    VisitDate = hr.VisitDate,
+                    Diagnosis = hr.Diagnosis,
+                    Prescription = hr.Prescription,
+                    Notes = hr.Notes
+                })
                 .ToListAsync();
 
-        public async Task<List<HealthRecord>> GetHealthRecordByAppointment(int id) =>
+        public async Task<List<HealthRecordListDto>> GetHealthRecordByAppointment(int id) =>
             await _dbSet
                 .Where(hr => hr.AppointmentId == id)
+                .Select(hr => new HealthRecordListDto
+                {
+                    RecordId = hr.RecordId,
+                    PatientName = hr.Patient.FullName,
+                    DoctorName = hr.Doctor.FullName,
+                    VisitDate = hr.VisitDate,
+                    Diagnosis = hr.Diagnosis,
+                    Prescription = hr.Prescription,
+                    Notes = hr.Notes
+                })
                 .ToListAsync();
     }
 }

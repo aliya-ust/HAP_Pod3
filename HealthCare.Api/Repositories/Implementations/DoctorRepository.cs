@@ -14,5 +14,11 @@ namespace HealthCare.Api.Repositories.Implementations
             return await _context.Doctors
                 .FirstOrDefaultAsync(p => p.UserId == userId);
         }
+
+        public async Task<List<string>> GetSlots(int doctorId) =>
+            await _context.DoctorAvailableSlots
+                .Where(s => s.DoctorId == doctorId)
+                .Select(s => s.TimeSlot)
+                .ToListAsync();
     }
 }
