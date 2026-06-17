@@ -10,5 +10,7 @@ namespace HealthCare.Api.Services.Interfaces
         Task AddAsync(CreateHealthRecordDto dto);
         Task UpdateAsync(int id, UpdateHealthRecordDto dto);
         Task DeleteAsync(int id);
+        Task<List<HealthRecordListDto>> GetHealthRecordByPatient(int id);
+        Task<List<HealthRecordListDto>> GetHealthRecordByAppointment(int id);
     }
 }
