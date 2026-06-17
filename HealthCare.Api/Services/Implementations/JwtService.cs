@@ -19,7 +19,7 @@ namespace HealthCare.Api.Services.Implementations
             _userManager = userManager;
         }
 
-        public async Task<string> GenerateToken(User user)
+        public async Task<string> GenerateToken(User user, int? patientId = null, int? doctorId = null)
         {
             var jwtSettings = _config.GetSection("Jwt");
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["Key"]!));
@@ -32,8 +32,17 @@ namespace HealthCare.Api.Services.Implementations
                 new Claim(JwtRegisteredClaimNames.Email, user.Email ?? string.Empty),
                 new Claim(JwtRegisteredClaimNames.Jti,Guid.NewGuid().ToString()),
                 new Claim(ClaimTypes.NameIdentifier,user.Id)
-
             };
+
+            if (patientId.HasValue)
+            {
+                claims.Add(new Claim("PatientId", patientId.Value.ToString()));
+            }
+
+            if (doctorId.HasValue)
+            {
+                claims.Add(new Claim("DoctorId", doctorId.Value.ToString()));
+            }
 
             foreach (var role in roles)
             {
@@ -51,7 +60,7 @@ namespace HealthCare.Api.Services.Implementations
                 signingCredentials: credentials
 
 
-                );
+            );
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }

@@ -9,9 +9,9 @@ namespace HealthCare.Api.Repositories.Implementations
     {
         public DoctorRepository(HealthCareDbContext context) : base(context) { }
 
-        public async Task<Patient?> GetByUserIdAsync(string userId)
+        public async Task<Doctor?> GetByUserIdAsync(string userId)
         {
-            return await _context.Patients
+            return await _context.Doctors
                 .FirstOrDefaultAsync(p => p.UserId == userId);
         }
     }

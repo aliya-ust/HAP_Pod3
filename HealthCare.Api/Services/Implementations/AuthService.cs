@@ -105,34 +105,42 @@ namespace HealthCare.Api.Services.Implementations
                 throw new InvalidOperationException("Role is not assigned.");
             }
 
-            // Generate JWT
-            var token = await _jwtService.GenerateToken(user);
-
-            var response = new AuthResponseDto
-            {
-                AccessToken = token,
-                Role = roles[0]
-            };
-
+            // Getting patient or doctor Id using UserId
+            string token;
             var role = roles[0];
             if (role == "Patient")
             {
-                var patient = await _patientRepo.GetByIdAsync(user.Id);
+                var patient = await _patientRepo.GetByUserIdAsync(user.Id);
 
                 if (patient == null)
                     throw new InvalidOperationException("Patient record not found.");
 
-                response.PatientId = patient.PatientId;
+                // Generate JWT
+                token = await _jwtService.GenerateToken(user, patientId: patient.PatientId);
             }
             else if (role == "Doctor")
             {
-                var doctor = await _doctorRepo.GetByIdAsync(user.Id);
+                var doctor = await _doctorRepo.GetByUserIdAsync(user.Id);
 
                 if (doctor == null)
                     throw new InvalidOperationException("Doctor record not found.");
 
-                response.DoctorId = doctor.DoctorId;
+                // Generate JWT
+                token = await _jwtService.GenerateToken(user, doctorId: doctor.DoctorId);
             }
+            else
+            {
+                throw new InvalidOperationException("Invalid role.");
+            }
+
+
+            var response = new AuthResponseDto
+            {
+                AccessToken = token,
+                Role = role
+            };
+
+            return response;
         }
     }
 }

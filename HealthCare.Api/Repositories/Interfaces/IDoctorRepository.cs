@@ -4,5 +4,6 @@ namespace HealthCare.Api.Repositories.Interfaces
 {
     public interface IDoctorRepository : IRepository<Doctor>
     {
+        Task<Doctor?> GetByUserIdAsync(string userId);
     }
 }
