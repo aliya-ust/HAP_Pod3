@@ -35,27 +35,34 @@ namespace HealthCare.Api.Services.Implementations
             _context = context;
         }
 
-        public async Task RegisterPatientAsync(CreatePatientDto dto)
+        private async Task<User> CreateUserWithRoleAsync(string email, string password, string role)
         {
             // Check email
-            var existingUser = await _userManager.FindByEmailAsync(dto.Email);
+            var existingUser = await _userManager.FindByEmailAsync(email);
             if (existingUser != null)
-                throw new Exception("Email already exists");
+                throw new InvalidOperationException("Email already in use");
 
-            // Create Identity user
+            // Create user
             var user = new User
             {
-                UserName = dto.Email,
-                Email = dto.Email
+                UserName = email,
+                Email = email
             };
 
-            var result = await _userManager.CreateAsync(user, dto.Password);
+            var result = await _userManager.CreateAsync(user, password);
 
             if (!result.Succeeded)
-                throw new Exception(string.Join(", ", result.Errors.Select(e => e.Description)));
+                throw new InvalidOperationException(string.Join(", ", result.Errors.Select(e => e.Description)));
 
             // Assign role
-            await _userManager.AddToRoleAsync(user, "Patient");
+            await _userManager.AddToRoleAsync(user, role);
+
+            return user;
+        }
+
+        public async Task RegisterPatientAsync(CreatePatientDto dto)
+        {
+            var user = await CreateUserWithRoleAsync(dto.Email, dto.Password, "Patient");
 
             // Create Patient entity
             var patient = _mapper.Map<Patient>(dto);
@@ -67,25 +74,7 @@ namespace HealthCare.Api.Services.Implementations
 
         public async Task RegisterDoctorAsync(CreateDoctorDto dto)
         {
-            // Check email
-            var existingUser = await _userManager.FindByEmailAsync(dto.Email);
-            if (existingUser != null)
-                throw new Exception("Email already exists");
-
-            // Create Identity user
-            var user = new User
-            {
-                UserName = dto.Email,
-                Email = dto.Email
-            };
-
-            var result = await _userManager.CreateAsync(user, dto.Password);
-
-            if (!result.Succeeded)
-                throw new Exception(string.Join(", ", result.Errors.Select(e => e.Description)));
-
-            // Assign role
-            await _userManager.AddToRoleAsync(user, "Doctor");
+            var user = await CreateUserWithRoleAsync(dto.Email, dto.Password, "Doctor");
 
             // Create Patient entity
             var doctor = _mapper.Map<Doctor>(dto);
@@ -100,15 +89,19 @@ namespace HealthCare.Api.Services.Implementations
             // Find user
             var user = await _userManager.FindByEmailAsync(dto.Email);
             if (user == null)
-                throw new Exception("Invalid credentials");
+                throw new InvalidOperationException("Email already in use");
 
             // Verify password
             var isValid = await _userManager.CheckPasswordAsync(user, dto.Password);
             if (!isValid)
-                throw new Exception("Invalid credentials");
+                throw new UnauthorizedAccessException("Invalid credentials");
 
             // Get roles
             var roles = await _userManager.GetRolesAsync(user);
+            if (roles == null || !roles.Any())
+            {
+                throw new InvalidOperationException("Role is not assigned.");
+            }
 
             // Generate JWT
             var token = await _jwtService.GenerateToken(user);
@@ -116,7 +109,7 @@ namespace HealthCare.Api.Services.Implementations
             return new AuthResponseDto
             {
                 AccessToken = token,
-                Role = roles.FirstOrDefault()
+                Role = roles[0]
             };
         }
     }
