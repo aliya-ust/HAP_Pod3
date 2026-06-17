@@ -1,12 +1,14 @@
 ﻿using AutoMapper;
+using Azure;
 using HealthCare.Api.Data;
-using HealthCare.Api.DTOs.Patient;
-using HealthCare.Api.DTOs.Doctor;
 using HealthCare.Api.DTOs.Auth;
+using HealthCare.Api.DTOs.Doctor;
+using HealthCare.Api.DTOs.Patient;
 using HealthCare.Api.Models;
 using HealthCare.Api.Repositories.Interfaces;
 using HealthCare.Api.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
+using System.Data;
 
 namespace HealthCare.Api.Services.Implementations
 {
@@ -106,11 +108,31 @@ namespace HealthCare.Api.Services.Implementations
             // Generate JWT
             var token = await _jwtService.GenerateToken(user);
 
-            return new AuthResponseDto
+            var response = new AuthResponseDto
             {
                 AccessToken = token,
                 Role = roles[0]
             };
+
+            var role = roles[0];
+            if (role == "Patient")
+            {
+                var patient = await _patientRepo.GetByIdAsync(user.Id);
+
+                if (patient == null)
+                    throw new InvalidOperationException("Patient record not found.");
+
+                response.PatientId = patient.PatientId;
+            }
+            else if (role == "Doctor")
+            {
+                var doctor = await _doctorRepo.GetByIdAsync(user.Id);
+
+                if (doctor == null)
+                    throw new InvalidOperationException("Doctor record not found.");
+
+                response.DoctorId = doctor.DoctorId;
+            }
         }
     }
 }
