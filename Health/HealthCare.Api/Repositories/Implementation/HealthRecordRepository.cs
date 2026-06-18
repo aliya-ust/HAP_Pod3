@@ -1,30 +1,44 @@
-﻿//using HealthCare.Api.Data;
-//using HealthCare.Api.Models;
-//using HealthCare.Api.Repositories.Interfaces;
-////using HealthCare.Shared.Models;
-//using Microsoft.EntityFrameworkCore;
+﻿using HealthCare.Api.Data;
+using HealthCare.Api.DTOs.HealthRecord;
+using HealthCare.Api.Models;
+using HealthCare.Api.Repositories.Implementation;
+using HealthCare.Api.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
-//namespace HealthCare.Api.Repositories.Implementation
-//{
-//    public class HealthRecordRepository : Repository<HealthRecord>, IHealthRecordRepository
-//    {
-//        public HealthRecordRepository(HealthCareDbContext context)
-//            : base(context)
-//        {
-//        }
+namespace HealthCare.Api.Repositories.Implementations
+{
+    public class HealthRecordRepository : Repository<HealthRecord>, IHealthRecordRepository
+    {
+        public HealthRecordRepository(HealthCareDbContext context) : base(context) { }
 
-//        public async Task<List<HealthRecord>> GetHealthRecordByPatientAsync(int patientId)
-//        {
-//            return await _context.HealthRecords
-//                .Where(h => h.PatientId == patientId)
-//                .ToListAsync();
-//        }
+        public async Task<List<HealthRecordListDto>> GetHealthRecordByPatient(int id) =>
+            await _dbSet
+                .Where(hr => hr.PatientId == id)
+                .Select(hr => new HealthRecordListDto
+                {
+                    RecordId = hr.RecordId,
+                    PatientName = hr.Patient.FullName,
+                    DoctorName = hr.Doctor.FullName,
+                    VisitDate = hr.VisitDate,
+                    Diagnosis = hr.Diagnosis,
+                    Prescription = hr.Prescription,
+                    Notes = hr.Notes
+                })
+                .ToListAsync();
 
-//        public async Task<List<HealthRecord>> GetHealthRecordByAppointmentAsync(int appointmentId)
-//        {
-//            return await _context.HealthRecords
-//                .Where(h => h.AppointmentId == appointmentId)
-//                .ToListAsync();
-//        }
-//    }
-//}
+        public async Task<List<HealthRecordListDto>> GetHealthRecordByAppointment(int id) =>
+            await _dbSet
+                .Where(hr => hr.AppointmentId == id)
+                .Select(hr => new HealthRecordListDto
+                {
+                    RecordId = hr.RecordId,
+                    PatientName = hr.Patient.FullName,
+                    DoctorName = hr.Doctor.FullName,
+                    VisitDate = hr.VisitDate,
+                    Diagnosis = hr.Diagnosis,
+                    Prescription = hr.Prescription,
+                    Notes = hr.Notes
+                })
+                .ToListAsync();
+    }
+}

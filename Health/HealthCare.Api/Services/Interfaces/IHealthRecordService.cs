@@ -1,16 +1,16 @@
-﻿//using HealthCare.Api.Models;
+﻿using HealthCare.Api.DTOs;
+using HealthCare.Api.DTOs.HealthRecord;
 
-//namespace HealthCare.Api.Services.Interfaces
-//{
-//    public interface IHealthRecordService
-//    {
-//        Task<HealthRecord> GetByIdAsync(int id, CancellationToken ct = default);
-//        Task<List<HealthRecord>> GetAllAsync(CancellationToken ct = default);
-//        Task<HealthRecord> CreateAsync(HealthRecord record, CancellationToken ct = default);
-//        Task<HealthRecord> UpdateAsync(int id, HealthRecord record, CancellationToken ct = default);
-//        Task<HealthRecord> DeleteAsync(HealthRecord record, CancellationToken ct = default);
-
-//        Task<HealthRecord?> GetByAppointmentIdAsync(int appointmentId, CancellationToken ct = default);
-//        Task<List<HealthRecord>> GetByPatientIdAsync(int patientId, CancellationToken ct = default);
-//    }
-//}
+namespace HealthCare.Api.Services.Interfaces
+{
+    public interface IHealthRecordService
+    {
+        Task<HealthRecordListDto?> GetByIdAsync(int id);
+        Task<PagedResult<HealthRecordListDto>> GetAllAsync(HealthRecordFilter filter);
+        Task AddAsync(CreateHealthRecordDto dto);
+        Task UpdateAsync(int id, UpdateHealthRecordDto dto);
+        Task DeleteAsync(int id);
+        Task<List<HealthRecordListDto>> GetHealthRecordByPatient(int id);
+        Task<List<HealthRecordListDto>> GetHealthRecordByAppointment(int id);
+    }
+}

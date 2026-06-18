@@ -22,9 +22,4 @@
     <PackageReference Include="system.identitymodel.tokens.jwt" Version="8.19.1" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="DTOs\Doctor\" />
-    <Folder Include="DTOs\HealthRecord\" />
-  </ItemGroup>
-
 </Project>

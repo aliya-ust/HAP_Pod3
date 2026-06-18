@@ -1,37 +1,16 @@
-﻿//using HealthCare.Api.Models;
-//using HealthCare.Shared.DTOs;
-//using HealthCare.Shared.Models;
+﻿using HealthCare.Api.DTOs.Appointment;
+using HealthCare.Api.Models;
 
-//namespace HealthCare.Api.Repositories.Interfaces
-//{
-//    public interface IAppointmentRepository : IRepository<Appointment>
-//    {
-//        Task<List<string>> AvailableTimeSlotsAsync(
-//            DateOnly date,
-//            int doctorId);
-
-//        Task<bool> IsAvailableAsync(
-//            DateOnly date,
-//            int doctorId,
-//            string timeSlot);
-
-//        Task<List<AppointmentReportDto>> GetDailyReportAsync();
-
-//        Task<List<Appointment>> GetDoctorScheduleAsync(
-//            DateOnly date,
-//            int doctorId);
-
-//        Task<List<Appointment>> GetPatientScheduleAsync(
-//            DateOnly date,
-//            int patientId);
-
-//        Task<List<Appointment>> GetAppointmentByPatientAsync(
-//            int patientId);
-
-//        Task<(List<Appointment> Appointments, int TotalCount)>
-//            GetAppointmentByDoctorAsync(
-//                int doctorId,
-//                int pageNumber,
-//                int pageSize);
-//    }
-//}
+namespace HealthCare.Api.Repositories.Interfaces
+{
+    public interface IAppointmentRepository : IRepository<Appointment>
+    {
+        Task<List<string>> BookedTimeSlots(DateOnly date, int doctorId);
+        Task<bool> IsAvailable(DateOnly date, int doctorId, string timeSlot);
+        Task<List<AppointmentReportDto>> GetDailyReport();
+        Task<List<AppointmentListDto>> GetDoctorSchedule(DateOnly date, int id);
+        Task<List<AppointmentListDto>> GetPatientSchedule(DateOnly date, int id);
+        Task<List<AppointmentListDto>> GetAppointmentByPatient(int id);
+        Task<List<AppointmentListDto>> GetAppointmentByDoctor(int id);
+    }
+}

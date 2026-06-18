@@ -1,34 +1,104 @@
-﻿//using HealthCare.Api.Models;
-//using HealthCare.Api.Repositories.Interfaces;
-//using HealthCare.Api.Services.Interfaces;
+﻿using AutoMapper;
+using HealthCare.Api.Data;
+using HealthCare.Api.DTOs;
+using HealthCare.Api.DTOs.Doctor;
+using HealthCare.Api.Models;
+using HealthCare.Api.Repositories.Interfaces;
+using HealthCare.Api.Services.Interfaces;
+using System.Linq.Expressions;
 
-//namespace HealthCare.Api.Services.Implementation
-//{
-//    public class DoctorService : IDoctorService
-//    {
-//        private readonly IDoctorRepository _doctorRepository;
+namespace HealthCare.Api.Services.Implementation
+{
+    public class DoctorService : IDoctorService
+    {
+        private readonly IDoctorRepository _repository;
+        private readonly HealthCareDbContext _context;
+        private readonly IMapper _mapper;
 
-//        public DoctorService(IDoctorRepository doctorRepository)
-//        {
-//            _doctorRepository = doctorRepository;
-//        }
+        public DoctorService(IDoctorRepository repository, HealthCareDbContext context, IMapper mapper)
+        {
+            _repository = repository;
+            _context = context;
+            _mapper = mapper;
+        }
 
-//        public Task<Doctor> CreateAsync(Doctor doctor, CancellationToken ct = default)
-//            => _doctorRepository.CreateAsync(doctor, ct);
+        public async Task<DoctorListDto?> GetByIdAsync(int id)
+        {
+            var doctor = await _repository.GetByIdAsync(id);
+            return doctor is null ? null : _mapper.Map<DoctorListDto>(doctor);
+        }
 
-//        public Task<Doctor> UpdateAsync(int id, Doctor doctor, CancellationToken ct = default)
-//            => _doctorRepository.UpdateAsync(id, doctor, ct);
+        public async Task<PagedResult<DoctorListDto>> GetAllAsync(DoctorFilter filter)
+        {
+            // Build predicate (filtering)
+            Expression<Func<Doctor, bool>>? predicate = null;
 
-//        public Task<Doctor> DeleteAsync(Doctor doctor, CancellationToken ct = default)
-//            => _doctorRepository.DeleteAsync(doctor, ct);
+            if (!string.IsNullOrWhiteSpace(filter.Specialisation) && filter.MinExperience.HasValue)
+            {
+                predicate = d => d.Specialisation == filter.Specialisation
+                              && d.YearsOfExperience >= filter.MinExperience.Value;
+            }
+            else if (!string.IsNullOrWhiteSpace(filter.Specialisation))
+            {
+                predicate = d => d.Specialisation == filter.Specialisation;
+            }
+            else if (filter.MinExperience.HasValue)
+            {
+                predicate = d => d.YearsOfExperience >= filter.MinExperience.Value;
+            }
 
-//        public Task<List<Doctor>> GetAllAsync(CancellationToken ct = default)
-//            => _doctorRepository.GetAllAsync(ct);
+            // Ordering (by experience)
+            Func<IQueryable<Doctor>, IOrderedQueryable<Doctor>> orderBy =
+                q => q.OrderByDescending(d => d.YearsOfExperience);
 
-//        public Task<Doctor> GetByIdAsync(int id, CancellationToken ct = default)
-//            => _doctorRepository.GetByIdAsync(id, ct);
+            // Call repository
+            var pagedResult = await _repository.GetAllAsync(
+                filter.PageNumber,
+                filter.PageSize,
+                predicate,
+                orderBy
+            );
 
-//        public Task<List<Doctor>> GetDoctorsBySpecializationAsync(string specialization, CancellationToken ct = default)
-//            => _doctorRepository.GetDoctorsBySpecializationAsync(specialization, ct);
-//    }
-//}
+            // Map result
+            return new PagedResult<DoctorListDto>
+            {
+                Items = _mapper.Map<IEnumerable<DoctorListDto>>(pagedResult.Items),
+                PageNumber = pagedResult.PageNumber,
+                PageSize = pagedResult.PageSize,
+                TotalCount = pagedResult.TotalCount
+            };
+        }
+
+        public async Task AddAsync(CreateDoctorDto dto)
+        {
+            var doctor = _mapper.Map<Doctor>(dto);
+            await _repository.AddAsync(doctor);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task UpdateAsync(int id, UpdateDoctorDto dto)
+        {
+            var doctor = await _repository.GetByIdAsync(id);
+            if (doctor is null) return;
+            _mapper.Map(dto, doctor);
+            await _repository.UpdateAsync(doctor);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task DeleteAsync(int id)
+        {
+            await _repository.DeleteAsync(id);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<List<string>> GetSlots(int doctorId)
+        {
+            var slots = await _repository.GetSlots(doctorId);
+
+            if (slots.Count == 0)
+                throw new InvalidOperationException("No available slots found for this doctor.");
+
+            return slots;
+        }
+    }
+}
