@@ -1,69 +1,70 @@
-﻿using HealthCare.Api.DTOs.Patient;
+﻿using HealthCare.Api.DTOs.Doctor;
 using HealthCare.Api.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HealthCare.Api.Controllers
 {
-    [Route("api/patients")]
+    [Route("api/doctors")]
     [ApiController]
-    public class PatientController : ControllerBase
+    public class DoctorController : ControllerBase
     {
-        private readonly IPatientService _patientService;
+        private readonly IDoctorService _doctorService;
 
-        public PatientController(IPatientService patientService)
+        public DoctorController(IDoctorService doctorService)
         {
-            _patientService = patientService;
+            _doctorService = doctorService;
         }
 
         [HttpGet("profile")]
-        [Authorize(Roles = "Patient")]
+        [Authorize(Roles = "Doctor")]
         public async Task<IActionResult> GetMyProfile()
         {
-            var patientId = GetPatientIdFromClaims();
-            var result = await _patientService.GetByIdAsync(patientId);
+            var doctorId = GetDoctorIdFromClaims();
+            var result = await _doctorService.GetByIdAsync(doctorId);
             return Ok(result);
         }
 
         [HttpGet("{id}")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> GetPatientById(int id)
+        public async Task<IActionResult> GetDoctorById(int id)
         {
-            var result = await _patientService.GetByIdAsync(id);
+            var result = await _doctorService.GetByIdAsync(id);
             return Ok(result);
         }
 
         [HttpGet]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> GetAllPatient([FromQuery] PatientFilter filter)
+        public async Task<IActionResult> GetAllDoctor([FromQuery] DoctorFilter filter)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var result = await _patientService.GetAllAsync(filter);
+            var result = await _doctorService.GetAllAsync(filter);
             return Ok(result);
         }
 
         [HttpPut("profile")]
-        [Authorize(Roles = "Patient")]
-        public async Task<IActionResult> UpdatePatient([FromBody] UpdatePatientDto dto)
+        [Authorize(Roles = "Doctor")]
+        public async Task<IActionResult> UpdateDoctor([FromBody] UpdateDoctorDto dto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var patientId = GetPatientIdFromClaims();
-            await _patientService.UpdateAsync(patientId, dto);
+            var doctorId = GetDoctorIdFromClaims();
+            await _doctorService.UpdateAsync(doctorId, dto);
             return Ok();
         }
 
         [HttpPut("{id}")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> UpdatePatient(int id, [FromBody] UpdatePatientDto dto)
+        public async Task<IActionResult> UpdateDoctor(int id, [FromBody] UpdateDoctorDto dto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            await _patientService.UpdateAsync(id, dto);
+            await _doctorService.UpdateAsync(id, dto);
             return Ok();
         }
 
@@ -71,7 +72,7 @@ namespace HealthCare.Api.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdatePatientStatus(int id, [FromBody] bool isActive)
         {
-            await _patientService.UpdateStatusAsync(id, isActive);
+            await _doctorService.UpdateStatusAsync(id, isActive);
             return Ok();
         }
 
@@ -79,14 +80,14 @@ namespace HealthCare.Api.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeletePatient(int id)
         {
-            await _patientService.DeleteAsync(id);
+            await _doctorService.DeleteAsync(id);
             return Ok();
         }
 
-        private int GetPatientIdFromClaims()
+        private int GetDoctorIdFromClaims()
         {
-            var claim = User.FindFirst("PatientId")
-                ?? throw new InvalidOperationException("PatientId claim not found in token.");
+            var claim = User.FindFirst("DoctorId")
+                ?? throw new InvalidOperationException("DoctorId claim not found in token.");
 
             return int.Parse(claim.Value);
         }
