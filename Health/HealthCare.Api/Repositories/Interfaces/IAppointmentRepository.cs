@@ -1,18 +1,37 @@
-﻿using HealthCare.Api.Models;
+﻿//using HealthCare.Api.Models;
+//using HealthCare.Shared.DTOs;
+//using HealthCare.Shared.Models;
 
-namespace HealthCare.Api.Repositories.Interfaces
-{
-    public interface IAppointmentRepository : IRepository<Appointment>
-    {
-        Task<List<Appointment>> GetAppointmentsByPatientIdAsync(
-            int patientId,
-            CancellationToken ct = default);
+//namespace HealthCare.Api.Repositories.Interfaces
+//{
+//    public interface IAppointmentRepository : IRepository<Appointment>
+//    {
+//        Task<List<string>> AvailableTimeSlotsAsync(
+//            DateOnly date,
+//            int doctorId);
 
-        Task<List<Appointment>> GetAppointmentsByDoctorIdAsync(
-            int doctorId,
-            CancellationToken ct = default);
+//        Task<bool> IsAvailableAsync(
+//            DateOnly date,
+//            int doctorId,
+//            string timeSlot);
 
-        Task<List<Appointment>> GetConfirmedAppointmentsAsync(
-            CancellationToken ct = default);
-    }
-}
+//        Task<List<AppointmentReportDto>> GetDailyReportAsync();
+
+//        Task<List<Appointment>> GetDoctorScheduleAsync(
+//            DateOnly date,
+//            int doctorId);
+
+//        Task<List<Appointment>> GetPatientScheduleAsync(
+//            DateOnly date,
+//            int patientId);
+
+//        Task<List<Appointment>> GetAppointmentByPatientAsync(
+//            int patientId);
+
+//        Task<(List<Appointment> Appointments, int TotalCount)>
+//            GetAppointmentByDoctorAsync(
+//                int doctorId,
+//                int pageNumber,
+//                int pageSize);
+//    }
+//}

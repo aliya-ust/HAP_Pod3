@@ -1,11 +1,19 @@
-﻿namespace HealthCare.Api.Repositories.Interfaces
+﻿using HealthCare.Api.DTOs;
+using System.Linq.Expressions;
+
+namespace HealthCare.Api.Repositories.Interfaces
 {
     public interface IRepository<T> where T : class
     {
-        Task<T> GetByIdAsync(int id, CancellationToken ct = default);
-        Task<List<T>> GetAllAsync(CancellationToken ct = default);
-        Task<T> CreateAsync(T entity, CancellationToken ct = default);
-        Task<T> UpdateAsync(int id, T entity, CancellationToken ct = default);
-        Task<T> DeleteAsync(T entity, CancellationToken ct = default);
+        Task<T?> GetByIdAsync(int id);
+        Task<PagedResult<T>> GetAllAsync(
+            int pageNumber,
+            int pageSize,
+            Expression<Func<T, bool>>? predicate = null,
+            Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null
+        );
+        Task AddAsync(T entity);
+        Task UpdateAsync(T entity);
+        Task DeleteAsync(int id);
     }
 }

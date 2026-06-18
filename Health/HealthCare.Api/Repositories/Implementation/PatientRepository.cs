@@ -1,5 +1,6 @@
 ﻿using HealthCare.Api.Data;
 using HealthCare.Api.Models;
+using HealthCare.Api.Repositories.Implementations;
 using HealthCare.Api.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,22 +13,10 @@ namespace HealthCare.Api.Repositories.Implementation
         {
         }
 
-        public async Task<List<Patient>> GetPatientsByGenderAsync(
-            string gender,
-            CancellationToken ct = default)
+        public async Task<Patient?> GetByUserIdAsync(string userId)
         {
-            return await _context.Set<Patient>()
-                .Where(p => p.Gender == gender)
-                .ToListAsync(ct);
-        }
-
-        public async Task<List<Patient>> SearchPatientsByNameAsync(
-            string name,
-            CancellationToken ct = default)
-        {
-            return await _context.Set<Patient>()
-                .Where(p => p.FullName.Contains(name))
-                .ToListAsync(ct);
+            return await _context.Patients
+                .FirstOrDefaultAsync(p => p.UserId == userId);
         }
     }
 }

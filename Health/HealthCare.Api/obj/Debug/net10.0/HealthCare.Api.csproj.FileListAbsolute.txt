@@ -160,7 +160,7 @@ C:\Users\310057\Desktop\Project\Sprint3\Health\Health\HealthCare.Api\obj\Debug\n
 C:\Users\310057\Desktop\Project\Sprint3\Health\Health\HealthCare.Api\bin\Debug\net10.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
 C:\Users\310057\Desktop\Project\Sprint3\Health\Health\HealthCare.Api\bin\Debug\net10.0\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
 C:\Users\310057\Desktop\Project\Sprint3\Health\Health\HealthCare.Api\bin\Debug\net10.0\AutoMapper.dll
-C:\Users\310057\Desktop\Project\Sprint3\Health\Health\HealthCare.Api\bin\Debug\net10.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
 C:\Users\310057\Desktop\Project\Sprint3\Health\Health\HealthCare.Api\bin\Debug\net10.0\Swashbuckle.AspNetCore.Swagger.dll
 C:\Users\310057\Desktop\Project\Sprint3\Health\Health\HealthCare.Api\bin\Debug\net10.0\Swashbuckle.AspNetCore.SwaggerGen.dll
 C:\Users\310057\Desktop\Project\Sprint3\Health\Health\HealthCare.Api\bin\Debug\net10.0\Swashbuckle.AspNetCore.SwaggerUI.dll
+C:\Users\310057\Desktop\Project\Sprint3\Health\Health\HealthCare.Api\obj\Debug\net10.0\HealthCare.Api.sourcelink.json

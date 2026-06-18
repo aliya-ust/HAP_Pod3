@@ -32,6 +32,122 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "HealthCare.Api.Controllers.PatientController",
+    "Method": "GetAll",
+    "RelativePath": "api/patient",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HealthCare.Api.Controllers.PatientController",
+    "Method": "Create",
+    "RelativePath": "api/patient",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "entity",
+        "Type": "HealthCare.Api.DTOs.Patient.PatientDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HealthCare.Api.Controllers.PatientController",
+    "Method": "GetById",
+    "RelativePath": "api/patient/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HealthCare.Api.Controllers.PatientController",
+    "Method": "Update",
+    "RelativePath": "api/patient/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "entity",
+        "Type": "HealthCare.Api.DTOs.Patient.PatientDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HealthCare.Api.Controllers.PatientController",
+    "Method": "Delete",
+    "RelativePath": "api/patient/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HealthCare.Api.Controllers.PatientController",
+    "Method": "GetPaged",
+    "RelativePath": "api/patient/paged",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "pageNumber",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HealthCare.Api.Controllers.PatientController",
+    "Method": "SearchByName",
+    "RelativePath": "api/patient/search",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "name",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "HealthCare.Api.Controllers.WeatherForecastController",
     "Method": "Get",
     "RelativePath": "WeatherForecast",

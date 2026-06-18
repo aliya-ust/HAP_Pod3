@@ -1,16 +1,15 @@
-﻿using HealthCare.Api.Models;
+﻿using HealthCare.Api.DTOs;
+using HealthCare.Api.DTOs.Patient;
+using HealthCare.Api.Models;
 
 namespace HealthCare.Api.Services.Interfaces
 {
     public interface IPatientService
     {
-        Task<Patient> GetByIdAsync(int id, CancellationToken ct = default);
-        Task<List<Patient>> GetAllAsync(CancellationToken ct = default);
-        Task<Patient> CreateAsync(Patient patient, CancellationToken ct = default);
-        Task<Patient> UpdateAsync(int id, Patient patient, CancellationToken ct = default);
-        Task<Patient> DeleteAsync(Patient patient, CancellationToken ct = default);
-
-        Task<List<Patient>> SearchPatientsByNameAsync(string name, CancellationToken ct = default);
-        Task<List<Patient>> GetPatientsByGenderAsync(string gender, CancellationToken ct = default);
+        Task<PatientListDto?> GetByIdAsync(int id);
+        Task<PagedResult<PatientListDto>> GetAllAsync(PatientFilter filter);
+        Task AddAsync(CreatePatientDto dto);
+        Task UpdateAsync(int id, UpdatePatientDto dto);
+        Task DeleteAsync(int id);
     }
 }

@@ -11,6 +11,7 @@ using Microsoft.IdentityModel.Tokens.Experimental;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Text.Json;
+using HealthCare.Api.Mappings;
 //using AutoMapper.Extensions.Microsoft.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -56,19 +57,19 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 
 builder.Services.AddScoped<IPatientRepository, PatientRepository>();
-builder.Services.AddScoped<IDoctorRepository, DoctorRepository>();
-builder.Services.AddScoped<IHealthRecordRepository, HealthRecordRepository>();
-builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
+//builder.Services.AddScoped<IDoctorRepository, DoctorRepository>();
+//builder.Services.AddScoped<IHealthRecordRepository, HealthRecordRepository>();
+//builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
 builder.Services.AddScoped<IPatientService, PatientService>();
-builder.Services.AddScoped<IDoctorService, DoctorService>();
-builder.Services.AddScoped<IHealthRecordService, HealthRecordService>();
-builder.Services.AddScoped<IAppointmentService, AppointmentService>();
+//builder.Services.AddScoped<IDoctorService, DoctorService>();
+//builder.Services.AddScoped<IHealthRecordService, HealthRecordService>();
+//builder.Services.AddScoped<IAppointmentService, AppointmentService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 
-//builder.Services.AddAutoMapper(cfg =>
-//{
-//    cfg.AddProfile<MappingProfile>();
-//});
+builder.Services.AddAutoMapper(cfg =>
+{
+    cfg.AddProfile<MappingProfile>();
+});
 
 
 

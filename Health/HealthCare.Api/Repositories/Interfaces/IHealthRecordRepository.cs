@@ -1,15 +1,12 @@
-﻿using HealthCare.Api.Models;
+﻿//using HealthCare.Api.Models;
+////using HealthCare.Shared.Models;
 
-namespace HealthCare.Api.Repositories.Interfaces
-{
-    public interface IHealthRecordRepository : IRepository<HealthRecord>
-    {
-        Task<HealthRecord?> GetByAppointmentIdAsync(
-            int appointmentId,
-            CancellationToken ct = default);
+//namespace HealthCare.Api.Repositories.Interfaces
+//{
+//    public interface IHealthRecordRepository : IRepository<HealthRecord>
+//    {
+//        Task<List<HealthRecord>> GetHealthRecordByPatientAsync(int patientId);
 
-        Task<List<HealthRecord>> GetByPatientIdAsync(
-            int patientId,
-            CancellationToken ct = default);
-    }
-}
+//        Task<List<HealthRecord>> GetHealthRecordByAppointmentAsync(int appointmentId);
+//    }
+//}

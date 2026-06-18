@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="16.1.1" />
-    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.9" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.Entityframeworkcore" Version="10.0.9" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.8" />
@@ -21,6 +20,11 @@
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="10.2.1" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="10.2.1" />
     <PackageReference Include="system.identitymodel.tokens.jwt" Version="8.19.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="DTOs\Doctor\" />
+    <Folder Include="DTOs\HealthRecord\" />
   </ItemGroup>
 
 </Project>
