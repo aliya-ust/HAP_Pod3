@@ -28,5 +28,8 @@ namespace HealthCare.Api.DTOs.Doctor
         [Required]
         [Range(0.01, 5000, ErrorMessage = "Consultation fee cannot exceed 5000.")]
         public decimal ConsultationFee { get; set; }
+
+        [Required]
+        public List<string> TimeSlots { get; set; } = new();
     }
 }

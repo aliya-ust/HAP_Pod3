@@ -3,6 +3,8 @@
 namespace HealthCare.Api.DTOs.Doctor
 {
     // IsActive not included here — admin toggles it via delete
+    // TimeSlots not included here
+    // ConsultationFee not included here
     public class UpdateDoctorDto
     {
         [Required]
@@ -16,8 +18,5 @@ namespace HealthCare.Api.DTOs.Doctor
 
         [Range(0, 60)]
         public int YearsOfExperience { get; set; }
-
-        [Range(0.01, 5000, ErrorMessage = "Consultation fee cannot exceed 5000.")]
-        public decimal ConsultationFee { get; set; }
     }
 }

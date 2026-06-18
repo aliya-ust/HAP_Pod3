@@ -161,5 +161,11 @@ namespace HealthCare.Api.Services.Implementations
             var appointments = await _repository.GetAppointmentByDoctor(id);
             return appointments.Count == 0 ? new List<AppointmentListDto>() : appointments;
         }
+
+        public async Task CancelAppointmentsByDoctorDate(int doctorId, DateOnly date)
+        {
+            await _repository.CancelAppointmentsByDoctorDate(doctorId, date);
+            await _context.SaveChangesAsync();
+        }
     }
 }
