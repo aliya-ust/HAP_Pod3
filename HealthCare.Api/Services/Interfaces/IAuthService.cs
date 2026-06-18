@@ -9,5 +9,6 @@ namespace HealthCare.Api.Services.Interfaces
         Task RegisterPatientAsync(CreatePatientDto dto);
         Task RegisterDoctorAsync(CreateDoctorDto dto);
         Task<AuthResponseDto> LoginAsync(LoginDto dto);
+        Task ChangePasswordAsync(string userId, ChangePasswordDto dto);
     }
 }

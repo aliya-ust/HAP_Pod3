@@ -2,9 +2,7 @@
 using HealthCare.Api.Data;
 using HealthCare.Api.DTOs;
 using HealthCare.Api.DTOs.Doctor;
-using HealthCare.Api.DTOs.Patient;
 using HealthCare.Api.Models;
-using HealthCare.Api.Repositories.Implementations;
 using HealthCare.Api.Repositories.Interfaces;
 using HealthCare.Api.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -15,7 +13,6 @@ namespace HealthCare.Api.Services.Implementations
     public class DoctorService : IDoctorService
     {
         private readonly IDoctorRepository _repository;
-        //private readonly IAppointmentService _appointmentService;
         private readonly IAppointmentRepository _appointmentRepository;
         private readonly HealthCareDbContext _context;
         private readonly IMapper _mapper;
@@ -23,7 +20,6 @@ namespace HealthCare.Api.Services.Implementations
         public DoctorService(IDoctorRepository repository, IAppointmentRepository appointmentRepository, HealthCareDbContext context, IMapper mapper)
         {
             _repository = repository;
-            //_appointmentService = appointmentService;
             _appointmentRepository = appointmentRepository;
             _context = context;
             _mapper = mapper;
