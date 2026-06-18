@@ -27,27 +27,6 @@ namespace HealthCare.Api.Controllers
             return Ok(result);
         }
 
-        [HttpGet("{id}")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> GetPatientById(int id)
-        {
-            var result = await _patientService.GetByIdAsync(id);
-            return Ok(result);
-        }
-
-        [HttpGet]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> GetAllPatient([FromQuery] PatientFilter filter)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            var result = await _patientService.GetAllAsync(filter);
-            return Ok(result);
-        }
-
         [HttpPut("profile")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Authorize(Roles = "Patient")]
@@ -58,36 +37,6 @@ namespace HealthCare.Api.Controllers
 
             var patientId = GetPatientIdFromClaims();
             await _patientService.UpdateAsync(patientId, dto);
-            return Ok();
-        }
-
-        [HttpPut("{id}")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> UpdatePatient(int id, [FromBody] UpdatePatientDto dto)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            await _patientService.UpdateAsync(id, dto);
-            return Ok();
-        }
-
-        [HttpPatch("{id}/status")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> UpdatePatientStatus(int id, [FromBody] bool isActive)
-        {
-            await _patientService.UpdateStatusAsync(id, isActive);
-            return Ok();
-        }
-
-        [HttpDelete("{id}")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> DeletePatient(int id)
-        {
-            await _patientService.DeleteAsync(id);
             return Ok();
         }
 

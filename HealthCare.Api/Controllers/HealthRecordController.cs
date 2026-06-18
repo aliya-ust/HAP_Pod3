@@ -1,5 +1,6 @@
 ﻿using HealthCare.Api.DTOs.HealthRecord;
 using HealthCare.Api.Services.Interfaces;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,6 +18,7 @@ namespace HealthCare.Api.Controllers
         }
 
         [HttpPost("create")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Authorize(Roles = "Doctor")]
         public async Task<IActionResult> CreateHealthRecord([FromBody] CreateHealthRecordDto dto)
         {
@@ -27,15 +29,8 @@ namespace HealthCare.Api.Controllers
             return Ok();
         }
 
-        [HttpDelete("{id}")]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> DeleteHealthRecord(int id)
-        {
-            await _healthRecordService.DeleteAsync(id);
-            return Ok();
-        }
-
         [HttpGet("by-appointment/{id}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Authorize(Roles = "Doctor")]
         public async Task<IActionResult> GetHealthRecordByAppointment(int id)
         {
@@ -44,6 +39,7 @@ namespace HealthCare.Api.Controllers
         }
 
         [HttpGet("my-records")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Authorize(Roles = "Patient")]
         public async Task<IActionResult> GetHealthRecordByPatient()
         {
