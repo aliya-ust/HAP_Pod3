@@ -3,6 +3,7 @@
 namespace HealthCare.Api.DTOs.Patient
 {
     // DateOfBirth intentionally excluded — not editable after registration
+    // IsActive intentionally excluded
     public class UpdatePatientDto
     {
         [Required]
