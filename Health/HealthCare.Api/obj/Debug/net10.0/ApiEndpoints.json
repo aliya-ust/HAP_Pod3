@@ -38,7 +38,28 @@
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
-    "Parameters": [],
+    "Parameters": [
+      {
+        "Name": "HasInsurance",
+        "Type": "System.Nullable\u00601[[System.Boolean, System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "SearchTerm",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "PageNumber",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "PageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
     "ReturnTypes": []
   },
   {
@@ -50,8 +71,8 @@
     "Order": 0,
     "Parameters": [
       {
-        "Name": "entity",
-        "Type": "HealthCare.Api.DTOs.Patient.PatientDto",
+        "Name": "dto",
+        "Type": "HealthCare.Api.DTOs.Patient.CreatePatientDto",
         "IsRequired": true
       }
     ],
@@ -87,8 +108,8 @@
         "IsRequired": true
       },
       {
-        "Name": "entity",
-        "Type": "HealthCare.Api.DTOs.Patient.PatientDto",
+        "Name": "dto",
+        "Type": "HealthCare.Api.DTOs.Patient.UpdatePatientDto",
         "IsRequired": true
       }
     ],
@@ -106,43 +127,6 @@
         "Name": "id",
         "Type": "System.Int32",
         "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "HealthCare.Api.Controllers.PatientController",
-    "Method": "GetPaged",
-    "RelativePath": "api/patient/paged",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "pageNumber",
-        "Type": "System.Int32",
-        "IsRequired": false
-      },
-      {
-        "Name": "pageSize",
-        "Type": "System.Int32",
-        "IsRequired": false
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "HealthCare.Api.Controllers.PatientController",
-    "Method": "SearchByName",
-    "RelativePath": "api/patient/search",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "name",
-        "Type": "System.String",
-        "IsRequired": false
       }
     ],
     "ReturnTypes": []

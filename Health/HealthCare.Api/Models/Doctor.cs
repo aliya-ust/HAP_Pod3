@@ -8,7 +8,7 @@ namespace HealthCare.Api.Models
         [Key]
         public int DoctorId { get; set; }
 
-        public int UserId { get; set; }
+        public string? UserId { get; set; }
 
         [Required]
         [MaxLength(100)]

@@ -108,17 +108,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/PatientDto"
+                "$ref": "#/components/schemas/UpdatePatientDto"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/PatientDto"
+                "$ref": "#/components/schemas/UpdatePatientDto"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/PatientDto"
+                "$ref": "#/components/schemas/UpdatePatientDto"
               }
             }
           }
@@ -156,6 +156,38 @@
         "tags": [
           "Patient"
         ],
+        "parameters": [
+          {
+            "name": "HasInsurance",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "SearchTerm",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "PageNumber",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "PageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -170,74 +202,21 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/PatientDto"
+                "$ref": "#/components/schemas/CreatePatientDto"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/PatientDto"
+                "$ref": "#/components/schemas/CreatePatientDto"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/PatientDto"
+                "$ref": "#/components/schemas/CreatePatientDto"
               }
             }
           }
         },
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/patient/search": {
-      "get": {
-        "tags": [
-          "Patient"
-        ],
-        "parameters": [
-          {
-            "name": "name",
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/patient/paged": {
-      "get": {
-        "tags": [
-          "Patient"
-        ],
-        "parameters": [
-          {
-            "name": "pageNumber",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "format": "int32",
-              "default": 1
-            }
-          },
-          {
-            "name": "pageSize",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "format": "int32",
-              "default": 10
-            }
-          }
-        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -287,6 +266,58 @@
   },
   "components": {
     "schemas": {
+      "CreatePatientDto": {
+        "required": [
+          "dateOfBirth",
+          "email",
+          "fullName",
+          "gender",
+          "password",
+          "phoneNumber"
+        ],
+        "type": "object",
+        "properties": {
+          "fullName": {
+            "maxLength": 100,
+            "minLength": 1,
+            "pattern": "^[A-Za-z\\s]+$",
+            "type": "string"
+          },
+          "dateOfBirth": {
+            "type": "string",
+            "format": "date"
+          },
+          "gender": {
+            "maxLength": 10,
+            "minLength": 1,
+            "pattern": "^(Male|Female|Other)$",
+            "type": "string"
+          },
+          "phoneNumber": {
+            "maxLength": 20,
+            "minLength": 1,
+            "pattern": "^[6-9]\\d{9}$",
+            "type": "string"
+          },
+          "email": {
+            "maxLength": 100,
+            "minLength": 1,
+            "type": "string",
+            "format": "email"
+          },
+          "password": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "insuranceId": {
+            "maxLength": 50,
+            "pattern": "^[A-Za-z0-9]+$",
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "LoginDto": {
         "type": "object",
         "properties": {
@@ -297,58 +328,6 @@
           "password": {
             "type": "string",
             "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "PatientDto": {
-        "required": [
-          "dateOfBirth",
-          "fullName",
-          "gender",
-          "phoneNumber",
-          "userId"
-        ],
-        "type": "object",
-        "properties": {
-          "userId": {
-            "minLength": 1,
-            "type": "string"
-          },
-          "patientId": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "fullName": {
-            "maxLength": 100,
-            "minLength": 0,
-            "pattern": "[A-Z][A-Za-z\\s]+",
-            "type": "string"
-          },
-          "dateOfBirth": {
-            "type": "string",
-            "format": "date"
-          },
-          "gender": {
-            "maxLength": 10,
-            "minLength": 0,
-            "pattern": "(Male|Female|Others)",
-            "type": "string"
-          },
-          "phoneNumber": {
-            "maxLength": 15,
-            "minLength": 0,
-            "type": "string",
-            "format": "tel"
-          },
-          "insuranceId": {
-            "maxLength": 50,
-            "minLength": 0,
-            "type": "string",
-            "nullable": true
-          },
-          "isActive": {
-            "type": "boolean"
           }
         },
         "additionalProperties": false
@@ -369,6 +348,48 @@
             "nullable": true
           },
           "role": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "UpdatePatientDto": {
+        "required": [
+          "email",
+          "fullName",
+          "gender",
+          "phoneNumber"
+        ],
+        "type": "object",
+        "properties": {
+          "fullName": {
+            "maxLength": 100,
+            "minLength": 1,
+            "pattern": "^[A-Za-z\\s]+$",
+            "type": "string"
+          },
+          "phoneNumber": {
+            "maxLength": 20,
+            "minLength": 1,
+            "pattern": "^[6-9]\\d{9}$",
+            "type": "string"
+          },
+          "email": {
+            "maxLength": 100,
+            "minLength": 1,
+            "type": "string",
+            "format": "email"
+          },
+          "gender": {
+            "maxLength": 10,
+            "minLength": 1,
+            "pattern": "^(Male|Female|Other)$",
+            "type": "string"
+          },
+          "insuranceId": {
+            "maxLength": 50,
+            "pattern": "^[A-Za-z0-9]+$",
             "type": "string",
             "nullable": true
           }

@@ -12,6 +12,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Text.Json;
 using HealthCare.Api.Mappings;
+using HealthCare.Api.Repositories.Implementations;
 //using AutoMapper.Extensions.Microsoft.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -56,6 +57,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
     });
 
+builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<IPatientRepository, PatientRepository>();
 //builder.Services.AddScoped<IDoctorRepository, DoctorRepository>();
 //builder.Services.AddScoped<IHealthRecordRepository, HealthRecordRepository>();

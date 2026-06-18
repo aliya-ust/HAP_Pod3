@@ -4,7 +4,7 @@ using HealthCare.Api.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
-namespace HealthCare.Api.Repositories.Implementations
+namespace HealthCare.Api.Repositories.Implementation
 {
     public class Repository<T> : IRepository<T> where T : class
     {
