@@ -17,7 +17,7 @@ namespace HealthCare.Api.Repositories.Implementations
         }
 
         public async Task<List<string>> GetSlots(int doctorId) =>
-            await _context.DoctorAvailableSlots
+            await _context.AvailableSlots
                 .Where(s => s.DoctorId == doctorId)
                 .Select(s => s.TimeSlot)
                 .ToListAsync();
@@ -30,7 +30,7 @@ namespace HealthCare.Api.Repositories.Implementations
                 TimeSlot = t
             });
 
-            await _context.DoctorAvailableSlots.AddRangeAsync(slots);
+            await _context.AvailableSlots.AddRangeAsync(slots);
         }
 
         public async Task<List<DoctorLeaves>> GetLeavesByDoctorId(int doctorId) =>

@@ -14,12 +14,12 @@ namespace HealthCare.Api.Mapping
             // Patient DTO mappings
             CreateMap<CreatePatientDto, Patient>();
             CreateMap<UpdatePatientDto, Patient>();
-            CreateMap<PatientListDto, Patient>();
+            CreateMap<Patient, PatientListDto>();
 
             // Doctor DTO mappings
             CreateMap<CreateDoctorDto, Doctor>();
             CreateMap<UpdateDoctorDto, Doctor>();
-            CreateMap<DoctorListDto, Doctor>();
+            CreateMap<Doctor, DoctorListDto>();
 
             // Appointment DTO mappings
             CreateMap<CreateAppointmentDto, Appointment>();

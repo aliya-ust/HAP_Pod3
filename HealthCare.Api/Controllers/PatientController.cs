@@ -1,5 +1,6 @@
 ﻿using HealthCare.Api.DTOs.Patient;
 using HealthCare.Api.Services.Interfaces;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,6 +18,7 @@ namespace HealthCare.Api.Controllers
         }
 
         [HttpGet("profile")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Authorize(Roles = "Patient")]
         public async Task<IActionResult> GetMyProfile()
         {
@@ -26,6 +28,7 @@ namespace HealthCare.Api.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetPatientById(int id)
         {
@@ -34,6 +37,7 @@ namespace HealthCare.Api.Controllers
         }
 
         [HttpGet]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetAllPatient([FromQuery] PatientFilter filter)
         {
@@ -45,6 +49,7 @@ namespace HealthCare.Api.Controllers
         }
 
         [HttpPut("profile")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Authorize(Roles = "Patient")]
         public async Task<IActionResult> UpdatePatient([FromBody] UpdatePatientDto dto)
         {
@@ -57,6 +62,7 @@ namespace HealthCare.Api.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdatePatient(int id, [FromBody] UpdatePatientDto dto)
         {
@@ -68,6 +74,7 @@ namespace HealthCare.Api.Controllers
         }
 
         [HttpPatch("{id}/status")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdatePatientStatus(int id, [FromBody] bool isActive)
         {
@@ -76,6 +83,7 @@ namespace HealthCare.Api.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeletePatient(int id)
         {

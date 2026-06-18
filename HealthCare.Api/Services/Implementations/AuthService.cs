@@ -78,11 +78,16 @@ namespace HealthCare.Api.Services.Implementations
         {
             var user = await CreateUserWithRoleAsync(dto.Email, dto.Password, "Doctor");
 
-            // Create Patient entity
+            // Create Doctor entity
             var doctor = _mapper.Map<Doctor>(dto);
             doctor.UserId = user.Id;
 
             await _doctorRepo.AddAsync(doctor);
+
+            await _context.SaveChangesAsync();
+
+            await _doctorRepo.CreateSlots(doctor.DoctorId, dto.TimeSlots);
+
             await _context.SaveChangesAsync();
         }
 
