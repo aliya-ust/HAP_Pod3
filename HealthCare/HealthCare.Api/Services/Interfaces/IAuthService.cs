@@ -1,4 +1,6 @@
-﻿using HealthCare.Api.DTOs.Auth;
+﻿using HealthCare.Api.DTOs.Doctor;
+using HealthCare.Api.DTOs.Patient;
+using HealthCare.Api.DTOs.Auth;
 
 namespace HealthCare.Api.Services.Interfaces
 {
@@ -7,9 +9,9 @@ namespace HealthCare.Api.Services.Interfaces
 
         Task<(bool success, string Message, string UserId)> RegisterAsync(RegisterDto request);
 
-
         Task<(bool Success, string Message, string AccessToken, int ExpiresIn)> LoginAsync(LoginDto request);
 
- 
     }
+
+
 }

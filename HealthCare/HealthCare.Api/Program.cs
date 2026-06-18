@@ -1,7 +1,8 @@
 
-using HealthApp.Infrastructure.Services;
+
 using HealthCare.Api.Data;
 using HealthCare.Api.Mapping;
+using HealthCare.Api.Middleware;
 using HealthCare.Api.Repositories.Implementations;
 using HealthCare.Api.Repositories.Interfaces;
 using HealthCare.Api.Services.Implementations;
@@ -124,12 +125,14 @@ namespace HealthCare.Api
 
                 });
 
+            //Exception Handler
+            builder.Services.AddProblemDetails();
+            builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
 
 
-           
 
-      
+
             // Repositories
             builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             builder.Services.AddScoped<IPatientRepository, PatientRepository>();
@@ -157,6 +160,9 @@ namespace HealthCare.Api
 
 
             var app = builder.Build();
+            app.UseExceptionHandler();
+
+
 
             // ========================================== 
 

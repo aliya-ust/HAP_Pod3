@@ -1,19 +1,21 @@
 ﻿using AutoMapper;
 using HealthCare.Api.Data;
+using HealthCare.Api.DTOs;
 using HealthCare.Api.DTOs.HealthRecord;
 using HealthCare.Api.Models;
 using HealthCare.Api.Repositories.Interfaces;
 using HealthCare.Api.Services.Interfaces;
+using System.Linq.Expressions;
 
-namespace HealthApp.Infrastructure.Services
+namespace HealthCare.Api.Services.Implementations
 {
     public class HealthRecordService : IHealthRecordService
     {
-        private readonly IRepository<HealthRecord> _repository;
+        private readonly IHealthRecordRepository _repository;
         private readonly HealthCareDbContext _context;
         private readonly IMapper _mapper;
 
-        public HealthRecordService(IRepository<HealthRecord> repository, HealthCareDbContext context, IMapper mapper)
+        public HealthRecordService(IHealthRecordRepository repository, HealthCareDbContext context, IMapper mapper)
         {
             _repository = repository;
             _context = context;
@@ -26,10 +28,39 @@ namespace HealthApp.Infrastructure.Services
             return record is null ? null : _mapper.Map<HealthRecordListDto>(record);
         }
 
-        public async Task<IEnumerable<HealthRecordListDto>> GetAllAsync()
+        public async Task<PagedResult<HealthRecordListDto>> GetAllAsync(HealthRecordFilter filter)
         {
-            var records = await _repository.GetAllAsync();
-            return _mapper.Map<IEnumerable<HealthRecordListDto>>(records);
+            // Build predicate (date filtering)
+            Expression<Func<HealthRecord, bool>>? predicate = null;
+
+            if (filter.VisitDate.HasValue)
+            {
+                var start = filter.VisitDate.Value.ToDateTime(TimeOnly.MinValue); // 00:00
+                var end = start.AddDays(1); // next day
+
+                predicate = hr => hr.VisitDate >= start && hr.VisitDate < end;
+            }
+
+            // Ordering (by VisitDate)
+            Func<IQueryable<HealthRecord>, IOrderedQueryable<HealthRecord>> orderBy =
+                q => q.OrderBy(hr => hr.VisitDate);
+
+            // Call repository
+            var pagedResult = await _repository.GetAllAsync(
+                filter.PageNumber,
+                filter.PageSize,
+                predicate,
+                orderBy
+            );
+
+            // Map result
+            return new PagedResult<HealthRecordListDto>
+            {
+                Items = _mapper.Map<IEnumerable<HealthRecordListDto>>(pagedResult.Items),
+                PageNumber = pagedResult.PageNumber,
+                PageSize = pagedResult.PageSize,
+                TotalCount = pagedResult.TotalCount
+            };
         }
 
         public async Task AddAsync(CreateHealthRecordDto dto)
@@ -52,6 +83,18 @@ namespace HealthApp.Infrastructure.Services
         {
             await _repository.DeleteAsync(id);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<List<HealthRecordListDto>> GetHealthRecordByPatient(int id)
+        {
+            var records = await _repository.GetHealthRecordByPatient(id);
+            return records.Count == 0 ? new List<HealthRecordListDto>() : records;
+        }
+
+        public async Task<List<HealthRecordListDto>> GetHealthRecordByAppointment(int id)
+        {
+            var records = await _repository.GetHealthRecordByAppointment(id);
+            return records.Count == 0 ? new List<HealthRecordListDto>() : records;
         }
     }
 }

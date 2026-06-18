@@ -74,7 +74,7 @@ namespace HealthCare.Api.Controllers
 
             // Return 200 OK with token and expiration 
 
-            return Ok(new AuthResponse
+            return Ok(new AuthResponseDto
 
             {
 

@@ -1,19 +1,21 @@
 ﻿using AutoMapper;
 using HealthCare.Api.Data;
+using HealthCare.Api.DTOs;
 using HealthCare.Api.DTOs.Doctor;
 using HealthCare.Api.Models;
 using HealthCare.Api.Repositories.Interfaces;
 using HealthCare.Api.Services.Interfaces;
+using System.Linq.Expressions;
 
 namespace HealthCare.Api.Services.Implementations
 {
     public class DoctorService : IDoctorService
     {
-        private readonly IRepository<Doctor> _repository;
+        private readonly IDoctorRepository _repository;
         private readonly HealthCareDbContext _context;
         private readonly IMapper _mapper;
 
-        public DoctorService(IRepository<Doctor> repository, HealthCareDbContext context, IMapper mapper)
+        public DoctorService(IDoctorRepository repository, HealthCareDbContext context, IMapper mapper)
         {
             _repository = repository;
             _context = context;
@@ -26,10 +28,45 @@ namespace HealthCare.Api.Services.Implementations
             return doctor is null ? null : _mapper.Map<DoctorListDto>(doctor);
         }
 
-        public async Task<IEnumerable<DoctorListDto>> GetAllAsync()
+        public async Task<PagedResult<DoctorListDto>> GetAllAsync(DoctorFilter filter)
         {
-            var doctors = await _repository.GetAllAsync();
-            return _mapper.Map<IEnumerable<DoctorListDto>>(doctors);
+            // Build predicate (filtering)
+            Expression<Func<Doctor, bool>>? predicate = null;
+
+            if (!string.IsNullOrWhiteSpace(filter.Specialisation) && filter.MinExperience.HasValue)
+            {
+                predicate = d => d.Specialisation == filter.Specialisation
+                              && d.YearsOfExperience >= filter.MinExperience.Value;
+            }
+            else if (!string.IsNullOrWhiteSpace(filter.Specialisation))
+            {
+                predicate = d => d.Specialisation == filter.Specialisation;
+            }
+            else if (filter.MinExperience.HasValue)
+            {
+                predicate = d => d.YearsOfExperience >= filter.MinExperience.Value;
+            }
+
+            // Ordering (by experience)
+            Func<IQueryable<Doctor>, IOrderedQueryable<Doctor>> orderBy =
+                q => q.OrderByDescending(d => d.YearsOfExperience);
+
+            // Call repository
+            var pagedResult = await _repository.GetAllAsync(
+                filter.PageNumber,
+                filter.PageSize,
+                predicate,
+                orderBy
+            );
+
+            // Map result
+            return new PagedResult<DoctorListDto>
+            {
+                Items = _mapper.Map<IEnumerable<DoctorListDto>>(pagedResult.Items),
+                PageNumber = pagedResult.PageNumber,
+                PageSize = pagedResult.PageSize,
+                TotalCount = pagedResult.TotalCount
+            };
         }
 
         public async Task AddAsync(CreateDoctorDto dto)
@@ -52,6 +89,16 @@ namespace HealthCare.Api.Services.Implementations
         {
             await _repository.DeleteAsync(id);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<List<string>> GetSlots(int doctorId)
+        {
+            var slots = await _repository.GetSlots(doctorId);
+
+            if (slots.Count == 0)
+                throw new InvalidOperationException("No available slots found for this doctor.");
+
+            return slots;
         }
     }
 }

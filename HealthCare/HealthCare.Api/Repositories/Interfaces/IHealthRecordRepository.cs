@@ -1,9 +1,11 @@
-﻿using HealthCare.Api.Models;
-using HealthCare.Api.Repositories.Implementations;
+﻿using HealthCare.Api.DTOs.HealthRecord;
+using HealthCare.Api.Models;
 
 namespace HealthCare.Api.Repositories.Interfaces
 {
     public interface IHealthRecordRepository : IRepository<HealthRecord>
     {
+        Task<List<HealthRecordListDto>> GetHealthRecordByPatient(int id);
+        Task<List<HealthRecordListDto>> GetHealthRecordByAppointment(int id);
     }
-} 
+}

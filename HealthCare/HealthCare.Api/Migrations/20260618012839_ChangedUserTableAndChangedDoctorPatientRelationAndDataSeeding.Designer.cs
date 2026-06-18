@@ -4,6 +4,7 @@ using HealthCare.Api.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HealthCare.Api.Migrations
 {
     [DbContext(typeof(HealthCareDbContext))]
-    partial class HealthCareDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260618012839_ChangedUserTableAndChangedDoctorPatientRelationAndDataSeeding")]
+    partial class ChangedUserTableAndChangedDoctorPatientRelationAndDataSeeding
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -137,6 +140,18 @@ namespace HealthCare.Api.Migrations
                     b.HasIndex(new[] { "Specialisation" }, "IX_Doctors_Specialisation");
 
                     b.ToTable("Doctors");
+
+                    b.HasData(
+                        new
+                        {
+                            DoctorId = 1,
+                            ConsultationFee = 800m,
+                            CreatedDate = new DateTimeOffset(new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
+                            FullName = "Dr. Anil Mehta",
+                            IsActive = true,
+                            Specialisation = "Cardiology",
+                            YearsOfExperience = 12
+                        });
                 });
 
             modelBuilder.Entity("HealthCare.Api.Models.DoctorLeaves", b =>
@@ -258,6 +273,18 @@ namespace HealthCare.Api.Migrations
                         .HasFilter("[UserId] IS NOT NULL");
 
                     b.ToTable("Patients");
+
+                    b.HasData(
+                        new
+                        {
+                            PatientId = 1,
+                            CreatedDate = new DateTimeOffset(new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
+                            DateOfBirth = new DateOnly(1990, 5, 12),
+                            FullName = "Arjun Raj",
+                            Gender = "Male",
+                            IsActive = true,
+                            PhoneNumber = "9876543210"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

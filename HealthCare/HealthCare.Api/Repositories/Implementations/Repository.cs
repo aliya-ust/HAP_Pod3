@@ -1,6 +1,8 @@
-﻿using HealthCare.Api.Repositories.Interfaces;
+﻿using HealthCare.Api.Data;
+using HealthCare.Api.DTOs;
+using HealthCare.Api.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using HealthCare.Api.Data;
+using System.Linq.Expressions;
 
 namespace HealthCare.Api.Repositories.Implementations
 {
@@ -18,13 +20,40 @@ namespace HealthCare.Api.Repositories.Implementations
         public async Task<T?> GetByIdAsync(int id) =>
             await _dbSet.FindAsync(id);
 
-        public async Task<IEnumerable<T>> GetAllAsync() =>
-            await _dbSet.ToListAsync();
+        public async Task<PagedResult<T>> GetAllAsync(
+            int pageNumber,
+            int pageSize,
+            Expression<Func<T, bool>>? predicate = null,
+            Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null)
+        {
+            IQueryable<T> query = _dbSet;
+
+            if (predicate != null)
+                query = query.Where(predicate);
+
+            if (orderBy != null)
+                query = orderBy(query);
+
+            var totalCount = await query.CountAsync();
+
+            var items = await query
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return new PagedResult<T>
+            {
+                Items = items,
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                TotalCount = totalCount
+            };
+        }
 
         public async Task AddAsync(T entity) =>
             await _dbSet.AddAsync(entity);
 
-        public Task UpdateAsync(T entity)
+        public Task UpdateAsync(T entity) 
         {
             _dbSet.Update(entity);
             return Task.CompletedTask;
