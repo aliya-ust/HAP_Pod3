@@ -1,7 +1,6 @@
 ﻿using HealthCare.Api.DTOs.Doctor;
 using HealthCare.Api.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HealthCare.Api.Controllers
@@ -82,6 +81,26 @@ namespace HealthCare.Api.Controllers
         {
             await _doctorService.DeleteAsync(id);
             return Ok();
+        }
+
+        [HttpGet("available")]
+        [Authorize(Roles = "Patient")]
+        public async Task<IActionResult> GetAvailableDoctors([FromQuery] string specialisation, [FromQuery] DateOnly date)
+        {
+            var result = await _doctorService.AvailableDoctors(specialisation, date);
+            return Ok(result);
+        }
+
+        [HttpPost("leaves")]
+        [Authorize(Roles = "Doctor")]
+        public async Task<IActionResult> AddDoctorLeaves([FromBody] List<CreateLeaveDto> leaves)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var doctorId = GetDoctorIdFromClaims();
+            var result = await _doctorService.CreateLeave(doctorId, leaves);
+            return Ok(result);
         }
 
         private int GetDoctorIdFromClaims()
