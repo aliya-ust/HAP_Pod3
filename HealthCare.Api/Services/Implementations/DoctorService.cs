@@ -15,15 +15,15 @@ namespace HealthCare.Api.Services.Implementations
     public class DoctorService : IDoctorService
     {
         private readonly IDoctorRepository _repository;
-        private readonly IAppointmentService _appointmentService;
+        //private readonly IAppointmentService _appointmentService;
         private readonly IAppointmentRepository _appointmentRepository;
         private readonly HealthCareDbContext _context;
         private readonly IMapper _mapper;
 
-        public DoctorService(IDoctorRepository repository, IAppointmentService appointmentService, IAppointmentRepository appointmentRepository, HealthCareDbContext context, IMapper mapper)
+        public DoctorService(IDoctorRepository repository, IAppointmentRepository appointmentRepository, HealthCareDbContext context, IMapper mapper)
         {
             _repository = repository;
-            _appointmentService = appointmentService;
+            //_appointmentService = appointmentService;
             _appointmentRepository = appointmentRepository;
             _context = context;
             _mapper = mapper;
@@ -179,7 +179,7 @@ namespace HealthCare.Api.Services.Implementations
                 if (availableSlots.Count != allSlots.Count)
                 {
                     // Doctor has confirmed/pending appointments that day — cancel them and proceed
-                    await _appointmentService.CancelAppointmentsByDoctorDate(id, leave.LeaveDate);
+                    await _appointmentRepository.CancelAppointmentsByDoctorDate(id, leave.LeaveDate);
                     result.CreatedWithCancelledAppointments.Add(leave.LeaveDate);
                 }
 
