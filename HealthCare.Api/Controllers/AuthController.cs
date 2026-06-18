@@ -5,6 +5,7 @@ using HealthCare.Api.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace HealthCare.Api.Controllers
 {
@@ -42,5 +43,20 @@ namespace HealthCare.Api.Controllers
             var response = await _authService.LoginAsync(dto);
             return Ok(response);
         }
+
+        [HttpPost("change-password")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> ChangePassword(ChangePasswordDto dto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            await _authService.ChangePasswordAsync(userId!, dto);
+
+            return Ok("Password changed successfully");
+        }
+
     }
 }

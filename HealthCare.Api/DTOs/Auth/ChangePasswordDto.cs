@@ -9,6 +9,5 @@ namespace HealthCare.Api.DTOs.Auth
 
         [Required]
         public string NewPassword { get; set; } = string.Empty;
-]
     }
 }

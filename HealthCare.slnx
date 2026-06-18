@@ -1,3 +1,4 @@
 <Solution>
+  <Project Path="HealthCare.Api.Tests/HealthCare.Api.Tests.csproj" Id="08329ace-43de-4a62-816e-027111dd1971" />
   <Project Path="HealthCare.Api/HealthCare.Api.csproj" />
 </Solution>
