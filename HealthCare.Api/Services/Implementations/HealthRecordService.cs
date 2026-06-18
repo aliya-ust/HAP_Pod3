@@ -5,6 +5,7 @@ using HealthCare.Api.DTOs.HealthRecord;
 using HealthCare.Api.Models;
 using HealthCare.Api.Repositories.Interfaces;
 using HealthCare.Api.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
 namespace HealthCare.Api.Services.Implementations
@@ -25,7 +26,11 @@ namespace HealthCare.Api.Services.Implementations
         public async Task<HealthRecordListDto?> GetByIdAsync(int id)
         {
             var record = await _repository.GetByIdAsync(id);
-            return record is null ? null : _mapper.Map<HealthRecordListDto>(record);
+
+            if (record is null)
+                throw new InvalidOperationException("Health Record not found.");
+
+            return _mapper.Map<HealthRecordListDto>(record);
         }
 
         public async Task<PagedResult<HealthRecordListDto>> GetAllAsync(HealthRecordFilter filter)
@@ -73,16 +78,31 @@ namespace HealthCare.Api.Services.Implementations
         public async Task UpdateAsync(int id, UpdateHealthRecordDto dto)
         {
             var record = await _repository.GetByIdAsync(id);
-            if (record is null) return;
-            _mapper.Map(dto, record);
+
+            if (record is null) 
+                throw new InvalidOperationException("Health record not found.");
+
+            _mapper.Map(dto, record); // maps onto the tracked entity — EF picks up the changes
             await _repository.UpdateAsync(record);
             await _context.SaveChangesAsync();
         }
 
         public async Task DeleteAsync(int id)
         {
-            await _repository.DeleteAsync(id);
-            await _context.SaveChangesAsync();
+            var record = await _repository.GetByIdAsync(id);
+
+            if (record is null)
+                throw new InvalidOperationException("Health record not found.");
+
+            try
+            {
+                await _repository.DeleteAsync(id);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+                throw new InvalidOperationException("Failed to delete health record.", ex);
+            }
         }
 
         public async Task<List<HealthRecordListDto>> GetHealthRecordByPatient(int id)
