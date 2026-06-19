@@ -68,9 +68,10 @@ namespace HealthCare.Api.Services.Implementations
             };
         }
 
-        public async Task AddAsync(CreateHealthRecordDto dto)
+        public async Task AddAsync(int doctorId, CreateHealthRecordDto dto)
         {
             var record = _mapper.Map<HealthRecord>(dto);
+            record.DoctorId = doctorId;
             await _repository.AddAsync(record);
             await _context.SaveChangesAsync();
         }

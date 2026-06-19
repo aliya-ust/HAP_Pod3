@@ -210,6 +210,13 @@ namespace HealthCare.Api.Tests
                 CurrentPassword = "old",
                 NewPassword = "new"
             });
+
+
+            _userManagerMock.Verify(u => u.FindByIdAsync("1"), Times.Once);
+
+            _userManagerMock.Verify(u =>
+                u.ChangePasswordAsync(user, "old", "new"), Times.Once);
+
         }
 
         //  ChangePassword - failure

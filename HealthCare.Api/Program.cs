@@ -114,8 +114,10 @@ using (var scope = app.Services.CreateScope())
     var services = scope.ServiceProvider;
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
     var userManager = services.GetRequiredService<UserManager<User>>();
+    var config = services.GetRequiredService<IConfiguration>();
+
     await RoleSeeder.SeedRolesAsync(roleManager);
-    await UserSeeder.SeedAdminAsync(userManager, roleManager);
+    await UserSeeder.SeedAdminAsync(userManager, roleManager, config);
 }
 
 // Configure the HTTP request pipeline.

@@ -3,15 +3,15 @@ using Microsoft.AspNetCore.Identity;
 
 namespace HealthCare.Api.Data
 {
-    public class UserSeeder
+    public static class UserSeeder
     {
 
-        public static async Task SeedAdminAsync(UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
+        public static async Task SeedAdminAsync(UserManager<User> userManager, RoleManager<IdentityRole> roleManager, IConfiguration config)
         {
-            string adminEmail = "admin@healthcare.com";
-            string adminPassword = "Admin@123";
+            var adminEmail = config["SeedData:AdminEmail"];
+            var adminPassword = config["SeedData:AdminPassword"];
 
-            var existingAdmin = await userManager.FindByEmailAsync(adminEmail);
+            var existingAdmin = await userManager.FindByEmailAsync(adminEmail!);
 
             if (existingAdmin == null)
             {
@@ -22,7 +22,7 @@ namespace HealthCare.Api.Data
                     EmailConfirmed = true,
                 };
 
-                var result = await userManager.CreateAsync(admin, adminPassword);
+                var result = await userManager.CreateAsync(admin, adminPassword!);
 
                 if (result.Succeeded)
                 {
@@ -30,7 +30,7 @@ namespace HealthCare.Api.Data
                 }
                 else
                 {
-                    throw new Exception("Admin creation failed: " +
+                    throw new InvalidOperationException("Admin creation failed: " +
                         string.Join(", ", result.Errors.Select(e => e.Description)));
                 }
             }

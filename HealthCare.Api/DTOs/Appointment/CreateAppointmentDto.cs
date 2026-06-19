@@ -4,15 +4,10 @@ namespace HealthCare.Api.DTOs.Appointment
 {
     public class CreateAppointmentDto
     {
-        [Required]
-        public int PatientId { get; set; }
+        public required int DoctorId { get; set; }
 
-        [Required]
-        public int DoctorId { get; set; }
-
-        [Required]
         [FutureDateValidationAttribute]
-        public DateOnly ScheduledDate { get; set; }
+        public required DateOnly ScheduledDate { get; set; }
 
         [Required]
         [MaxLength(20)]

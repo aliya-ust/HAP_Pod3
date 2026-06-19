@@ -16,6 +16,7 @@ namespace HealthCare.Api.Services.Implementations
         private readonly IAppointmentRepository _appointmentRepository;
         private readonly HealthCareDbContext _context;
         private readonly IMapper _mapper;
+        private const string NotFoundExceptionMessage = "Doctor not found.";
 
         public DoctorService(IDoctorRepository repository, IAppointmentRepository appointmentRepository, HealthCareDbContext context, IMapper mapper)
         {
@@ -30,7 +31,7 @@ namespace HealthCare.Api.Services.Implementations
             var doctor = await _repository.GetByIdAsync(id);
 
             if (doctor is null)
-                throw new InvalidOperationException("Doctor not found.");
+                throw new InvalidOperationException(NotFoundExceptionMessage);
 
             return _mapper.Map<DoctorListDto>(doctor);
         }
@@ -91,7 +92,7 @@ namespace HealthCare.Api.Services.Implementations
             var doctor = await _repository.GetByIdAsync(id);
 
             if (doctor is null)
-                throw new InvalidOperationException("Doctor not found.");
+                throw new InvalidOperationException(NotFoundExceptionMessage);
 
             _mapper.Map(dto, doctor); // maps onto the tracked entity — EF picks up the changes
 
@@ -104,7 +105,7 @@ namespace HealthCare.Api.Services.Implementations
             var doctor = await _repository.GetByIdAsync(id);
 
             if (doctor is null)
-                throw new InvalidOperationException("Doctor not found.");
+                throw new InvalidOperationException(NotFoundExceptionMessage);
 
             doctor.IsActive = isActive;
 
@@ -117,7 +118,7 @@ namespace HealthCare.Api.Services.Implementations
             var doctor = await _repository.GetByIdAsync(id);
 
             if (doctor is null)
-                throw new InvalidOperationException("Doctor not found.");
+                throw new InvalidOperationException(NotFoundExceptionMessage);
 
             try
             {

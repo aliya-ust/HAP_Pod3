@@ -91,6 +91,7 @@ namespace HealthCare.Api.Tests
         {
             var dto = new CreateAppointmentDto
             {
+                DoctorId = 1,
                 ScheduledDate = DateOnly.FromDateTime(DateTime.Today.AddDays(-1))
             };
 

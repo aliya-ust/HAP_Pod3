@@ -8,13 +8,14 @@ namespace HealthCare.Api.Repositories.Implementations
 {
     public class AppointmentRepository : Repository<Appointment>, IAppointmentRepository
     {
+        private const string Cancelled = "Cancelled";
         public AppointmentRepository(HealthCareDbContext context) : base(context) { }
 
         public async Task<List<string>> BookedTimeSlots(DateOnly date, int doctorId) =>
             await _dbSet
                 .Where(a => a.ScheduledDate == date
                          && a.DoctorId == doctorId
-                         && a.Status != "Cancelled")
+                         && a.Status != Cancelled)
                 .Select(a => a.TimeSlot)
                 .ToListAsync();
 
@@ -24,7 +25,7 @@ namespace HealthCare.Api.Repositories.Implementations
                 a.ScheduledDate == date
                 && a.DoctorId == doctorId
                 && a.TimeSlot == timeSlot
-                && a.Status != "Cancelled");
+                && a.Status != Cancelled);
 
             return !exists;
         }
@@ -38,7 +39,7 @@ namespace HealthCare.Api.Repositories.Implementations
                     Date = g.Key,
                     PendingCount = g.Count(a => a.Status == "Pending"),
                     ConfirmedCount = g.Count(a => a.Status == "Confirmed"),
-                    CancelledCount = g.Count(a => a.Status == "Cancelled"),
+                    CancelledCount = g.Count(a => a.Status == Cancelled),
                     CompletedCount = g.Count(a => a.Status == "Completed")
                 })
                 .OrderBy(r => r.Date)
@@ -105,12 +106,12 @@ namespace HealthCare.Api.Repositories.Implementations
             var appointments = await _dbSet
                 .Where(a => a.DoctorId == doctorId
                          && a.ScheduledDate == date
-                         && a.Status != "Cancelled")
+                         && a.Status != Cancelled)
                 .ToListAsync();
 
             foreach (var appointment in appointments)
             {
-                appointment.Status = "Cancelled";
+                appointment.Status = Cancelled;
                 appointment.CancellationReason = "Doctor on leave";
             }
         }

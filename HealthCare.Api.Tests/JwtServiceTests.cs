@@ -136,7 +136,7 @@ namespace HealthCare.Api.Tests
 
             var jwt = new JwtSecurityTokenHandler().ReadJwtToken(token);
 
-            Assert.NotNull(jwt.ValidTo); // expiration exists
+            Assert.NotEqual(default, jwt.ValidTo); // expiration exists
         }
     }
 }

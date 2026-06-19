@@ -5,17 +5,14 @@ namespace HealthCare.Api.DTOs.HealthRecord
     public class CreateHealthRecordDto
     {
         [Required]
-        public int AppointmentId { get; set; }
+        public required int AppointmentId { get; set; }
 
         [Required]
-        public int PatientId { get; set; }
-
-        [Required]
-        public int DoctorId { get; set; }
+        public required int PatientId { get; set; }
 
         [Required]
         [PastOrTodayDateValidationAttribute]
-        public DateTime VisitDate { get; set; }
+        public required DateTime VisitDate { get; set; }
 
         [Required]
         [MaxLength(500)]

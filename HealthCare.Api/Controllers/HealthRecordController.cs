@@ -25,7 +25,8 @@ namespace HealthCare.Api.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            await _healthRecordService.AddAsync(dto);
+            var doctorId = GetDoctorIdFromClaims();
+            await _healthRecordService.AddAsync(doctorId, dto);
             return Ok();
         }
 
@@ -52,6 +53,14 @@ namespace HealthCare.Api.Controllers
         {
             var claim = User.FindFirst("PatientId")
                 ?? throw new InvalidOperationException("PatientId claim not found in token.");
+
+            return int.Parse(claim.Value);
+        }
+
+        private int GetDoctorIdFromClaims()
+        {
+            var claim = User.FindFirst("DoctorId")
+                ?? throw new InvalidOperationException("DoctorId claim not found in token.");
 
             return int.Parse(claim.Value);
         }

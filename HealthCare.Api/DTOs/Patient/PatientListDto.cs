@@ -1,4 +1,6 @@
-﻿namespace HealthCare.Api.DTOs.Patient
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace HealthCare.Api.DTOs.Patient
 {
     public class PatientListDto
     {
@@ -7,6 +9,6 @@
         public string Email { get; set; } = null!;
         public string PhoneNumber { get; set; } = null!;
         public string Gender { get; set; } = null!;
-        public string InsuranceId { get; set; }
+        public string InsuranceId { get; set; } = null!;
     }
 }

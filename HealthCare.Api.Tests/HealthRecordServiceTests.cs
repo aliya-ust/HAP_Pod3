@@ -95,12 +95,18 @@ namespace HealthCare.Api.Tests
         [Fact]
         public async Task AddAsync_ShouldAddRecord()
         {
-            var dto = new CreateHealthRecordDto();
+            var dto = new CreateHealthRecordDto
+            {
+                AppointmentId = 1,
+                PatientId = 1,
+                VisitDate = DateTime.Now,
+            };
             var record = new HealthRecord();
 
             _mapperMock.Setup(m => m.Map<HealthRecord>(dto)).Returns(record);
+            int doctorId = 1;
 
-            await _service.AddAsync(dto);
+            await _service.AddAsync(doctorId, dto);
 
             _repoMock.Verify(r => r.AddAsync(record), Times.Once);
         }
