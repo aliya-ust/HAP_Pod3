@@ -24,7 +24,7 @@ namespace HealthCare.Api.Mapping
             // Appointment DTO mappings
             CreateMap<CreateAppointmentDto, Appointment>();
             CreateMap<UpdateAppointmentDto, Appointment>();
-            CreateMap<AppointmentListDto, Appointment>();
+            CreateMap<Appointment, AppointmentListDto>();
 
             // Health Record DTO mappings
             CreateMap<CreateHealthRecordDto, HealthRecord>();

@@ -6,6 +6,8 @@ namespace HealthCare.Api.DTOs.Appointment
     {
         [Required]
         [MaxLength(20)]
+        [AllowedValues("Confirmed", "Cancelled",
+            ErrorMessage = "Status must be Confirmed or Cancelled")]
         public string Status { get; set; } = null!;
 
         // CancellationReason only matters when Status = Cancelled

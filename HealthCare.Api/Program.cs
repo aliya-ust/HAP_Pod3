@@ -1,5 +1,6 @@
 using HealthCare.Api.Data;
 using HealthCare.Api.Mapping;
+using HealthCare.Api.Middleware;
 using HealthCare.Api.Models;
 using HealthCare.Api.Repositories.Implementations;
 using HealthCare.Api.Repositories.Interfaces;
@@ -24,6 +25,10 @@ builder.Services.AddAutoMapper(cfg =>
 {
     cfg.AddProfile<MappingProfile>();
 });
+
+builder.Services.AddProblemDetails();
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddControllers();
 
 builder.Services.AddDbContext<HealthCareDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("HealthCareDbConnection"))
