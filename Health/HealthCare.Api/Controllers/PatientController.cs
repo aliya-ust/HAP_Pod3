@@ -30,11 +30,7 @@ namespace HealthCare.Api.Controllers
         }
 
         // Supports pagination, insurance filtering, and name search
-        // Examples:
-        // GET /api/patient?pageNumber=1&pageSize=10
-        // GET /api/patient?searchTerm=John
-        // GET /api/patient?hasInsurance=true
-        // GET /api/patient?searchTerm=John&hasInsurance=true
+
         [HttpGet]
         [AllowAnonymous]
         public async Task<IActionResult> GetAll([FromQuery] PatientFilter filter)

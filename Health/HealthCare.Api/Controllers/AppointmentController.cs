@@ -46,7 +46,16 @@ namespace HealthCare.Api.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            await _service.AddAsync(dto, dto.PatientId);
+            var patientIdClaim = User.FindFirst("PatientId")?.Value;
+
+            if (string.IsNullOrEmpty(patientIdClaim))
+            {
+                return Unauthorized();
+            }
+
+            int patientId = int.Parse(patientIdClaim);
+
+            await _service.AddAsync(dto, patientId);
 
             return Ok(new
             {

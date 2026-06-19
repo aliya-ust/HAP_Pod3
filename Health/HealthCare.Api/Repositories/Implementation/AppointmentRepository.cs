@@ -45,6 +45,19 @@ namespace HealthCare.Api.Repositories.Implementation
                 .OrderBy(r => r.Date)
                 .ToListAsync();
 
+
+        public async Task CancelAppointmentsByDoctorDate(int doctorId, DateOnly date)
+        {
+            var appointments = await _dbSet
+                .Where(a => a.DoctorId == doctorId && a.ScheduledDate == date && a.Status != "Cancelled")
+                .ToListAsync();
+
+            foreach (var appointment in appointments)
+            {
+                appointment.Status = "Cancelled";
+                appointment.CancellationReason = "Doctor on leave";
+            }
+        }
         public async Task<List<AppointmentListDto>> GetDoctorSchedule(DateOnly date, int id) =>
             await _dbSet
                 .Where(a => a.ScheduledDate == date && a.DoctorId == id)

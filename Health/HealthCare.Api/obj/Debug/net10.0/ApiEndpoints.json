@@ -233,13 +233,13 @@
   {
     "ContainingType": "HealthCare.Api.Controllers.AuthController",
     "Method": "Login",
-    "RelativePath": "api/Auth/login",
+    "RelativePath": "api/auth/login",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
-        "Name": "request",
+        "Name": "dto",
         "Type": "HealthCare.Api.DTOs.LoginDto",
         "IsRequired": true
       }
@@ -248,15 +248,31 @@
   },
   {
     "ContainingType": "HealthCare.Api.Controllers.AuthController",
-    "Method": "Register",
-    "RelativePath": "api/Auth/register",
+    "Method": "RegisterDoctor",
+    "RelativePath": "api/auth/register/doctor",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
-        "Name": "request",
-        "Type": "HealthCare.Api.DTOs.RegisterDto",
+        "Name": "dto",
+        "Type": "HealthCare.Api.DTOs.Doctor.CreateDoctorDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HealthCare.Api.Controllers.AuthController",
+    "Method": "RegisterPatient",
+    "RelativePath": "api/auth/register/patient",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "HealthCare.Api.DTOs.Patient.CreatePatientDto",
         "IsRequired": true
       }
     ],

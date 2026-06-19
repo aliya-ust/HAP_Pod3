@@ -19,6 +19,7 @@ namespace HealthCare.Api.Models
 
         [Required]
         [MaxLength(20)]
+        [AllowedValues("Pending", "Confirmed", "Cancelled", "Completed")]
         public string Status { get; set; } = "Pending";  
 
         [MaxLength(500)]

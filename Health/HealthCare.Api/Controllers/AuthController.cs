@@ -1,46 +1,62 @@
 ﻿using HealthCare.Api.DTOs;
-using HealthCare.Api.Models;
+using HealthCare.Api.DTOs.Doctor;
+using HealthCare.Api.DTOs.Patient;
 using HealthCare.Api.Services.Interfaces;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HealthCare.Api.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/auth")]
     [ApiController]
-    public class AuthController(IAuthService authService) : ControllerBase
+    public class AuthController : ControllerBase
     {
-        [HttpPost("register")]
-        public async Task<IActionResult> Register(RegisterDto request)
-        {
-            var (success, message, userId) = await authService.Register(request);
+        private readonly IAuthService _authService;
 
-            if (!success)
-            {
-                return BadRequest(new { message });
-            }
-            return Ok(new { message, userId });
+        public AuthController(IAuthService authService)
+        {
+            _authService = authService;
         }
 
-        [HttpPost("login")]
-
-        public async Task<IActionResult> Login(LoginDto request)
+        // Register Patient
+        [HttpPost("register/patient")]
+        public async Task<IActionResult> RegisterPatient([FromBody] CreatePatientDto dto)
         {
-            var (success, message, token, expiresIn) = await authService.Login(request);
-            if(!success)
-            {
-                return Unauthorized(new { message });
-            }
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-            AuthResponse response = new AuthResponse
+            await _authService.RegisterPatientAsync(dto);
+
+            return Ok(new
             {
-                AccessToken = token,
-                Message = message,
-                ExpiresIn = expiresIn
-            };
+                message = "Patient registered successfully."
+            });
+        }
+
+        // Register Doctor
+        [HttpPost("register/doctor")]
+        public async Task<IActionResult> RegisterDoctor([FromBody] CreateDoctorDto dto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            await _authService.RegisterDoctorAsync(dto);
+
+            return Ok(new
+            {
+                message = "Doctor registered successfully."
+            });
+        }
+
+        // Login
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginDto dto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var response = await _authService.LoginAsync(dto);
 
             return Ok(response);
-
         }
     }
 }
