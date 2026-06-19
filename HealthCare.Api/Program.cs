@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
+using System.Net.Security;
 using System.Security.Claims;
 using System.Text;
 
@@ -110,8 +111,11 @@ var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
 {
+    var services = scope.ServiceProvider;
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+    var userManager = services.GetRequiredService<UserManager<User>>();
     await RoleSeeder.SeedRolesAsync(roleManager);
+    await UserSeeder.SeedAdminAsync(userManager, roleManager);
 }
 
 // Configure the HTTP request pipeline.

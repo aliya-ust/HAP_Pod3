@@ -9,6 +9,7 @@ using HealthCare.Api.Repositories.Interfaces;
 using HealthCare.Api.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using System.Data;
+using System.Numerics;
 
 namespace HealthCare.Api.Services.Implementations
 {
@@ -132,6 +133,11 @@ namespace HealthCare.Api.Services.Implementations
 
                 // Generate JWT
                 token = await _jwtService.GenerateToken(user, doctorId: doctor.DoctorId);
+            }
+            else if (role == "Admin")
+            {
+                // Generate JWT
+                token = await _jwtService.GenerateToken(user);
             }
             else
             {

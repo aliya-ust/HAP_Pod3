@@ -4,5 +4,6 @@ obj/
 
 .sonarqube/
 run-sonar.bat
+TestResults/
 
 appsettings.Development.json

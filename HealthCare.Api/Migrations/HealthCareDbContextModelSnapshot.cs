@@ -69,7 +69,7 @@ namespace HealthCare.Api.Migrations
                         .HasDatabaseName("UQ_Appointments_Doctor_Date_Slot")
                         .HasFilter("[Status] != 'Cancelled'");
 
-                    b.ToTable("Appointments");
+                    b.ToTable("Appointments", (string)null);
                 });
 
             modelBuilder.Entity("HealthCare.Api.Models.AvailableSlots", b =>
@@ -95,7 +95,7 @@ namespace HealthCare.Api.Migrations
 
                     b.HasIndex("DoctorId");
 
-                    b.ToTable("DoctorAvailableSlots");
+                    b.ToTable("DoctorAvailableSlots", (string)null);
                 });
 
             modelBuilder.Entity("HealthCare.Api.Models.Doctor", b =>
@@ -139,7 +139,7 @@ namespace HealthCare.Api.Migrations
 
                     b.HasIndex(new[] { "Specialisation" }, "IX_Doctors_Specialisation");
 
-                    b.ToTable("Doctors");
+                    b.ToTable("Doctors", (string)null);
 
                     b.HasData(
                         new
@@ -179,7 +179,7 @@ namespace HealthCare.Api.Migrations
 
                     b.HasIndex("DoctorId");
 
-                    b.ToTable("DoctorLeaves");
+                    b.ToTable("DoctorLeaves", (string)null);
                 });
 
             modelBuilder.Entity("HealthCare.Api.Models.HealthRecord", b =>
@@ -229,7 +229,7 @@ namespace HealthCare.Api.Migrations
                     b.HasIndex("PatientId", "VisitDate")
                         .HasDatabaseName("IX_HealthRecords_Patient_VisitDate");
 
-                    b.ToTable("HealthRecords");
+                    b.ToTable("HealthRecords", (string)null);
                 });
 
             modelBuilder.Entity("HealthCare.Api.Models.Patient", b =>
@@ -277,7 +277,7 @@ namespace HealthCare.Api.Migrations
                         .IsUnique()
                         .HasFilter("[UserId] IS NOT NULL");
 
-                    b.ToTable("Patients");
+                    b.ToTable("Patients", (string)null);
 
                     b.HasData(
                         new
