@@ -37,7 +37,7 @@ namespace HealthCare.Api.Controllers
 
             var patientId = GetPatientIdFromClaims();
             await _patientService.UpdateAsync(patientId, dto);
-            return Ok();
+            return Ok(new {message = "Patient profile updated successfully"});
         }
 
         private int GetPatientIdFromClaims()

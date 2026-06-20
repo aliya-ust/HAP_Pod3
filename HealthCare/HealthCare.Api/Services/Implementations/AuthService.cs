@@ -97,7 +97,7 @@ namespace HealthCare.Api.Services.Implementations
             // Find user
             var user = await _userManager.FindByEmailAsync(dto.Email);
             if (user == null)
-                throw new InvalidOperationException("Email already in use");
+                throw new InvalidOperationException("User does not exist");
 
             // Verify password
             var isValid = await _userManager.CheckPasswordAsync(user, dto.Password);

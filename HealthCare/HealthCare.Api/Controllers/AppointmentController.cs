@@ -27,7 +27,7 @@ namespace HealthCare.Api.Controllers
 
             var patientId = GetPatientIdFromClaims();
             await _appointmentService.AddAsync(dto, patientId);
-            return Ok();
+            return Ok(new {message = "Appointment booked succeessfully"});
         }
 
         [HttpPut("{id}/status")]
@@ -39,7 +39,7 @@ namespace HealthCare.Api.Controllers
                 return BadRequest(ModelState);
 
             await _appointmentService.UpdateStatusAsync(id, dto);
-            return Ok();
+            return Ok(new {message = "Appointment status updated successfully"});
         }
 
         [HttpGet("doctor/schedule")]

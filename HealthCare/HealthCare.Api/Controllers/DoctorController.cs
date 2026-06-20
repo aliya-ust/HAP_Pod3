@@ -37,7 +37,7 @@ namespace HealthCare.Api.Controllers
 
             var doctorId = GetDoctorIdFromClaims();
             await _doctorService.UpdateAsync(doctorId, dto);
-            return Ok();
+            return Ok(new {message = "Doctor profile updated successfully"});
         }
 
         [HttpGet("available")]
@@ -59,7 +59,7 @@ namespace HealthCare.Api.Controllers
 
             var doctorId = GetDoctorIdFromClaims();
             var result = await _doctorService.CreateLeave(doctorId, leaves);
-            return Ok(result);
+            return Ok(new {message = "Leaves added successfully"});
         }
 
         private int GetDoctorIdFromClaims()

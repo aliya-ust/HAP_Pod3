@@ -27,7 +27,7 @@ namespace HealthCare.Api.Controllers
 
             var doctorId = GetDoctorIdFromClaims();
             await _healthRecordService.AddAsync(doctorId, dto);
-            return Ok();
+            return Ok(new {message = "HealthRecord created successfully"});
         }
 
         [HttpGet("by-appointment/{id}")]

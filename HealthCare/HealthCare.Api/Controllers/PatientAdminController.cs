@@ -51,7 +51,7 @@ namespace HealthCare.Api.Controllers
                 return BadRequest(ModelState);
 
             await _patientService.UpdateAsync(id, dto);
-            return Ok();
+            return Ok(new {message = "Patient updated successfully"});
         }
 
         [HttpPatch("{id}/status")]
@@ -60,7 +60,7 @@ namespace HealthCare.Api.Controllers
         public async Task<IActionResult> UpdatePatientStatus(int id, [FromBody] bool isActive)
         {
             await _patientService.UpdateStatusAsync(id, isActive);
-            return Ok();
+            return Ok(new { message = "Patient status updated successfully" });
         }
 
         [HttpDelete("{id}")]
@@ -69,7 +69,7 @@ namespace HealthCare.Api.Controllers
         public async Task<IActionResult> DeletePatient(int id)
         {
             await _patientService.DeleteAsync(id);
-            return Ok();
+            return Ok(new { message = "Patient deleted successfully" });
         }
 
         [HttpPost("register/patient")]
@@ -78,7 +78,7 @@ namespace HealthCare.Api.Controllers
         public async Task<IActionResult> RegisterPatient(CreatePatientDto dto)
         {
             await _authService.RegisterPatientAsync(dto);
-            return Ok("Registration successful");
+            return Ok(new { message = "Registration successful" });
         }
     }
 }

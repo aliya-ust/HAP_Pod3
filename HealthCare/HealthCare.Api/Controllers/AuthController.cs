@@ -34,7 +34,7 @@ namespace HealthCare.Api.Controllers
         public async Task<IActionResult> RegisterDoctor(CreateDoctorDto dto)
         {
             await _authService.RegisterDoctorAsync(dto);
-            return Ok("Registration successful");
+            return Ok(new { message = "Registration successful" });
         }
 
         [HttpPost("login")]

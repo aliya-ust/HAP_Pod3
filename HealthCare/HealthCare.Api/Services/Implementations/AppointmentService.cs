@@ -117,14 +117,33 @@ namespace HealthCare.Api.Services.Implementations
             var appointment = await _repository.GetByIdAsync(id);
 
             if (appointment is null)
-                throw new InvalidOperationException("Patient not found.");
+                throw new InvalidOperationException("Appointment not found.");
 
+            // VALID STATUS LIST
+            var validStatuses = new[] { "Pending", "Confirmed", "Cancelled", "Completed" };
+
+            // CHECK INVALID STATUS
+            if (!validStatuses.Contains(dto.Status, StringComparer.OrdinalIgnoreCase))
+            {
+                throw new InvalidOperationException("Invalid status value");
+            }
+
+            // BUSINESS RULE: Cancellation needs reason
+            if (dto.Status == "Cancelled" && string.IsNullOrWhiteSpace(dto.CancellationReason))
+            {
+                throw new InvalidOperationException("Cancellation reason is required when status is Cancelled");
+            }
+
+            // CLEAN ASSIGNMENT
             appointment.Status = dto.Status;
-            appointment.CancellationReason = dto.CancellationReason;
+            appointment.CancellationReason = dto.Status == "Cancelled"
+                ? dto.CancellationReason
+                : null;
 
             await _repository.UpdateAsync(appointment);
             await _context.SaveChangesAsync();
         }
+
 
         public async Task DeleteAsync(int id)
         {
