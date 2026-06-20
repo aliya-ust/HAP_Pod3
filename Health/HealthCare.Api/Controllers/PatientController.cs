@@ -6,73 +6,47 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace HealthCare.Api.Controllers
 {
-    [Route("api/patient")]
     [ApiController]
+    [Route("api/patient")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Patient")]
     public class PatientController : ControllerBase
     {
-        private readonly IPatientService _service;
+        private readonly IPatientService _patientService;
 
-        public PatientController(IPatientService service)
+        public PatientController(IPatientService patientService)
         {
-            _service = service;
+            _patientService = patientService;
         }
 
-        [HttpGet("{id:int}")]
-        [AllowAnonymous]
-        public async Task<IActionResult> GetById(int id)
+        // Get PatientId from JWT claims
+        private int GetPatientIdFromClaims()
         {
-            var result = await _service.GetByIdAsync(id);
+            var claim = User.FindFirst("PatientId")
+                ?? throw new InvalidOperationException("PatientId claim not found in token.");
 
-            if (result == null)
-                return NotFound();
+            return int.Parse(claim.Value);
+        }
+
+        // Patient - Get own profile
+        [HttpGet("profile")]
+        public async Task<IActionResult> GetProfile()
+        {
+            var patientId = GetPatientIdFromClaims();
+
+            var result = await _patientService.GetByIdAsync(patientId);
 
             return Ok(result);
         }
 
-        // Supports pagination, insurance filtering, and name search
-
-        [HttpGet]
-        [AllowAnonymous]
-        public async Task<IActionResult> GetAll([FromQuery] PatientFilter filter)
+        // Patient - Update own profile
+        [HttpPut("profile")]
+        public async Task<IActionResult> UpdateProfile(UpdatePatientDto dto)
         {
-            var result = await _service.GetAllAsync(filter);
-            return Ok(result);
-        }
+            var patientId = GetPatientIdFromClaims();
 
-        [HttpPost]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin,Patient")]
-        public async Task<IActionResult> Create([FromBody] CreatePatientDto dto)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            await _patientService.UpdateAsync(patientId, dto);
 
-            await _service.AddAsync(dto);
-
-            return Ok(new
-            {
-                message = "Patient created successfully."
-            });
-        }
-
-        [HttpPut("{id:int}")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin,Patient")]
-        public async Task<IActionResult> Update(int id, [FromBody] UpdatePatientDto dto)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            await _service.UpdateAsync(id, dto);
-
-            return NoContent();
-        }
-
-        [HttpDelete("{id:int}")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
-        public async Task<IActionResult> Delete(int id)
-        {
-            await _service.DeleteAsync(id);
-
-            return NoContent();
+            return Ok(new { message = "Profile updated successfully." });
         }
     }
 }

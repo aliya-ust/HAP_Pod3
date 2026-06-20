@@ -6,6 +6,8 @@ using HealthCare.Api.Exceptions;
 using HealthCare.Api.Models;
 using HealthCare.Api.Repositories.Interfaces;
 using HealthCare.Api.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
+
 //using HealthCare.Api.DTOs.Authentication;
 using System.Linq.Expressions;
 
@@ -17,6 +19,7 @@ namespace HealthCare.Api.Services.Implementations
         private readonly IAppointmentRepository _appointmentRepository;
         private readonly HealthCareDbContext _context;
         private readonly IMapper _mapper;
+        private const string NotFoundExceptionMessage = "Doctor not found.";
 
         public DoctorService(IDoctorRepository repository, HealthCareDbContext context, IMapper mapper, IAppointmentRepository appointmentRepository)
         {
@@ -30,15 +33,30 @@ namespace HealthCare.Api.Services.Implementations
         {
             var doctor = _mapper.Map<Doctor>(dto);
             await _repository.AddAsync(doctor);
+            await _repository.CreateSlots(doctor.DoctorId, dto.TimeSlot);
             await _context.SaveChangesAsync();
         }
 
         public async Task UpdateAsync(int id, UpdateDoctorDto dto)
         {
             var doctor = await _repository.GetByIdAsync(id);
-            if (doctor == null)
-                throw new DoctorNotFoundException(id);
+            if (doctor is null)
+                throw new InvalidOperationException(NotFoundExceptionMessage);
+
             _mapper.Map(dto, doctor);
+
+            await _repository.UpdateAsync(doctor);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task UpdateStatusAsync(int id, bool isActive)
+        {
+            var doctor = await _repository.GetByIdAsync(id);
+
+            if (doctor is null)
+                throw new InvalidOperationException(NotFoundExceptionMessage);
+
+            doctor.IsActive = isActive;
 
             await _repository.UpdateAsync(doctor);
             await _context.SaveChangesAsync();
@@ -47,16 +65,28 @@ namespace HealthCare.Api.Services.Implementations
         public async Task DeleteAsync(int id)
         {
             var doctor = await _repository.GetByIdAsync(id);
-            if (doctor == null)
-                throw new DoctorNotFoundException(id);
-            await _repository.DeleteAsync(id);
-            await _context.SaveChangesAsync();
+
+            if (doctor is null)
+                throw new InvalidOperationException(NotFoundExceptionMessage);
+
+            try
+            {
+                await _repository.DeleteAsync(id);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+                throw new InvalidOperationException("Failed to delete Doctor. It may be referenced by existing appointments or health records.", ex);
+            }
         }
 
         public async Task<DoctorListDto?> GetByIdAsync(int id)
         {
             var doctor = await _repository.GetByIdAsync(id);
-            return doctor == null ? null : _mapper.Map<DoctorListDto?>(doctor);
+            if (doctor is null)
+                throw new InvalidOperationException(NotFoundExceptionMessage);
+
+            return _mapper.Map<DoctorListDto?>(doctor);
         }
 
         public async Task<PagedResult<DoctorListDto>> GetAllAsync(DoctorFilter filter)
@@ -98,19 +128,6 @@ namespace HealthCare.Api.Services.Implementations
                 PageSize = pagedResult.PageSize,
                 TotalCount = pagedResult.TotalCount
             };
-        }
-
-        public async Task UpdateStatusAsync(int id, bool isActive)
-        {
-            var doctor = await _repository.GetByIdAsync(id);
-
-            if (doctor is null)
-                throw new InvalidOperationException("Doctor not found.");
-
-            doctor.IsActive = isActive;
-
-            await _repository.UpdateAsync(doctor);
-            await _context.SaveChangesAsync();
         }
 
         public async Task<List<string>> GetSlots(int doctorId)

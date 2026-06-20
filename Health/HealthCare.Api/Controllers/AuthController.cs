@@ -2,6 +2,8 @@
 using HealthCare.Api.DTOs.Doctor;
 using HealthCare.Api.DTOs.Patient;
 using HealthCare.Api.Services.Interfaces;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HealthCare.Api.Controllers
@@ -34,6 +36,7 @@ namespace HealthCare.Api.Controllers
 
         // Register Doctor
         [HttpPost("register/doctor")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
         public async Task<IActionResult> RegisterDoctor([FromBody] CreateDoctorDto dto)
         {
             if (!ModelState.IsValid)
@@ -57,6 +60,20 @@ namespace HealthCare.Api.Controllers
             var response = await _authService.LoginAsync(dto);
 
             return Ok(response);
+        }
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpPost("change-password")]
+        public async Task<IActionResult> ChangePassword(ChangePasswordDto dto)
+        {
+            var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized();
+
+            await _authService.ChangePasswordAsync(userId, dto);
+
+            return Ok(new { message = "Password changed successfully." });
         }
     }
 }

@@ -1,97 +1,79 @@
 ﻿using HealthCare.Api.DTOs.Doctor;
+using HealthCare.Api.Repositories.Interfaces;
 using HealthCare.Api.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace HealthCare.Api.Controllers
 {
-    [Route("api/doctor")]
     [ApiController]
+    [Route("api/[controller]")]
     public class DoctorController : ControllerBase
     {
-        private readonly IDoctorService _service;
+        private readonly IDoctorService _doctorService;
 
-        public DoctorController(IDoctorService service)
+        public DoctorController(IDoctorService doctorService)
         {
-            _service = service;
+            _doctorService = doctorService;
         }
 
-        [HttpGet("{id:int}")]
-        [AllowAnonymous]
-        public async Task<IActionResult> GetById(int id)
+        private int GetDoctorIdFromClaims()
         {
-            var result = await _service.GetByIdAsync(id);
+            var claim = User.FindFirst("DoctorId")
+                ?? throw new InvalidOperationException("DoctorId claim not found in token.");
 
-            if (result == null)
-                return NotFound();
-
-            return Ok(result);
+            return int.Parse(claim.Value);
         }
 
-        [HttpGet]
-        [AllowAnonymous]
-        public async Task<IActionResult> GetAll([FromQuery] DoctorFilter filter)
+        // View own profile
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Doctor")]
+        [HttpGet("profile")]
+        public async Task<IActionResult> GetProfile()
         {
-            var result = await _service.GetAllAsync(filter);
-            return Ok(result);
+            var doctorId = GetDoctorIdFromClaims();
+            var doctor = await _doctorService.GetByIdAsync(doctorId);
+            return Ok(doctor);
         }
 
-        [HttpGet("{doctorId:int}/slots")]
-        [AllowAnonymous]
-        public async Task<IActionResult> GetSlots(int doctorId)
+        // Edit own profile
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Doctor")]
+        [HttpPut("profile")]
+        public async Task<IActionResult> UpdateProfile(UpdateDoctorDto dto)
         {
-            try
-            {
-                var result = await _service.GetSlots(doctorId);
-                return Ok(result);
-            }
-            catch (InvalidOperationException ex)
-            {
-                return NotFound(new { message = ex.Message });
-            }
-        }
+            var doctorId = GetDoctorIdFromClaims();
 
-        [HttpPost]
-        [Authorize(
-            AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,
-            Roles = "Admin")]
-        public async Task<IActionResult> Create([FromBody] CreateDoctorDto dto)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            await _service.AddAsync(dto);
+            await _doctorService.UpdateAsync(doctorId, dto);
 
             return Ok(new
             {
-                message = "Doctor created successfully."
+                Message = "Profile updated successfully."
             });
         }
 
-        [HttpPut("{id:int}")]
-        [Authorize(
-            AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,
-            Roles = "Admin,Doctor")]
-        public async Task<IActionResult> Update(int id, [FromBody] UpdateDoctorDto dto)
+        // Add doctor leaves
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Doctor")]
+        [HttpPost("leave")]
+        public async Task<IActionResult> CreateLeave([FromBody] List<CreateLeaveDto> leaves)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            var doctorId = GetDoctorIdFromClaims();
 
-            await _service.UpdateAsync(id, dto);
+            var result = await _doctorService.CreateLeave(doctorId, leaves);
 
-            return NoContent();
+            return Ok(result);
         }
 
-        [HttpDelete("{id:int}")]
-        [Authorize(
-            AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,
-            Roles = "Admin")]
-        public async Task<IActionResult> Delete(int id)
+        // Get available doctors (for patients)
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Patient")]
+        [HttpGet("available")]
+        public async Task<IActionResult> GetAvailableDoctors(
+            [FromQuery] string specialisation,
+            [FromQuery] DateOnly date)
         {
-            await _service.DeleteAsync(id);
+            var doctors = await _doctorService.AvailableDoctors(specialisation, date);
 
-            return NoContent();
+            return Ok(doctors);
         }
     }
 }

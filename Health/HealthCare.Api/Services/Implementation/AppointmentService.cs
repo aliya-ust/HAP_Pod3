@@ -97,16 +97,44 @@ namespace HealthCare.Api.Services.Implementations
         public async Task UpdateAsync(int id, UpdateAppointmentDto dto)
         {
             var appointment = await _repository.GetByIdAsync(id);
-            if (appointment is null) return;
+
+            if (appointment is null)
+                throw new InvalidOperationException("Appointment not found.");
+
             _mapper.Map(dto, appointment);
+            await _repository.UpdateAsync(appointment);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task UpdateStatusAsync(int id, UpdateAppointmentDto dto)
+        {
+            var appointment = await _repository.GetByIdAsync(id);
+
+            if (appointment is null)
+                throw new InvalidOperationException("Patient not found.");
+
+            appointment.Status = dto.Status;
+            appointment.CancellationReason = dto.CancellationReason;
+
             await _repository.UpdateAsync(appointment);
             await _context.SaveChangesAsync();
         }
 
         public async Task DeleteAsync(int id)
         {
-            await _repository.DeleteAsync(id);
-            await _context.SaveChangesAsync();
+            var appointment = await _repository.GetByIdAsync(id);
+
+            if (appointment is null)
+                throw new InvalidOperationException("Appointment not found.");
+            try
+            {
+                await _repository.DeleteAsync(id);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+                throw new InvalidOperationException("Failed to delete appointment. It may be referenced by existing health records.", ex);
+            }
         }
 
         public async Task<List<string>> AvailableTimeSlots(DateOnly date, int doctorId)
