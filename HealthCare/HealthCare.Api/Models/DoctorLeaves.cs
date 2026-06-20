@@ -16,7 +16,7 @@ namespace HealthCare.Api.Models
         [MaxLength(500)]
         public string? Reason { get; set; }
 
-        public DateTimeOffset CreatedDate { get; set; } 
+        public DateTimeOffset CreatedDate { get; set; } = DateTimeOffset.UtcNow;
 
         [ForeignKey(nameof(DoctorId))]
         public Doctor Doctor { get; set; } = null!;

@@ -1,10 +1,9 @@
-﻿using AutoMapper;
-using HealthCare.Api.DTOs.Appointment;
+﻿using HealthCare.Api.Models;
 using HealthCare.Api.DTOs.Doctor;
-using HealthCare.Api.DTOs.HealthRecord;
+using AutoMapper;
 using HealthCare.Api.DTOs.Patient;
-using HealthCare.Api.Models;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+using HealthCare.Api.DTOs.Appointment;
+using HealthCare.Api.DTOs.HealthRecord;
 
 namespace HealthCare.Api.Mapping
 {
@@ -15,12 +14,12 @@ namespace HealthCare.Api.Mapping
             // Patient DTO mappings
             CreateMap<CreatePatientDto, Patient>();
             CreateMap<UpdatePatientDto, Patient>();
-            CreateMap<PatientListDto, Patient>();
+            CreateMap<Patient, PatientListDto>();
 
             // Doctor DTO mappings
             CreateMap<CreateDoctorDto, Doctor>();
             CreateMap<UpdateDoctorDto, Doctor>();
-            CreateMap<DoctorListDto, Doctor>();
+            CreateMap<Doctor, DoctorListDto>();
 
             // Appointment DTO mappings
             CreateMap<CreateAppointmentDto, Appointment>();

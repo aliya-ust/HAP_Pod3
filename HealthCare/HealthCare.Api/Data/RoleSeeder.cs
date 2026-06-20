@@ -4,7 +4,7 @@ namespace HealthCare.Api.Data
 {
     public static class RoleSeeder
     {
-        public static async Task SeedRoleAsync(RoleManager<IdentityRole> roleManager)
+        public static async Task SeedRolesAsync(RoleManager<IdentityRole> roleManager)
         {
             string[] roles = { "Admin", "Patient", "Doctor" };
             foreach (var role in roles)

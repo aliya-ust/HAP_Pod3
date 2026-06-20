@@ -28,7 +28,7 @@ namespace HealthCare.Api.Models
         [MaxLength(500)]
         public string? CancellationReason { get; set; }
 
-        public DateTimeOffset CreatedDate { get; set; } 
+        public DateTimeOffset CreatedDate { get; set; } = DateTimeOffset.UtcNow;
 
         // Navigation
         [ForeignKey(nameof(PatientId))]

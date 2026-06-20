@@ -1,0 +1,1 @@
+yRbC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Api.Test\HealthCare.Api.Test.csproj¢net10.0òCSharp14

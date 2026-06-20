@@ -26,7 +26,7 @@ namespace HealthCare.Api.Models
         [MaxLength(1000)]
         public string? Notes { get; set; }
 
-        public DateTimeOffset CreatedDate { get; set; } 
+        public DateTimeOffset CreatedDate { get; set; } = DateTimeOffset.UtcNow;
 
         // Navigation
         [ForeignKey(nameof(AppointmentId))]

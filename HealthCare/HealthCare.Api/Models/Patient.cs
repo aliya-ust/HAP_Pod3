@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace HealthCare.Api.Models
@@ -9,7 +10,7 @@ namespace HealthCare.Api.Models
         [Key]
         public int PatientId { get; set; }
 
-        public int UserId { get; set; }
+        public string? UserId { get; set; }
 
         [Required]
         [MaxLength(100)]
@@ -32,11 +33,11 @@ namespace HealthCare.Api.Models
 
         public bool IsActive { get; set; } = true;
 
-        public DateTimeOffset CreatedDate { get; set; } 
+        public DateTimeOffset CreatedDate { get; set; }
 
         // Navigation
         [ForeignKey(nameof(UserId))]
-        public User? User { get; set; }
+        public IdentityUser? User { get; set; }
 
         public ICollection<Appointment> Appointments { get; set; } = [];
         public ICollection<HealthRecord> HealthRecords { get; set; } = [];

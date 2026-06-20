@@ -70,18 +70,6 @@ namespace HealthCare.Api.Migrations
                         .HasFilter("[Status] != 'Cancelled'");
 
                     b.ToTable("Appointments");
-
-                    b.HasData(
-                        new
-                        {
-                            AppointmentId = 1,
-                            CreatedDate = new DateTimeOffset(new DateTime(2024, 1, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
-                            DoctorId = 1,
-                            PatientId = 1,
-                            ScheduledDate = new DateOnly(2026, 6, 20),
-                            Status = "Scheduled",
-                            TimeSlot = "10:00 AM"
-                        });
                 });
 
             modelBuilder.Entity("HealthCare.Api.Models.AvailableSlots", b =>
@@ -107,23 +95,7 @@ namespace HealthCare.Api.Migrations
 
                     b.HasIndex("DoctorId");
 
-                    b.ToTable("DoctorAvailableSlots");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            CreatedDate = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
-                            DoctorId = 1,
-                            TimeSlot = "10:00 AM"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            CreatedDate = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
-                            DoctorId = 1,
-                            TimeSlot = "11:00 AM"
-                        });
+                    b.ToTable("AvailableSlots");
                 });
 
             modelBuilder.Entity("HealthCare.Api.Models.Doctor", b =>
@@ -153,8 +125,8 @@ namespace HealthCare.Api.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("YearsOfExperience")
                         .HasColumnType("int");
@@ -162,24 +134,12 @@ namespace HealthCare.Api.Migrations
                     b.HasKey("DoctorId");
 
                     b.HasIndex("UserId")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[UserId] IS NOT NULL");
 
                     b.HasIndex(new[] { "Specialisation" }, "IX_Doctors_Specialisation");
 
                     b.ToTable("Doctors");
-
-                    b.HasData(
-                        new
-                        {
-                            DoctorId = 1,
-                            ConsultationFee = 800m,
-                            CreatedDate = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
-                            FullName = "Dr. Anil Mehta",
-                            IsActive = true,
-                            Specialisation = "Cardiology",
-                            UserId = 1,
-                            YearsOfExperience = 12
-                        });
                 });
 
             modelBuilder.Entity("HealthCare.Api.Models.DoctorLeaves", b =>
@@ -208,16 +168,6 @@ namespace HealthCare.Api.Migrations
                     b.HasIndex("DoctorId");
 
                     b.ToTable("DoctorLeaves");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            CreatedDate = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
-                            DoctorId = 1,
-                            LeaveDate = new DateOnly(2026, 6, 25),
-                            Reason = "Personal Leave"
-                        });
                 });
 
             modelBuilder.Entity("HealthCare.Api.Models.HealthRecord", b =>
@@ -268,20 +218,6 @@ namespace HealthCare.Api.Migrations
                         .HasDatabaseName("IX_HealthRecords_Patient_VisitDate");
 
                     b.ToTable("HealthRecords");
-
-                    b.HasData(
-                        new
-                        {
-                            RecordId = 1,
-                            AppointmentId = 1,
-                            CreatedDate = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
-                            Diagnosis = "Common Cold",
-                            DoctorId = 1,
-                            Notes = "Drink warm fluids",
-                            PatientId = 1,
-                            Prescription = "Paracetamol 500mg",
-                            VisitDate = new DateTime(2026, 6, 20, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        });
                 });
 
             modelBuilder.Entity("HealthCare.Api.Models.Patient", b =>
@@ -320,87 +256,16 @@ namespace HealthCare.Api.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("PatientId");
 
                     b.HasIndex("UserId")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[UserId] IS NOT NULL");
 
                     b.ToTable("Patients");
-
-                    b.HasData(
-                        new
-                        {
-                            PatientId = 1,
-                            CreatedDate = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
-                            DateOfBirth = new DateOnly(1990, 5, 12),
-                            FullName = "Arjun Raj",
-                            Gender = "Male",
-                            IsActive = true,
-                            PhoneNumber = "9876543210",
-                            UserId = 2
-                        });
-                });
-
-            modelBuilder.Entity("HealthCare.Api.Models.User", b =>
-                {
-                    b.Property<int>("UserId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserId"));
-
-                    b.Property<DateTimeOffset>("CreatedDate")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
-
-                    b.Property<string>("PasswordHash")
-                        .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("RefreshToken")
-                        .HasMaxLength(512)
-                        .HasColumnType("nvarchar(512)");
-
-                    b.Property<DateTime?>("RefreshTokenExpiry")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Role")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.HasKey("UserId");
-
-                    b.HasIndex("Email")
-                        .IsUnique();
-
-                    b.ToTable("AppUsers");
-
-                    b.HasData(
-                        new
-                        {
-                            UserId = 1,
-                            CreatedDate = new DateTimeOffset(new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
-                            Email = "doctor1@test.com",
-                            PasswordHash = "$2a$12$3QNBAyYA6NKZfqyX9v14Eexx1qywJJPm1rXPK8ow/fWq6jpnk.1FS",
-                            Role = "Doctor"
-                        },
-                        new
-                        {
-                            UserId = 2,
-                            CreatedDate = new DateTimeOffset(new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
-                            Email = "patient1@test.com",
-                            PasswordHash = "$2a$12$3QNBAyYA6NKZfqyX9v14Eexx1qywJJPm1rXPK8ow/fWq6jpnk.1FS",
-                            Role = "Patient"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -467,6 +332,11 @@ namespace HealthCare.Api.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasMaxLength(13)
+                        .HasColumnType("nvarchar(13)");
+
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -518,6 +388,10 @@ namespace HealthCare.Api.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("IdentityUser");
+
+                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -601,6 +475,13 @@ namespace HealthCare.Api.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("HealthCare.Api.Models.User", b =>
+                {
+                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
+
+                    b.HasDiscriminator().HasValue("User");
+                });
+
             modelBuilder.Entity("HealthCare.Api.Models.Appointment", b =>
                 {
                     b.HasOne("HealthCare.Api.Models.Doctor", "Doctor")
@@ -634,10 +515,9 @@ namespace HealthCare.Api.Migrations
             modelBuilder.Entity("HealthCare.Api.Models.Doctor", b =>
                 {
                     b.HasOne("HealthCare.Api.Models.User", "User")
-                        .WithOne("Doctor")
+                        .WithOne()
                         .HasForeignKey("HealthCare.Api.Models.Doctor", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("User");
                 });
@@ -683,10 +563,9 @@ namespace HealthCare.Api.Migrations
             modelBuilder.Entity("HealthCare.Api.Models.Patient", b =>
                 {
                     b.HasOne("HealthCare.Api.Models.User", "User")
-                        .WithOne("Patient")
+                        .WithOne()
                         .HasForeignKey("HealthCare.Api.Models.Patient", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("User");
                 });
@@ -763,13 +642,6 @@ namespace HealthCare.Api.Migrations
                     b.Navigation("Appointments");
 
                     b.Navigation("HealthRecords");
-                });
-
-            modelBuilder.Entity("HealthCare.Api.Models.User", b =>
-                {
-                    b.Navigation("Doctor");
-
-                    b.Navigation("Patient");
                 });
 #pragma warning restore 612, 618
         }
