@@ -9,7 +9,6 @@ namespace HealthCare.Api.Repositories.Implementations
 {
     public class DoctorRepository : Repository<Doctor>, IDoctorRepository
     {
-        //public readonly HealthCareDbContext _context;
         public DoctorRepository(HealthCareDbContext context) : base(context) { }
 
         public async Task<Doctor?> GetByUserIdAsync(string userId)
@@ -18,17 +17,17 @@ namespace HealthCare.Api.Repositories.Implementations
                 .FirstOrDefaultAsync(p => p.UserId == userId);
         }
 
-        public async Task CreateSlots(int doctorId, List<string> timeslots)
+        public async Task CreateSlots(int doctorId, List<string> timeSlots)
         {
             Console.WriteLine($"doctorId = {doctorId}");
-            Console.WriteLine($"timeslots.Count = {timeslots.Count}");
+            Console.WriteLine($"timeslots.Count = {timeSlots.Count}");
 
-            foreach (var slot in timeslots)
+            foreach (var slot in timeSlots)
             {
                 Console.WriteLine(slot);
             }
 
-            var slots = timeslots.Select(t => new AvailableSlots
+            var slots = timeSlots.Select(t => new AvailableSlots
             {
                 DoctorId = doctorId,
                 TimeSlot = t

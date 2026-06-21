@@ -7,8 +7,6 @@ using HealthCare.Api.Models;
 using HealthCare.Api.Repositories.Interfaces;
 using HealthCare.Api.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
-
-//using HealthCare.Api.DTOs.Authentication;
 using System.Linq.Expressions;
 
 namespace HealthCare.Api.Services.Implementations

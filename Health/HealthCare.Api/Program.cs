@@ -17,7 +17,6 @@ using Microsoft.IdentityModel.Tokens.Experimental;
 using Microsoft.OpenApi;
 using System.Text;
 using System.Text.Json;
-//using AutoMapper.Extensions.Microsoft.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 

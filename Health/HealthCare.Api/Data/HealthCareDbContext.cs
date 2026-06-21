@@ -82,12 +82,7 @@ namespace HealthCare.Api.Data
                 .WithMany(d => d.HealthRecords)
                 .HasForeignKey(hr => hr.DoctorId)
                 .OnDelete(DeleteBehavior.Restrict);
-
-       
-            //SeedData(modelBuilder);
-        }
-
-        
+        }        
       
     }
 }

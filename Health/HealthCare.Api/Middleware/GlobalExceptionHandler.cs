@@ -6,7 +6,7 @@ namespace HealthCare.Api.Middleware
 {
     public class GlobalExceptionHandler : IExceptionHandler
     {
-        private ILogger<GlobalExceptionHandler> _logger;
+        private readonly ILogger<GlobalExceptionHandler> _logger;
 
         public GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger)
         {

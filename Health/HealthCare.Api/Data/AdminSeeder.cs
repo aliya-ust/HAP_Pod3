@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace HealthCare.Api.Data
 {
-    public class AdminSeeder
+    public static class AdminSeeder
     {
 
         public static async Task SeedAdminAsync(UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
