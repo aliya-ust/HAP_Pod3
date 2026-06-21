@@ -24,6 +24,8 @@ namespace HealthCare.Api.Middleware
                 AppointmentNotFoundException => (StatusCodes.Status404NotFound, exception.Message),
                 HealthRecordNotFoundException => (StatusCodes.Status404NotFound, exception.Message),
 
+                InvalidOperationException => (StatusCodes.Status404NotFound, exception.Message),
+
                 //InvalidDataException => (StatusCodes.Status400BadRequest, exception.Message),
 
                 _ => (StatusCodes.Status500InternalServerError, "Internal server error")

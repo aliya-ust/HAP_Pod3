@@ -9,12 +9,12 @@ namespace HealthCare.Api.Data
     {
         public HealthCareDbContext(DbContextOptions<HealthCareDbContext> options) : base(options) { }
 
-        public new DbSet<User> Users => Set<User>();
+        public DbSet<User> Users => Set<User>();
         public DbSet<Patient> Patients => Set<Patient>();
         public DbSet<Doctor> Doctors => Set<Doctor>();
         public DbSet<Appointment> Appointments => Set<Appointment>();
         public DbSet<HealthRecord> HealthRecords => Set<HealthRecord>();
-        public DbSet<AvailableSlots> DoctorAvailableSlots => Set<AvailableSlots>();
+        public DbSet<AvailableSlots> AvailableSlots => Set<AvailableSlots>();
         public DbSet<DoctorLeaves> DoctorLeaves => Set<DoctorLeaves>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -14,8 +14,6 @@ namespace HealthCare.Api.Models
         [MaxLength(20)]
         public string TimeSlot { get; set; } = null!;
 
-        public bool IsBooked { get; set; } = false;
-
         [ForeignKey(nameof(DoctorId))]
         public Doctor Doctor { get; set; } = null!;
     }

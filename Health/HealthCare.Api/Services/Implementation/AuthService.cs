@@ -5,9 +5,11 @@ using HealthCare.Api.DTOs.Auth;
 using HealthCare.Api.DTOs.Doctor;
 using HealthCare.Api.DTOs.Patient;
 using HealthCare.Api.Models;
+using HealthCare.Api.Repositories.Implementation;
 using HealthCare.Api.Repositories.Interfaces;
 using HealthCare.Api.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
+using System.Numerics;
 
 namespace HealthCare.Api.Services.Implementation
 {
@@ -90,6 +92,8 @@ namespace HealthCare.Api.Services.Implementation
             doctor.UserId = user.Id;
 
             await _doctorRepository.AddAsync(doctor);
+            await _context.SaveChangesAsync();
+            await _doctorRepository.CreateSlots(doctor.DoctorId, dto.TimeSlots);
             await _context.SaveChangesAsync();
         }
 

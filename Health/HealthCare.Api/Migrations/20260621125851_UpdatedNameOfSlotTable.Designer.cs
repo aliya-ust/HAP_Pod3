@@ -4,6 +4,7 @@ using HealthCare.Api.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HealthCare.Api.Migrations
 {
     [DbContext(typeof(HealthCareDbContext))]
-    partial class HealthCareDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260621125851_UpdatedNameOfSlotTable")]
+    partial class UpdatedNameOfSlotTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -69,7 +72,7 @@ namespace HealthCare.Api.Migrations
                         .HasDatabaseName("UQ_Appointments_Doctor_Date_Slot")
                         .HasFilter("[Status] != 'Cancelled'");
 
-                    b.ToTable("Appointments", (string)null);
+                    b.ToTable("Appointments");
                 });
 
             modelBuilder.Entity("HealthCare.Api.Models.AvailableSlots", b =>
@@ -83,6 +86,9 @@ namespace HealthCare.Api.Migrations
                     b.Property<int>("DoctorId")
                         .HasColumnType("int");
 
+                    b.Property<bool>("IsBooked")
+                        .HasColumnType("bit");
+
                     b.Property<string>("TimeSlot")
                         .IsRequired()
                         .HasMaxLength(20)
@@ -92,7 +98,7 @@ namespace HealthCare.Api.Migrations
 
                     b.HasIndex("DoctorId");
 
-                    b.ToTable("AvailableSlots", (string)null);
+                    b.ToTable("AvailableSlots");
                 });
 
             modelBuilder.Entity("HealthCare.Api.Models.Doctor", b =>
@@ -131,7 +137,7 @@ namespace HealthCare.Api.Migrations
                         .IsUnique()
                         .HasFilter("[UserId] IS NOT NULL");
 
-                    b.ToTable("Doctors", (string)null);
+                    b.ToTable("Doctors");
                 });
 
             modelBuilder.Entity("HealthCare.Api.Models.DoctorLeaves", b =>
@@ -156,7 +162,7 @@ namespace HealthCare.Api.Migrations
 
                     b.HasIndex("DoctorId");
 
-                    b.ToTable("DoctorLeaves", (string)null);
+                    b.ToTable("DoctorLeaves");
                 });
 
             modelBuilder.Entity("HealthCare.Api.Models.HealthRecord", b =>
@@ -203,7 +209,7 @@ namespace HealthCare.Api.Migrations
                     b.HasIndex("PatientId", "VisitDate")
                         .HasDatabaseName("IX_HealthRecords_Patient_VisitDate");
 
-                    b.ToTable("HealthRecords", (string)null);
+                    b.ToTable("HealthRecords");
                 });
 
             modelBuilder.Entity("HealthCare.Api.Models.Patient", b =>
@@ -251,7 +257,7 @@ namespace HealthCare.Api.Migrations
                         .IsUnique()
                         .HasFilter("[UserId] IS NOT NULL");
 
-                    b.ToTable("Patients", (string)null);
+                    b.ToTable("Patients");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

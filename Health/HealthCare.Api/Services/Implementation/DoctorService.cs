@@ -33,7 +33,8 @@ namespace HealthCare.Api.Services.Implementations
         {
             var doctor = _mapper.Map<Doctor>(dto);
             await _repository.AddAsync(doctor);
-            await _repository.CreateSlots(doctor.DoctorId, dto.TimeSlot);
+            await _context.SaveChangesAsync();
+            await _repository.CreateSlots(doctor.DoctorId, dto.TimeSlots);
             await _context.SaveChangesAsync();
         }
 

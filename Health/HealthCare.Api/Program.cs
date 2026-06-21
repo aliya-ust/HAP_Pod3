@@ -1,6 +1,7 @@
 using AutoMapper;
 using HealthCare.Api.Data;
 using HealthCare.Api.Mappings;
+using HealthCare.Api.Middleware;
 using HealthCare.Api.Models;
 using HealthCare.Api.Repositories.Implementation;
 using HealthCare.Api.Repositories.Implementations;
@@ -41,6 +42,10 @@ builder.Services.AddSwaggerGen(options =>
         [new OpenApiSecuritySchemeReference("bearer", document)] = []
     });
 });
+
+builder.Services.AddProblemDetails();
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+
 
 // Add services to the container.
 
@@ -102,6 +107,7 @@ builder.Services.AddAutoMapper(cfg =>
 
 
 var app = builder.Build();
+app.UseExceptionHandler();
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;

@@ -20,17 +20,25 @@ namespace HealthCare.Api.Repositories.Implementations
 
         public async Task CreateSlots(int doctorId, List<string> timeslots)
         {
+            Console.WriteLine($"doctorId = {doctorId}");
+            Console.WriteLine($"timeslots.Count = {timeslots.Count}");
+
+            foreach (var slot in timeslots)
+            {
+                Console.WriteLine(slot);
+            }
+
             var slots = timeslots.Select(t => new AvailableSlots
             {
                 DoctorId = doctorId,
                 TimeSlot = t
             });
 
-            await _context.DoctorAvailableSlots.AddRangeAsync(slots);
+            await _context.AvailableSlots.AddRangeAsync(slots);
         }
 
         public async Task<List<string>> GetSlots(int doctorId) =>
-            await _context.DoctorAvailableSlots
+            await _context.AvailableSlots
                 .Where(s => s.DoctorId == doctorId)
                 .Select(s => s.TimeSlot)
                 .ToListAsync();

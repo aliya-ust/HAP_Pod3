@@ -5,19 +5,49 @@
     "version": "v1"
   },
   "paths": {
-    "/api/appointment/{id}": {
+    "/api/Appointment": {
+      "post": {
+        "tags": [
+          "Appointment"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateAppointmentDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateAppointmentDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateAppointmentDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Appointment/patient/schedule": {
       "get": {
         "tags": [
           "Appointment"
         ],
         "parameters": [
           {
-            "name": "id",
-            "in": "path",
-            "required": true,
+            "name": "date",
+            "in": "query",
             "schema": {
-              "type": "integer",
-              "format": "int32"
+              "type": "string",
+              "format": "date"
             }
           }
         ],
@@ -26,8 +56,22 @@
             "description": "OK"
           }
         }
-      },
-      "put": {
+      }
+    },
+    "/api/Appointment/patient": {
+      "get": {
+        "tags": [
+          "Appointment"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Appointment/{id}/status": {
+      "patch": {
         "tags": [
           "Appointment"
         ],
@@ -66,19 +110,20 @@
             "description": "OK"
           }
         }
-      },
-      "delete": {
+      }
+    },
+    "/api/Appointment/doctor/schedule": {
+      "get": {
         "tags": [
           "Appointment"
         ],
         "parameters": [
           {
-            "name": "id",
-            "in": "path",
-            "required": true,
+            "name": "date",
+            "in": "query",
             "schema": {
-              "type": "integer",
-              "format": "int32"
+              "type": "string",
+              "format": "date"
             }
           }
         ],
@@ -89,10 +134,22 @@
         }
       }
     },
-    "/api/appointment": {
+    "/api/Appointment/doctor": {
       "get": {
         "tags": [
           "Appointment"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/admin/AppointmentAdmin": {
+      "get": {
+        "tags": [
+          "AppointmentAdmin"
         ],
         "parameters": [
           {
@@ -132,214 +189,12 @@
             "description": "OK"
           }
         }
-      },
-      "post": {
-        "tags": [
-          "Appointment"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateAppointmentDto"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateAppointmentDto"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateAppointmentDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
       }
     },
-    "/api/appointment/available-slots": {
+    "/api/admin/AppointmentAdmin/daily-report": {
       "get": {
         "tags": [
-          "Appointment"
-        ],
-        "parameters": [
-          {
-            "name": "date",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "date"
-            }
-          },
-          {
-            "name": "doctorId",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/appointment/is-available": {
-      "get": {
-        "tags": [
-          "Appointment"
-        ],
-        "parameters": [
-          {
-            "name": "date",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "date"
-            }
-          },
-          {
-            "name": "doctorId",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
-          {
-            "name": "timeSlot",
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/appointment/daily-report": {
-      "get": {
-        "tags": [
-          "Appointment"
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/appointment/doctor-schedule": {
-      "get": {
-        "tags": [
-          "Appointment"
-        ],
-        "parameters": [
-          {
-            "name": "date",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "date"
-            }
-          },
-          {
-            "name": "doctorId",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/appointment/patient-schedule": {
-      "get": {
-        "tags": [
-          "Appointment"
-        ],
-        "parameters": [
-          {
-            "name": "date",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "date"
-            }
-          },
-          {
-            "name": "patientId",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/appointment/patient/{patientId}": {
-      "get": {
-        "tags": [
-          "Appointment"
-        ],
-        "parameters": [
-          {
-            "name": "patientId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/appointment/doctor/{doctorId}": {
-      "get": {
-        "tags": [
-          "Appointment"
-        ],
-        "parameters": [
-          {
-            "name": "doctorId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
+          "AppointmentAdmin"
         ],
         "responses": {
           "200": {
@@ -441,10 +296,151 @@
         }
       }
     },
-    "/api/doctor/{id}": {
+    "/api/auth/change-password": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangePasswordDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangePasswordDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangePasswordDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Doctor/profile": {
       "get": {
         "tags": [
           "Doctor"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Doctor"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateDoctorDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateDoctorDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateDoctorDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Doctor/leave": {
+      "post": {
+        "tags": [
+          "Doctor"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/CreateLeaveDto"
+                }
+              }
+            },
+            "text/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/CreateLeaveDto"
+                }
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/CreateLeaveDto"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Doctor/available": {
+      "get": {
+        "tags": [
+          "Doctor"
+        ],
+        "parameters": [
+          {
+            "name": "specialisation",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "date",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/admin/DoctorAdmin/{id}": {
+      "get": {
+        "tags": [
+          "DoctorAdmin"
         ],
         "parameters": [
           {
@@ -465,7 +461,7 @@
       },
       "put": {
         "tags": [
-          "Doctor"
+          "DoctorAdmin"
         ],
         "parameters": [
           {
@@ -505,7 +501,7 @@
       },
       "delete": {
         "tags": [
-          "Doctor"
+          "DoctorAdmin"
         ],
         "parameters": [
           {
@@ -525,10 +521,10 @@
         }
       }
     },
-    "/api/doctor": {
+    "/api/admin/DoctorAdmin": {
       "get": {
         "tags": [
-          "Doctor"
+          "DoctorAdmin"
         ],
         "parameters": [
           {
@@ -571,7 +567,7 @@
       },
       "post": {
         "tags": [
-          "Doctor"
+          "DoctorAdmin"
         ],
         "requestBody": {
           "content": {
@@ -599,14 +595,75 @@
         }
       }
     },
-    "/api/doctor/{doctorId}/slots": {
-      "get": {
+    "/api/admin/DoctorAdmin/{id}/status": {
+      "patch": {
         "tags": [
-          "Doctor"
+          "DoctorAdmin"
         ],
         "parameters": [
           {
-            "name": "doctorId",
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "isActive",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/HealthRecord": {
+      "post": {
+        "tags": [
+          "HealthRecord"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateHealthRecordDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateHealthRecordDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateHealthRecordDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/HealthRecord/appointment/{appointmentId}": {
+      "get": {
+        "tags": [
+          "HealthRecord"
+        ],
+        "parameters": [
+          {
+            "name": "appointmentId",
             "in": "path",
             "required": true,
             "schema": {
@@ -622,10 +679,86 @@
         }
       }
     },
-    "/api/patient/{id}": {
+    "/api/HealthRecord/patient": {
+      "get": {
+        "tags": [
+          "HealthRecord"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/admin/HealthRecordAdmin/{id}": {
+      "delete": {
+        "tags": [
+          "HealthRecordAdmin"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/patient/profile": {
       "get": {
         "tags": [
           "Patient"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Patient"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdatePatientDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdatePatientDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdatePatientDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/admin/patients/{id}": {
+      "get": {
+        "tags": [
+          "PatientAdmin"
         ],
         "parameters": [
           {
@@ -646,7 +779,7 @@
       },
       "put": {
         "tags": [
-          "Patient"
+          "PatientAdmin"
         ],
         "parameters": [
           {
@@ -686,7 +819,7 @@
       },
       "delete": {
         "tags": [
-          "Patient"
+          "PatientAdmin"
         ],
         "parameters": [
           {
@@ -706,10 +839,10 @@
         }
       }
     },
-    "/api/patient": {
+    "/api/admin/patients": {
       "get": {
         "tags": [
-          "Patient"
+          "PatientAdmin"
         ],
         "parameters": [
           {
@@ -751,7 +884,7 @@
       },
       "post": {
         "tags": [
-          "Patient"
+          "PatientAdmin"
         ],
         "requestBody": {
           "content": {
@@ -779,41 +912,32 @@
         }
       }
     },
-    "/WeatherForecast": {
-      "get": {
+    "/api/admin/patients/{id}/status": {
+      "patch": {
         "tags": [
-          "WeatherForecast"
+          "PatientAdmin"
         ],
-        "operationId": "GetWeatherForecast",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "isActive",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
         "responses": {
           "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/WeatherForecast"
-                  }
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/WeatherForecast"
-                  }
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/WeatherForecast"
-                  }
-                }
-              }
-            }
+            "description": "OK"
           }
         }
       }
@@ -821,6 +945,24 @@
   },
   "components": {
     "schemas": {
+      "ChangePasswordDto": {
+        "required": [
+          "currentPassword",
+          "newPassword"
+        ],
+        "type": "object",
+        "properties": {
+          "currentPassword": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "newPassword": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
       "CreateAppointmentDto": {
         "required": [
           "doctorId",
@@ -893,6 +1035,85 @@
             "minimum": 0.01,
             "type": "number",
             "format": "double"
+          },
+          "timeSlots": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreateHealthRecordDto": {
+        "required": [
+          "appointmentId",
+          "diagnosis",
+          "doctorId",
+          "patientId",
+          "prescription",
+          "visitDate"
+        ],
+        "type": "object",
+        "properties": {
+          "appointmentId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "patientId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "doctorId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "visitDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "diagnosis": {
+            "maxLength": 500,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9\\s]+$",
+            "type": "string"
+          },
+          "prescription": {
+            "maxLength": 500,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9\\s]+$",
+            "type": "string"
+          },
+          "notes": {
+            "maxLength": 1000,
+            "pattern": "^[A-Za-z0-9\\s]+$",
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreateLeaveDto": {
+        "required": [
+          "doctorId",
+          "leaveDate",
+          "reason"
+        ],
+        "type": "object",
+        "properties": {
+          "doctorId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "leaveDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "reason": {
+            "maxLength": 250,
+            "minLength": 0,
+            "type": "string"
           }
         },
         "additionalProperties": false
@@ -1056,29 +1277,6 @@
           }
         },
         "additionalProperties": false
-      },
-      "WeatherForecast": {
-        "type": "object",
-        "properties": {
-          "date": {
-            "type": "string",
-            "format": "date"
-          },
-          "temperatureC": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "temperatureF": {
-            "type": "integer",
-            "format": "int32",
-            "readOnly": true
-          },
-          "summary": {
-            "type": "string",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
       }
     },
     "securitySchemes": {
@@ -1100,16 +1298,28 @@
       "name": "Appointment"
     },
     {
+      "name": "AppointmentAdmin"
+    },
+    {
       "name": "Auth"
     },
     {
       "name": "Doctor"
     },
     {
+      "name": "DoctorAdmin"
+    },
+    {
+      "name": "HealthRecord"
+    },
+    {
+      "name": "HealthRecordAdmin"
+    },
+    {
       "name": "Patient"
     },
     {
-      "name": "WeatherForecast"
+      "name": "PatientAdmin"
     }
   ]
 }
