@@ -7,7 +7,7 @@ namespace HealthCare.Api.Services.Interfaces
     {
         Task<HealthRecordListDto?> GetByIdAsync(int id);
         Task<PagedResult<HealthRecordListDto>> GetAllAsync(HealthRecordFilter filter);
-        Task AddAsync(CreateHealthRecordDto dto);
+        Task AddAsync(int id,CreateHealthRecordDto dto);
         Task UpdateAsync(int id, UpdateHealthRecordDto dto);
         Task DeleteAsync(int id);
         Task<List<HealthRecordListDto>> GetHealthRecordByPatient(int id);

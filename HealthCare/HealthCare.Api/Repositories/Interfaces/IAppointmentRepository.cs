@@ -12,5 +12,6 @@ namespace HealthCare.Api.Repositories.Interfaces
         Task<List<AppointmentListDto>> GetPatientSchedule(DateOnly date, int id);
         Task<List<AppointmentListDto>> GetAppointmentByPatient(int id);
         Task<List<AppointmentListDto>> GetAppointmentByDoctor(int id);
+        Task CancelAppointmentsByDoctorDate(int doctorId, DateOnly date);
     }
 } 

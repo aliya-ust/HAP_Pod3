@@ -99,5 +99,20 @@ namespace HealthCare.Api.Repositories.Implementations
                     Status = a.Status
                 })
                 .ToListAsync();
+
+        public async Task CancelAppointmentsByDoctorDate(int doctorId, DateOnly date)
+        {
+            var appointments = await _dbSet
+                .Where(a => a.DoctorId == doctorId
+                         && a.ScheduledDate == date
+                         && a.Status != "Cancelled")
+                .ToListAsync();
+
+            foreach (var appointment in appointments)
+            {
+                appointment.Status = "Cancelled";
+                appointment.CancellationReason = "Doctor on leave";
+            }
+        }
     }
 }

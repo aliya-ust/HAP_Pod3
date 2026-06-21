@@ -1,8 +1,7 @@
-
-
 using HealthCare.Api.Data;
 using HealthCare.Api.Mapping;
 using HealthCare.Api.Middleware;
+using HealthCare.Api.Models;
 using HealthCare.Api.Repositories.Implementations;
 using HealthCare.Api.Repositories.Interfaces;
 using HealthCare.Api.Services.Implementations;
@@ -11,196 +10,131 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi;
+using System.Net.Security;
+using System.Security.Claims;
 using System.Text;
-using System.Text.Json;
 
-namespace HealthCare.Api
+var builder = WebApplication.CreateBuilder(args);
+
+// Add services to the container.
+builder.Services.AddProblemDetails();
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+
+builder.Services.AddControllers();
+
+builder.Services.AddAutoMapper(cfg =>
 {
-    public class Program
+    cfg.AddProfile<MappingProfile>();
+});
+
+builder.Services.AddDbContext<HealthCareDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
+);
+
+builder.Services.AddIdentity<User, IdentityRole>(options =>
+{
+    options.User.RequireUniqueEmail = true;
+    options.Password.RequireDigit = true;
+    options.Password.RequireUppercase = true;
+    options.Password.RequireNonAlphanumeric = true;
+    options.Password.RequiredLength = 8;
+}).AddEntityFrameworkStores<HealthCareDbContext>().AddDefaultTokenProviders();
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+.AddJwtBearer(option =>
+{
+    var jwt = builder.Configuration.GetSection("Jwt");
+    option.TokenValidationParameters = new TokenValidationParameters
     {
-        public static async Task Main(string[] args)
+        ValidateIssuer = true,
+        ValidIssuer = jwt["Issuer"],
+        ValidateAudience = true,
+        ValidAudience = jwt["Audience"],
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwt["Key"]!)),
+
+        RoleClaimType = ClaimTypes.Role,
+        NameClaimType = ClaimTypes.NameIdentifier,
+
+        ClockSkew = TimeSpan.Zero
+    };
+    option.Events = new JwtBearerEvents
+    {
+        OnAuthenticationFailed = context =>
         {
-            var builder = WebApplication.CreateBuilder(args);
-            // Add services to the container.
-            builder.Services.AddControllers()
-                .AddJsonOptions(options =>
-                {
-                    options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
-                });
-            // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-
-            builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
-
-            builder.Services.AddDbContext<HealthCareDbContext>(options =>
-                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
-
-            // IDENTITY CONFIGURATION 
-
-            // ========================================== 
-
-
-
-            builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
-
-            {
-
-                // Require unique email addresses 
-
-                options.User.RequireUniqueEmail = true;
-
-
-
-                // Optional: Password requirements 
-
-                 options.Password.RequireDigit = true; 
-
-                 options.Password.RequireLowercase = true; 
-
-                 options.Password.RequireUppercase = true; 
-
-                options.Password.RequireNonAlphanumeric = true; 
-
-                 options.Password.RequiredLength = 8; 
-
-            })
-
-            .AddEntityFrameworkStores<HealthCareDbContext>()  // Use EF Core for storage 
-
-            .AddDefaultTokenProviders();               // Add token providers for password reset, etc. 
-
-
-            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-
-                .AddJwtBearer(options =>
-
-                {
-
-                    // Get JWT settings from appsettings.json 
-
-                    var jwt = builder.Configuration.GetSection("jwt");
-
-
-
-                    options.TokenValidationParameters = new TokenValidationParameters
-
-                    {
-
-                        // Validate the token was issued by your application 
-
-                        ValidateIssuer = true, 
-
-                        ValidIssuer = jwt["Issuer"],
-
-
-
-                        // Validate the token is intended for your application 
-
-                        ValidateAudience = true,
-
-                        ValidAudience = jwt["Audience"],
-
-
-
-                        // Validate the token hasn't expired 
-
-                        ValidateLifetime = true,
-
-
-
-                        // Validate the token signature is correct 
-
-                        ValidateIssuerSigningKey = true,
-
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwt["Key"]!)),
-
-
-
-                        // Remove default 5-minute grace period for expiration 
-
-                        ClockSkew = TimeSpan.Zero
-
-                    };
-
-                });
-
-            //Exception Handler
-            builder.Services.AddProblemDetails();
-            builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
-
-
-
-
-
-            // Repositories
-            builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-            builder.Services.AddScoped<IPatientRepository, PatientRepository>();
-            builder.Services.AddScoped<IDoctorRepository, DoctorRepository>();
-            builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
-            builder.Services.AddScoped<IHealthRecordRepository, HealthRecordRepository>();
-
-            // Services
-            builder.Services.AddScoped<IPatientService, PatientService>();
-            builder.Services.AddScoped<IDoctorService, DoctorService>();
-            builder.Services.AddScoped<IAppointmentService, AppointmentService>();
-            builder.Services.AddScoped<IHealthRecordService, HealthRecordService>();
-            builder.Services.AddScoped<IAuthService, AuthService>();  // Register auth service
-            // AUTOMAPPER CONFIGURATION
-            builder.Services.AddAutoMapper(cfg =>
-            {
-                cfg.AddProfile<MappingProfile>();
-
-            });
-
-            // BUILD APPLICATION 
-
-            // ========================================== 
-
-
-
-            var app = builder.Build();
-            app.UseExceptionHandler();
-
-
-
-            // ========================================== 
-
-            // SEED ROLES ON STARTUP 
-
-            // ========================================== 
-
-
-
-            using (var scope = app.Services.CreateScope())
-
-            {
-
-                var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-
-                await RoleSeeder.SeedRolesAsync(roleManager);
-
-            } 
-
-
-            // MIDDLEWARE PIPELINE 
-            // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
-            {
-                app.UseSwagger();
-                app.UseSwaggerUI();
-            }
-
-            app.UseHttpsRedirection();
-            app.UseAuthentication();
-            app.UseAuthorization();
-
-
-            app.MapControllers();
-            
- 
-
-            app.Run();
+            // Set a breakpoint here in Visual Studio
+            Console.WriteLine($"JWT Error: {context.Exception.Message}");
+            return Task.CompletedTask;
         }
-    }
+    };
+});
+
+// Repositories
+builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+builder.Services.AddScoped<IPatientRepository, PatientRepository>();
+builder.Services.AddScoped<IDoctorRepository, DoctorRepository>();
+builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
+builder.Services.AddScoped<IHealthRecordRepository, HealthRecordRepository>();
+
+// Services
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IPatientService, PatientService>();
+builder.Services.AddScoped<IDoctorService, DoctorService>();
+builder.Services.AddScoped<IAppointmentService, AppointmentService>();
+builder.Services.AddScoped<IHealthRecordService, HealthRecordService>();
+builder.Services.AddScoped<IJwtService, JwtService>();
+
+builder.Services.AddEndpointsApiExplorer();
+
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "HealthApp API",
+        Version = "v1"
+    });
+
+    options.AddSecurityDefinition("bearer", new OpenApiSecurityScheme
+    {
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT",
+        Description = "Enter JWT token only. Do not type Bearer."
+    });
+
+    options.AddSecurityRequirement(document => new OpenApiSecurityRequirement
+    {
+        [new OpenApiSecuritySchemeReference("bearer", document)] = []
+    });
+});
+
+var app = builder.Build();
+app.UseExceptionHandler();
+
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+    var userManager = services.GetRequiredService<UserManager<User>>();
+
+    await RoleSeeder.SeedRolesAsync(roleManager);
+    await AdminSeeder.SeedAdminAsync(userManager, roleManager);
 }
+
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
+app.UseHttpsRedirection();
+app.UseRouting();
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.MapControllers();
+
+await app.RunAsync();

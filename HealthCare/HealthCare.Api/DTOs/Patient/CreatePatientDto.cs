@@ -11,7 +11,7 @@ namespace HealthCare.Api.DTOs.Patient
 
         [Required]
         [CustomDateOfBirthValidationAttribute]
-        public DateOnly DateOfBirth { get; set; }
+        public DateOnly? DateOfBirth { get; set; }
 
         [Required]
         [MaxLength(10)]

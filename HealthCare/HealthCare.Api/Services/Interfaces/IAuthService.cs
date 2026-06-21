@@ -6,12 +6,9 @@ namespace HealthCare.Api.Services.Interfaces
 {
     public interface IAuthService
     {
-
-        Task<(bool success, string Message, string UserId)> RegisterAsync(RegisterDto request);
-
-        Task<(bool Success, string Message, string AccessToken, int ExpiresIn)> LoginAsync(LoginDto request);
-
+        Task RegisterPatientAsync(CreatePatientDto dto);
+        Task RegisterDoctorAsync(CreateDoctorDto dto);
+        Task<AuthResponseDto> LoginAsync(LoginDto dto);
+        Task ChangePasswordAsync(string userId, ChangePasswordDto dto);
     }
-
-
-}
+} 

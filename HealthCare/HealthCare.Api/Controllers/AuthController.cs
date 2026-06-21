@@ -1,93 +1,62 @@
 ﻿using HealthCare.Api.DTOs.Auth;
-using HealthCare.Api.DTOs.Patient;
 using HealthCare.Api.DTOs.Doctor;
+using HealthCare.Api.DTOs.Patient;
 using HealthCare.Api.Services.Interfaces;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using HealthCare.Api.Models;
+using System.Security.Claims;
 
 namespace HealthCare.Api.Controllers
 {
-
     [ApiController]
-
-    [Route("api/[controller]")]
-
-    public class AuthController(IAuthService authService) : ControllerBase
-
+    [Route("api/auth")]
+    public class AuthController : ControllerBase
     {
+        private readonly IAuthService _authService;
 
-        [HttpPost("register")]
-
-        public async Task<IActionResult> Register(RegisterDto request)
-
+        public AuthController(IAuthService authService)
         {
-
-            // Call service to register user 
-
-            var (success, message, userId) = await authService.RegisterAsync(request);
-
-
-
-            // Return 400 Bad Request if registration failed 
-
-            if (!success)
-
-            {
-
-                return BadRequest(new { message });
-
-            }
-
-
-
-            // Return 200 OK with success message and user ID 
-
-            return Ok(new { message, userId });
-
+            _authService = authService;
         }
 
+        [HttpPost("register/patient")]
+        [AllowAnonymous]
+        public async Task<IActionResult> RegisterPatient(CreatePatientDto dto)
+        {
+            await _authService.RegisterPatientAsync(dto);
+            return Ok("Registration successful");
+        }
 
+        [HttpPost("register/doctor")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> RegisterDoctor(CreateDoctorDto dto)
+        {
+            await _authService.RegisterDoctorAsync(dto);
+            return Ok("Registration successful");
+        }
 
         [HttpPost("login")]
-
-        public async Task<IActionResult> Login(LoginDto request)
-
+        public async Task<IActionResult> Login(LoginDto dto)
         {
+            var response = await _authService.LoginAsync(dto);
+            return Ok(response);
+        }
 
-            // Call service to authenticate user 
+        [HttpPost("change-password")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> ChangePassword(ChangePasswordDto dto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-            var (success, message, accessToken, expiresIn) = await authService.LoginAsync(request);
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
+            await _authService.ChangePasswordAsync(userId!, dto);
 
-
-            // Return 401 Unauthorized if login failed 
-
-            if (!success)
-
-            {
-
-                return Unauthorized(new { message });
-
-            }
-
-
-
-            // Return 200 OK with token and expiration 
-
-            return Ok(new AuthResponseDto
-
-            {
-
-                AccessToken = accessToken,
-
-                ExpiresIn = expiresIn,
-
-                Message = message
-
-            });
-
+            return Ok("Password changed successfully");
         }
 
     }
 }
-

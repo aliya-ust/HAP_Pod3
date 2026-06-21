@@ -1,58 +1,56 @@
-﻿using HealthCare.Api.DTOs;
-using HealthCare.Api.DTOs.Patient;
+﻿using HealthCare.Api.DTOs.Patient;
 using HealthCare.Api.Services.Interfaces;
+using HealthCare.Api.Exceptions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HealthCare.Api.Controllers
 {
+    [Route("api/patients")]
     [ApiController]
-    [Route("api/[controller]")]
-    public class PatientController(IPatientService patientService) : ControllerBase
+    public class PatientController : ControllerBase
     {
-        [HttpGet("{id}")]
-        [AllowAnonymous]
-        public async Task<IActionResult> GetById(int id)
+        private readonly IPatientService _patientService;
+
+        public PatientController(IPatientService patientService)
         {
-            var patient = await patientService.GetByIdAsync(id);
-            if (patient is null) return NotFound();
-            return Ok(patient);
+            _patientService = patientService;
         }
 
-        [HttpGet]
-        [AllowAnonymous]
-        public async Task<IActionResult> GetAll([FromQuery] PatientFilter filter)
+        [HttpGet("profile")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize(Roles = "Patient")]
+        public async Task<IActionResult> GetMyProfile()
         {
-            var patients = await patientService.GetAllAsync(filter);
-            return Ok(patients);
+            var patientId = GetPatientIdFromClaims();
+            var result = await _patientService.GetByIdAsync(patientId);
+            return Ok(result);
         }
+          
+            
+            
         
-        [HttpPost]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
-        public async Task<IActionResult> Create(CreatePatientDto dto)
+
+        [HttpPut("profile")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize(Roles = "Patient")]
+        public async Task<IActionResult> UpdatePatient([FromBody] UpdatePatientDto dto)
         {
-            await patientService.AddAsync(dto);
-            return Ok(new { message = "Patient created successfully" });
-        }
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin,Patient")]
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, UpdatePatientDto dto)
-        {
-            var existing = await patientService.GetByIdAsync(id);
-            if (existing is null) return NotFound();
-            await patientService.UpdateAsync(id, dto);
-            return NoContent();
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var patientId = GetPatientIdFromClaims();
+            await _patientService.UpdateAsync(patientId, dto);
+            return Ok();
         }
 
-        [HttpDelete("{id}")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
-        public async Task<IActionResult> Delete(int id)
+        private int GetPatientIdFromClaims()
         {
-            var existing = await patientService.GetByIdAsync(id);
-            if (existing is null) return NotFound();
-            await patientService.DeleteAsync(id);
-            return NoContent();
+            var claim = User.FindFirst("PatientId")
+                ?? throw new InvalidOperationException("PatientId claim not found in token.");
+
+            return int.Parse(claim.Value);
         }
     }
 }

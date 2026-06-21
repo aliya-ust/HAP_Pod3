@@ -1,5 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Collections.Generic;
+
+using System.ComponentModel.DataAnnotations;
 
 namespace HealthCare.Api.Models
 {
@@ -38,7 +40,7 @@ namespace HealthCare.Api.Models
         [ForeignKey(nameof(UserId))]
         public User? User { get; set; }
 
-        public ICollection<Appointment> Appointments { get; set; } = [];
-        public ICollection<HealthRecord> HealthRecords { get; set; } = [];
+        public ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
+        public ICollection<HealthRecord> HealthRecords { get; set; } = new List<HealthRecord>();
     }
-} 
+}

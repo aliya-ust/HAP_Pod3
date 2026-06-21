@@ -1,4 +1,5 @@
-﻿using HealthCare.Api.Exceptions;
+﻿using HealthCare.Api.DTOs;
+using HealthCare.Api.Exceptions;
 using HealthCare.Api.Models;
 using Microsoft.AspNetCore.Diagnostics;
 
@@ -24,10 +25,15 @@ namespace HealthCare.Api.Middleware
                 AppointmentNotFoundException => (StatusCodes.Status404NotFound, exception.Message),
                 HealthRecordNotFoundException => (StatusCodes.Status404NotFound, exception.Message),
 
-                //InvalidDataException => (StatusCodes.Status400BadRequest, exception.Message),
+                InvalidOperationException => (StatusCodes.Status400BadRequest, exception.Message),
 
+                // Default fallback
                 _ => (StatusCodes.Status500InternalServerError, "Internal server error")
             };
+
+            //InvalidDataException => (StatusCodes.Status400BadRequest, exception.Message),
+
+            
 
             var response = new ErrorResponse
             {
