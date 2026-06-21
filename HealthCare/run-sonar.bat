@@ -1,6 +1,6 @@
 @echo off
 
-SET SONAR_TOKEN=sqp_94fe1cf539b125992595a1a2b4f357b0ae70a51e
+SET SONAR_TOKEN=sqp_68f5f146bbf34df348ece902da1d46d2c21a4000
 SET SONAR_URL=http://localhost:9000
 SET PROJECT_KEY=HealthCareSprint3
 
@@ -10,7 +10,9 @@ dotnet sonarscanner begin ^
   /k:"%PROJECT_KEY%" ^
   /d:sonar.host.url="%SONAR_URL%" ^
   /d:sonar.login="%SONAR_TOKEN%" ^
-  /d:sonar.exclusions="**/bin/**,**/obj/**,**/Migrations/**"
+  /d:sonar.exclusions="**/bin/**,**/obj/**,**/Migrations/**" ^
+  /d:sonar.coverage.exclusions="**/bin/**,**/obj/**,**/Migrations/**,**/Controllers/**,**/Data/**,**/DTOs/**,**/Mapping/**,**/Models/**,**/Properties/**,**/Repositories/**,**/Program.cs,**/Exceptions/**,**/Middleware/**" ^
+  /d:sonar.cs.opencover.reportsPaths="TestResults/**/coverage.opencover.xml"
 
 IF %ERRORLEVEL% NEQ 0 (
   echo Sonar begin failed!
@@ -26,6 +28,10 @@ IF %ERRORLEVEL% NEQ 0 (
   exit /b %ERRORLEVEL%
 )
 
+echo Testing project...
+
+dotnet test --no-build --collect:"XPlat Code Coverage" --results-directory TestResults -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
+
 echo Ending Sonar analysis...
 
 dotnet sonarscanner end ^
@@ -35,7 +41,3 @@ IF %ERRORLEVEL% NEQ 0 (
   echo Sonar end failed!
   exit /b %ERRORLEVEL%
 )
-
-echo ✅ Sonar scan completed successfully!
-pause
-``
