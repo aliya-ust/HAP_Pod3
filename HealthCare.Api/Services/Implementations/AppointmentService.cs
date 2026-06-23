@@ -38,29 +38,13 @@ namespace HealthCare.Api.Services.Implementations
         {
             var query = _repository.GetQueryable();
 
-            // Search by patient OR doctor name
-            if (!string.IsNullOrWhiteSpace(filter.Search))
-            {
-                query = query.Where(a =>
-                    a.Patient.FullName.Contains(filter.Search) ||
-                    a.Doctor.FullName.Contains(filter.Search));
-            }
-
             // Filter by status
             if (!string.IsNullOrWhiteSpace(filter.Status))
             {
                 query = query.Where(a => a.Status == filter.Status);
             }
-
-            // Sorting by Scheduled Date
-            if (filter.IsDescending)
-            {
-                query = query.OrderByDescending(a => a.ScheduledDate);
-            }
-            else
-            {
-                query = query.OrderBy(a => a.ScheduledDate);
-            }
+                
+            query = query.OrderBy(a => a.ScheduledDate); 
 
             // Total count
             var totalCount = await query.CountAsync();

@@ -8,5 +8,4 @@
 
         public bool? IsActive { get; set; }           // active/inactive
     }
-
 }

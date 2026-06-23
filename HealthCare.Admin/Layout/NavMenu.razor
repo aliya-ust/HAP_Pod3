@@ -1,61 +1,47 @@
-﻿<div class="top-row ps-3 navbar navbar-dark bg-primary">
-    <div class="container-fluid">
-        <a class="navbar-brand fw-bold" href="">HealthCare Admin</a>
+﻿<div class="layout-wrapper">
 
-        <button title="Navigation menu"
-                class="navbar-toggler"
-                @onclick="ToggleNavMenu">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+    <!-- Sidebar -->
+    <div class="sidebar-container @NavMenuCssClass">
+
+        <!-- Logo -->
+        <div class="logo">
+            <i class="bi bi-heart-pulse"></i>
+            <span>HealthCare Management</span>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="nav flex-column">
+
+            <NavLink class="nav-item-link" href="" Match="NavLinkMatch.All">
+                <i class="bi bi-speedometer2"></i>
+                <span>Dashboard</span>
+            </NavLink>
+
+            <NavLink class="nav-item-link" href="doctors">
+                <i class="bi bi-person-badge"></i>
+                <span>Doctors</span>
+            </NavLink>
+
+            <NavLink class="nav-item-link" href="patients">
+                <i class="bi bi-people"></i>
+                <span>Patients</span>
+            </NavLink>
+
+            <div class="nav-divider">Analytics</div>
+
+            <NavLink class="nav-item-link" href="appointments-report">
+                <i class="bi bi-bar-chart-line"></i>
+                <span>Appointments</span>
+            </NavLink>
+
+        </nav>
+
     </div>
-</div>
 
-<div class="@NavMenuCssClass nav-scrollable sidebar" @onclick="ToggleNavMenu">
-    <nav class="nav flex-column p-2">
-
-        <!-- Dashboard -->
-        <div class="nav-item">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <i class="bi bi-speedometer2 me-2"></i> Dashboard
-            </NavLink>
-        </div>
-
-        <!-- Doctors -->
-        <div class="nav-item">
-            <NavLink class="nav-link" href="doctors">
-                <i class="bi bi-person-badge me-2"></i> Doctors
-            </NavLink>
-        </div>
-
-        <!-- Patients -->
-        <div class="nav-item">
-            <NavLink class="nav-link" href="patients">
-                <i class="bi bi-people me-2"></i> Patients
-            </NavLink>
-        </div>
-
-        <!-- Reports -->
-        <div class="nav-item mt-3 text-muted small px-2">
-            REPORTS
-        </div>
-
-        <div class="nav-item">
-            <NavLink class="nav-link" href="appointments-report">
-                <i class="bi bi-bar-chart-line me-2"></i> Appointments
-            </NavLink>
-        </div>
-
-    </nav>
 </div>
 
 @code {
     private bool collapseNavMenu = true;
-
-    private string? NavMenuCssClass =>
-        collapseNavMenu ? "collapse" : null;
-
-    private void ToggleNavMenu()
-    {
-        collapseNavMenu = !collapseNavMenu;
-    }
+    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+    private void ToggleNavMenu() => collapseNavMenu = !collapseNavMenu;
 }
