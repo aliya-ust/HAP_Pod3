@@ -1,0 +1,147 @@
+﻿@page "/"
+@layout EmptyLayout
+@* @inject AuthService AuthService *@
+@inject NavigationManager Nav
+
+<div class="login-page">
+
+    <h1 class="main-title">Health Care Management System</h1>
+
+    <div class="login-card">
+
+        <h3 class="card-title">Login</h3>
+
+        <div class="form-group">
+            <input class="form-input"
+                   type="email"
+                   placeholder="Email Address"
+                   @bind="email" />
+        </div>
+
+        <div class="form-group">
+            <input class="form-input"
+                   type="password"
+                   placeholder="Password"
+                   @bind="password" />
+        </div>
+
+        <button class="login-btn" @onclick="LoginUser">
+            Login
+        </button>
+
+        @if (!string.IsNullOrEmpty(error))
+        {
+            <p class="error-message">@error</p>
+        }
+
+    </div>
+
+</div>
+
+@code {
+
+    private string email = string.Empty;
+    private string password = string.Empty;
+    private string error = string.Empty;
+
+    private async Task LoginUser()
+    {
+        // error = string.Empty;
+
+        // var success = await AuthService.Login(email, password);
+
+        // if (success)
+        // {
+        //     Nav.NavigateTo("/dashboard", true);
+        // }
+        // else
+        // {
+        //     error = "Invalid email or password.";
+        // }
+    }
+}
+<style>
+    .login-page {
+        min-height: 100vh;
+        background: linear-gradient(135deg, #6A11CB 0%, #8E2DE2 50%, #C471ED 100%);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+    }
+
+    .main-title {
+        color: white;
+        font-size: 3rem;
+        font-weight: 700;
+        padding: 30px;
+        text-align: center;
+        text-shadow: 0 4px 10px rgba(0,0,0,0.25);
+    }
+
+    .login-card {
+        width: 420px;
+        background: rgba(255,255,255,0.95);
+        padding: 40px;
+        border-radius: 30px;
+        box-shadow: 0 20px 45px rgba(0,0,0,0.20);
+        transition: all 0.3s ease;
+    }
+
+        .login-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.30);
+        }
+
+    .card-title {
+        text-align: center;
+        color: #6A11CB;
+        margin-bottom: 30px;
+        font-weight: 700;
+    }
+
+    .form-group {
+        margin-bottom: 18px;
+    }
+
+    .form-input {
+        width: 100%;
+        padding: 14px 18px;
+        border: 2px solid #ddd;
+        border-radius: 50px;
+        font-size: 15px;
+        outline: none; 
+        box-sizing: border-box;
+    }
+
+        .form-input:focus {
+            border-color: #8E2DE2;
+            box-shadow: 0 0 15px rgba(142,45,226,0.25);
+        }
+
+    .login-btn {
+        width: 100%;
+        border: none;
+        border-radius: 50px;
+        padding: 14px;
+        background: linear-gradient(135deg, #6A11CB, #8E2DE2);
+        color: white;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+        .login-btn:hover {
+            transform: scale(1.03);
+            background: linear-gradient(135deg, #5A0FB5, #7A1FD1);
+        }
+
+    .error-message {
+        margin-top: 15px;
+        text-align: center;
+        color: #dc3545;
+        font-weight: 500;
+    }
+</style>

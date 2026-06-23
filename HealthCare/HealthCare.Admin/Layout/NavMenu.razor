@@ -1,0 +1,39 @@
+﻿<div class="hc-sidebar">
+
+    <div class="hc-sidebar-header">
+        <h2>HealthCare</h2>
+        <p>Admin Portal</p>
+    </div>
+
+    <nav class="hc-nav-menu">
+
+        <NavLink class="hc-nav-item" href="/home" Match="NavLinkMatch.All">
+            <span class="bi bi-speedometer2"></span>
+            Dashboard
+        </NavLink>
+
+        <NavLink class="hc-nav-item" href="/patients">
+            <span class="bi bi-people-fill"></span>
+            Patient Management
+        </NavLink>
+
+        <NavLink class="hc-nav-item" href="/doctors">
+            <span class="bi bi-person-badge-fill"></span>
+            Doctor Management
+        </NavLink>
+
+        <NavLink class="hc-nav-item" href="/appointments">
+            <span class="bi bi-calendar-check-fill"></span>
+            Appointment Management
+        </NavLink>
+
+    </nav>
+
+    @* <div class="logout-section">
+        <button class="logout-btn" @onclick="Logout">
+            <span class="bi bi-box-arrow-right"></span>
+            Logout
+        </button>
+    </div> *@
+
+</div>
