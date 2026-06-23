@@ -1,0 +1,278 @@
+﻿@using HealthCare.Api.DTOs.Patient
+@using HealthCare.Admin.Shared
+@using HealthCare.Admin.Components
+
+@page "/patients"
+@inject ConfirmModalService ModalService
+
+<h2 class="fw-bold mb-1">Patient Management</h2>
+<p class="text-muted mb-4">Manage patients and their insurance details</p>
+
+<!-- Top Actions -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+    <!-- Search -->
+    <input class="form-control w-25"
+           placeholder="Search by name..."
+           @bind="searchText"
+           @bind:after="LoadData" />
+
+    <!-- Add Button -->
+    <button class="btn btn-primary" @onclick="() => addPatientModal.Show()">
+        <i class="bi bi-plus-lg me-1"></i> Add Patient
+    </button>
+</div>
+
+<!-- Filter + Stats -->
+<div class="row mb-4">
+
+    <!-- Insurance Filter -->
+    <div class="col-md-4">
+        <div class="card shadow-sm border-0 rounded-4">
+            <div class="card-body">
+                <label class="form-label fw-semibold small text-muted">FILTER BY INSURANCE</label>
+                <select class="form-select"
+                        @bind="selectedInsurance"
+                        @bind:after="LoadData">
+                    <option value="">All</option>
+                    <option value="insured">Insured</option>
+                    <option value="notinsured">Not Insured</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="col-md-8">
+        <div class="row g-3">
+
+            <div class="col">
+                <div class="card shadow-sm border-0 rounded-4 text-center p-3">
+                    <h6 class="text-muted">Total Patients</h6>
+                    <h4 class="fw-bold">@filteredPatients.Count</h4>
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="card shadow-sm border-0 rounded-4 text-center p-3">
+                    <h6 class="text-muted">Active</h6>
+                    <h4 class="fw-bold text-success">
+                        @filteredPatients.Count(p => p.IsActive)
+                    </h4>
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="card shadow-sm border-0 rounded-4 text-center p-3">
+                    <h6 class="text-muted">Inactive</h6>
+                    <h4 class="fw-bold text-secondary">
+                        @filteredPatients.Count(p => !p.IsActive)
+                    </h4>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- Table -->
+<div class="card shadow-sm border-0 rounded-4">
+    <div class="card-body p-0">
+
+        <table class="table table-hover align-middle mb-0">
+
+            <thead class="table-light">
+                <tr>
+                    <th class="ps-4">Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Gender</th>
+                    <th>Insurance</th>
+                    <th>Status</th>
+                    <th class="text-end pe-4">Actions</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @if (patients.Count == 0)
+                {
+                    <tr>
+                        <td colspan="7" class="text-center py-4">
+                            No patients found
+                        </td>
+                    </tr>
+                }
+                else
+                {
+                    @foreach (var patient in patients)
+                    {
+                        <tr>
+
+                            <td class="ps-4 fw-semibold">@patient.FullName</td>
+
+                            <td>@patient.Email</td>
+
+                            <td>@patient.PhoneNumber</td>
+
+                            <td>@patient.Gender</td>
+
+                            <td>
+                                @if (patient.InsuranceId != null)
+                                {
+                                    <span class="badge bg-success-subtle text-success">
+                                        Insured
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-warning-subtle text-dark">
+                                        Not Insured
+                                    </span>
+                                }
+                            </td>
+
+                            <td>
+                                @if (patient.IsActive)
+                                {
+                                    <span class="badge bg-success">Active</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">Inactive</span>
+                                }
+                            </td>
+
+                            <!-- ACTION BUTTONS -->
+                            <td class="text-end pe-4">
+                                <div class="d-flex justify-content-end gap-2">
+
+                                    <button class="btn btn-light border rounded-circle p-2"
+                                            title="View"
+                                            @onclick="() => ViewPatient(patient.PatientId)">
+                                        <i class="bi bi-eye fs-5"></i>
+                                    </button>
+
+                                    <button class="btn btn-light border rounded-circle p-2"
+                                            title="Edit"
+                                            @onclick="() => EditPatient(patient)">
+                                        <i class="bi bi-pencil fs-5"></i>
+                                    </button>
+
+                                    <button class="btn btn-light border rounded-circle p-2 text-danger"
+                                            title="Delete"
+                                            @onclick="() => DeletePatient(patient.PatientId)">
+                                        <i class="bi bi-trash fs-5"></i>
+                                    </button>
+
+                                </div>
+                            </td>
+
+                        </tr>
+                    }
+                }
+            </tbody>
+
+        </table>
+    </div>
+</div>
+
+<AddPatientModal @ref="addPatientModal" OnSuccess="LoadData" />
+<EditPatientModal @ref="editPatientModal" OnSuccess="LoadData" />
+
+
+@code {
+    private AddPatientModal addPatientModal;
+    private EditPatientModal editPatientModal;
+
+    private List<PatientListDto> patients = new();
+    private List<PatientListDto> filteredPatients = new();
+
+    private string selectedInsurance = "";
+    private string searchText = "";
+
+    protected override void OnInitialized()
+    {
+        LoadDummyData();
+        LoadData();
+    }
+
+    private async Task LoadData()
+    {
+        // isLoading = true;
+
+        try
+        {
+            // Example API call (adjust to your service)
+            // patients = await PatientService.GetAllAsync(
+            //     selectedInsurance,
+            //     searchText
+            // );
+
+            // filteredPatients = patients;
+        }
+        finally
+        {
+            // isLoading = false;
+        }
+    }
+
+    private void LoadDummyData()
+    {
+        patients = new List<PatientListDto>
+{
+    new() { PatientId = 1, FullName = "Arjun Kumar", Email = "arjun@gmail.com", PhoneNumber = "9876543210", Gender = "Male", InsuranceId = "1", IsActive = true },
+    new() { PatientId = 2, FullName = "Meera Nair", Email = "meera@gmail.com", PhoneNumber = "9876543211", Gender = "Female", InsuranceId = null, IsActive = true },
+    new() { PatientId = 3, FullName = "Rahul Das", Email = "rahul@gmail.com", PhoneNumber = "9876543212", Gender = "Male", InsuranceId = "2", IsActive = false },
+    new() { PatientId = 4, FullName = "Anjali Menon", Email = "anjali@gmail.com", PhoneNumber = "9876543213", Gender = "Female", InsuranceId = "3", IsActive = true },
+    new() { PatientId = 5, FullName = "Vikram Singh", Email = "vikram@gmail.com", PhoneNumber = "9876543214", Gender = "Male", InsuranceId = null, IsActive = false },
+};
+    }
+
+    private void AddPatient()
+    {
+        Console.WriteLine("Add Patient clicked");
+    }
+
+    private void ViewPatient(int id)
+    {
+        Console.WriteLine($"View {id}");
+    }
+
+    private void EditPatient(PatientListDto patient)
+    {
+        var dto = new UpdatePatientDto
+        {
+            FullName = patient.FullName,
+            Email = patient.Email,
+            PhoneNumber = patient.PhoneNumber,
+            Gender = patient.Gender,
+            InsuranceId = patient.InsuranceId
+        };
+
+        editPatientModal.Show(patient.PatientId, dto);
+    }
+
+    private async Task DeletePatient(int id)
+    {
+        var confirmed = await ModalService.ShowAsync(
+            "Delete Patient",
+            "Are you sure you want to delete this patient?"
+        );
+
+        if (!confirmed)
+            return;
+
+        // Perform delete (for now simulate)
+        var patient = patients.FirstOrDefault(p => p.PatientId == id);
+        if (patient != null)
+        {
+            patients.Remove(patient);
+        }
+
+        // Refresh UI
+        LoadData();
+
+        // Show toast (optional but recommended)
+        // ToastService.ShowSuccess("Patient deleted successfully");
+    }
+}

@@ -2,13 +2,10 @@
 using HealthCare.Api.Data;
 using HealthCare.Api.DTOs;
 using HealthCare.Api.DTOs.Appointment;
-using HealthCare.Api.DTOs.Patient;
 using HealthCare.Api.Models;
 using HealthCare.Api.Repositories.Interfaces;
 using HealthCare.Api.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Conventions;
-using System.Linq.Expressions;
 
 namespace HealthCare.Api.Services.Implementations
 {
@@ -39,43 +36,56 @@ namespace HealthCare.Api.Services.Implementations
 
         public async Task<PagedResult<AppointmentListDto>> GetAllAsync(AppointmentFilter filter)
         {
-            // Build predicate (filtering)
-            Expression<Func<Appointment, bool>>? predicate = null;
+            var query = _repository.GetQueryable();
 
-            if (!string.IsNullOrWhiteSpace(filter.Status) && filter.ScheduledDate.HasValue)
+            // Search by patient OR doctor name
+            if (!string.IsNullOrWhiteSpace(filter.Search))
             {
-                predicate = a =>
-                    a.Status == filter.Status &&
-                    a.ScheduledDate == filter.ScheduledDate.Value;
-            }
-            else if (!string.IsNullOrWhiteSpace(filter.Status))
-            {
-                predicate = a => a.Status == filter.Status;
-            }
-            else if (filter.ScheduledDate.HasValue)
-            {
-                predicate = a => a.ScheduledDate == filter.ScheduledDate.Value;
+                query = query.Where(a =>
+                    a.Patient.FullName.Contains(filter.Search) ||
+                    a.Doctor.FullName.Contains(filter.Search));
             }
 
-            // Ordering (by scheduled date)
-            Func<IQueryable<Appointment>, IOrderedQueryable<Appointment>> orderBy =
-                q => q.OrderBy(a => a.ScheduledDate);
+            // Filter by status
+            if (!string.IsNullOrWhiteSpace(filter.Status))
+            {
+                query = query.Where(a => a.Status == filter.Status);
+            }
 
-            // Call repository
-            var pagedResult = await _repository.GetAllAsync(
-                filter.PageNumber,
-                filter.PageSize,
-                predicate,
-                orderBy
-            );
+            // Sorting by Scheduled Date
+            if (filter.IsDescending)
+            {
+                query = query.OrderByDescending(a => a.ScheduledDate);
+            }
+            else
+            {
+                query = query.OrderBy(a => a.ScheduledDate);
+            }
 
-            // Map result
+            // Total count
+            var totalCount = await query.CountAsync();
+
+            // Pagination
+            var items = await query
+                .Skip((filter.PageNumber - 1) * filter.PageSize)
+                .Take(filter.PageSize)
+                .Select(a => new AppointmentListDto
+                {
+                    AppointmentId = a.AppointmentId,
+                    PatientName = a.Patient.FullName,
+                    DoctorName = a.Doctor.FullName,
+                    ScheduledDate = a.ScheduledDate,
+                    TimeSlot = a.TimeSlot,
+                    Status = a.Status
+                })
+                .ToListAsync();
+
             return new PagedResult<AppointmentListDto>
             {
-                Items = _mapper.Map<IEnumerable<AppointmentListDto>>(pagedResult.Items),
-                PageNumber = pagedResult.PageNumber,
-                PageSize = pagedResult.PageSize,
-                TotalCount = pagedResult.TotalCount
+                Items = items,
+                PageNumber = filter.PageNumber,
+                PageSize = filter.PageSize,
+                TotalCount = totalCount
             };
         }
 
@@ -166,11 +176,16 @@ namespace HealthCare.Api.Services.Implementations
             return true;
         }
 
-        public async Task<List<AppointmentReportDto>> GetDailyReport()
+        public async Task<List<AppointmentReportDto>> GetReport(AppointmentReportFilter filter)
         {
-            var report = await _repository.GetDailyReport();
+            var fromDate = filter.FromDate ?? DateOnly.FromDateTime(DateTime.Today.AddDays(-7));
+            var toDate = filter.ToDate ?? DateOnly.FromDateTime(DateTime.Today);
+
+            var report = await _repository.GetReport(fromDate, toDate);
+
             return report.Count == 0 ? new List<AppointmentReportDto>() : report;
         }
+
 
         public async Task<List<AppointmentListDto>> GetDoctorSchedule(DateOnly date, int id)
         {
@@ -201,5 +216,12 @@ namespace HealthCare.Api.Services.Implementations
             await _repository.CancelAppointmentsByDoctorDate(doctorId, date);
             await _context.SaveChangesAsync();
         }
+
+        public async Task<AppointmentSummaryDto> GetSummaryAsync()
+        {
+            var summary = await _repository.GetSummaryAsync();
+            return summary;
+        }
+
     }
 }

@@ -10,6 +10,11 @@ namespace HealthCare.Api.Repositories.Implementations
     {
         public DoctorRepository(HealthCareDbContext context) : base(context) { }
 
+        public IQueryable<Doctor> GetQueryable()
+        {
+            return _dbSet.AsQueryable();
+        }
+
         public async Task<Doctor?> GetByUserIdAsync(string userId)
         {
             return await _context.Doctors
@@ -70,6 +75,21 @@ namespace HealthCare.Api.Repositories.Implementations
                     IsActive = d.IsActive
                 })
                 .ToListAsync();
+        }
+
+        public async Task<DoctorSummaryDto> GetSummaryAsync()
+        {
+            var result = await _dbSet
+                .GroupBy(d => 1)
+                .Select(g => new DoctorSummaryDto
+                {
+                    TotalDoctors = g.Count(),
+                    ActiveDoctors = g.Count(d => d.IsActive),
+                    InactiveDoctors = g.Count(d => d.IsActive == false)
+                })
+                .FirstOrDefaultAsync();
+
+            return result ?? new DoctorSummaryDto();
         }
     }
 }

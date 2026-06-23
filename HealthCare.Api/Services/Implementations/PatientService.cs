@@ -6,20 +6,21 @@ using HealthCare.Api.Models;
 using HealthCare.Api.Repositories.Interfaces;
 using HealthCare.Api.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using System.Linq.Expressions;
 
 namespace HealthCare.Api.Services.Implementations
 {
     public class PatientService : IPatientService
     {
         private readonly IRepository<Patient> _repository;
+        private readonly IPatientRepository _patientRepository;
         private readonly HealthCareDbContext _context;
         private readonly IMapper _mapper;
         private const string NotFoundExceptionMessage = "Patient not found.";
 
-        public PatientService(IRepository<Patient> repository, HealthCareDbContext context, IMapper mapper)
+        public PatientService(IRepository<Patient> repository, IPatientRepository patientRepository, HealthCareDbContext context, IMapper mapper)
         {
             _repository = repository;
+            _patientRepository = patientRepository;
             _context = context;
             _mapper = mapper;
         }
@@ -36,34 +37,49 @@ namespace HealthCare.Api.Services.Implementations
 
         public async Task<PagedResult<PatientListDto>> GetAllAsync(PatientFilter filter)
         {
-            // Build predicate
-            Expression<Func<Patient, bool>>? predicate = null;
+            var query = _patientRepository.GetQueryable(); // Get IQueryable from repo
 
+            // Search by name
+            if (!string.IsNullOrWhiteSpace(filter.Search))
+            {
+                query = query.Where(p =>
+                    p.FullName.Contains(filter.Search));
+            }
+
+            // Insurance filter
             if (filter.HasInsurance == true)
             {
-                predicate = p => p.InsuranceId != null;
+                query = query.Where(p => p.InsuranceId != null);
             }
             else if (filter.HasInsurance == false)
             {
-                predicate = p => p.InsuranceId == null;
+                query = query.Where(p => p.InsuranceId == null);
             }
 
-            // Call repository (no ordering needed here)
-            var pagedResult = await _repository.GetAllAsync(
-                filter.PageNumber,
-                filter.PageSize,
-                predicate
-            );
+            // Active status
+            if (filter.IsActive.HasValue)
+            {
+                query = query.Where(p => p.IsActive == filter.IsActive.Value);
+            }
+
+            // Pagination
+            var totalCount = await query.CountAsync();
+
+            var items = await query
+                .Skip((filter.PageNumber - 1) * filter.PageSize)
+                .Take(filter.PageSize)
+                .ToListAsync();
 
             // Map result
             return new PagedResult<PatientListDto>
             {
-                Items = _mapper.Map<IEnumerable<PatientListDto>>(pagedResult.Items),
-                PageNumber = pagedResult.PageNumber,
-                PageSize = pagedResult.PageSize,
-                TotalCount = pagedResult.TotalCount
+                Items = _mapper.Map<IEnumerable<PatientListDto>>(items),
+                PageNumber = filter.PageNumber,
+                PageSize = filter.PageSize,
+                TotalCount = totalCount
             };
         }
+
 
         public async Task AddAsync(CreatePatientDto dto)
         {
@@ -115,5 +131,8 @@ namespace HealthCare.Api.Services.Implementations
                 throw new InvalidOperationException("Failed to delete patient. It may be referenced by existing appointments or health records.", ex);
             }
         }
+
+        public async Task<PatientSummaryDto> GetSummaryAsync() => 
+            await _patientRepository.GetSummaryAsync();
     }
 }

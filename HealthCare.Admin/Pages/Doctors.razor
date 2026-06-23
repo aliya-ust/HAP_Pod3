@@ -1,86 +1,226 @@
-﻿@using HealthCare.Admin.Shared
+﻿@using HealthCare.Admin.Components
 @using HealthCare.Api.DTOs.Doctor
+@using HealthCare.Admin.Shared
+
 
 @page "/doctors"
-@* @inject IDoctorService DoctorService *@
 @inject ConfirmModalService ModalService
-@inject NotificationService ToastService
 
-<h3 class="mb-4">Doctor Management</h3>
+<div class="container-fluid py-4">
 
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold mb-1">Doctor Management</h2>
+            <p class="text-muted mb-0">Manage doctors, availability, and details</p>
+        </div>
+
+        <button class="btn btn-primary shadow-sm px-3" @onclick="() => addModal.Show()">
+            <i class="bi bi-plus-lg me-2"></i> Add Doctor
+        </button>
+    </div>
+
+    <!-- Filters + Stats -->
+    <div class="row mb-4">
+
+        <!-- Filter Card -->
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 rounded-4">
+                <div class="card-body">
+                    <label class="form-label fw-semibold text-muted small">FILTER BY SPECIALISATION</label>
+                    <select class="form-select"
+                            @bind="selectedSpecialisation"
+                            @bind:after="LoadData">
+                        <option value="">All Specialisations</option>
+                        @foreach (var spec in specialisations)
+                        {
+                            <option value="@spec">@spec</option>
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Optional Stats Cards -->
+        <div class="col-md-8">
+            <div class="row g-3">
+                <div class="col">
+                    <div class="card shadow-sm border-0 rounded-4 text-center p-3">
+                        <h6 class="text-muted">Total Doctors</h6>
+                        <h4 class="fw-bold">@doctors.Count</h4>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card shadow-sm border-0 rounded-4 text-center p-3">
+                        <h6 class="text-muted">Active</h6>
+                        <h4 class="fw-bold text-success">
+                            @doctors.Count(d => d.IsActive)
+                        </h4>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card shadow-sm border-0 rounded-4 text-center p-3">
+                        <h6 class="text-muted">Inactive</h6>
+                        <h4 class="fw-bold text-secondary">
+                            @doctors.Count(d => !d.IsActive)
+                        </h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Table Card -->
+    <div class="card shadow-sm border-0 rounded-4">
+        <div class="card-body p-0">
+
+            <AdminTable TItem="DoctorListDto"
+                        Items="doctors"
+                        IsLoading="isLoading"
+                        ColumnCount="6"
+                        EmptyText="No doctors match the selected filter.">
+
+                <!-- Table Header -->
+                <HeaderTemplate>
+                    <th class="ps-4">Name</th>
+                    <th>Specialisation</th>
+                    <th>Experience</th>
+                    <th>Fee</th>
+                    <th>Status</th>
+                    <th class="text-end pe-4">Actions</th>
+                </HeaderTemplate>
+
+                <!-- Table Rows -->
+                <RowTemplate Context="doctor">
+                    <tr class="align-middle">
+
+                        <td class="ps-4 fw-semibold">
+                            @doctor.FullName
+                        </td>
+
+                        <td>
+                            <span class="badge bg-light text-dark border">
+                                @doctor.Specialisation
+                            </span>
+                        </td>
+
+                        <td>
+                            @doctor.YearsOfExperience yrs
+                        </td>
+
+                        <td class="fw-semibold text-primary">
+                            @doctor.ConsultationFee.ToString("C")
+                        </td>
+
+                        <td>
+                            @if (doctor.IsActive)
+                            {
+                                <span class="badge bg-success-subtle text-success">
+                                    ● Active
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary-subtle text-secondary">
+                                    ● Inactive
+                                </span>
+                            }
+                        </td>
+
+                        <td class="text-end pe-4">
+                            <div class="d-flex justify-content-end gap-2">
+
+                                <button class="btn btn-light border rounded-circle p-2"
+                                        title="View"
+                                        @onclick="() => ViewDoctor(doctor.DoctorId)">
+                                    <i class="bi bi-eye fs-5"></i>
+                                </button>
+
+                                <button class="btn btn-light border rounded-circle p-2"
+                                        title="Edit"
+                                        @onclick="() => EditDoctor(doctor)">
+                                    <i class="bi bi-pencil fs-5"></i>
+                                </button>
+
+                                <button class="btn btn-light border rounded-circle p-2 text-danger"
+                                        title="Delete"
+                                        @onclick="() => DeleteDoctor(doctor.DoctorId)">
+                                    <i class="bi bi-trash fs-5"></i>
+                                </button>
+
+                            </div>
+                        </td>
+                    </tr>
+                </RowTemplate>
+
+            </AdminTable>
+        </div>
+    </div>
+
+</div>
+
+<!-- Modals -->
 <AddDoctorModal @ref="addModal" OnSuccess="LoadData" />
 <EditDoctorModal @ref="editModal" OnSuccess="LoadData" />
 
-<div class="row g-3 mb-4">
-    @* StatCards... *@
-</div>
-
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <select class="form-select w-auto" @bind="selectedSpecialisation" @bind:after="LoadData">
-        <option value="">All Specialisations</option>
-        @foreach (var spec in specialisations)
-        {
-            <option value="@spec">@spec</option>
-        }
-    </select>
-
-    <button class="btn btn-primary" @onclick="() => addModal.Show()">
-        <i class="bi bi-plus-lg me-1"></i> Add New
-    </button>
-</div>
-
-<AdminTable TItem="DoctorListDto" Items="doctors" IsLoading="isLoading" ColumnCount="6"
-            EmptyText="No doctors match the selected filter.">
-    <HeaderTemplate>
-        <th>Name</th>
-        <th>Specialisation</th>
-        <th>Experience</th>
-        <th>Consultation Fee</th>
-        <th>Status</th>
-        <th class="text-end">Actions</th>
-    </HeaderTemplate>
-    <RowTemplate Context="doctor">
-        <tr>
-            <td>@doctor.FullName</td>
-            <td>@doctor.Specialisation</td>
-            <td>@doctor.YearsOfExperience yrs</td>
-            <td>@doctor.ConsultationFee.ToString("C")</td>
-            <td>
-                @if (doctor.IsActive)
-                {
-                    <span class="badge bg-success">Active</span>
-                }
-                else
-                {
-                    <span class="badge bg-secondary">Inactive</span>
-                }
-            </td>
-            <td class="text-end">
-                <div class="btn-group btn-group-sm">
-                    <button class="btn btn-outline-primary" @onclick="() => ViewDoctor(doctor.DoctorId)">
-                        <i class="bi bi-eye"></i>
-                    </button>
-                    <button class="btn btn-outline-secondary" @onclick="() => EditDoctor(doctor)">
-                        <i class="bi bi-pencil"></i>
-                    </button>
-                    <button class="btn btn-outline-danger" @onclick="() => DeleteDoctor(doctor.DoctorId)">
-                        <i class="bi bi-trash"></i>
-                    </button>
-                </div>
-            </td>
-        </tr>
-    </RowTemplate>
-</AdminTable>
-
 @code {
-    private List<DoctorListDto> doctors = new();
+    private EditDoctorModal editModal;
+
+    private List<DoctorListDto> doctors = new()
+{
+    new DoctorListDto
+    {
+        DoctorId = 1,
+        FullName = "Dr. Arjun Nair",
+        Specialisation = "Cardiologist",
+        YearsOfExperience = 12,
+        ConsultationFee = 800,
+        IsActive = true
+    },
+    new DoctorListDto
+    {
+        DoctorId = 2,
+        FullName = "Dr. Meera Joseph",
+        Specialisation = "Dermatologist",
+        YearsOfExperience = 8,
+        ConsultationFee = 600,
+        IsActive = true
+    },
+    new DoctorListDto
+    {
+        DoctorId = 3,
+        FullName = "Dr. Rahul Menon",
+        Specialisation = "Orthopedic",
+        YearsOfExperience = 15,
+        ConsultationFee = 1000,
+        IsActive = false
+    },
+    new DoctorListDto
+    {
+        DoctorId = 4,
+        FullName = "Dr. Sneha Reddy",
+        Specialisation = "Pediatrician",
+        YearsOfExperience = 6,
+        ConsultationFee = 500,
+        IsActive = true
+    },
+    new DoctorListDto
+    {
+        DoctorId = 5,
+        FullName = "Dr. Vikram Iyer",
+        Specialisation = "Neurologist",
+        YearsOfExperience = 10,
+        ConsultationFee = 1200,
+        IsActive = false
+    }
+};
     private List<string> specialisations = new();
     private string selectedSpecialisation = string.Empty;
     private bool isLoading = false;
 
     // Component References
     private AddDoctorModal addModal;
-    private EditDoctorModal editModal;
 
     protected override async Task OnInitializedAsync()
     {
@@ -98,16 +238,16 @@
 
     private void EditDoctor(DoctorListDto doctor)
     {
-        // Create DTO from the list item
-        var updateDto = new UpdateDoctorDto
+        var dto = new UpdateDoctorDto
         {
             FullName = doctor.FullName,
             Specialisation = doctor.Specialisation,
             YearsOfExperience = doctor.YearsOfExperience
         };
 
-        editModal.Show(doctor.DoctorId, updateDto);
+        editModal.Show(doctor.DoctorId, dto);
     }
+
 
     private async Task DeleteDoctor(int id)
     {

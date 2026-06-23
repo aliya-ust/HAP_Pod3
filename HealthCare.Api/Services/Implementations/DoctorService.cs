@@ -38,42 +38,65 @@ namespace HealthCare.Api.Services.Implementations
 
         public async Task<PagedResult<DoctorListDto>> GetAllAsync(DoctorFilter filter)
         {
-            // Build predicate (filtering)
-            Expression<Func<Doctor, bool>>? predicate = null;
+            var query = _repository.GetQueryable();
 
-            if (!string.IsNullOrWhiteSpace(filter.Specialisation) && filter.MinExperience.HasValue)
+            // Search by name
+            if (!string.IsNullOrWhiteSpace(filter.Search))
             {
-                predicate = d => d.Specialisation == filter.Specialisation
-                              && d.YearsOfExperience >= filter.MinExperience.Value;
-            }
-            else if (!string.IsNullOrWhiteSpace(filter.Specialisation))
-            {
-                predicate = d => d.Specialisation == filter.Specialisation;
-            }
-            else if (filter.MinExperience.HasValue)
-            {
-                predicate = d => d.YearsOfExperience >= filter.MinExperience.Value;
+                query = query.Where(d =>
+                    d.FullName.Contains(filter.Search));
             }
 
-            // Ordering (by experience)
-            Func<IQueryable<Doctor>, IOrderedQueryable<Doctor>> orderBy =
-                q => q.OrderByDescending(d => d.YearsOfExperience);
+            // Filter by specialisation
+            if (!string.IsNullOrWhiteSpace(filter.Specialisation))
+            {
+                query = query.Where(d => d.Specialisation == filter.Specialisation);
+            }
 
-            // Call repository
-            var pagedResult = await _repository.GetAllAsync(
-                filter.PageNumber,
-                filter.PageSize,
-                predicate,
-                orderBy
-            );
+            // Filter by active status
+            if (filter.IsActive.HasValue)
+            {
+                query = query.Where(d => d.IsActive == filter.IsActive.Value);
+            }
+
+            // Sorting
+            if (!string.IsNullOrWhiteSpace(filter.SortBy))
+            {
+                query = filter.SortBy.ToLower() switch
+                {
+                    "experience" => filter.IsDescending
+                        ? query.OrderByDescending(d => d.YearsOfExperience)
+                        : query.OrderBy(d => d.YearsOfExperience),
+
+                    "fee" => filter.IsDescending
+                        ? query.OrderByDescending(d => d.ConsultationFee)
+                        : query.OrderBy(d => d.ConsultationFee),
+
+                    _ => query
+                };
+            }
+            else
+            {
+                // Default sort
+                query = query.OrderByDescending(d => d.YearsOfExperience);
+            }
+
+            // Total count
+            var totalCount = await query.CountAsync();
+
+            // Pagination
+            var items = await query
+                .Skip((filter.PageNumber - 1) * filter.PageSize)
+                .Take(filter.PageSize)
+                .ToListAsync();
 
             // Map result
             return new PagedResult<DoctorListDto>
             {
-                Items = _mapper.Map<IEnumerable<DoctorListDto>>(pagedResult.Items),
-                PageNumber = pagedResult.PageNumber,
-                PageSize = pagedResult.PageSize,
-                TotalCount = pagedResult.TotalCount
+                Items = _mapper.Map<IEnumerable<DoctorListDto>>(items),
+                PageNumber = filter.PageNumber,
+                PageSize = filter.PageSize,
+                TotalCount = totalCount
             };
         }
 
@@ -194,5 +217,8 @@ namespace HealthCare.Api.Services.Implementations
 
         public async Task<List<DoctorListDto>> AvailableDoctors(string specialisation, DateOnly date) =>
             await _repository.AvailableDoctors(specialisation, date);
+
+        public async Task<DoctorSummaryDto> GetSummaryAsync() =>
+            await _repository.GetSummaryAsync();
     }
 }

@@ -10,5 +10,6 @@ namespace HealthCare.Api.DTOs.Patient
         public string PhoneNumber { get; set; } = null!;
         public string Gender { get; set; } = null!;
         public string InsuranceId { get; set; } = null!;
+        public bool IsActive { get; set; } = true;
     }
 }

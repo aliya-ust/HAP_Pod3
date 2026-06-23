@@ -1,14 +1,16 @@
-﻿namespace HealthCare.Api.DTOs.Appointment
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace HealthCare.Api.DTOs.Appointment
 {
-    public class AppointmentReportDto
+    public class AppointmentSummaryDto
     {
-        public DateOnly Date { get; set; }
         public int PendingCount { get; set; }
         public int ConfirmedCount { get; set; }
-
         public int CancelledCount { get; set; }
-
         public int CompletedCount { get; set; }
-        public decimal Revenue { get; set; }
+
+        public decimal TotalRevenue { get; set; }
     }
 }

@@ -11,6 +11,11 @@ namespace HealthCare.Api.Repositories.Implementations
         private const string Cancelled = "Cancelled";
         public AppointmentRepository(HealthCareDbContext context) : base(context) { }
 
+        public IQueryable<Appointment> GetQueryable()
+        {
+            return _dbSet.AsQueryable();
+        }
+
         public async Task<List<string>> BookedTimeSlots(DateOnly date, int doctorId) =>
             await _dbSet
                 .Where(a => a.ScheduledDate == date
@@ -30,20 +35,26 @@ namespace HealthCare.Api.Repositories.Implementations
             return !exists;
         }
 
-        public async Task<List<AppointmentReportDto>> GetDailyReport() =>
-            await _dbSet
-                .Where(a => a.ScheduledDate >= DateOnly.FromDateTime(DateTime.Today.AddDays(-30)))
+        public async Task<List<AppointmentReportDto>> GetReport(DateOnly fromDate, DateOnly toDate)
+        {
+            return await _dbSet
+                .Where(a => a.ScheduledDate >= fromDate && a.ScheduledDate <= toDate)
                 .GroupBy(a => a.ScheduledDate)
                 .Select(g => new AppointmentReportDto
                 {
                     Date = g.Key,
                     PendingCount = g.Count(a => a.Status == "Pending"),
                     ConfirmedCount = g.Count(a => a.Status == "Confirmed"),
-                    CancelledCount = g.Count(a => a.Status == Cancelled),
-                    CompletedCount = g.Count(a => a.Status == "Completed")
+                    CancelledCount = g.Count(a => a.Status == "Cancelled"),
+                    CompletedCount = g.Count(a => a.Status == "Completed"),
+
+                    Revenue = g
+                        .Where(a => a.Status == "Completed")
+                        .Sum(a => a.Doctor.ConsultationFee)
                 })
                 .OrderBy(r => r.Date)
                 .ToListAsync();
+        }
 
         public async Task<List<AppointmentListDto>> GetDoctorSchedule(DateOnly date, int id) =>
             await _dbSet
@@ -114,6 +125,30 @@ namespace HealthCare.Api.Repositories.Implementations
                 appointment.Status = Cancelled;
                 appointment.CancellationReason = "Doctor on leave";
             }
+        }
+
+        public async Task<AppointmentSummaryDto> GetSummaryAsync()
+        {
+            var fromDate = DateOnly.FromDateTime(DateTime.Today.AddDays(-30));
+            var toDate = DateOnly.FromDateTime(DateTime.Today);
+
+            var result = await _dbSet
+                .Where(a => a.ScheduledDate >= fromDate && a.ScheduledDate <= toDate)
+                .GroupBy(a => 1)
+                .Select(g => new AppointmentSummaryDto
+                {
+                    PendingCount = g.Count(a => a.Status == "Pending"),
+                    ConfirmedCount = g.Count(a => a.Status == "Confirmed"),
+                    CancelledCount = g.Count(a => a.Status == "Cancelled"),
+                    CompletedCount = g.Count(a => a.Status == "Completed"),
+
+                    TotalRevenue = g
+                        .Where(a => a.Status == "Completed")
+                        .Sum(a => a.Doctor.ConsultationFee)
+                })
+                .FirstOrDefaultAsync();
+
+            return result ?? new AppointmentSummaryDto();
         }
     }
 }

@@ -33,9 +33,21 @@ namespace HealthCare.Api.Controllers
         [HttpGet("report")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> GetDailyReport()
+        public async Task<IActionResult> GetReport([FromQuery] AppointmentReportFilter filter)
         {
-            var result = await _appointmentService.GetDailyReport();
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var result = await _appointmentService.GetReport(filter);
+            return Ok(result);
+        }
+
+        [HttpGet("summary")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> GetSummary()
+        {
+            var result = await _appointmentService.GetSummaryAsync();
             return Ok(result);
         }
     }

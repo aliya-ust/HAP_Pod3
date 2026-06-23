@@ -1,0 +1,129 @@
+﻿@using HealthCare.Api.DTOs.Patient
+
+@if (isVisible)
+{
+    <div class="modal fade show d-block">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content shadow-lg border-0 rounded-4">
+
+                <!-- Header -->
+                <div class="modal-header bg-primary text-white rounded-top-4">
+                    <h5 class="modal-title fw-bold">Add New Patient</h5>
+                    <button class="btn-close btn-close-white" @onclick="Close"></button>
+                </div>
+
+                <!-- Body -->
+                <div class="modal-body p-4">
+
+                    <EditForm Model="createDto" OnValidSubmit="HandleSubmit">
+                        <DataAnnotationsValidator />
+
+                        <div class="row g-3">
+
+                            <!-- Full Name -->
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Full Name</label>
+                                <InputText class="form-control" @bind-Value="createDto.FullName" />
+                                <ValidationMessage For="@(() => createDto.FullName)" />
+                            </div>
+
+                            <!-- Email -->
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Email</label>
+                                <InputText class="form-control" @bind-Value="createDto.Email" />
+                                <ValidationMessage For="@(() => createDto.Email)" />
+                            </div>
+
+                            <!-- Phone -->
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Phone Number</label>
+                                <InputText class="form-control" @bind-Value="createDto.PhoneNumber" />
+                                <ValidationMessage For="@(() => createDto.PhoneNumber)" />
+                            </div>
+
+                            <!-- Gender -->
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Gender</label>
+                                <InputSelect class="form-select" @bind-Value="createDto.Gender">
+                                    <option value="">-- Select Gender --</option>
+                                    <option>Male</option>
+                                    <option>Female</option>
+                                    <option>Other</option>
+                                </InputSelect>
+                                <ValidationMessage For="@(() => createDto.Gender)" />
+                            </div>
+
+                            <!-- Date of Birth -->
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Date of Birth</label>
+                                <InputDate class="form-control" @bind-Value="createDto.DateOfBirth" />
+                                <ValidationMessage For="@(() => createDto.DateOfBirth)" />
+                            </div>
+
+                            <!-- Password -->
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Password</label>
+                                <InputText type="password" class="form-control" @bind-Value="createDto.Password" />
+                                <ValidationMessage For="@(() => createDto.Password)" />
+                            </div>
+
+                            <!-- Insurance -->
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Insurance ID (Optional)</label>
+                                <InputText class="form-control" @bind-Value="createDto.InsuranceId" />
+                                <small class="text-muted">Leave empty if no insurance</small>
+                                <ValidationMessage For="@(() => createDto.InsuranceId)" />
+                            </div>
+
+                        </div>
+
+                        <!-- Footer -->
+                        <div class="d-flex justify-content-end gap-2 mt-4">
+                            <button type="button" class="btn btn-outline-secondary"
+                                    @onclick="Close">
+                                Cancel
+                            </button>
+
+                            <button type="submit" class="btn btn-primary px-4">
+                                Save Patient
+                            </button>
+                        </div>
+
+                    </EditForm>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Backdrop -->
+    <div class="modal-backdrop fade show"></div>
+}
+
+@code {
+    [Parameter] public EventCallback OnSuccess { get; set; }
+
+    private CreatePatientDto createDto = new();
+    private bool isVisible = false;
+
+    public void Show()
+    {
+        createDto = new(); // reset form
+        isVisible = true;
+        StateHasChanged();
+    }
+
+    private void Close()
+    {
+        isVisible = false;
+    }
+
+    private async Task HandleSubmit()
+    {
+        // Call API here
+        // await PatientService.CreateAsync(createDto);
+
+        await OnSuccess.InvokeAsync();
+        Close();
+    }
+}

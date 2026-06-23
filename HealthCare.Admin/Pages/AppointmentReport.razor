@@ -1,0 +1,129 @@
+﻿@using HealthCare.Api.DTOs.Appointment
+
+@page "/appointments-report"
+
+<h2 class="fw-bold mb-1">Appointments Report</h2>
+<p class="text-muted mb-4">Daily appointment summary</p>
+
+<!-- Card Wrapper -->
+<div class="card shadow-sm border-0 rounded-4">
+    <div class="card-body p-0">
+
+        @if (isLoading)
+        {
+            <div class="text-center py-5">
+                <div class="spinner-border text-primary"></div>
+                <p class="mt-2 text-muted">Loading report...</p>
+            </div>
+        }
+        else if (reports.Count == 0)
+        {
+            <div class="text-center py-5">
+                <p>No data available</p>
+            </div>
+        }
+        else
+        {
+            <table class="table table-hover align-middle mb-0">
+
+                <thead class="table-light">
+                    <tr>
+                        <th class="ps-4">Date</th>
+                        <th>Pending</th>
+                        <th>Confirmed</th>
+                        <th>Cancelled</th>
+                        <th>Completed</th>
+                        <th class="pe-4 text-end">Total</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var item in reports)
+                    {
+                        <tr>
+
+                            <!-- Date -->
+                            <td class="ps-4 fw-semibold">
+                                @item.Date.ToString("dd MMM yyyy")
+                            </td>
+
+                            <!-- Pending -->
+                            <td>
+                                <span class="badge bg-warning-subtle text-dark">
+                                    @item.PendingCount
+                                </span>
+                            </td>
+
+                            <!-- Confirmed -->
+                            <td>
+                                <span class="badge bg-primary-subtle text-primary">
+                                    @item.ConfirmedCount
+                                </span>
+                            </td>
+
+                            <!-- Cancelled -->
+                            <td>
+                                <span class="badge bg-danger-subtle text-danger">
+                                    @item.CancelledCount
+                                </span>
+                            </td>
+
+                            <!-- Completed -->
+                            <td>
+                                <span class="badge bg-success-subtle text-success">
+                                    @item.CompletedCount
+                                </span>
+                            </td>
+
+                            <!-- Total -->
+                            <td class="pe-4 text-end fw-bold">
+                                @(item.PendingCount + item.ConfirmedCount + item.CancelledCount + item.CompletedCount)
+                            </td>
+
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+
+    </div>
+</div>
+
+@code {
+    private List<AppointmentReportDto> reports = new();
+    private bool isLoading = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadData();
+    }
+
+    private async Task LoadData()
+    {
+        isLoading = true;
+
+        try
+        {
+            // API CALL
+            // reports = await Http.GetFromJsonAsync<List<AppointmentReportDto>>("/api/admin/reports/appointments");
+
+            // TEMP DUMMY DATA
+            reports = GetDummyData();
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private List<AppointmentReportDto> GetDummyData()
+    {
+        return new()
+        {
+            new() { Date = DateOnly.FromDateTime(DateTime.Today), PendingCount = 5, ConfirmedCount = 10, CancelledCount = 2, CompletedCount = 8 },
+            new() { Date = DateOnly.FromDateTime(DateTime.Today.AddDays(-1)), PendingCount = 3, ConfirmedCount = 7, CancelledCount = 1, CompletedCount = 6 },
+            new() { Date = DateOnly.FromDateTime(DateTime.Today.AddDays(-2)), PendingCount = 4, ConfirmedCount = 9, CancelledCount = 3, CompletedCount = 5 },
+            new() { Date = DateOnly.FromDateTime(DateTime.Today.AddDays(-3)), PendingCount = 2, ConfirmedCount = 6, CancelledCount = 2, CompletedCount = 7 }
+        };
+    }
+}

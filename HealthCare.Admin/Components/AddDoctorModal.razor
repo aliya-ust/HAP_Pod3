@@ -1,0 +1,163 @@
+﻿@using HealthCare.Api.DTOs.Doctor
+
+@if (isVisible)
+{
+    <div class="modal fade show d-block">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content shadow-lg border-0 rounded-4">
+
+                <!-- Header -->
+                <div class="modal-header bg-primary text-white rounded-top-4">
+                    <h5 class="modal-title fw-bold">Add New Doctor</h5>
+                    <button class="btn-close btn-close-white" @onclick="Close"></button>
+                </div>
+
+                <!-- Body -->
+                <div class="modal-body p-4">
+                    <EditForm Model="createDto" OnValidSubmit="HandleSubmit">
+                        <DataAnnotationsValidator />
+
+                        <div class="row g-3">
+
+                            <!-- Full Name -->
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Full Name</label>
+                                <InputText class="form-control" @bind-Value="createDto.FullName" />
+                                <ValidationMessage For="@(() => createDto.FullName)" />
+                            </div>
+
+                            <!-- Email -->
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Email</label>
+                                <InputText class="form-control" @bind-Value="createDto.Email" />
+                                <ValidationMessage For="@(() => createDto.Email)" />
+                            </div>
+
+                            <!-- Password -->
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Password</label>
+                                <InputText type="password" class="form-control" @bind-Value="createDto.Password" />
+                                <ValidationMessage For="@(() => createDto.Password)" />
+                            </div>
+
+                            <!-- Specialization Dropdown -->
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Specialization</label>
+                                <InputSelect class="form-select" @bind-Value="createDto.Specialisation">
+                                    <option value="">-- Select --</option>
+                                    @foreach (var spec in Specializations)
+                                    {
+                                        <option value="@spec">@spec</option>
+                                    }
+                                </InputSelect>
+                                <ValidationMessage For="@(() => createDto.Specialisation)" />
+                            </div>
+
+                            <!-- Experience -->
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Years of Experience</label>
+                                <InputNumber class="form-control" @bind-Value="createDto.YearsOfExperience" />
+                                <ValidationMessage For="@(() => createDto.YearsOfExperience)" />
+                            </div>
+
+                            <!-- Fee -->
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Consultation Fee</label>
+                                <InputNumber class="form-control" @bind-Value="createDto.ConsultationFee" />
+                                <ValidationMessage For="@(() => createDto.ConsultationFee)" />
+                            </div>
+
+                            <!-- Time Slots -->
+                            <div class="col-12">
+                                <label class="form-label fw-semibold">Available Time Slots</label>
+                                <div class="row">
+                                    @foreach (var slot in AvailableSlots)
+                                    {
+                                        <div class="col-md-3 form-check">
+                                            <input class="form-check-input"
+                                                   type="checkbox"
+                                                   checked="@createDto.TimeSlots.Contains(slot)"
+                                                   @onchange="@(e => UpdateTimeSlots(slot, (bool)e.Value!))" />
+                                            <label class="form-check-label">@slot</label>
+                                        </div>
+                                    }
+                                </div>
+                                <ValidationMessage For="@(() => createDto.TimeSlots)" />
+                            </div>
+                        </div>
+
+                        <!-- Footer Buttons -->
+                        <div class="d-flex justify-content-end gap-2 mt-4">
+                            <button type="button" class="btn btn-outline-secondary" @onclick="Close">Cancel</button>
+                            <button type="submit" class="btn btn-primary px-4">Save</button>
+                        </div>
+
+                    </EditForm>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Backdrop -->
+    <div class="modal-backdrop fade show"></div>
+}
+
+
+@code {
+    // FIX: Add this parameter so the parent can pass the callback
+    [Parameter] public EventCallback OnSuccess { get; set; }
+
+    private List<string> Specializations = new()
+{
+    "Cardiologist",
+    "Dentist",
+    "Dermatologist",
+    "Neurologist",
+    "Orthopedic",
+    "Pediatrician"
+};
+
+
+    private CreateDoctorDto createDto = new();
+    private bool isVisible = false;
+
+    private List<string> AvailableSlots = new()
+    {
+        "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00"
+    };
+
+    private void UpdateTimeSlots(string slot, bool isChecked)
+    {
+        // Safety check to ensure the list is initialized
+        createDto.TimeSlots ??= new List<string>();
+
+        if (isChecked)
+        {
+            if (!createDto.TimeSlots.Contains(slot)) createDto.TimeSlots.Add(slot);
+        }
+        else
+        {
+            createDto.TimeSlots.Remove(slot);
+        }
+    }
+
+    public void Show()
+    {
+        Console.WriteLine("Show method was triggered!"); // Check F12 Console
+        createDto = new() { TimeSlots = new List<string>() };
+        isVisible = true;
+        StateHasChanged(); // Force re-render
+    }
+
+    private void Close() => isVisible = false;
+
+    private async Task HandleSubmit()
+    {
+        // TODO: Call your service here: await DoctorService.CreateAsync(createDto);
+
+        // FIX: Invoke the callback to tell the parent to refresh
+        await OnSuccess.InvokeAsync();
+        Close();
+    }
+}
