@@ -113,6 +113,7 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 var app = builder.Build();
+app.UseExceptionHandler();
 
 using (var scope = app.Services.CreateScope())
 {

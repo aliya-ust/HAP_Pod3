@@ -1,0 +1,49 @@
+﻿@typeparam TItem
+
+<div class="table-responsive">
+    <table class="table table-hover align-middle">
+        <thead class="table-light">
+            <tr>
+                @HeaderTemplate
+            </tr>
+        </thead>
+        <tbody>
+            @if (IsLoading)
+            {
+                <tr>
+                    <td colspan="@ColumnCount" class="text-center py-4">
+                        <span class="spinner-border spinner-border-sm text-primary me-2" role="status" aria-hidden="true"></span>
+                        <span class="text-muted">Loading...</span>
+                    </td>
+                </tr>
+            }
+            else if (Items is null || !Items.Any())
+            {
+                <tr>
+                    <td colspan="@ColumnCount" class="text-center py-4 text-muted">
+                        @EmptyText
+                    </td>
+                </tr>
+            }
+            else
+            {
+                @foreach (var item in Items)
+                {
+                    @RowTemplate(item)
+                }
+            }
+        </tbody>
+    </table>
+</div>
+
+@code {
+    [Parameter] public IEnumerable<TItem>? Items { get; set; }
+    [Parameter] public bool IsLoading { get; set; }
+    [Parameter] public RenderFragment? HeaderTemplate { get; set; }
+    [Parameter] public RenderFragment<TItem>? RowTemplate { get; set; }
+    [Parameter] public string EmptyText { get; set; } = "No records found.";
+
+    // Needed so the loading/empty row spans the full table width regardless of column count.
+    // Pages must supply this since the component has no way to count <th> elements in HeaderTemplate.
+    [Parameter] public int ColumnCount { get; set; } = 1;
+}

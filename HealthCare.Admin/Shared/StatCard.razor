@@ -1,0 +1,20 @@
+﻿<div class="card shadow-sm h-100">
+    <div class="card-body d-flex align-items-center">
+        <div class="flex-shrink-0 @Color">
+            <i class="bi @Icon fs-1"></i>
+        </div>
+        <div class="flex-grow-1 ms-3">
+            <div class="text-muted small text-uppercase">@Title</div>
+            <div class="fs-3 fw-semibold @Color">@Value</div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public string Title { get; set; } = string.Empty;
+    [Parameter] public string Value { get; set; } = string.Empty;
+    [Parameter] public string Icon { get; set; } = "bi-circle";
+
+    // Expected: a Bootstrap text color utility, e.g. "text-primary", "text-success", "text-danger"
+    [Parameter] public string Color { get; set; } = "text-primary";
+}

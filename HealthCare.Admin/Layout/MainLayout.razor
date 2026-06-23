@@ -1,0 +1,72 @@
+﻿@using HealthCare.Admin.Shared
+@inject NotificationService ToastService
+@implements IDisposable
+
+@inherits LayoutComponentBase
+<div class="page">
+    <div class="sidebar">
+        <NavMenu />
+    </div>
+
+    <div class="toast-container">
+        @foreach (var message in errors)
+        {
+            <div class="alert alert-danger">@message</div>
+        }
+    </div>
+
+    <ConfirmModal />
+
+    <main>
+        <div class="top-row px-4">
+            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
+        </div>
+
+        <article class="content px-4">
+            <ErrorBoundary @ref="errorBoundary">
+                <ChildContent>
+                    @Body
+                </ChildContent>
+                <ErrorContent>
+                    <div class="alert alert-danger">
+                        <h3>Something went wrong!</h3>
+                        <p>We've logged the error and are working on it.</p>
+                        <button class="btn btn-primary" @onclick="() => errorBoundary?.Recover()">Try Again</button>
+                    </div>
+                </ErrorContent>
+            </ErrorBoundary>
+        </article>
+    </main>
+</div>
+
+@code {
+    private ErrorBoundary? errorBoundary;
+    private List<string> errors = new();
+
+    protected override void OnInitialized()
+    {
+        // Subscribe to the event
+        ToastService.OnErrorReceived += HandleError;
+    }
+
+    private void HandleError(string message)
+    {
+        // InvokeAsync is required because event triggers might happen off the main UI thread
+        InvokeAsync(() =>
+        {
+            errors.Add(message);
+            StateHasChanged();
+        });
+    }
+
+    public void Dispose()
+    {
+        // Unsubscribe
+        ToastService.OnErrorReceived -= HandleError;
+    }
+
+    protected override void OnParametersSet()
+    {
+        errorBoundary?.Recover();
+    }
+}

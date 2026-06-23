@@ -1,0 +1,118 @@
+﻿@using HealthCare.Admin.Shared
+@using HealthCare.Api.DTOs.Doctor
+
+@page "/doctors"
+@* @inject IDoctorService DoctorService *@
+@inject ConfirmModalService ModalService
+@inject NotificationService ToastService
+
+<h3 class="mb-4">Doctor Management</h3>
+
+<AddDoctorModal @ref="addModal" OnSuccess="LoadData" />
+<EditDoctorModal @ref="editModal" OnSuccess="LoadData" />
+
+<div class="row g-3 mb-4">
+    @* StatCards... *@
+</div>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <select class="form-select w-auto" @bind="selectedSpecialisation" @bind:after="LoadData">
+        <option value="">All Specialisations</option>
+        @foreach (var spec in specialisations)
+        {
+            <option value="@spec">@spec</option>
+        }
+    </select>
+
+    <button class="btn btn-primary" @onclick="() => addModal.Show()">
+        <i class="bi bi-plus-lg me-1"></i> Add New
+    </button>
+</div>
+
+<AdminTable TItem="DoctorListDto" Items="doctors" IsLoading="isLoading" ColumnCount="6"
+            EmptyText="No doctors match the selected filter.">
+    <HeaderTemplate>
+        <th>Name</th>
+        <th>Specialisation</th>
+        <th>Experience</th>
+        <th>Consultation Fee</th>
+        <th>Status</th>
+        <th class="text-end">Actions</th>
+    </HeaderTemplate>
+    <RowTemplate Context="doctor">
+        <tr>
+            <td>@doctor.FullName</td>
+            <td>@doctor.Specialisation</td>
+            <td>@doctor.YearsOfExperience yrs</td>
+            <td>@doctor.ConsultationFee.ToString("C")</td>
+            <td>
+                @if (doctor.IsActive)
+                {
+                    <span class="badge bg-success">Active</span>
+                }
+                else
+                {
+                    <span class="badge bg-secondary">Inactive</span>
+                }
+            </td>
+            <td class="text-end">
+                <div class="btn-group btn-group-sm">
+                    <button class="btn btn-outline-primary" @onclick="() => ViewDoctor(doctor.DoctorId)">
+                        <i class="bi bi-eye"></i>
+                    </button>
+                    <button class="btn btn-outline-secondary" @onclick="() => EditDoctor(doctor)">
+                        <i class="bi bi-pencil"></i>
+                    </button>
+                    <button class="btn btn-outline-danger" @onclick="() => DeleteDoctor(doctor.DoctorId)">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </div>
+            </td>
+        </tr>
+    </RowTemplate>
+</AdminTable>
+
+@code {
+    private List<DoctorListDto> doctors = new();
+    private List<string> specialisations = new();
+    private string selectedSpecialisation = string.Empty;
+    private bool isLoading = false;
+
+    // Component References
+    private AddDoctorModal addModal;
+    private EditDoctorModal editModal;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // await LoadData();
+    }
+
+    private async Task LoadData()
+    {
+        isLoading = true;
+        try { /* Fetch logic */ }
+        finally { isLoading = false; }
+    }
+
+    private void ViewDoctor(int id) { /* Navigation logic */ }
+
+    private void EditDoctor(DoctorListDto doctor)
+    {
+        // Create DTO from the list item
+        var updateDto = new UpdateDoctorDto
+        {
+            FullName = doctor.FullName,
+            Specialisation = doctor.Specialisation,
+            YearsOfExperience = doctor.YearsOfExperience
+        };
+
+        editModal.Show(doctor.DoctorId, updateDto);
+    }
+
+    private async Task DeleteDoctor(int id)
+    {
+        var confirmed = await ModalService.ShowAsync("Delete", "Are you sure?");
+        if (!confirmed) return;
+        // Delete logic...
+    }
+}
