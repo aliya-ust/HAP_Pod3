@@ -1,0 +1,74 @@
+﻿@inject IJSRuntime JS
+@inject NavigationManager Navigation
+
+
+<div class="sidebar-container @(collapseNavMenu ? "collapsed" : "")">
+
+    <div class="top-bar">
+        <button class="menu-btn" @onclick="ToggleNavMenu">
+            ☰
+        </button>
+
+        @if (!collapseNavMenu)
+        {
+            <h3 class="logo">HealthCare App</h3>
+        }
+    </div>
+
+    <NavLink class="nav-item" href="/home" Match="NavLinkMatch.All">
+        <img src="images/Home.png" class="nav-icon" />
+        @if (!collapseNavMenu)
+        {
+            <span>Dashboard</span>
+        }
+    </NavLink>
+
+    <NavLink class="nav-item" href="/patients">
+        <img src="images/Patient.png" class="nav-icon" />
+        @if (!collapseNavMenu)
+        {
+            <span>Patient Management</span>
+        }
+    </NavLink>
+
+    <NavLink class="nav-item" href="/doctors">
+        <img src="images/doctor.png" class="nav-icon"/>
+        @if (!collapseNavMenu)
+        {
+            <span>Doctor Management</span>
+        }
+    </NavLink>
+
+    <NavLink class="nav-item" href="/appointmentrecords">
+        <img src="images/app.png" class="nav-icon" />
+        @if (!collapseNavMenu)
+        {
+            <span>Appointment Management</span>
+        }
+    </NavLink>
+    <div class="nav-item logout-item" @onclick="Logout">
+        <img src="images/Logout.png" class="nav-icon" />
+
+        @if (!collapseNavMenu)
+        {
+            <span>Logout</span>
+        }
+    </div>
+
+</div>
+
+@code {
+    private bool collapseNavMenu = false;
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+
+    private async Task Logout()
+    {
+        await JS.InvokeVoidAsync("localStorage.removeItem", "accessToken");
+        Navigation.NavigateTo("/", true);
+    }
+
+}

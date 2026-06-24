@@ -90,44 +90,42 @@ namespace HealthCare.Api.Services.Implementations
 
         public async Task<PagedResult<DoctorListDto>> GetAllAsync(DoctorFilter filter)
         {
-            // Build predicate (filtering)
-            Expression<Func<Doctor, bool>>? predicate = null;
+            IQueryable<Doctor> query = _context.Doctors;
 
-            if (!string.IsNullOrWhiteSpace(filter.Specialisation) && filter.MinExperience.HasValue)
+    
+            if (!string.IsNullOrWhiteSpace(filter.Specialisation))
             {
-                predicate = d => d.Specialisation == filter.Specialisation
-                              && d.YearsOfExperience >= filter.MinExperience.Value;
-            }
-            else if (!string.IsNullOrWhiteSpace(filter.Specialisation))
-            {
-                predicate = d => d.Specialisation == filter.Specialisation;
-            }
-            else if (filter.MinExperience.HasValue)
-            {
-                predicate = d => d.YearsOfExperience >= filter.MinExperience.Value;
+                query = query.Where(d => d.Specialisation == filter.Specialisation);
             }
 
-            // Ordering (by experience)
-            Func<IQueryable<Doctor>, IOrderedQueryable<Doctor>> orderBy =
-                q => q.OrderByDescending(d => d.YearsOfExperience);
+            if (!string.IsNullOrWhiteSpace(filter.Status))
+            {
+                bool isActive = filter.Status.ToLower() == "active";
+                query = query.Where(d => d.IsActive == isActive);
+            }
 
-            // Call repository
-            var pagedResult = await _repository.GetAllAsync(
-                filter.PageNumber,
-                filter.PageSize,
-                predicate,
-                orderBy
-            );
+ 
+            query = filter.ExperienceSort?.ToLower() == "asc"
+                ? query.OrderBy(d => d.YearsOfExperience)
+                : query.OrderByDescending(d => d.YearsOfExperience);
 
-            // Map result
+
+            var totalCount = await query.CountAsync();
+
+            var items = await query
+                .Skip((filter.PageNumber - 1) * filter.PageSize)
+                .Take(filter.PageSize)
+                .ToListAsync();
+
             return new PagedResult<DoctorListDto>
             {
-                Items = _mapper.Map<IEnumerable<DoctorListDto>>(pagedResult.Items),
-                PageNumber = pagedResult.PageNumber,
-                PageSize = pagedResult.PageSize,
-                TotalCount = pagedResult.TotalCount
+                Items = _mapper.Map<IEnumerable<DoctorListDto>>(items),
+                PageNumber = filter.PageNumber,
+                PageSize = filter.PageSize,
+                TotalCount = totalCount
             };
         }
+
 
         public async Task<List<string>> GetSlots(int doctorId)
         {

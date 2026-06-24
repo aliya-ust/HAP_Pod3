@@ -35,18 +35,18 @@ namespace HealthCare.Api.Controllers
             return Ok(doctors);
         }
 
-        // Create doctor
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
-        [HttpPost]
-        public async Task<IActionResult> Create(CreateDoctorDto dto)
-        {
-            await _doctorService.AddAsync(dto);
+        //// Create doctor
+        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
+        //[HttpPost]
+        //public async Task<IActionResult> Create(CreateDoctorDto dto)
+        //{
+        //    await _doctorService.AddAsync(dto);
 
-            return Ok(new
-            {
-                Message = "Doctor created successfully."
-            });
-        }
+        //    return Ok(new
+        //    {
+        //        Message = "Doctor created successfully."
+        //    });
+        //}
 
         // Update doctor
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]

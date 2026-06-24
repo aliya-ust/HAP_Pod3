@@ -49,13 +49,23 @@
     "Order": 0,
     "Parameters": [
       {
+        "Name": "FullName",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
         "Name": "Specialisation",
         "Type": "System.String",
         "IsRequired": false
       },
       {
-        "Name": "MinExperience",
-        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "Name": "ExperienceSort",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Status",
+        "Type": "System.String",
         "IsRequired": false
       },
       {
@@ -67,22 +77,6 @@
         "Name": "PageSize",
         "Type": "System.Int32",
         "IsRequired": false
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "HealthCare.Api.Controllers.DoctorAdminController",
-    "Method": "Create",
-    "RelativePath": "api/admin/DoctorAdmin",
-    "HttpMethod": "POST",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "dto",
-        "Type": "HealthCare.Api.DTOs.Doctor.CreateDoctorDto",
-        "IsRequired": true
       }
     ],
     "ReturnTypes": []
@@ -204,22 +198,6 @@
         "Name": "PageSize",
         "Type": "System.Int32",
         "IsRequired": false
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "HealthCare.Api.Controllers.PatientAdminController",
-    "Method": "Create",
-    "RelativePath": "api/admin/patients",
-    "HttpMethod": "POST",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "dto",
-        "Type": "HealthCare.Api.DTOs.Patient.CreatePatientDto",
-        "IsRequired": true
       }
     ],
     "ReturnTypes": []
@@ -482,7 +460,7 @@
     "Parameters": [
       {
         "Name": "leaves",
-        "Type": "System.Collections.Generic.List\u00601[[HealthCare.Api.DTOs.Doctor.CreateLeaveDto, HealthCare.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "System.Collections.Generic.List\u00601[[HealthCare.Api.DTOs.Doctor.CreateLeaveDto, HealthCare.Shared, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "IsRequired": true
       }
     ],

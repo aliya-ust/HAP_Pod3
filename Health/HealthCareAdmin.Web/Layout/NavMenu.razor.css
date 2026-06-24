@@ -1,0 +1,79 @@
+.sidebar-container {
+    width: 260px;
+    min-height: 100vh;
+    background: linear-gradient(180deg, #001f54, #003c8f, #0d6efd);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    transition: width 0.3s ease;
+}
+
+    .sidebar-container.collapsed {
+        width: 70px;
+    }
+
+.top-bar {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+}
+
+.logo {
+    color: white;
+    margin-left: 10px;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.menu-btn {
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 28px;
+    cursor: pointer;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 15px 18px;
+    margin: 10px 12px;
+    border-radius: 12px;
+    color: white !important;
+    font-weight: bold;
+    font-size: 16px;
+    text-decoration: none !important;
+}
+
+    .nav-item:link,
+    .nav-item:visited,
+    .nav-item:hover,
+    .nav-item:active {
+        color: #ffffff !important;
+        text-decoration: none !important;
+    }
+
+    .nav-item:hover {
+        background: rgba(255, 255, 255, 0.15);
+    }
+
+    .nav-item.active {
+        background: rgba(255, 255, 255, 0.25);
+        color: #ffffff !important;
+    }
+
+.nav-icon {
+    width: 30px !important;
+    height: 30px !important;
+    display: inline-block;
+    object-fit: contain;
+}
+
+.logout-item {
+    cursor: pointer;
+    position: absolute;
+    bottom: 20px;
+    left: 0;
+    width: 100%;
+}

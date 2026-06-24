@@ -36,26 +36,25 @@ namespace HealthCare.Api.Services.Implementations
 
         public async Task<PagedResult<PatientListDto>> GetAllAsync(PatientFilter filter)
         {
-            // Build predicate
-            Expression<Func<Patient, bool>>? predicate = null;
+            Expression<Func<Patient, bool>> predicate = p =>
 
-            if (filter.HasInsurance == true)
-            {
-                predicate = p => p.InsuranceId != null;
-            }
-            else if (filter.HasInsurance == false)
-            {
-                predicate = p => p.InsuranceId == null;
-            }
+                // Search by name
+                (string.IsNullOrWhiteSpace(filter.SearchTerm)
+                    || p.FullName.Contains(filter.SearchTerm))
 
-            // Call repository (no ordering needed here)
+                // Filter by insurance
+                &&
+
+                (filter.HasInsurance == null
+                    || (filter.HasInsurance.Value
+                            ? p.InsuranceId != null
+                            : p.InsuranceId == null));
+
             var pagedResult = await _repository.GetAllAsync(
                 filter.PageNumber,
                 filter.PageSize,
-                predicate
-            );
+                predicate);
 
-            // Map result
             return new PagedResult<PatientListDto>
             {
                 Items = _mapper.Map<IEnumerable<PatientListDto>>(pagedResult.Items),

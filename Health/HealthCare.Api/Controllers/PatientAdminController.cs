@@ -33,12 +33,12 @@ namespace HealthCare.Api.Controllers
             return Ok(patients);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Create(CreatePatientDto dto)
-        {
-            await _patientService.AddAsync(dto);
-            return Ok(new { message = "Patient created successfully." });
-        }
+        //[HttpPost]
+        //public async Task<IActionResult> Create(CreatePatientDto dto)
+        //{
+        //    await _patientService.AddAsync(dto);
+        //    return Ok(new { message = "Patient created successfully." });
+        //}
 
         [HttpPut("{id:int}")]
         public async Task<IActionResult> Update(int id, UpdatePatientDto dto)

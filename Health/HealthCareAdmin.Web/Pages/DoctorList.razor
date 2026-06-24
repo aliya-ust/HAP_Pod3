@@ -1,0 +1,187 @@
+﻿@page "/doctors"
+@using HealthCare.Api.DTOs.Doctor
+@inject HttpClient Http
+@inject NavigationManager Nav
+@inject DoctorService DoctorService
+
+<h2 class="page-title">Doctors</h2>
+
+<div class="toolbar">
+
+    <!-- Search -->
+    <input class="search-input"
+           placeholder="Search by name..."
+           @bind="filter.FullName"
+           @bind:event="oninput" />
+
+    <!-- Specialisation -->
+    <select @bind="filter.Specialisation">
+        <option value="">All Specialisations</option>
+        @foreach (var spec in specialisations)
+        {
+            <option value="@spec">@spec</option>
+        }
+    </select>
+
+    <!-- Experience -->
+
+    <select @bind="filter.ExperienceSort">
+        <option value="">Sort Experience</option>
+        <option value="asc">Low → High</option>
+        <option value="desc">High → Low</option>
+    </select>
+
+    <!-- Status -->
+    <select @bind="filter.Status">
+        <option value="">All</option>
+        <option value="active">Active</option>
+        <option value="inactive">Inactive</option>
+    </select>
+
+    <!-- Buttons -->
+    <button class="btn-primary" @onclick="LoadDoctors">Search</button>
+
+    <button class="btn-success" @onclick="GoRegister">
+        + Register Doctor
+    </button>
+
+</div>
+
+<!-- TABLE -->
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Specialisation</th>
+            <th>Experience</th>
+            <th>Fee</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @if (doctors?.Items != null)
+        {
+            @foreach (var d in doctors.Items)
+            {
+                <tr>
+                    <td>@d.FullName</td>
+                    <td>@d.Specialisation</td>
+                    <td>@d.YearsOfExperience yrs</td>
+                    <td>₹@d.ConsultationFee</td>
+
+                    <td>
+                        @if (d.IsActive)
+                        {
+                            <span class="status active">Active</span>
+                        }
+                        else
+                        {
+                            <span class="status inactive">Inactive</span>
+                        }
+                    </td>
+
+                    <td class="actions">
+
+                        <!-- Edit -->
+                        <button title="Edit" class="icon-btn edit" @onclick="() => Edit(d.DoctorId)">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </button>
+
+                        <!-- Toggle Status -->
+                        <button title="Toggle Status" class="icon-btn status" @onclick="() => ToggleStatus(d.DoctorId, d.IsActive)">
+                            <i class="fa-solid fa-toggle-on"></i>
+                        </button>
+
+                        <!-- Delete -->
+                        <button title="Delete" class="icon-btn delete"
+                                @onclick="() => Delete(d.DoctorId)">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+<!-- PAGINATION -->
+<div class="pagination">
+    <button @onclick="PrevPage" disabled="@(!CanPrev)">Prev</button>
+
+    <span>Page @filter.PageNumber</span>
+
+    <button @onclick="NextPage" disabled="@(!CanNext)">Next</button>
+</div>
+
+
+@code {
+
+    private DoctorFilter filter = new()
+    {
+        PageNumber = 1,
+        PageSize = 10
+    };
+
+    private PagedResult<DoctorListDto>? doctors;
+
+    private List<string> specialisations = new()
+    {
+        "Cardiology",
+        "Dermatology",
+        "Neurology",
+        "Orthopedics"
+    };
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadDoctors();
+    }
+
+    private async Task LoadDoctors()
+    {
+        doctors = await DoctorService.GetDoctorsAsync(filter);
+    }
+
+    private async Task Delete(int id)
+    {
+        await DoctorService.DeleteDoctorAsync(id);
+        await LoadDoctors();
+    }
+
+    private async Task ToggleStatus(int id, bool currentStatus)
+    {
+        await DoctorService.ToggleStatusAsync(id, !currentStatus);
+        await LoadDoctors();
+    }
+
+    private void Edit(int id)
+    {
+        Nav.NavigateTo($"/doctors/edit/{id}");
+    }
+
+    private void GoRegister()
+    {
+        Nav.NavigateTo("/doctors/register");
+    }
+
+    private async Task NextPage()
+    {
+        filter.PageNumber++;
+        await LoadDoctors();
+    }
+
+    private async Task PrevPage()
+    {
+        filter.PageNumber--;
+        await LoadDoctors();
+    }
+
+    private bool CanPrev => filter.PageNumber > 1;
+
+    private bool CanNext =>
+        doctors != null &&
+        filter.PageNumber * filter.PageSize < doctors.TotalCount;
+}

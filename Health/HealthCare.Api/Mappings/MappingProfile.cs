@@ -15,7 +15,13 @@ namespace HealthCare.Api.Mappings
             // Patient DTO mappings
             CreateMap<CreatePatientDto, Patient>();
             CreateMap<UpdatePatientDto, Patient>();
-            CreateMap<Patient, PatientListDto>();
+            CreateMap<Patient, PatientListDto>()
+               .ForMember(
+                   dest => dest.HasInsurance,
+                   opt => opt.MapFrom(src => !string.IsNullOrWhiteSpace(src.InsuranceId))
+                   )
+                .ForMember(dest => dest.IsActive,
+                     opt => opt.MapFrom(src => src.IsActive));
 
             // Doctor DTO mappings
             CreateMap<CreateDoctorDto, Doctor>();

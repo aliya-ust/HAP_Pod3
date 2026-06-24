@@ -1,0 +1,404 @@
+﻿@page "/patients"
+@inject PatientService PatientService
+@inject NavigationManager Navigation
+@inject IJSRuntime JS
+
+<h2 class="mb-4">Patient Management</h2>
+
+<div class="row mb-3">
+
+    <div class="col-md-4">
+        <input class="form-control"
+               placeholder="Search by patient name"
+               @bind="searchName" />
+    </div>
+
+    <div class="col-md-3">
+        <select class="form-select" @bind="insuranceFilter">
+            <option value="">All</option>
+            <option value="true">Has Insurance</option>
+            <option value="false">No Insurance</option>
+        </select>
+    </div>
+
+    <div class="col-md-2">
+        <button class="btn btn-primary w-100"
+                @onclick="SearchPatients">
+            Search
+        </button>
+    </div>
+
+    <div class="col-md-3 text-end">
+        <button class="btn btn-success"
+                @onclick="@(() => Navigation.NavigateTo("/registerpatient"))">
+            Register Patient
+        </button>
+    </div>
+
+</div>
+
+@if (!string.IsNullOrEmpty(validationMessage))
+{
+    <div class="alert alert-danger">
+        @validationMessage
+    </div>
+}
+
+<table class="table table-bordered table-hover">
+
+    <thead class="table-dark">
+
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Phone</th>
+            <th>Gender</th>
+            <th>Insurance</th>
+            <th>Status</th>
+            <th width="180">Actions</th>
+        </tr>
+
+    </thead>
+
+    <tbody>
+
+        @if (patients?.Any()==true)
+        {
+            @foreach (var patient in patients)
+            {
+                <tr>
+
+                    <td>@patient.PatientId</td>
+                    <td>@patient.FullName</td>
+                    <td>@patient.PhoneNumber</td>
+                    <td>@patient.Gender</td>
+
+                    <td>
+                        @(patient.HasInsurance ? "Yes" : "No")
+                    </td>
+
+                    <td>
+                        @(patient.IsActive ? "Active" : "Inactive")
+                    </td>                       
+                        <td class="text-center">
+
+                            <i class="bi @(patient.IsActive ? "bi-toggle-on" : "bi-toggle-off") text-warning"
+                               style="cursor:pointer; font-size:22px; margin-right:18px;"
+                               title="Change Status"
+                               @onclick="() => OpenStatusDialog(patient)">
+                            </i>
+
+                            <i class="bi bi-pencil-square text-primary me-3"
+                                   style="cursor:pointer;"
+                                   title="Edit"
+                                   @onclick="@(() => EditPatient(patient.PatientId))">
+                            </i>
+
+                            <i class="bi bi-trash text-danger"
+                                   style="cursor:pointer;"
+                                   title="Delete"
+                                   @onclick="@(() => DeletePatient(patient.PatientId))">
+                            </i>
+
+                        </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="8" class="text-center">
+                    No patients found.
+                </td>
+            </tr>
+        }
+
+    </tbody>
+
+</table>
+
+@if (showStatusDialog)
+{
+    <div class="modal d-block" tabindex="-1" style="background-color:rgba(0,0,0,.5)">
+        <div class="modal-dialog">
+
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5>Update Status</h5>
+                </div>
+
+                <div class="modal-body">
+
+                    <p>
+                        Current Status:
+                        <strong>@(selectedPatient?.IsActive == true ? "Active" : "Inactive")</strong>
+                    </p>
+                    <InputSelect class="form-select" @bind-Value="selectedStatus">
+                        <option value="true">Active</option>
+                        <option value="false">Inactive</option>
+                    </InputSelect>
+                </div>
+
+                <div class="modal-footer">
+
+                    <button class="btn btn-success"
+                            @onclick="SaveStatus">
+                        Save
+                    </button>
+
+                    <button class="btn btn-secondary"
+                            @onclick="CloseDialog">
+                        Cancel
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+}
+
+@code {
+
+    private List<PatientListDto> patients = new();
+
+    private string? searchName;
+
+    private string? insuranceFilter;
+
+    private string? validationMessage;
+
+    private bool showStatusDialog;
+
+    private PatientListDto? selectedPatient;
+
+    private bool selectedStatus;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadPatients();
+    }
+
+    async Task LoadPatients()
+    {
+        bool? insurance = null;
+
+        if (!string.IsNullOrWhiteSpace(insuranceFilter))
+            if (bool.TryParse(insuranceFilter, out var parsed))
+            {
+                insurance = parsed;
+            }
+
+        var result = await PatientService.GetPatients(
+            searchName,
+            insurance);
+
+        patients = result?.Items?.ToList() ?? new();
+    }
+
+    async Task SearchPatients()
+    {
+        validationMessage = "";
+
+        if (!string.IsNullOrWhiteSpace(searchName))
+        {
+            if (!System.Text.RegularExpressions.Regex.IsMatch(
+                searchName,
+                @"^[A-Za-z\s]+$"))
+            {
+                validationMessage =
+                    "Search name must contain alphabets only.";
+
+                return;
+            }
+        }
+
+        await LoadPatients();
+    }
+
+    void EditPatient(int id)
+    {
+        Navigation.NavigateTo($"/patients/edit/{id}");
+    }
+
+    async Task DeletePatient(int id)
+    {
+        bool confirm = await JS.InvokeAsync<bool>(
+            "confirm",
+            "Delete this patient?");
+
+        if (!confirm)
+            return;
+
+        await PatientService.DeletePatient(id);
+
+        await LoadPatients();
+    }
+
+    void OpenStatusDialog(PatientListDto patient)
+    {
+        selectedPatient = patient;
+        selectedStatus = patient.IsActive;
+        showStatusDialog = true;
+    }
+
+    async Task SaveStatus()
+    {
+        if (selectedPatient != null)
+        {
+            await PatientService.UpdateStatus(
+                selectedPatient.PatientId,
+                selectedStatus);
+
+            showStatusDialog = false;
+
+            await LoadPatients();
+        }
+    }
+
+    void CloseDialog()
+    {
+        showStatusDialog = false;
+    }
+
+}
+
+<style>
+
+    body {
+        background: #f4f6fb;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    h2 {
+        font-weight: 700;
+        color: #2d2d2d;
+        margin-bottom: 20px;
+    }
+
+   
+    /* .row.mb-3 {
+        background: #ffffff;
+        padding: 18px;
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+        align-items: center;
+    } */
+
+
+    .form-control,
+    .form-select {
+        border-radius: 10px;
+        padding: 10px;
+        border: 1px solid #dcdfe6;
+        transition: all 0.2s ease-in-out;
+    }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: #6c63ff;
+            box-shadow: 0 0 0 0.15rem rgba(108, 99, 255, 0.25);
+        }
+
+
+    .btn {
+        border-radius: 10px;
+        font-weight: 500;
+        transition: 0.2s ease-in-out;
+    }
+
+    .btn-primary {
+        background: #6c63ff;
+        border: none;
+    }
+
+        .btn-primary:hover {
+            background: #574fd6;
+        }
+
+    .btn-success {
+        background: #22c55e;
+        border: none;
+    }
+
+        .btn-success:hover {
+            background: #16a34a;
+        }
+
+    .table {
+        background: #fff;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+
+        .table thead {
+            background: #2f2f3f !important;
+            color: white;
+        }
+
+        .table th,
+        .table td {
+            text-align: center;
+            vertical-align: middle;
+            padding: 14px;
+        }
+
+        .table tbody tr:hover {
+            background-color: #f1f5ff;
+        }
+
+    .bi {
+        transition: 0.2s;
+    }
+
+        .bi:hover {
+            transform: scale(1.2);
+        }
+
+    .bi-toggle-on {
+        color: #22c55e;
+    }
+
+    .bi-toggle-off {
+        color: #ef4444;
+    }
+
+
+    .bi-pencil-square {
+        color: #3b82f6;
+    }
+
+    .bi-trash {
+        color: #ef4444;
+    }
+
+
+    td.text-center {
+        padding: 20px;
+        color: #777;
+    }
+
+    .modal-content {
+        border-radius: 14px;
+        border: none;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    }
+
+    .modal-header {
+        background: #6c63ff;
+        color: white;
+        border-radius: 14px 14px 0 0;
+    }
+
+    .modal-footer {
+        border-top: none;
+    }
+
+    .alert-danger {
+        border-radius: 10px;
+        font-weight: 500;
+    }
+</style>
