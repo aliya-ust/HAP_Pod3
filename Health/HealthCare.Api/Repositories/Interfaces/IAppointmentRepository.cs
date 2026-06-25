@@ -7,7 +7,9 @@ namespace HealthCare.Api.Repositories.Interfaces
     {
         Task<List<string>> BookedTimeSlots(DateOnly date, int doctorId);
         Task<bool> IsAvailable(DateOnly date, int doctorId, string timeSlot);
-        Task<List<AppointmentReportDto>> GetDailyReport();
+        Task<List<AppointmentReportDto>> GetDailyReport(
+                        DateOnly? startDate,
+                        DateOnly? endDate);
         Task CancelAppointmentsByDoctorDate(int doctorId, DateOnly date);
         Task<List<AppointmentListDto>> GetDoctorSchedule(DateOnly date, int id);
         Task<List<AppointmentListDto>> GetPatientSchedule(DateOnly date, int id);

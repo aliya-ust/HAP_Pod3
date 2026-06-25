@@ -70,7 +70,7 @@
             {
                 await JS.InvokeVoidAsync("localStorage.setItem", "accesstoken", authresponse.AccessToken);
                 await JS.InvokeVoidAsync("localStorage.setItem", "role", authresponse.Role);
-                Navigation.NavigateTo("/home", true);
+                Navigation.NavigateTo("/dashboard", true);
             }
 
         }

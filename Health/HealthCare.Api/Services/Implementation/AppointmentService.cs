@@ -160,10 +160,11 @@ namespace HealthCare.Api.Services.Implementations
             return true;
         }
 
-        public async Task<List<AppointmentReportDto>> GetDailyReport()
+        public async Task<List<AppointmentReportDto>> GetDailyReport(
+                   DateOnly? startDate,
+                   DateOnly? endDate)
         {
-            var report = await _repository.GetDailyReport();
-            return report.Count == 0 ? new List<AppointmentReportDto>() : report;
+            return await _repository.GetDailyReport(startDate, endDate);
         }
 
         public async Task<List<AppointmentListDto>> GetDoctorSchedule(DateOnly date, int id)

@@ -15,7 +15,7 @@
         }
     </div>
 
-    <NavLink class="nav-item" href="/home" Match="NavLinkMatch.All">
+    <NavLink class="nav-item" href="/dashboard" Match="NavLinkMatch.All">
         <img src="images/Home.png" class="nav-icon" />
         @if (!collapseNavMenu)
         {
@@ -39,11 +39,11 @@
         }
     </NavLink>
 
-    <NavLink class="nav-item" href="/appointmentrecords">
+    <NavLink class="nav-item" href="/appointment-reports">
         <img src="images/app.png" class="nav-icon" />
         @if (!collapseNavMenu)
         {
-            <span>Appointment Management</span>
+            <span>Appointment Reports</span>
         }
     </NavLink>
     <div class="nav-item logout-item" @onclick="Logout">

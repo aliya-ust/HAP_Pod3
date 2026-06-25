@@ -246,10 +246,10 @@ namespace HealthCare.Tests.Services
         public async Task GetDailyReport_ShouldReturnEmptyList_WhenNoData()
         {
             _repositoryMock
-                .Setup(r => r.GetDailyReport())
+                .Setup(r => r.GetDailyReport(null, null))
                 .ReturnsAsync(new List<AppointmentReportDto>());
 
-            var result = await _service.GetDailyReport();
+            var result = await _service.GetDailyReport(null, null);
 
             Assert.Empty(result);
         }

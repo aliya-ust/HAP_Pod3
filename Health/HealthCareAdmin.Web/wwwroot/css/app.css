@@ -163,8 +163,8 @@ code {
 .nav-item {
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 15px 18px;
+    gap: 8px;
+    padding: 15px 14px;
     margin: 10px 12px;
     border-radius: 12px;
     color: white !important;
@@ -173,39 +173,54 @@ code {
     text-decoration: none !important;
 }
 
-    .nav-item:link,
-    .nav-item:visited,
-    .nav-item:hover,
-    .nav-item:active {
-        color: #ffffff !important;
-        text-decoration: none !important;
-    }
-
     .nav-item:hover {
         background: rgba(255, 255, 255, 0.15);
     }
 
     .nav-item.active {
         background: rgba(255, 255, 255, 0.25);
-        color: #ffffff !important;
     }
 
 .nav-icon {
-    width: 30px !important;
-    height: 30px !important;
+    width: 28px !important;
+    height: 28px !important;
     display: inline-block;
     object-fit: contain;
+    margin-left: -2px;
 }
 
 .logout-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 15px 14px;
+    margin: 10px 12px;
+    border-radius: 12px;
+    color: white !important;
+    font-weight: bold;
+    font-size: 16px;
     cursor: pointer;
-    position: absolute;
-    bottom: 20px;
-    left: 0;
-    width: 100%;
+    text-decoration: none !important;
 }
 
-/*-----------Doctor------------------*/
+    .logout-item:hover {
+        background: rgba(255, 255, 255, 0.15);
+    }
+
+    .logout-item:active {
+        background: rgba(255, 255, 255, 0.25);
+    }
+
+.sidebar-container.collapsed .logo {
+    display: none;
+}
+
+.sidebar-container.collapsed .nav-item span,
+.sidebar-container.collapsed .logout-item span {
+    display: none;
+}
+
+/*-----------Patient-----------------*/
 
 .page-title {
     margin-bottom: 15px;
@@ -303,3 +318,261 @@ select, input {
     .icon-btn.delete {
         color: #dc2626;
     }
+
+/*-------------------Doctor-------------------*/
+
+.page-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 25px;
+}
+
+.toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+    .toolbar input,
+    .toolbar select {
+        height: 42px;
+        padding: 0 14px;
+        border: 1px solid #d8dee9;
+        border-radius: 10px;
+        outline: none;
+        font-size: 15px;
+        transition: 0.25s;
+        background: #fff;
+    }
+
+        .toolbar input:focus,
+        .toolbar select:focus {
+            border-color: #5b7cfa;
+            box-shadow: 0 0 0 3px rgba(91, 124, 250, 0.15);
+        }
+
+.search-input {
+    min-width: 260px;
+    flex: 1;
+}
+
+
+.btn-primary,
+.btn-success {
+    border: none;
+    border-radius: 10px;
+    padding: 10px 22px;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.25s;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #4f7df9, #3461e8);
+}
+
+    .btn-primary:hover {
+        transform: translateY(-1px);
+        opacity: 0.95;
+    }
+
+.btn-success {
+    background: linear-gradient(135deg, #28b463, #239b56);
+}
+
+    .btn-success:hover {
+        transform: translateY(-1px);
+        opacity: 0.95;
+    }
+
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+}
+
+    .table thead {
+        background: #1f2937;
+    }
+
+        .table thead th {
+            background-color: black !important;
+            color: white;
+            text-align: center;
+            padding: 16px;
+            font-size: 15px;
+            font-weight: 700;
+            border: none;
+        }
+
+    .table td {
+        padding: 15px;
+        text-align: center;
+        border-top: 1px solid #edf1f7;
+        color: #555;
+    }
+
+    .table tbody tr {
+        transition: 0.2s;
+        background: #1f2937;
+    }
+
+        .table tbody tr:hover {
+            background: #f9fbff;
+        }
+
+
+.status {
+    display: inline-block;
+    padding: 6px 14px;
+    border-radius: 30px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+    .status.active {
+        background: #e8f8ef;
+        color: #1d8348;
+    }
+
+    .status.inactive {
+        background: #fdecec;
+        color: #c0392b;
+    }
+
+
+.actions {
+    white-space: nowrap;
+}
+
+.icon-btn {
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-size: 18px;
+    margin: 0 5px;
+    transition: 0.2s;
+}
+
+    .icon-btn.edit {
+        color: #2563eb;
+    }
+
+        .icon-btn.edit:hover {
+            transform: scale(1.15);
+        }
+
+    .icon-btn.delete {
+        color: #dc2626;
+    }
+
+        .icon-btn.delete:hover {
+            transform: scale(1.15);
+        }
+
+.bi-toggle-on,
+.bi-toggle-off {
+    transition: 0.2s;
+}
+
+    .bi-toggle-on:hover,
+    .bi-toggle-off:hover {
+        transform: scale(1.15);
+    }
+
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 18px;
+    margin-top: 25px;
+}
+
+    .pagination button {
+        border: none;
+        background: #4f7df9;
+        color: white;
+        padding: 9px 18px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: 0.2s;
+    }
+
+        .pagination button:hover:not(:disabled) {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        .pagination button:disabled {
+            background: #cbd5e1;
+            cursor: not-allowed;
+        }
+
+    .pagination span {
+        font-weight: 600;
+        color: #475569;
+    }
+
+@media (max-width: 900px) {
+    .toolbar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+        .toolbar input,
+        .toolbar select,
+        .btn-primary,
+        .btn-success {
+            width: 100%;
+        }
+
+    .table {
+        display: block;
+        overflow-x: auto;
+    }
+}
+
+/*---------------Edit Doctor-----------------*/
+
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 8px;
+}
+
+.form-actions {
+    margin-top: 20px;
+    display: flex;
+    gap: 10px;
+}
+
+
+.btn-success {
+    background: green;
+    color: white;
+    padding: 8px;
+    border: none;
+}
+
+.btn-secondary {
+    background: gray;
+    color: white;
+    padding: 8px;
+    border: none;
+}

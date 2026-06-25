@@ -8,37 +8,19 @@ using System.Net.Http.Json;
 public class DoctorService
 {
     private readonly HttpClient _http;
-    private readonly IJSRuntime _js;
-
-    public DoctorService(HttpClient http, IJSRuntime js)
+    public DoctorService(HttpClient http)
     {
         _http = http;
-        _js = js;
-    }
-
-    //Get token from localStorage
-    private async Task<string?> GetToken()
-    {
-        return await _js.InvokeAsync<string>(
-            "localStorage.getItem",
-            "accesstoken");
     }
 
     public async Task<PagedResult<DoctorListDto>?> GetDoctorsAsync(DoctorFilter filter)
     {
-        var token = await GetToken();
         var query = BuildQuery(filter);
 
         var request = new HttpRequestMessage(
             HttpMethod.Get,
             $"api/admin/doctoradmin?{query}"
         );
-
-        if (!string.IsNullOrWhiteSpace(token))
-        {
-            request.Headers.Authorization =
-                new AuthenticationHeaderValue("Bearer", token);
-        }
 
         var response = await _http.SendAsync(request);
 
@@ -54,39 +36,81 @@ public class DoctorService
             .ReadFromJsonAsync<PagedResult<DoctorListDto>>();
     }
 
+    public async Task<UpdateDoctorDto?> GetDoctorByIdAsync(int id)
+    {
+
+        var request = new HttpRequestMessage(
+            HttpMethod.Get,
+            $"api/admin/doctoradmin/{id}"
+        );
+
+        var response = await _http.SendAsync(request);
+
+        response.EnsureSuccessStatusCode();
+
+        return await response.Content.ReadFromJsonAsync<UpdateDoctorDto>();
+    }
+    public async Task<string?> CreateDoctorAsync(CreateDoctorDto dto)
+    {
+
+        var request = new HttpRequestMessage(HttpMethod.Post, "api/auth/register/doctor")
+        {
+            Content = JsonContent.Create(dto)
+        };
+
+        var response = await _http.SendAsync(request);
+
+        var result = await response.Content.ReadFromJsonAsync<ApiResponse>();
+
+        if (!response.IsSuccessStatusCode)
+        {
+            return result?.Message ?? "Something went wrong";
+        }
+
+        return null;
+    }
+    public class ApiResponse
+    {
+        public string? Message { get; set; }
+    }
+
+    public async Task<string?> UpdateDoctorAsync(int id, UpdateDoctorDto dto)
+    {
+
+        var request = new HttpRequestMessage(HttpMethod.Put,
+            $"api/admin/doctoradmin/{id}")
+        {
+            Content = JsonContent.Create(dto)
+        };
+
+        var response = await _http.SendAsync(request);
+
+        if (response.IsSuccessStatusCode)
+            return null;
+
+        var error = await response.Content.ReadAsStringAsync();
+        return error;
+    }
+
     public async Task DeleteDoctorAsync(int id)
     {
-        var token = await GetToken();
 
         var request = new HttpRequestMessage(
             HttpMethod.Delete,
             $"api/admin/doctoradmin/{id}"
         );
 
-        if (!string.IsNullOrWhiteSpace(token))
-        {
-            request.Headers.Authorization =
-                new AuthenticationHeaderValue("Bearer", token);
-        }
-
         var response = await _http.SendAsync(request);
         response.EnsureSuccessStatusCode();
     }
 
     public async Task ToggleStatusAsync(int id, bool isActive)
-    {
-        var token = await GetToken();
+    { 
 
         var request = new HttpRequestMessage(
             HttpMethod.Patch,
             $"api/admin/doctoradmin/{id}/status?isActive={isActive}"
         );
-
-        if (!string.IsNullOrWhiteSpace(token))
-        {
-            request.Headers.Authorization =
-                new AuthenticationHeaderValue("Bearer", token);
-        }
 
         request.Content = null;
 

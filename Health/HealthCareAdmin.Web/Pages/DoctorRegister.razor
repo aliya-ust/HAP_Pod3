@@ -1,0 +1,234 @@
+﻿@page "/doctors/register"
+@inject DoctorService DoctorService
+@inject NavigationManager Nav
+@inject IJSRuntime JS
+
+<h2 class="page-title">Register Doctor</h2>
+
+<EditForm Model="model" OnValidSubmit="HandleSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="form-grid">
+
+        <!-- Full Name -->
+        <div>
+            <label>Full Name</label>
+            <InputText @bind-Value="model.FullName" class="form-control" />
+            <ValidationMessage For="@(() => model.FullName)" />
+        </div>
+
+        <!-- Email -->
+        <div>
+            <label>Email</label>
+            <InputText @bind-Value="model.Email" class="form-control" />
+            <ValidationMessage For="@(() => model.Email)" />
+        </div>
+
+        <!-- Password -->
+        <div>
+            <label>Password</label>
+            <InputText type="password" @bind-Value="model.Password" class="form-control" />
+            <ValidationMessage For="@(() => model.Password)" />
+        </div>
+
+        <!-- Specialisation -->
+        <div>
+            <label>Specialisation</label>
+            <InputSelect @bind-Value="model.Specialisation" class="form-control">
+                <option value="">-- Select Specialisation --</option>
+                @foreach (var spec in specialisations)
+                {
+                    <option value="@spec">@spec</option>
+                }
+            </InputSelect>
+            <ValidationMessage For="@(() => model.Specialisation)" />
+        </div>
+
+        <!-- Experience -->
+        <div>
+            <label>Years Of Experience</label>
+            <InputNumber @bind-Value="model.YearsOfExperience" class="form-control" />
+            <ValidationMessage For="@(() => model.YearsOfExperience)" />
+        </div>
+
+        <!-- Fee -->
+        <div>
+            <label>Consultation Fee</label>
+            <InputNumber @bind-Value="model.ConsultationFee" class="form-control" />
+            <ValidationMessage For="@(() => model.ConsultationFee)" />
+        </div>
+
+    </div>
+
+    <!-- ✅ Time Slots -->
+    <div class="timeslot-section">
+        <h4>Select Available Time Slots</h4>
+
+        <div class="timeslot-grid">
+            @foreach (var slot in allTimeSlots)
+            {
+                <label class="checkbox-item">
+                    <input type="checkbox"
+                           checked="@model.TimeSlots.Contains(slot)"
+                           @onchange="@(e => OnSlotChanged(e, slot))" />
+                    @slot
+                </label>
+            }
+        </div>
+    </div>
+
+    <!-- Buttons -->
+    <div class="form-actions">
+        <button type="submit" class="btn-success">Save</button>
+
+        <button type="button" class="btn-secondary"
+                @onclick="@(() => Nav.NavigateTo("/doctors"))">
+            Cancel
+        </button>
+    </div>
+
+</EditForm>
+
+@code {
+
+    private CreateDoctorDto model = new();
+
+    private List<string> specialisations = new()
+    {
+        "GeneralMedicine",
+        "Cardiology",
+        "Dermatology",
+        "Neurology",
+        "Orthopedics",
+        "Pediatrics",
+        "Gynecology",
+        "Psychiatry",
+        "Ophthalmology",
+        "ENT",
+        "Urology",
+        "Oncology",
+        "Endocrinology",
+        "Gastroenterology",
+        "Pulmonology",
+        "Nephrology"
+    };
+
+    private List<string> allTimeSlots = new()
+    {
+        "09:00 AM","10:00 AM","11:00 AM","12:00 PM",
+        "01:00 PM","02:00 PM","03:00 PM","04:00 PM","05:00 PM"
+    };
+
+    private void OnSlotChanged(ChangeEventArgs e, string slot)
+    {
+        var isChecked = e.Value?.ToString() == "true";
+
+        if (isChecked)
+        {
+            if (!model.TimeSlots.Contains(slot))
+                model.TimeSlots.Add(slot);
+        }
+        else
+        {
+            model.TimeSlots.Remove(slot);
+        }
+    }
+
+    private async Task HandleSubmit()
+    {
+        
+        var error = await DoctorService.CreateDoctorAsync(model);
+
+        if (!string.IsNullOrEmpty(error))
+        {
+            await JS.InvokeVoidAsync("alert", error);
+            return;
+        }
+
+        await JS.InvokeVoidAsync("alert", "Doctor registered successfully ✅");
+        Nav.NavigateTo("/doctors");
+
+    }
+}
+
+<style>
+.page-title {
+margin-bottom: 20px;
+}
+
+/* Form Layout */
+.form-grid {
+display: grid;
+grid-template-columns: repeat(2, 1fr);
+gap: 15px;
+margin-bottom: 20px;
+}
+
+.form-control {
+width: 100%;
+padding: 8px;
+border: 1px solid #ccc;
+border-radius: 6px;
+}
+
+/* Time Slot Section */
+.timeslot-section {
+margin-top: 20px;
+}
+
+.timeslot-grid {
+display: grid;
+grid-template-columns: repeat(3, 1fr);
+gap: 12px;
+margin-top: 10px;
+}
+
+.checkbox-item {
+display: flex;
+align-items: center;
+gap: 8px;
+padding: 10px;
+background: #f5f5f5;
+border-radius: 8px;
+cursor: pointer;
+transition: 0.2s;
+}
+
+.checkbox-item:hover {
+background: #e0f2ff;
+}
+
+/* Buttons */
+.form-actions {
+margin-top: 25px;
+display: flex;
+gap: 10px;
+}
+
+.btn-success {
+background: #28a745;
+color: white;
+padding: 8px 16px;
+border: none;
+border-radius: 6px;
+cursor: pointer;
+}
+
+.btn-success:hover {
+background: #218838;
+}
+
+.btn-secondary {
+background: #6c757d;
+color: white;
+padding: 8px 16px;
+border: none;
+border-radius: 6px;
+cursor: pointer;
+}
+
+.btn-secondary:hover {
+background: #5a6268;
+}
+</style>

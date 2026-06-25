@@ -92,7 +92,14 @@ namespace HealthCare.Api.Services.Implementations
         {
             IQueryable<Doctor> query = _context.Doctors;
 
-    
+            if (!string.IsNullOrWhiteSpace(filter.FullName))
+            {
+                var search = filter.FullName.Trim().ToLower();
+
+                query = query.Where(d =>
+                    d.FullName.ToLower().Contains(search));
+            }
+
             if (!string.IsNullOrWhiteSpace(filter.Specialisation))
             {
                 query = query.Where(d => d.Specialisation == filter.Specialisation);

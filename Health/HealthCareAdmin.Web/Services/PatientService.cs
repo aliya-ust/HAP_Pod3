@@ -1,44 +1,30 @@
 ﻿using HealthCare.Api.DTOs;
 using HealthCare.Api.DTOs.Patient;
+using Microsoft.JSInterop;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
-using Microsoft.JSInterop;
+using static System.Net.WebRequestMethods;
 
 public class PatientService
 {
     private readonly HttpClient _httpClient;
-    private readonly IJSRuntime _js;
 
-    public PatientService(HttpClient httpClient, IJSRuntime js)
+    public PatientService(HttpClient httpClient)
     {
         _httpClient = httpClient;
-        _js = js;
     }
 
-    //Common method to attach token
-    private async Task AddAuthHeader()
+    public async Task<PagedResult<PatientListDto>> GetPatients(
+    string? searchTerm,
+    bool? hasInsurance,
+    int pageNumber,
+    int pageSize)
     {
-        var token = await _js.InvokeAsync<string>(
-            "localStorage.getItem",
-            "accesstoken");
-
-        if (!string.IsNullOrWhiteSpace(token))
-        {
-            _httpClient.DefaultRequestHeaders.Authorization =
-                new AuthenticationHeaderValue("Bearer", token);
-        }
-    }
-
-    public async Task<PagedResult<PatientListDto>?> GetPatients(
-        string? searchTerm,
-        bool? hasInsurance)
-    {
-        await AddAuthHeader(); // attach token
-
-        var url = "api/admin/patients?pageNumber=1&pageSize=100";
+        string url =
+            $"api/admin/patients?pageNumber={pageNumber}&pageSize={pageSize}";
 
         if (!string.IsNullOrWhiteSpace(searchTerm))
-            url += $"&searchTerm={Uri.EscapeDataString(searchTerm)}";
+            url += $"&searchTerm={searchTerm}";
 
         if (hasInsurance.HasValue)
             url += $"&hasInsurance={hasInsurance.Value}";
@@ -48,7 +34,6 @@ public class PatientService
 
     public async Task<UpdatePatientDto?> GetPatientById(int id)
     {
-        await AddAuthHeader();
 
         return await _httpClient.GetFromJsonAsync<UpdatePatientDto>(
             $"api/admin/patients/{id}");
@@ -56,8 +41,6 @@ public class PatientService
 
     public async Task RegisterPatient(CreatePatientDto dto)
     {
-        await AddAuthHeader();
-
         var response = await _httpClient.PostAsJsonAsync(
             "api/auth/register/patient",
             dto);
@@ -67,8 +50,6 @@ public class PatientService
 
     public async Task UpdatePatient(int id, UpdatePatientDto dto)
     {
-        await AddAuthHeader();
-
         var response = await _httpClient.PutAsJsonAsync(
             $"api/admin/patients/{id}",
             dto);
@@ -78,7 +59,6 @@ public class PatientService
 
     public async Task UpdateStatus(int id, bool isActive)
     {
-        await AddAuthHeader();
 
         var response = await _httpClient.PatchAsync(
             $"api/admin/patients/{id}/status?isActive={isActive}",
@@ -89,7 +69,6 @@ public class PatientService
 
     public async Task DeletePatient(int id)
     {
-        await AddAuthHeader();
 
         var response = await _httpClient.DeleteAsync(
             $"api/admin/patients/{id}");

@@ -1,3 +1,4 @@
+
 .sidebar-container {
     width: 260px;
     min-height: 100vh;
@@ -36,8 +37,8 @@
 .nav-item {
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 15px 18px;
+    gap: 8px;
+    padding: 15px 14px;
     margin: 10px 12px;
     border-radius: 12px;
     color: white !important;
@@ -46,34 +47,49 @@
     text-decoration: none !important;
 }
 
-    .nav-item:link,
-    .nav-item:visited,
-    .nav-item:hover,
-    .nav-item:active {
-        color: #ffffff !important;
-        text-decoration: none !important;
-    }
-
     .nav-item:hover {
         background: rgba(255, 255, 255, 0.15);
     }
 
     .nav-item.active {
         background: rgba(255, 255, 255, 0.25);
-        color: #ffffff !important;
     }
 
 .nav-icon {
-    width: 30px !important;
-    height: 30px !important;
+    width: 28px !important;
+    height: 28px !important;
     display: inline-block;
     object-fit: contain;
+    margin-left: -2px;
 }
 
 .logout-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 15px 14px;
+    margin: 10px 12px;
+    border-radius: 12px;
+    color: white !important;
+    font-weight: bold;
+    font-size: 16px;
     cursor: pointer;
-    position: absolute;
-    bottom: 20px;
-    left: 0;
-    width: 100%;
+    text-decoration: none !important;
+}
+
+    .logout-item:hover {
+        background: rgba(255, 255, 255, 0.15);
+    }
+
+    .logout-item:active {
+        background: rgba(255, 255, 255, 0.25);
+    }
+
+.sidebar-container.collapsed .logo {
+    display: none;
+}
+
+.sidebar-container.collapsed .nav-item span,
+.sidebar-container.collapsed .logout-item span {
+    display: none;
 }

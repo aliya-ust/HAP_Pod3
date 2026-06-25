@@ -30,9 +30,19 @@ namespace HealthCare.Api.Repositories.Implementation
             return !exists;
         }
 
-        public async Task<List<AppointmentReportDto>> GetDailyReport() =>
-            await _dbSet
-                .Where(a => a.ScheduledDate >= DateOnly.FromDateTime(DateTime.Today.AddDays(-30)))
+        public async Task<List<AppointmentReportDto>> GetDailyReport(
+    DateOnly? startDate,
+    DateOnly? endDate)
+        {
+            var query = _dbSet.AsQueryable();
+
+            if (startDate.HasValue)
+                query = query.Where(a => a.ScheduledDate >= startDate.Value);
+
+            if (endDate.HasValue)
+                query = query.Where(a => a.ScheduledDate <= endDate.Value);
+
+            return await query
                 .GroupBy(a => a.ScheduledDate)
                 .Select(g => new AppointmentReportDto
                 {
@@ -42,8 +52,9 @@ namespace HealthCare.Api.Repositories.Implementation
                     CancelledCount = g.Count(a => a.Status == "Cancelled"),
                     CompletedCount = g.Count(a => a.Status == "Completed")
                 })
-                .OrderBy(r => r.Date)
+                .OrderByDescending(x => x.Date)
                 .ToListAsync();
+        }
 
 
         public async Task CancelAppointmentsByDoctorDate(int doctorId, DateOnly date)

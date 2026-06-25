@@ -15,6 +15,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.IdentityModel.Tokens.Experimental;
 using Microsoft.OpenApi;
+using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
 
@@ -97,6 +98,7 @@ builder.Services.AddScoped<IHealthRecordService, HealthRecordService>();
 builder.Services.AddScoped<IAppointmentService, AppointmentService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IJwtService, JwtService>();
+builder.Services.AddScoped<IDashboardService, DashboardService>();
 
 builder.Services.AddAutoMapper(cfg =>
 {
@@ -113,8 +115,6 @@ builder.Services.AddCors(options =>
             .AllowAnyMethod();
     });
 });
-
-
 
 var app = builder.Build();
 app.UseExceptionHandler();

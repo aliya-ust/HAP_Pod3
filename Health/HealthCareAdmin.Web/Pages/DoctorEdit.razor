@@ -1,0 +1,95 @@
+﻿@page "/doctors/edit/{id:int}"
+@inject DoctorService DoctorService
+@inject NavigationManager Nav
+@inject IJSRuntime JS
+
+<h2>Edit Doctor</h2>
+
+@if (model == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <EditForm Model="model" OnValidSubmit="HandleUpdate">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div class="form-grid">
+
+            <!-- Full Name -->
+            <div>
+                <label>Full Name</label>
+                <InputText @bind-Value="model.FullName" class="form-control" />
+            </div>
+
+            <!-- Specialisation -->
+            <div>
+                <label>Specialisation</label>
+                <InputSelect @bind-Value="model.Specialisation" class="form-control">
+                    <option value="">--Select--</option>
+                    @foreach (var spec in specialisations)
+                    {
+                        <option value="@spec">@spec</option>
+                    }
+                </InputSelect>
+            </div>
+
+            <!-- Experience -->
+            <div>
+                <label>Experience</label>
+                <InputNumber @bind-Value="model.YearsOfExperience" class="form-control" />
+            </div>
+
+            <!-- Fee -->
+            <div>
+                <label>Consultation Fee</label>
+                <InputNumber @bind-Value="model.ConsultationFee" class="form-control" />
+            </div>
+
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn-success">Update</button>
+
+            <button type="button" class="btn-secondary"
+                    @onclick="@(() => Nav.NavigateTo("/doctors"))">
+                Cancel
+            </button>
+        </div>
+    </EditForm>
+}
+
+@code {
+    [Parameter] public int id { get; set; }
+
+    private UpdateDoctorDto? model;
+
+    private List<string> specialisations = new()
+    {
+        "GeneralMedicine","Cardiology","Dermatology","Neurology",
+        "Orthopedics","Pediatrics","Gynecology","Psychiatry",
+        "Ophthalmology","ENT","Urology","Oncology",
+        "Endocrinology","Gastroenterology","Pulmonology","Nephrology"
+    };
+
+    protected override async Task OnInitializedAsync()
+    {
+        model = await DoctorService.GetDoctorByIdAsync(id);
+    }
+
+    private async Task HandleUpdate()
+    {
+        var error = await DoctorService.UpdateDoctorAsync(id,model);
+
+        if (!string.IsNullOrEmpty(error))
+        {
+            await JS.InvokeVoidAsync("alert", error);
+            return;
+        }
+
+        await JS.InvokeVoidAsync("alert", "Doctor updated successfully ✅");
+        Nav.NavigateTo("/doctors");
+    }
+}
+

@@ -1,0 +1,160 @@
+﻿@page "/dashboard"
+@inject DashboardService DashboardService
+
+<div class="dashboard-container">
+
+    <div class="hero">
+
+        <img src="https://cdn-icons-png.flaticon.com/256/15192/15192779.png" class="hero-img" />
+
+        <h1 class="hero-title">Welcome Admin</h1>
+
+        <p class="hero-subtitle">
+            Manage your healthcare portal efficiently from one centralized dashboard.
+        </p>
+
+    </div>
+
+    @if (summary == null)
+    {
+        <p class="loading">Loading dashboard...</p>
+    }
+    else
+    {
+        <div class="grid">
+
+            <div class="card-box">
+                <h6>Total Doctors</h6>
+                <h2>@summary.TotalDoctors</h2>
+            </div>
+
+            <div class="card-box">
+                <h6>Active Doctors</h6>
+                <h2>@summary.ActiveDoctors</h2>
+            </div>
+
+            <div class="card-box">
+                <h6>Total Patients</h6>
+                <h2>@summary.TotalPatients</h2>
+            </div>
+
+            <div class="card-box">
+                <h6>Total Appointments</h6>
+                <h2>@summary.TotalAppointments</h2>
+            </div>
+
+            <div class="card-box">
+                <h6>Pending</h6>
+                <h2>@summary.PendingAppointments</h2>
+            </div>
+
+            <div class="card-box">
+                <h6>Confirmed</h6>
+                <h2>@summary.ConfirmedAppointments</h2>
+            </div>
+
+            <div class="card-box">
+                <h6>Cancelled</h6>
+                <h2>@summary.CancelledAppointments</h2>
+            </div>
+
+            <div class="card-box">
+                <h6>Completed</h6>
+                <h2>@summary.CompletedAppointments</h2>
+            </div>
+
+        </div>
+    }
+
+</div>
+
+@code {
+    private DashboardSummaryDto? summary;
+
+    protected override async Task OnInitializedAsync()
+    {
+        summary = await DashboardService.GetSummaryAsync();
+    }
+}
+
+<style>
+
+.dashboard-container {
+    padding: 40px 20px;
+    background: #f6f7fb;
+    min-height: 100vh;
+    font-family: "Segoe UI", sans-serif;
+}
+
+.hero {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.hero-img {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    margin-bottom: 15px;
+    animation: float 3s ease-in-out infinite;
+}
+
+.hero-title {
+    font-size: 70px;
+    font-weight: 800;
+    margin-bottom: 8px;
+
+    background: linear-gradient(90deg, #7b2ff7, #f107a3);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.hero-subtitle {
+    font-size: 16px;
+    color: #666;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.loading {
+    text-align: center;
+    color: #888;
+    font-size: 16px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+}
+
+.card-box {
+        background: white;
+        border-radius: 16px;
+        padding: 30px; 
+        min-height: 140px;
+        text-align: center;
+        box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+        transition: all 0.25s ease;
+        border: 1px solid rgba(0,0,0,0.05);
+}
+
+.card-box h6 {
+    color: #666;
+    font-size: 15px;
+    margin-bottom: 10px;
+}
+
+.card-box h2 {
+    font-size: 34px;
+    font-weight: 800;
+    color: #7b2ff7;
+}
+
+
+.card-box:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 14px 28px rgba(0,0,0,0.15);
+}
+
+</style>

@@ -1,0 +1,219 @@
+﻿@page "/appointment-reports"
+@inject AppointmentService AppointmentService
+
+<h3 class="page-title">Appointment Reports</h3>
+
+<div class="filter-panel">
+
+    <div>
+        <label>Start Date</label>
+        <input type="date"
+               class="form-control"
+               @bind="startDate"
+               max="@StartMax" />
+    </div>
+
+    <div>
+        <label>End Date</label>
+        <input type="date"
+               class="form-control"
+               @bind="endDate"
+               min="@EndMin" />
+    </div>
+
+    <div class="btn-area">
+        <button class="btn btn-dark"
+                @onclick="Search">
+            Search
+        </button>
+    </div>
+
+</div>
+
+<table class="table report-table">
+
+    <thead>
+
+        <tr>
+            <th>Date</th>
+            <th>Pending</th>
+            <th>Confirmed</th>
+            <th>Cancelled</th>
+            <th>Completed</th>
+        </tr>
+
+    </thead>
+
+    <tbody>
+
+        @if (!reports.Any())
+        {
+            <tr>
+                <td colspan="5" class="text-center">
+                    No records found.
+                </td>
+            </tr>
+        }
+        else
+        {
+            @foreach (var item in reports)
+            {
+                <tr>
+                    <td>@item.Date.ToString("dd-MM-yyyy")</td>
+                    <td>@item.PendingCount</td>
+                    <td>@item.ConfirmedCount</td>
+                    <td>@item.CancelledCount</td>
+                    <td>@item.CompletedCount</td>
+                </tr>
+            }
+        }
+
+    </tbody>
+
+</table>
+
+<div class="pagination-container">
+
+    <button class="btn btn-outline-dark"
+            disabled="@(CurrentPage == 1)"
+            @onclick="PreviousPage">
+        Previous
+    </button>
+
+    <span>
+        Page @CurrentPage of @TotalPages
+    </span>
+
+    <button class="btn btn-outline-dark"
+            disabled="@(CurrentPage == TotalPages)"
+            @onclick="NextPage">
+        Next
+    </button>
+
+</div>
+
+@code {
+
+    private IEnumerable<AppointmentReportDto> reports = Enumerable.Empty<AppointmentReportDto>();
+
+    private DateOnly? startDate;
+    private DateOnly? endDate;
+    private int CurrentPage = 1;
+    private int PageSize = 6;
+    private int TotalCount;
+    private int TotalPages =>
+        (int)Math.Ceiling((double)TotalCount / PageSize);
+
+    protected override async Task OnInitializedAsync()
+    {
+        endDate = DateOnly.FromDateTime(DateTime.Today);
+        startDate = endDate.Value.AddDays(-6);
+
+        await Load();
+    }
+
+    private async Task Load()
+    {
+        var result = await AppointmentService.GetReport(
+     startDate,
+     endDate,
+     CurrentPage,
+     PageSize);
+
+        reports = result.Items;
+        TotalCount = result.TotalCount;
+    }
+
+    private async Task Search()
+    {
+        CurrentPage = 1;
+        await Load();
+    }
+
+    private async Task PreviousPage()
+    {
+        if (CurrentPage > 1)
+        {
+            CurrentPage--;
+            await Load();
+        }
+    }
+
+    private async Task NextPage()
+    {
+        if (CurrentPage < TotalPages)
+        {
+            CurrentPage++;
+            await Load();
+        }
+    }
+
+    private string StartMax =>
+        endDate?.AddDays(-0).ToString("yyyy-MM-dd") ?? "";
+
+    private string EndMin =>
+        startDate?.ToString("yyyy-MM-dd") ?? "";
+}
+
+<style>
+.page-title {
+font-size: 28px;
+font-weight: 700;
+margin-bottom: 25px;
+}
+
+.filter-panel {
+display: flex;
+gap: 18px;
+align-items: end;
+margin-bottom: 25px;
+flex-wrap: wrap;
+}
+
+.filter-panel label {
+display: block;
+margin-bottom: 6px;
+font-weight: 600;
+}
+
+.filter-panel input {
+width: 220px;
+}
+
+.btn-area {
+margin-bottom: 1px;
+}
+
+.report-table {
+background: white;
+border-collapse: collapse;
+}
+
+.report-table thead {
+background: black;
+color: white;
+}
+
+.report-table th,
+.report-table td {
+text-align: center;
+vertical-align: middle;
+padding: 12px;
+}
+
+.report-table tbody tr:hover {
+background-color: #f5f5f5;
+}
+
+    .pagination-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 15px;
+        margin-top: 20px;
+    }
+
+        .pagination-container span {
+            font-weight: 600;
+        }
+</style>

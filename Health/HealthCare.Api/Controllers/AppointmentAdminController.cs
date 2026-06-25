@@ -1,4 +1,5 @@
-﻿using HealthCare.Api.DTOs.Appointment;
+﻿using HealthCare.Api.DTOs;
+using HealthCare.Api.DTOs.Appointment;
 using HealthCare.Api.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -30,9 +31,29 @@ namespace HealthCare.Api.Controllers
         // Admin - Get daily reports
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
         [HttpGet("daily-report")]
-        public async Task<IActionResult> GetDailyReport()
+        public async Task<IActionResult> GetDailyReport(
+    DateOnly startDate,
+    DateOnly endDate,
+    int pageNumber = 1,
+    int pageSize = 6)
         {
-            var result = await _appointmentService.GetDailyReport();
+            var query = await _appointmentService
+                .GetDailyReport(startDate, endDate);
+
+            var totalCount = query.Count();
+
+            var items = query
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            var result = new PagedResult<AppointmentReportDto>
+            {
+                Items = items,
+                TotalCount = totalCount,
+                PageNumber = pageNumber,
+                PageSize = pageSize
+            };
 
             return Ok(result);
         }

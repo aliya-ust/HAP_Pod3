@@ -14,7 +14,9 @@ namespace HealthCare.Api.Services.Interfaces
         Task<bool> IsAvailable(DateOnly date, int doctorId, string timeSlot);
         Task AddAsync(CreateAppointmentDto dto, int patientId);
         Task UpdateStatusAsync(int id, UpdateAppointmentDto dto);
-        Task<List<AppointmentReportDto>> GetDailyReport();
+        Task<List<AppointmentReportDto>> GetDailyReport(
+                    DateOnly? startDate,
+                    DateOnly? endDate);
         Task<List<AppointmentListDto>> GetDoctorSchedule(DateOnly date, int id);
         Task<List<AppointmentListDto>> GetPatientSchedule(DateOnly date, int id);
         Task<List<AppointmentListDto>> GetAppointmentByPatient(int id);
