@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using HealthCare.Api.Data;
-using HealthCare.Api.DTOs;
-using HealthCare.Api.DTOs.Doctor;
+using HealthCare.Shared.DTOs;
+using HealthCare.Shared.DTOs.Doctor;
 using HealthCare.Api.Models;
 using HealthCare.Api.Repositories.Interfaces;
 using HealthCare.Api.Services.Interfaces;
@@ -31,43 +31,46 @@ namespace HealthCare.Api.Services.Implementations
             var doctor = await _repository.GetByIdAsync(id);
 
             if (doctor is null)
-                throw new InvalidOperationException(NotFoundExceptionMessage);
+                return null;
 
             return _mapper.Map<DoctorListDto>(doctor);
         }
 
         public async Task<PagedResult<DoctorListDto>> GetAllAsync(DoctorFilter filter)
         {
-            // Build predicate (filtering)
-            Expression<Func<Doctor, bool>>? predicate = null;
+            Expression<Func<Doctor, bool>> predicate = d =>
+                    (string.IsNullOrEmpty(filter.Name) ||
+                        (d.FullName != null &&
+                         EF.Functions.Like(d.FullName, $"%{filter.Name}%"))) &&
 
-            if (!string.IsNullOrWhiteSpace(filter.Specialisation) && filter.MinExperience.HasValue)
-            {
-                predicate = d => d.Specialisation == filter.Specialisation
-                              && d.YearsOfExperience >= filter.MinExperience.Value;
-            }
-            else if (!string.IsNullOrWhiteSpace(filter.Specialisation))
-            {
-                predicate = d => d.Specialisation == filter.Specialisation;
-            }
-            else if (filter.MinExperience.HasValue)
-            {
-                predicate = d => d.YearsOfExperience >= filter.MinExperience.Value;
-            }
+                    (string.IsNullOrEmpty(filter.Specialisation) ||
+                        d.Specialisation == filter.Specialisation) &&
 
-            // Ordering (by experience)
-            Func<IQueryable<Doctor>, IOrderedQueryable<Doctor>> orderBy =
-                q => q.OrderByDescending(d => d.YearsOfExperience);
+                    (!filter.IsActive.HasValue ||
+                        d.IsActive == filter.IsActive.Value);
+            // ✅ ORDERING
+            Func<IQueryable<Doctor>, IOrderedQueryable<Doctor>> orderBy = q =>
+            {
+                // ✅ If user selected experience sorting
+                if (!string.IsNullOrEmpty(filter.ExperienceOrder))
+                {
+                    if (filter.ExperienceOrder == "asc")
+                        return q.OrderBy(d => d.YearsOfExperience);
 
-            // Call repository
+                    return q.OrderByDescending(d => d.YearsOfExperience);
+                }
+
+                // ✅ DEFAULT SORT (by ID)
+                return q.OrderBy(d => d.DoctorId);
+            };
+
             var pagedResult = await _repository.GetAllAsync(
                 filter.PageNumber,
-                filter.EffectivePageSize,
+                filter.PageSize,
                 predicate,
                 orderBy
             );
 
-            // Map result
             return new PagedResult<DoctorListDto>
             {
                 Items = _mapper.Map<IEnumerable<DoctorListDto>>(pagedResult.Items),
@@ -194,5 +197,25 @@ namespace HealthCare.Api.Services.Implementations
 
         public async Task<List<DoctorListDto>> AvailableDoctors(string specialisation, DateOnly date) =>
             await _repository.AvailableDoctors(specialisation, date);
+    
+
+    public async Task<DoctorSummaryDto> GetSummaryAsync()
+        {
+            var fromDate = DateTimeOffset.UtcNow.AddDays(-30);
+            var toDate = DateTimeOffset.UtcNow;
+
+            var result = await _context.Doctors
+                .Where(d => d.CreatedDate >= fromDate && d.CreatedDate <= toDate)
+                .GroupBy(d => 1)
+                .Select(g => new DoctorSummaryDto
+                {
+                    TotalDoctors = g.Count(),
+                    ActiveDoctors = g.Count(d => d.IsActive),
+                    InactiveDoctors = g.Count(d => !d.IsActive)
+                })
+                .FirstOrDefaultAsync();
+
+            return result ?? new DoctorSummaryDto();
+        }
     }
 }

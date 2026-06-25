@@ -1,12 +1,12 @@
 ﻿using AutoMapper;
 using HealthCare.Api.Data;
-using HealthCare.Api.DTOs;
-using HealthCare.Api.DTOs.HealthRecord;
+using HealthCare.Shared.DTOs;
 using HealthCare.Api.Models;
 using HealthCare.Api.Repositories.Interfaces;
 using HealthCare.Api.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using HealthCare.Shared.DTOs.HealthRecord;
 
 namespace HealthCare.Api.Services.Implementations
 {
@@ -53,7 +53,7 @@ namespace HealthCare.Api.Services.Implementations
             // Call repository
             var pagedResult = await _repository.GetAllAsync(
                 filter.PageNumber,
-                filter.EffectivePageSize,
+                filter.PageSize,
                 predicate,
                 orderBy
             );

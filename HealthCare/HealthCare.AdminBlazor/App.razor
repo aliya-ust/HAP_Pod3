@@ -1,0 +1,14 @@
+﻿@using HealthCare.AdminBlazor.Components.Layout
+
+<Router AppAssembly="@typeof(App).Assembly">
+    <Found Context="routeData">
+        <RouteView RouteData="@routeData"
+                   DefaultLayout="@typeof(MainLayout)" />
+        <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+    </Found>
+
+    <NotFound>
+        <h3>Page Not Found</h3>
+        <p>Sorry, page not found</p>
+    </NotFound>
+</Router>

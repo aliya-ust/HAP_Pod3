@@ -1,12 +1,11 @@
-﻿using HealthCare.Api.DTOs;
-using HealthCare.Api.DTOs.Doctor;
-using HealthCare.Api.Models;
+﻿using HealthCare.Shared.DTOs;
+using HealthCare.Shared.DTOs.Doctor;
 
 namespace HealthCare.Api.Services.Interfaces
 {
     public interface IDoctorService
     {
-        Task<DoctorListDto> GetByIdAsync(int id);
+        Task<DoctorListDto?> GetByIdAsync(int id);
         Task<PagedResult<DoctorListDto>> GetAllAsync(DoctorFilter filter);
         Task AddAsync(CreateDoctorDto dto);
         Task UpdateAsync(int id, UpdateDoctorDto dto);
@@ -16,5 +15,6 @@ namespace HealthCare.Api.Services.Interfaces
         Task CreateSlots(int id, List<string> timeslots);
         Task<CreateLeaveResultDto> CreateLeave(int id, List<CreateLeaveDto> leaves);
         Task<List<DoctorListDto>> AvailableDoctors(string specialisation, DateOnly date);
+        Task<DoctorSummaryDto> GetSummaryAsync();
     }
 }

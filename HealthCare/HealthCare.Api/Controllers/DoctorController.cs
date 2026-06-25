@@ -1,4 +1,4 @@
-﻿using HealthCare.Api.DTOs.Doctor;
+﻿using HealthCare.Shared.DTOs.Doctor;
 using HealthCare.Api.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -40,15 +40,6 @@ namespace HealthCare.Api.Controllers
             return Ok(new {message = "Doctor profile updated successfully"});
         }
 
-        [HttpGet("available")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        [Authorize(Roles = "Patient")]
-        public async Task<IActionResult> GetAvailableDoctors([FromQuery] string specialisation, [FromQuery] DateOnly date)
-        {
-            var result = await _doctorService.AvailableDoctors(specialisation, date);
-            return Ok(result);
-        }
-
         [HttpPost("leaves")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Authorize(Roles = "Doctor")]
@@ -60,6 +51,15 @@ namespace HealthCare.Api.Controllers
             var doctorId = GetDoctorIdFromClaims();
             var result = await _doctorService.CreateLeave(doctorId, leaves);
             return Ok(new {message = "Leaves added successfully"});
+        }
+
+        [HttpGet("available")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize(Roles = "Patient")]
+        public async Task<IActionResult> GetAvailableDoctors([FromQuery] string specialisation, [FromQuery] DateOnly date)
+        {
+            var result = await _doctorService.AvailableDoctors(specialisation, date);
+            return Ok(result);
         }
 
         private int GetDoctorIdFromClaims()

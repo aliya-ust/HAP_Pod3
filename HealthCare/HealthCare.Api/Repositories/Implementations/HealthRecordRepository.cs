@@ -1,7 +1,6 @@
 ﻿using HealthCare.Api.Data;
-using HealthCare.Api.DTOs.HealthRecord;
+using HealthCare.Shared.DTOs.HealthRecord;
 using HealthCare.Api.Models;
-using HealthCare.Api.Repositories.Implementations;
 using HealthCare.Api.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 

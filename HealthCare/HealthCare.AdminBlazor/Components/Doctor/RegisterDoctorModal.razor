@@ -1,0 +1,240 @@
+﻿@using HealthCare.Shared.DTOs.Doctor
+@using HealthCare.Shared.Enums
+@inject HttpClient Http
+
+@if (Visible)
+{
+    <div class="modal fade show d-block">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title custom-header">Register Doctor</h5>
+                <button type="button" class="btn-close" @onclick="Close"></button>
+            </div>
+
+            <div class="modal-body">
+
+            @if (!string.IsNullOrEmpty(apiError))
+            {
+                <div class="validation-error">@apiError</div>
+            }
+
+            <EditForm EditContext="editContext" OnSubmit="HandleSubmit">
+                <DataAnnotationsValidator />
+
+                <div class="form-grid">
+
+                    <!-- NAME -->
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <InputText class="form-control" @bind-Value="doctorModel.FullName" />
+                        <ValidationMessage For="@(() => doctorModel.FullName)" />
+                    </div>
+
+                    <!-- SPEC -->
+                    <div class="form-group">
+                        <label>Specialisation</label>
+                        <InputSelect class="form-control filter-dropdown"
+                                     @bind-Value="doctorModel.Specialisation">
+                            <option value="">Select</option>
+                            @foreach (var s in Enum.GetNames(typeof(DoctorSpecialization)))
+                            {
+                                <option value="@s">@s</option>
+                            }
+                        </InputSelect>
+                        <ValidationMessage For="@(() => doctorModel.Specialisation)" />
+                    </div>
+
+                    <!-- EMAIL -->
+                    <div class="form-group">
+                        <label>Email</label>
+                                <InputText class="form-control"
+                                           @bind-Value="doctorModel.Email"
+                                           @oninput="HandleEmailInput" />
+
+                                <ValidationMessage For="@(() => doctorModel.Email)" />
+                    </div>
+
+                    <!-- PASSWORD -->
+                    <div class="form-group">
+                        <label>Password</label>
+
+                        <div class="password-wrapper">
+                            <InputText class="form-control password-input"
+                                       type="@(showPassword ? "text" : "password")"
+                                       @bind-Value="doctorModel.Password" />
+
+                            <button type="button" class="eye-btn" @onclick="TogglePassword">
+                                <svg viewBox="0 0 24 24" class="eye-icon">
+                                    <path d="M12 5c-7 0-11 7-11 7s4 7 11 7 11-7 11-7-4-7-11-7zm0 10a3 3 0 100-6 3 3 0 000 6z" />
+                                </svg>
+                            </button>
+                        </div>
+
+                        <ValidationMessage For="@(() => doctorModel.Password)" />
+                    </div>
+
+                    <!-- EXPERIENCE -->
+                    <div class="form-group">
+                        <label>Experience</label>
+                        <InputNumber class="form-control"
+                                     @bind-Value="doctorModel.YearsOfExperience"
+                                     min="0" max="60" />
+                        <ValidationMessage For="@(() => doctorModel.YearsOfExperience)" />
+                    </div>
+
+                    <!-- FEE -->
+                    <div class="form-group">
+                        <label>Consultation Fee</label>
+
+                        <InputNumber @bind-Value="doctorModel.ConsultationFee"
+                                     class="form-control no-spinner"
+                                     min="1"
+                                     max="5000" />
+                        <ValidationMessage For="@(() => doctorModel.ConsultationFee)" />
+                    </div>
+
+                </div>
+
+                <!-- SLOTS -->
+                <div class="slot-section">
+                    <label>Time Slots</label>
+
+                    <div class="slot-grid">
+                        @foreach (var slot in slots)
+                        {
+                            <label class="slot-box">
+                                <input type="checkbox"
+                                       checked="@doctorModel.TimeSlots.Contains(slot)"
+                                       @onchange="(e) => ToggleSlot(slot, e.Value)" />
+
+                                <span>@slot</span>
+                            </label>
+                        }
+                    </div>
+
+                    <ValidationMessage For="@(() => doctorModel.TimeSlots)" />
+                </div>
+
+                <div class="btn-wrap">
+                    <button class="save-btn">Register Doctor</button>
+                </div>
+
+            </EditForm>
+
+        </div>
+    </div>
+    </div>
+    </div>
+}
+
+@code {
+    [Parameter] public bool Visible { get; set; }
+    [Parameter] public EventCallback OnClose { get; set; }
+    [Parameter] public EventCallback OnSaved { get; set; }
+
+    private CreateDoctorDto doctorModel = new();
+    private bool showPassword = false;
+    private string apiError = "";
+    private EditContext? editContext;
+    private ValidationMessageStore? messageStore;
+
+    private void ClearEmailError(ChangeEventArgs e)
+    {
+        messageStore!.Clear(() => doctorModel.Email);
+        editContext!.NotifyValidationStateChanged();
+    }
+
+    protected override void OnInitialized()
+    {
+        editContext = new EditContext(doctorModel);
+        messageStore = new ValidationMessageStore(editContext);
+    }
+
+    private List<string> slots = new()
+    {
+        "09:00 AM","10:00 AM","11:00 AM","12:00 PM",
+        "01:00 PM","02:00 PM","03:00 PM","04:00 PM","05:00 PM"
+    };
+
+    private async Task HandleSubmit(EditContext context)
+    {
+        messageStore!.Clear();
+
+        if (!context.Validate())
+            return;   // stop if normal validation fails
+
+        await RegisterDoctor();  // then call API
+    }
+
+    private void HandleEmailInput(ChangeEventArgs e)
+    {
+        var value = e.Value?.ToString();
+
+        // ✅ Always clear custom errors (like duplicate)
+        messageStore!.Clear(() => doctorModel.Email);
+
+        // ✅ If user typed something → remove error
+        if (!string.IsNullOrWhiteSpace(value))
+        {
+            editContext!.NotifyFieldChanged(
+                FieldIdentifier.Create(() => doctorModel.Email)
+            );
+        }
+
+        // ✅ Refresh validation UI
+        editContext!.NotifyValidationStateChanged();
+    }
+
+
+    private void TogglePassword() => showPassword = !showPassword;
+
+    private void ToggleSlot(string slot, object? val)
+    {
+        bool isChecked = (bool)val!;
+        if (isChecked) doctorModel.TimeSlots.Add(slot);
+        else doctorModel.TimeSlots.Remove(slot);
+        
+        editContext!.NotifyFieldChanged(
+                FieldIdentifier.Create(() => doctorModel.TimeSlots)
+            );
+
+    }
+
+    private async Task RegisterDoctor()
+    {
+        messageStore!.Clear();   // ✅ clear previous errors
+
+        var res = await Http.PostAsJsonAsync("api/auth/register/doctor", doctorModel);
+
+        if (res.IsSuccessStatusCode)
+        {
+            await OnSaved.InvokeAsync();
+            await Close();
+        }
+        else
+        {
+            var error = await res.Content.ReadAsStringAsync();
+
+            if (error.Contains("Email already exists"))
+            {
+                
+                messageStore!.Clear(() => doctorModel.Email);
+
+               
+                messageStore.Add(() => doctorModel.Email, "Email already exists");
+
+                
+                editContext!.NotifyValidationStateChanged();
+            }
+        }
+    }
+
+
+    private async Task Close()
+    {
+        doctorModel = new CreateDoctorDto();
+        await OnClose.InvokeAsync();
+    }
+}

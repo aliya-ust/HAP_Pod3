@@ -1,0 +1,163 @@
+﻿@using HealthCare.Shared.DTOs.Doctor
+@using HealthCare.Shared.Enums
+
+<div class="filter-bar">
+
+    <!-- ✅ NAME -->
+    <div class="name-container">
+        <input class="filter-input"
+               placeholder="Search by name"
+               @bind="Name"
+               @oninput="AllowOnlyText" />
+
+        @if (!string.IsNullOrEmpty(validationMessage))
+        {
+            <div class="validation-error">
+                @validationMessage
+            </div>
+        }
+    </div>
+
+
+    <!-- ✅ EXPERIENCE -->
+    <select class="filter-dropdown" @bind="ExperienceOrder">
+        <option value="">Experience</option>
+        <option value="asc">Low → High</option>
+        <option value="desc">High → Low</option>
+    </select>
+
+    <!-- ✅ SPECIALISATION -->
+    <select class="filter-dropdown" @bind="Specialisation">
+        <option value="">Specialisation</option>
+        @foreach (var spec in Enum.GetNames(typeof(DoctorSpecialization)))
+        {
+            <option value="@spec">@spec</option>
+        }
+    </select>
+
+    <!-- ✅ STATUS -->
+    <select class="filter-dropdown" @bind="Status">
+        <option value="">Status</option>
+        <option value="true">Active</option>
+        <option value="false">Inactive</option>
+    </select>
+
+    <!-- ✅ SEARCH BUTTON -->
+    <button class="btn-search" @onclick="ApplyFilter">
+        Search
+    </button>
+
+</div>
+
+@code {
+
+    [Parameter]
+    public EventCallback<DoctorFilter> OnFilter { get; set; }
+
+    [Parameter]
+    public EventCallback OnReset { get; set; }
+
+    private string Name = "";
+    private string ExperienceOrder = "";
+    private string Specialisation = "";
+    private string Status = "";
+    private string validationMessage = "";
+
+
+    // ✅ Allow only alphabets in Name field
+    private void AllowOnlyText(ChangeEventArgs e)
+    {
+        var value = e.Value?.ToString() ?? "";
+
+        if (value.Any(c => !char.IsLetter(c) && !char.IsWhiteSpace(c)))
+        {
+            validationMessage = "Only alphabets are allowed.";
+        }
+        else
+        {
+            validationMessage = "";
+        }
+
+        Name = value;
+    }
+
+    // ✅ Send filter to parent
+    private async Task ApplyFilter()
+    {
+        // ✅ STOP if invalid
+        if (!string.IsNullOrEmpty(validationMessage))
+            return;
+
+        var filter = new DoctorFilter
+        {
+            Name = string.IsNullOrWhiteSpace(Name) ? null : Name,
+            Specialisation = string.IsNullOrWhiteSpace(Specialisation) ? null : Specialisation,
+            IsActive = string.IsNullOrWhiteSpace(Status) ? null : bool.Parse(Status),
+            ExperienceOrder = string.IsNullOrWhiteSpace(ExperienceOrder) ? null : ExperienceOrder
+        };
+
+        await OnFilter.InvokeAsync(filter);
+    }
+
+
+    public void ResetFilters()
+    {
+        Name = "";
+        ExperienceOrder = "";
+        Specialisation = "";
+        Status = "";
+
+        StateHasChanged();
+    }
+}
+<style>
+
+.filter-bar {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+    .filter-input,
+    .filter-dropdown {
+        width: 220px;
+        height: 48px;
+        padding: 0 12px;
+        border: 2px solid #2563eb;
+        border-radius: 12px;
+        font-size: 14px;
+        outline: none;
+    }
+
+.btn-search {
+    height: 48px;
+    padding: 0 18px;
+    border: none;
+    border-radius: 12px;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    background: linear-gradient(135deg,#0f172a,#1e3a8a,#2563eb);
+    transition: all 0.3s ease;
+}
+
+.btn-search:hover {
+    transform: translateY(-2px);
+    opacity: .95;
+}
+
+.name-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.validation-error {
+    color: #dc2626;
+    font-size: 13px;
+    margin-top: 4px;
+}
+
+    
+</style>

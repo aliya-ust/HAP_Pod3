@@ -33,7 +33,9 @@ namespace HealthCare.Api.Models
 
         public bool IsActive { get; set; } = true;
 
-        public DateTimeOffset CreatedDate { get; set; }
+        public string Email { get; set; } = null!;
+
+        public DateTimeOffset CreatedDate { get; set; } = DateTimeOffset.UtcNow;
 
         // Navigation
         [ForeignKey(nameof(UserId))]

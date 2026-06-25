@@ -1,0 +1,213 @@
+﻿@page "/"
+@using HealthCare.AdminBlazor.Components.Layout
+@layout EmptyLayout
+
+@inject HttpClient Http
+@inject NavigationManager Navigation
+@inject IJSRuntime JS
+
+<div class="login-container">
+    <div class="login-card">
+
+        <div class="login-header">
+            <div class="logo-circle">
+                <span class="plus-sign">+</span>
+            </div>
+
+            <h2>Admin Portal</h2>
+            <p>Please sign in to continue</p>
+        </div>
+
+        @if (!string.IsNullOrEmpty(errorMessage))
+        {
+            <div class="error-message">
+                @errorMessage
+            </div>
+        }
+
+        <EditForm Model="loginModel" OnValidSubmit="HandleLogin">
+
+            <div class="form-group">
+                <label>Email Address</label>
+
+                <InputText class="form-control"
+                           @bind-Value="loginModel.Email"
+                           placeholder="Enter your email" />
+            </div>
+
+            <div class="form-group">
+                <label>Password</label>
+
+                <InputText class="form-control"
+                           type="password"
+                           @bind-Value="loginModel.Password"
+                           placeholder="Enter your password" />
+            </div>
+
+            <button type="submit" class="login-btn">
+                Log In
+            </button>
+
+        </EditForm>
+
+    </div>
+</div>
+
+@code {
+
+    private LoginDto loginModel = new();
+
+    private string errorMessage = string.Empty;
+
+    private async Task HandleLogin()
+    {
+        errorMessage = string.Empty;
+
+        try
+        {
+            var response = await Http.PostAsJsonAsync(
+                "api/Auth/login",
+                loginModel);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                errorMessage = "Invalid Admin Credentials";
+                return;
+            }
+
+            var authResponse =
+                await response.Content.ReadFromJsonAsync<AuthResponse>();
+
+            if (authResponse == null ||
+                string.IsNullOrWhiteSpace(authResponse.AccessToken))
+            {
+                errorMessage = "Invalid Admin Credentials";
+                return;
+            }
+
+            // Store token in Local Storage
+            await JS.InvokeVoidAsync(
+                "localStorage.setItem",
+                "token",
+                authResponse.AccessToken);
+
+            // Navigate to Dashboard
+            Navigation.NavigateTo("/dashboard");
+        }
+        catch (Exception)
+        {
+            errorMessage = "Invalid Admin Credentials";
+        }
+    }
+}
+
+<style>
+    .login-container {
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: linear-gradient(135deg, #0f172a, #1e3a8a, #2563eb);
+        padding: 20px;
+    }
+
+    .login-card {
+        width: 100%;
+        max-width: 500px;
+        background: white;
+        border-radius: 30px;
+        padding: 55px;
+        box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+    }
+
+    .login-header {
+        text-align: center;
+        margin-bottom: 35px;
+    }
+
+    .logo-circle {
+        width: 90px;
+        height: 90px;
+        background: linear-gradient(135deg, #1e40af, #2563eb);
+        border-radius: 50%;
+        margin: 0 auto 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        box-shadow: 0 10px 25px rgba(37,99,235,0.3);
+    }
+
+    .plus-sign {
+        color: white;
+        font-size: 50px;
+        font-weight: bold;
+    }
+
+    .login-header h2 {
+        color: #1e293b;
+        margin-bottom: 8px;
+        font-size: 32px;
+        font-weight: 700;
+    }
+
+    .login-header p {
+        color: #64748b;
+        font-size: 16px;
+    }
+
+    .error-message {
+        background-color: #fee2e2;
+        color: #dc2626;
+        border: 1px solid #fecaca;
+        border-radius: 12px;
+        padding: 12px;
+        margin-bottom: 20px;
+        text-align: center;
+        font-weight: 600;
+    }
+
+    .form-group {
+        margin-bottom: 25px;
+    }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #334155;
+            font-weight: 600;
+        }
+
+    .form-control {
+        width: 100%;
+        padding: 16px;
+        border: 1px solid #d1d5db;
+        border-radius: 15px;
+        font-size: 16px;
+        box-sizing: border-box;
+    }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 4px rgba(37,99,235,0.15);
+        }
+
+    .login-btn {
+        width: 100%;
+        padding: 16px;
+        border: none;
+        border-radius: 15px;
+        background: linear-gradient(135deg, #1d4ed8, #2563eb);
+        color: white;
+        font-size: 17px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: 0.3s;
+        margin-top: 10px;
+    }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(37,99,235,0.3);
+        }
+</style>

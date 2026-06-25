@@ -1,0 +1,203 @@
+﻿<div class="table-container">
+
+    <table class="doctor-table">
+
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Full Name</th>
+                <th>Specialisation</th>
+                <th>Experience</th>
+                <th>Fee</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            @if (Doctors != null && Doctors.Any())
+            {
+                @for (int i = 0; i < Doctors.Count; i++)
+                {
+                    var doctor = Doctors[i];
+
+                    <tr class="@(i % 2 == 0 ? "row-light" : "row-white")">
+
+                        <td>@doctor.DoctorId</td>
+
+                        <td>@doctor.FullName</td>
+
+                        <td>@doctor.Specialisation</td>
+
+                        <td>@doctor.YearsOfExperience Years</td>
+
+                        <td>₹@doctor.ConsultationFee</td>
+
+                        <td>
+                            <span class="status-badge">
+                                @(doctor.IsActive ? "Active" : "Inactive")
+                            </span>
+                        </td>
+
+                        <td class="action-icons">
+
+                            <!-- EDIT -->
+                            <i class="bi bi-pencil-square text-warning action-icon"
+                                   title="Edit Doctor"
+                                   @onclick="() => EditDoctor(doctor.DoctorId)">
+                            </i>
+
+                            <!-- TOGGLE STATUS -->
+                            <i class="bi @(doctor.IsActive ? "bi-toggle-on text-success" : "bi-toggle-off text-secondary") action-icon"
+                                   title="Update Doctor Status"
+                                   @onclick="() => ToggleDoctorStatus(doctor.DoctorId)">
+                            </i>
+
+                            <!-- DELETE -->
+                            <i class="bi bi-trash-fill text-danger action-icon"
+                                   title="Delete Doctor"
+                                   @onclick="() => DeleteDoctor(doctor.DoctorId)">
+                            </i>
+
+                        </td>
+
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="7" class="no-data">
+                        @(IsSearchPerformed ? "Doctor not found" : "No doctors available")
+                    </td>
+                </tr>
+            }
+
+        </tbody>
+
+    </table>
+
+</div>
+
+@code {
+
+    [Parameter]
+    public List<DoctorListDto> Doctors { get; set; } = new();
+
+    [Parameter]
+    public EventCallback<DoctorListDto> OnEdit { get; set; }
+
+    [Parameter]
+    public EventCallback<int> OnDelete { get; set; }
+
+    [Parameter]
+    public EventCallback<DoctorListDto> OnToggleStatus { get; set; }
+
+    [Parameter]
+    public bool IsSearchPerformed { get; set; }
+
+    private async Task EditDoctor(int doctorId)
+    {
+        var doctor = Doctors.FirstOrDefault(d => d.DoctorId == doctorId);
+
+        if (doctor != null)
+            await OnEdit.InvokeAsync(doctor);
+    }
+
+    private async Task DeleteDoctor(int doctorId)
+    {
+        await OnDelete.InvokeAsync(doctorId);
+    }
+
+    private async Task ToggleDoctorStatus(int doctorId)
+    {
+        var doctor = Doctors.FirstOrDefault(d => d.DoctorId == doctorId);
+
+        if (doctor != null)
+            await OnToggleStatus.InvokeAsync(doctor);
+    }
+}
+<style>
+
+    .table-container {
+        background: white;
+        border-radius: 24px;
+        overflow: hidden;
+        box-shadow: 0 8px 25px rgba(0,0,0,.08);
+    }
+
+    .doctor-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+        .doctor-table thead {
+            background: linear-gradient(90deg,#0f172a,#2563eb);
+            color: white;
+        }
+
+        .doctor-table th,
+        .doctor-table td {
+            padding: 22px;
+            text-align: left;
+        }
+
+    .row-light {
+        background-color: #f3f4f6;
+    }
+
+    .row-white {
+        background-color: white;
+    }
+
+    .doctor-table tbody tr:hover {
+        background: #eef4ff;
+        transition: .3s;
+    }
+
+    .status-badge {
+        background: #d1fae5;
+        color: #047857;
+        padding: 8px 18px;
+        border-radius: 20px;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .action-btn {
+        border: none;
+        background: transparent;
+        cursor: pointer;
+        font-size: 20px;
+        margin-right: 12px;
+        transition: .2s;
+    }
+
+        .action-btn:hover {
+            transform: scale(1.2);
+        }
+
+    .no-data {
+        text-align: center;
+        color: #64748b;
+        padding: 30px;
+    }
+
+    .action-icons {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+    }
+
+    .action-icon {
+        font-size: 20px;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+
+        .action-icon:hover {
+            transform: scale(1.2);
+        }
+
+</style>

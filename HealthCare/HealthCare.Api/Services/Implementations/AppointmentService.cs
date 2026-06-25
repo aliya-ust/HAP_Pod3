@@ -1,13 +1,11 @@
 ﻿using AutoMapper;
 using HealthCare.Api.Data;
-using HealthCare.Api.DTOs;
-using HealthCare.Api.DTOs.Appointment;
-using HealthCare.Api.DTOs.Patient;
+using HealthCare.Shared.DTOs;
+using HealthCare.Shared.DTOs.Appointment;
 using HealthCare.Api.Models;
 using HealthCare.Api.Repositories.Interfaces;
 using HealthCare.Api.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using System.Linq.Expressions;
 
 namespace HealthCare.Api.Services.Implementations
@@ -64,7 +62,7 @@ namespace HealthCare.Api.Services.Implementations
             // Call repository
             var pagedResult = await _repository.GetAllAsync(
                 filter.PageNumber,
-                filter.EffectivePageSize,
+                filter.PageSize,
                 predicate,
                 orderBy
             );
@@ -185,12 +183,6 @@ namespace HealthCare.Api.Services.Implementations
             return true;
         }
 
-        public async Task<List<AppointmentReportDto>> GetDailyReport()
-        {
-            var report = await _repository.GetDailyReport();
-            return report.Count == 0 ? new List<AppointmentReportDto>() : report;
-        }
-
         public async Task<List<AppointmentListDto>> GetDoctorSchedule(DateOnly date, int id)
         {
             var schedule = await _repository.GetDoctorSchedule(date, id);
@@ -206,19 +198,137 @@ namespace HealthCare.Api.Services.Implementations
         public async Task<List<AppointmentListDto>> GetAppointmentByPatient(int id)
         {
             var appointments = await _repository.GetAppointmentByPatient(id);
-            return appointments.Count == 0 ? new List<AppointmentListDto>() : appointments;
+
+            var now = DateTime.Now;
+
+            var upcomingAppointments = appointments
+     .Where(a =>
+     {
+         if (string.IsNullOrEmpty(a.TimeSlot))
+             return false;
+
+         var slots = a.TimeSlot.Split(',');
+
+         foreach (var slot in slots)
+         {
+             if (TimeSpan.TryParse(slot, out var time))
+             {
+                 var appointmentDateTime =
+                     a.ScheduledDate.ToDateTime(TimeOnly.MinValue) + time;
+
+                 if (appointmentDateTime > now && a.Status == "Pending")
+                     return true;
+             }
+         }
+
+         return false;
+     })
+     .ToList();
+
+            return upcomingAppointments;
         }
 
         public async Task<List<AppointmentListDto>> GetAppointmentByDoctor(int id)
         {
             var appointments = await _repository.GetAppointmentByDoctor(id);
-            return appointments.Count == 0 ? new List<AppointmentListDto>() : appointments;
+
+            var now = DateTime.Now;
+
+            var upcomingAppointments = appointments
+    .Where(a =>
+    {
+        if (string.IsNullOrEmpty(a.TimeSlot))
+            return false;
+
+        var slots = a.TimeSlot.Split(',');
+
+        foreach (var slot in slots)
+        {
+            if (TimeSpan.TryParse(slot, out var time))
+            {
+                var appointmentDateTime =
+                    a.ScheduledDate.ToDateTime(TimeOnly.MinValue) + time;
+
+                if (appointmentDateTime > now && a.Status == "Pending")
+                    return true;
+            }
+        }
+
+        return false;
+    })
+    .ToList();
+
+
+            return upcomingAppointments;
         }
 
         public async Task CancelAppointmentsByDoctorDate(int doctorId, DateOnly date)
         {
             await _repository.CancelAppointmentsByDoctorDate(doctorId, date);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<List<AppointmentReportDto>> GetDailyReport()
+
+        {
+
+            var report = await _repository.GetDailyReport();
+
+            return report.Count == 0 ? new List<AppointmentReportDto>() : report;
+
+        }
+
+        public async Task<List<AppointmentReportDto>> GetReportByDateRange(
+    DateOnly startDate,
+    DateOnly endDate)
+        {
+            var report = await _context.Appointments
+                .Include(a => a.Doctor)
+                .Where(a => a.ScheduledDate >= startDate &&
+                            a.ScheduledDate <= endDate)
+                .GroupBy(a => a.ScheduledDate)
+                .Select(g => new AppointmentReportDto
+                {
+                    Date = g.Key,
+
+                    PendingCount = g.Count(a => a.Status == "Pending"),
+                    ConfirmedCount = g.Count(a => a.Status == "Confirmed"),
+                    CancelledCount = g.Count(a => a.Status == "Cancelled"),
+                    CompletedCount = g.Count(a => a.Status == "Completed"),
+
+                    Revenue = g
+                        .Where(a => a.Status == "Completed")
+                        .Sum(a => (decimal?)a.Doctor.ConsultationFee) ?? 0
+                })
+                .OrderBy(r => r.Date)
+                .ToListAsync();
+
+            return report;
+        }
+
+        public async Task<AppointmentSummaryDto> GetSummaryAsync()
+        {
+            var fromDate = DateOnly.FromDateTime(DateTime.Today.AddDays(-30));
+            var toDate = DateOnly.FromDateTime(DateTime.Today);
+
+            var result = await _context.Appointments
+                .Include(a => a.Doctor)
+                .Where(a => a.ScheduledDate >= fromDate && a.ScheduledDate <= toDate)
+                .GroupBy(a => 1)
+                .Select(g => new AppointmentSummaryDto
+                {
+                    PendingCount = g.Count(a => a.Status == "Pending"),
+                    ConfirmedCount = g.Count(a => a.Status == "Confirmed"),
+                    CancelledCount = g.Count(a => a.Status == "Cancelled"),
+                    CompletedCount = g.Count(a => a.Status == "Completed"),
+
+                    TotalRevenue = g
+                        .Where(a => a.Status == "Completed")
+                        .Sum(a => a.Doctor.ConsultationFee)
+                })
+                .FirstOrDefaultAsync();
+
+            return result ?? new AppointmentSummaryDto();
         }
     }
 }

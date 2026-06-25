@@ -1,8 +1,7 @@
-﻿using HealthCare.Api.DTOs.Doctor;
+﻿using HealthCare.Shared.DTOs.Doctor;
 using HealthCare.Api.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HealthCare.Api.Controllers
@@ -19,13 +18,18 @@ namespace HealthCare.Api.Controllers
         }
 
         [HttpGet("{id}")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetDoctorById(int id)
         {
             var result = await _doctorService.GetByIdAsync(id);
+
+            if (result == null)
+            {
+                return NotFound();   
+            }
+
             return Ok(result);
         }
+
 
         [HttpGet("")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
@@ -67,6 +71,15 @@ namespace HealthCare.Api.Controllers
         {
             await _doctorService.DeleteAsync(id);
             return Ok(new { message = "Doctor deleted successfully" });
+        }
+
+        [HttpGet("summary")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> GetSummary()
+        {
+            var result = await _doctorService.GetSummaryAsync();
+            return Ok(result);
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using HealthCare.Api.Data;
-using HealthCare.Api.DTOs;
-using HealthCare.Api.DTOs.Appointment;
+using HealthCare.Shared.DTOs;
+using HealthCare.Shared.DTOs.Appointment;
 using HealthCare.Api.Models;
 using HealthCare.Api.Repositories.Interfaces;
 using HealthCare.Api.Services.Implementations;

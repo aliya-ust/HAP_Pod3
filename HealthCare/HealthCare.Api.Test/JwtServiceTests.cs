@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using System.IdentityModel.Tokens.Jwt;
-using HealthCare.Api.Models;
 using HealthCare.Api.Services.Implementations;
 
 namespace HealthCare.Api.Tests

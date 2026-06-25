@@ -1,0 +1,141 @@
+﻿@inject NavigationManager Nav
+@inject IJSRuntime JS
+<div class="sidebar">
+
+    <div class="sidebar-header">
+        <h2>HealthCare</h2>
+        <p>Admin Portal</p>
+    </div>
+
+    <nav class="nav-menu">
+
+        <NavLink class="nav-item" href="/dashboard" Match="NavLinkMatch.All">
+            <span class="bi bi-speedometer2"></span>
+            Dashboard
+        </NavLink>
+
+        <NavLink class="nav-item" href="/patient-management">
+            <span class="bi bi-person-badge-fill"></span>
+            Patient Management
+        </NavLink>
+
+        <NavLink class="nav-item" href="/doctor-management">
+            <span class="bi bi-person-badge-fill"></span>
+            Doctor Management
+        </NavLink>
+
+        <NavLink class="nav-item" href="/appointment-report">
+            <span class="bi bi-calendar-check"></span>
+            Appointment Reports
+        </NavLink>
+        
+
+    </nav>
+
+    
+    <div class="logout-section">
+        <button class="logout-btn" @onclick="Logout">
+            <span class="bi bi-box-arrow-right"></span>
+            Logout
+        </button>
+</div>
+</div>
+
+@code {
+    private async Task Logout()
+    {
+        await JS.InvokeVoidAsync("localStorage.removeItem", "token");
+        Nav.NavigateTo("/", true); 
+    }
+}
+
+
+<style>
+
+    .sidebar {
+        min-height: 100vh;
+        background: linear-gradient(180deg, #0f172a, #1e3a8a, #2563eb);
+        padding: 30px 20px;
+        color: white;
+        box-shadow: 4px 0 15px rgba(0,0,0,0.15);
+    }
+
+    .sidebar-header {
+        margin-bottom: 40px;
+        padding-left: 10px;
+    }
+
+        .sidebar-header h2 {
+            margin: 0;
+            font-size: 2rem;
+            font-weight: 700;
+            color: white;
+        }
+
+        .sidebar-header p {
+            margin-top: 5px;
+            color: rgba(255,255,255,0.85);
+            font-size: 1rem;
+        }
+
+    .nav-menu {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .nav-item {
+        color: white;
+        text-decoration: none;
+        padding: 16px 20px;
+        border-radius: 15px;
+        font-size: 17px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        transition: all 0.3s ease;
+    }
+
+        .nav-item:hover {
+            background-color: rgba(255,255,255,0.15);
+            color: white;
+        }
+
+        .nav-item.active {
+            background-color: white;
+            color: #2563eb;
+            font-weight: 600;
+        }
+
+        .nav-item span {
+            font-size: 20px;
+        }
+
+        .logout-section {
+            margin-top: 40px; 
+        }
+
+        .logout-btn {
+            width: 100%;
+            background: transparent;
+            border: none;
+            color: white;
+            padding: 16px 20px;
+            border-radius: 15px;
+            font-size: 17px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+            .logout-btn:hover {
+                background-color: rgba(255,255,255,0.15);
+            }
+
+            .logout-btn span {
+                font-size: 20px;
+            }
+
+</style>

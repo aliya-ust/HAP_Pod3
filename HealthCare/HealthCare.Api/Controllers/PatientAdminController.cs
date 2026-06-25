@@ -1,4 +1,4 @@
-﻿using HealthCare.Api.DTOs.Patient;
+﻿using HealthCare.Shared.DTOs.Patient;
 using HealthCare.Api.Services.Implementations;
 using HealthCare.Api.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -50,8 +50,19 @@ namespace HealthCare.Api.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
+            // ✅ GET PATIENT (to get UserId)
+            var patient = await _patientService.GetByIdAsync(id);
+
+            if (patient == null)
+                return NotFound("Patient not found");
+
+            // ✅ EMAIL UNIQUE CHECK + UPDATE (IMPORTANT)
+            await _authService.UpdatePatientEmailAsync(patient.UserId, dto.Email);
+
+            // ✅ UPDATE PATIENT DATA
             await _patientService.UpdateAsync(id, dto);
-            return Ok(new {message = "Patient updated successfully"});
+
+            return Ok(new { message = "Patient updated successfully" });
         }
 
         [HttpPatch("{id}/status")]
@@ -79,6 +90,15 @@ namespace HealthCare.Api.Controllers
         {
             await _authService.RegisterPatientAsync(dto);
             return Ok(new { message = "Registration successful" });
+        }
+
+        [HttpGet("count/recent")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> GetRecentPatientCount()
+        {
+            var result = await _patientService.GetRecentPatientCount();
+            return Ok(result);
         }
     }
 }

@@ -1,6 +1,5 @@
-﻿using HealthCare.Api.DTOs;
-using HealthCare.Api.DTOs.Patient;
-using HealthCare.Api.Models;
+﻿using HealthCare.Shared.DTOs;
+using HealthCare.Shared.DTOs.Patient;
 
 namespace HealthCare.Api.Services.Interfaces
 {
@@ -12,5 +11,6 @@ namespace HealthCare.Api.Services.Interfaces
         Task UpdateAsync(int id, UpdatePatientDto dto);
         Task DeleteAsync(int id);
         Task UpdateStatusAsync(int id, bool isActive);
+        Task<int> GetRecentPatientCount();
     }
 }

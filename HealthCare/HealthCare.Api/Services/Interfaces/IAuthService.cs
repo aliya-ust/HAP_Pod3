@@ -1,6 +1,6 @@
-﻿using HealthCare.Api.DTOs.Doctor;
-using HealthCare.Api.DTOs.Patient;
-using HealthCare.Api.DTOs.Auth;
+﻿using HealthCare.Shared.DTOs.Doctor;
+using HealthCare.Shared.DTOs.Patient;
+using HealthCare.Shared.DTOs.Authentication;
 
 namespace HealthCare.Api.Services.Interfaces
 {
@@ -10,5 +10,6 @@ namespace HealthCare.Api.Services.Interfaces
         Task RegisterDoctorAsync(CreateDoctorDto dto);
         Task<AuthResponseDto> LoginAsync(LoginDto dto);
         Task ChangePasswordAsync(string userId, ChangePasswordDto dto);
+        Task UpdatePatientEmailAsync(string userId, string newEmail);
     }
 }

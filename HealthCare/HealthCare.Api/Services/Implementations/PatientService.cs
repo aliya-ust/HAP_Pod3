@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using HealthCare.Api.Data;
-using HealthCare.Api.DTOs;
-using HealthCare.Api.DTOs.Patient;
+using HealthCare.Shared.DTOs;
+using HealthCare.Shared.DTOs.Patient;
 using HealthCare.Api.Models;
 using HealthCare.Api.Repositories.Interfaces;
 using HealthCare.Api.Services.Interfaces;
@@ -96,7 +96,7 @@ namespace HealthCare.Api.Services.Impl
 
             var pagedResult = await _repository.GetAllAsync(
                 filter.PageNumber,
-                filter.EffectivePageSize,
+                filter.PageSize,
                 predicate
             );
 
@@ -152,5 +152,14 @@ namespace HealthCare.Api.Services.Impl
                 throw new InvalidOperationException("Failed to delete patient. It may be referenced by existing appointments or health records.", ex);
             }
         }
+
+        public async Task<int> GetRecentPatientCount()
+        {
+            var fromDate = DateTimeOffset.UtcNow.AddDays(-30);
+
+            return await _context.Patients
+                .CountAsync(p => p.CreatedDate >= fromDate);
+        }
+
     }
 }

@@ -1,9 +1,9 @@
 ﻿using HealthCare.Api.Models;
-using HealthCare.Api.DTOs.Doctor;
+using HealthCare.Shared.DTOs.Doctor;
 using AutoMapper;
-using HealthCare.Api.DTOs.Patient;
-using HealthCare.Api.DTOs.Appointment;
-using HealthCare.Api.DTOs.HealthRecord;
+using HealthCare.Shared.DTOs.Patient;
+using HealthCare.Shared.DTOs.Appointment;
+using HealthCare.Shared.DTOs.HealthRecord;
 
 namespace HealthCare.Api.Mapping
 {
@@ -18,7 +18,9 @@ namespace HealthCare.Api.Mapping
 
             // Doctor DTO mappings
             CreateMap<CreateDoctorDto, Doctor>();
-            CreateMap<UpdateDoctorDto, Doctor>();
+            CreateMap<UpdateDoctorDto, Doctor>()
+                .ForMember(dest => dest.Specialisation,
+                opt => opt.MapFrom(src => src.Specialisation.ToString()));
             CreateMap<Doctor, DoctorListDto>();
 
             // Appointment DTO mappings

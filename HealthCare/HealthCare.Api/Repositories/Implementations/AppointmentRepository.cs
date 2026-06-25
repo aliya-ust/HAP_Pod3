@@ -1,5 +1,5 @@
 ﻿using HealthCare.Api.Data;
-using HealthCare.Api.DTOs.Appointment;
+using HealthCare.Shared.DTOs.Appointment;
 using HealthCare.Api.Models;
 using HealthCare.Api.Repositories.Implementations;
 using HealthCare.Api.Repositories.Interfaces;

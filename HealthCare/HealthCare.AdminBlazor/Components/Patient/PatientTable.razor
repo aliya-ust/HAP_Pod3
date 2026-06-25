@@ -1,0 +1,242 @@
+﻿@using HealthCare.Shared.DTOs.Patient
+
+<div class="table-container">
+
+    <table class="doctor-table">
+
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Full Name</th>
+                <th>Phone</th>
+                <th>Gender</th>
+                <th>Insurance</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            @if (Patients != null && Patients.Any())
+            {
+                @for (int i = 0; i < Patients.Count; i++)
+                {
+                    var patient = Patients[i];
+
+                    <tr class="@(i % 2 == 0 ? "row-light" : "row-white")">
+
+                        <td>@patient.PatientId</td>
+                        <td>@patient.FullName</td>
+                        <td>@patient.PhoneNumber</td>
+                        <td>@patient.Gender</td>
+
+                        <!-- ✅ INSURANCE FIRST -->
+                        <td>
+                            <span class="insurance-badge @(string.IsNullOrWhiteSpace(patient.InsuranceId) ? "no" : "yes")">
+                                @(string.IsNullOrWhiteSpace(patient.InsuranceId) ? "No" : "Yes")
+                            </span>
+                        </td>
+
+                        <!-- ✅ STATUS AFTER -->
+                        <td>
+                            <span class="status-badge @(patient.IsActive ? "active" : "inactive")">
+                                @(patient.IsActive ? "Active" : "Inactive")
+                            </span>
+                        </td>
+
+                        <td class="action-icons">
+
+                            <!-- TOGGLE STATUS -->
+                            @if (!patient.IsActive)
+                            {
+                                <i class="bi bi-check-circle-fill text-success action-icon"
+                                       title="Activate Patient"
+                                       @onclick="() => ToggleStatus(patient.PatientId)">
+                                </i>
+                            }
+                            else
+                            {
+                                <i class="bi bi-x-circle-fill text-danger action-icon"
+                                       title="Deactivate Patient"
+                                       @onclick="() => ToggleStatus(patient.PatientId)">
+                                </i>
+                            }
+
+                            <!-- DELETE -->
+                            <i class="bi bi-trash-fill text-danger action-icon"
+                                   title="Delete Patient"
+                                   @onclick="() => DeletePatient(patient.PatientId)">
+                            </i>
+
+                        </td>
+
+
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="7" class="no-data">
+                        @(IsSearchPerformed
+                            ? "Patient not found"
+                            : "No patients available")
+                    </td>
+                </tr>
+            }
+
+        </tbody>
+
+    </table>
+
+</div>
+
+@code {
+
+    [Parameter]
+    public List<PatientListDto> Patients { get; set; } = new();
+
+    [Parameter]
+    public EventCallback<PatientListDto> OnEdit { get; set; }
+
+    [Parameter]
+    public EventCallback<int> OnDelete { get; set; }
+
+    [Parameter]
+    public EventCallback<(PatientListDto, bool)> OnUpdateStatus { get; set; }
+
+    [Parameter]
+    public bool IsSearchPerformed { get; set; }
+
+    private async Task DeletePatient(int patientId)
+    {
+        await OnDelete.InvokeAsync(patientId);
+    }
+
+    private async Task ToggleStatus(int patientId)
+    {
+        var patient = Patients.FirstOrDefault(p => p.PatientId == patientId);
+
+        if (patient != null)
+        {
+            bool newStatus = !patient.IsActive;
+
+            await OnUpdateStatus.InvokeAsync((patient, newStatus));
+        }
+    }
+}
+<style>
+
+     .table-container {
+        background: white;
+        border-radius: 24px;
+        overflow: hidden;
+        box-shadow: 0 8px 25px rgba(0,0,0,.08);
+    }
+
+    .doctor-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+        .doctor-table thead {
+            background: linear-gradient(90deg,#0f172a,#2563eb);
+            color: white;
+        }
+
+        .doctor-table th,
+        .doctor-table td {
+            padding: 22px;
+            text-align: left;
+        }
+
+    .row-light {
+        background-color: #f3f4f6;
+    }
+
+    .row-white {
+        background-color: white;
+    }
+
+    .doctor-table tbody tr:hover {
+        background: #eef4ff;
+        transition: .3s;
+    }
+
+    .action-btn {
+        border: none;
+        background: transparent;
+        cursor: pointer;
+        font-size: 20px;
+        transition: .2s;
+    }
+
+        .action-btn:hover {
+            transform: scale(1.2);
+        }
+
+    .no-data {
+        text-align: center;
+        color: #64748b;
+        padding: 30px;
+    }
+
+    .action-container {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
+
+    .status-badge {
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+        .status-badge.active {
+            background: #d1fae5;
+            color: #047857;
+        }
+
+        .status-badge.inactive {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .insurance-badge {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.insurance-badge.yes {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+.insurance-badge.no {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.action-icons {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.action-icon {
+    font-size: 20px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.action-icon:hover {
+    transform: scale(1.2);
+}
+
+    
+</style>

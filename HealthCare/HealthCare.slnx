@@ -1,4 +1,10 @@
 <Solution>
+  <Project Path="HealthCare.AdminBlazor/HealthCare.AdminBlazor.csproj" Id="aa3c559b-3ad7-403a-bcfe-b4f21fdf916c" />
   <Project Path="HealthCare.Api.Test/HealthCare.Api.Test.csproj" Id="9af579e0-bded-4a0d-b148-141d7e50f53c" />
   <Project Path="HealthCare.Api/HealthCare.Api.csproj" />
+  <Project Path="HealthCare.Shared/HealthCare.Shared.csproj" Id="3ec09d22-b0e1-417a-945e-931c7c16a1f4" />
+  <Project Path="HealthCare.UsersAngular/HealthCare.UsersAngular.esproj">
+    <Build />
+    <Deploy />
+  </Project>
 </Solution>

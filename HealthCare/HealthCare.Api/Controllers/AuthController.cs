@@ -1,6 +1,6 @@
-﻿using HealthCare.Api.DTOs.Auth;
-using HealthCare.Api.DTOs.Doctor;
-using HealthCare.Api.DTOs.Patient;
+﻿using HealthCare.Shared.DTOs.Authentication;
+using HealthCare.Shared.DTOs.Doctor;
+using HealthCare.Shared.DTOs.Patient;
 using HealthCare.Api.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -33,9 +33,24 @@ namespace HealthCare.Api.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> RegisterDoctor(CreateDoctorDto dto)
         {
-            await _authService.RegisterDoctorAsync(dto);
-            return Ok(new { message = "Registration successful" });
+            try
+            {
+                await _authService.RegisterDoctorAsync(dto);
+
+                return Ok(new { message = "Registration successful" });
+            }
+            catch (InvalidOperationException ex)
+            {
+                // ✅ duplicate email error
+                return BadRequest(ex.Message);
+            }
+            catch (Exception)
+            {
+                // ✅ fallback error
+                return StatusCode(500, "Something went wrong");
+            }
         }
+
 
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginDto dto)

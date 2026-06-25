@@ -1,5 +1,5 @@
 ﻿using HealthCare.Api.Data;
-using HealthCare.Api.DTOs.Doctor;
+using HealthCare.Shared.DTOs.Doctor;
 using HealthCare.Api.Models;
 using HealthCare.Api.Repositories.Implementations;
 using HealthCare.Api.Repositories.Interfaces;

@@ -1,5 +1,6 @@
-﻿using HealthCare.Api.DTOs.Patient;
+﻿using HealthCare.Api.Services.Implementations;
 using HealthCare.Api.Services.Interfaces;
+using HealthCare.Shared.DTOs.Patient;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

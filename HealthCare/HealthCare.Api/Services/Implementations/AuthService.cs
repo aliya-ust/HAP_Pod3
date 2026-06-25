@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using Azure;
 using HealthCare.Api.Data;
-using HealthCare.Api.DTOs.Auth;
-using HealthCare.Api.DTOs.Doctor;
-using HealthCare.Api.DTOs.Patient;
+using HealthCare.Shared.DTOs.Authentication;
+using HealthCare.Shared.DTOs.Doctor;
+using HealthCare.Shared.DTOs.Patient;
 using HealthCare.Api.Models;
 using HealthCare.Api.Repositories.Interfaces;
 using HealthCare.Api.Services.Interfaces;
@@ -43,7 +43,7 @@ namespace HealthCare.Api.Services.Implementations
             // Check email
             var existingUser = await _userManager.FindByEmailAsync(email);
             if (existingUser != null)
-                throw new InvalidOperationException("Email already in use");
+                throw new InvalidOperationException("Email already exists");
 
             // Create user
             var user = new IdentityUser
@@ -171,6 +171,33 @@ namespace HealthCare.Api.Services.Implementations
                 throw new InvalidOperationException(
                     string.Join(", ", result.Errors.Select(e => e.Description))
                 );
+        }
+
+        public async Task UpdatePatientEmailAsync(string userId, string newEmail)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+
+            if (user == null)
+                throw new InvalidOperationException("User not found");
+
+            // ✅ CHECK UNIQUE EMAIL (IDENTITY TABLE)
+            var existingUser = await _userManager.FindByEmailAsync(newEmail);
+
+            if (existingUser != null && existingUser.Id != userId)
+                throw new InvalidOperationException("Email already exists");
+
+            // ✅ UPDATE EMAIL
+            user.Email = newEmail;
+            user.UserName = newEmail;
+
+            var result = await _userManager.UpdateAsync(user);
+
+            if (!result.Succeeded)
+            {
+                throw new InvalidOperationException(
+                    string.Join(", ", result.Errors.Select(e => e.Description))
+                );
+            }
         }
 
     }

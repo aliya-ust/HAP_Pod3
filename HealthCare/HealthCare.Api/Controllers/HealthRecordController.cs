@@ -1,4 +1,4 @@
-﻿using HealthCare.Api.DTOs.HealthRecord;
+﻿using HealthCare.Shared.DTOs.HealthRecord;
 using HealthCare.Api.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;

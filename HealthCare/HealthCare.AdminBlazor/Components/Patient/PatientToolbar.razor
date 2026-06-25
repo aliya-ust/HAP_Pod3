@@ -1,0 +1,136 @@
+﻿@using HealthCare.Shared.DTOs.Patient
+
+
+<div class="filter-bar">
+
+    <div class="name-container">
+
+        <input class="filter-input"
+               placeholder="Search by name"
+               @bind="FullName"
+               @oninput="AllowOnlyText" />
+
+        @if (!string.IsNullOrEmpty(validationMessage))
+        {
+            <div class="validation-error">
+                @validationMessage
+            </div>
+        }
+
+    </div>
+
+    <select class="filter-dropdown"
+            @bind="InsuranceStatus">
+
+        <option value="">Insurance Status</option>
+        <option value="true">Has Insurance</option>
+        <option value="false">No Insurance</option>
+
+    </select>
+
+    <button class="btn-search"
+            @onclick="ApplyFilter">
+        Search
+    </button>
+
+</div>
+
+@code {
+
+    [Parameter]
+    public EventCallback<PatientFilter> OnFilter { get; set; }
+
+    private string FullName = "";
+    private string InsuranceStatus = "";
+    private string validationMessage = "";
+
+    private void AllowOnlyText(ChangeEventArgs e)
+    {
+        var value = e.Value?.ToString() ?? "";
+
+        if (value.Any(c => !char.IsLetter(c) && !char.IsWhiteSpace(c)))
+            validationMessage = "Only alphabets allowed.";
+        else
+            validationMessage = "";
+
+        FullName = value;
+    }
+
+    private async Task ApplyFilter()
+    {
+        if (!string.IsNullOrEmpty(validationMessage))
+            return;
+
+        var filter = new PatientFilter
+        {
+            FullName = string.IsNullOrWhiteSpace(FullName)
+                            ? null
+                            : FullName,
+
+            HasInsurance =
+                string.IsNullOrWhiteSpace(InsuranceStatus)
+                ? null
+                : bool.Parse(InsuranceStatus)
+        };
+
+        await OnFilter.InvokeAsync(filter);
+    }
+
+    public void ResetFilters()
+    {
+        FullName = "";
+        InsuranceStatus = "";
+        StateHasChanged();
+    }
+}
+
+<style>
+
+    .filter-bar {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+
+    .filter-input,
+    .filter-dropdown {
+        width: 220px;
+        height: 48px;
+        padding: 0 12px;
+        border: 2px solid #2563eb;
+        border-radius: 12px;
+        font-size: 14px;
+        outline: none;
+    }
+
+    .btn-search {
+        height: 48px;
+        padding: 0 18px;
+        border: none;
+        border-radius: 12px;
+        color: white;
+        font-weight: 600;
+        cursor: pointer;
+        background: linear-gradient(135deg,#0f172a,#1e3a8a,#2563eb);
+        transition: all 0.3s ease;
+    }
+
+        .btn-search:hover {
+            transform: translateY(-2px);
+            opacity: .95;
+        }
+
+    .name-container {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .validation-error {
+        color: #dc2626;
+        font-size: 13px;
+        margin-top: 4px;
+    }
+
+</style>
