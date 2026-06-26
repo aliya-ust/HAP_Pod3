@@ -8,6 +8,7 @@ using HealthCare.Api.DTOs;
 using HealthCare.Api.DTOs.Patient;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using HealthCare.Shared.DTOs;
 
 namespace HealthCare.Api.Tests
 {

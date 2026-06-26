@@ -2,19 +2,26 @@
 using HealthCare.Api.DTOs.Appointment;
 using HealthCare.Api.Models;
 using HealthCare.Api.Repositories.Interfaces;
+using HealthCare.Shared.DTOs.Appointment;
 using Microsoft.EntityFrameworkCore;
 
 namespace HealthCare.Api.Repositories.Implementations
 {
     public class AppointmentRepository : Repository<Appointment>, IAppointmentRepository
     {
+        private const string Cancelled = "Cancelled";
         public AppointmentRepository(HealthCareDbContext context) : base(context) { }
+
+        public IQueryable<Appointment> GetQueryable()
+        {
+            return _dbSet.AsQueryable();
+        }
 
         public async Task<List<string>> BookedTimeSlots(DateOnly date, int doctorId) =>
             await _dbSet
                 .Where(a => a.ScheduledDate == date
                          && a.DoctorId == doctorId
-                         && a.Status != "Cancelled")
+                         && a.Status != Cancelled)
                 .Select(a => a.TimeSlot)
                 .ToListAsync();
 
@@ -24,14 +31,15 @@ namespace HealthCare.Api.Repositories.Implementations
                 a.ScheduledDate == date
                 && a.DoctorId == doctorId
                 && a.TimeSlot == timeSlot
-                && a.Status != "Cancelled");
+                && a.Status != Cancelled);
 
             return !exists;
         }
 
-        public async Task<List<AppointmentReportDto>> GetDailyReport() =>
-            await _dbSet
-                .Where(a => a.ScheduledDate >= DateOnly.FromDateTime(DateTime.Today.AddDays(-30)))
+        public async Task<List<AppointmentReportDto>> GetReport(DateOnly fromDate, DateOnly toDate)
+        {
+            return await _dbSet
+                .Where(a => a.ScheduledDate >= fromDate && a.ScheduledDate <= toDate)
                 .GroupBy(a => a.ScheduledDate)
                 .Select(g => new AppointmentReportDto
                 {
@@ -39,10 +47,15 @@ namespace HealthCare.Api.Repositories.Implementations
                     PendingCount = g.Count(a => a.Status == "Pending"),
                     ConfirmedCount = g.Count(a => a.Status == "Confirmed"),
                     CancelledCount = g.Count(a => a.Status == "Cancelled"),
-                    CompletedCount = g.Count(a => a.Status == "Completed")
+                    CompletedCount = g.Count(a => a.Status == "Completed"),
+
+                    Revenue = g
+                        .Where(a => a.Status == "Completed")
+                        .Sum(a => a.Doctor.ConsultationFee)
                 })
                 .OrderBy(r => r.Date)
                 .ToListAsync();
+        }
 
         public async Task<List<AppointmentListDto>> GetDoctorSchedule(DateOnly date, int id) =>
             await _dbSet
@@ -105,14 +118,43 @@ namespace HealthCare.Api.Repositories.Implementations
             var appointments = await _dbSet
                 .Where(a => a.DoctorId == doctorId
                          && a.ScheduledDate == date
-                         && a.Status != "Cancelled")
+                         && a.Status != Cancelled)
                 .ToListAsync();
 
             foreach (var appointment in appointments)
             {
-                appointment.Status = "Cancelled";
+                appointment.Status = Cancelled;
                 appointment.CancellationReason = "Doctor on leave";
             }
+        }
+
+        public async Task<AppointmentSummaryDto> GetSummaryAsync()
+        {
+            var fromDate = DateOnly.FromDateTime(DateTime.Today.AddDays(-30));
+            var toDate = DateOnly.FromDateTime(DateTime.Today);
+
+            var result = await _dbSet
+                .Where(a => a.ScheduledDate >= fromDate && a.ScheduledDate <= toDate)
+                .GroupBy(a => 1)
+                .Select(g => new AppointmentSummaryDto
+                {
+                    PendingCount = g.Count(a => a.Status == "Pending"),
+                    ConfirmedCount = g.Count(a => a.Status == "Confirmed"),
+                    CancelledCount = g.Count(a => a.Status == "Cancelled"),
+                    CompletedCount = g.Count(a => a.Status == "Completed"),
+
+                    TotalRevenue = g
+                        .Where(a => a.Status == "Completed")
+                        .Sum(a => a.Doctor.ConsultationFee)
+                })
+                .FirstOrDefaultAsync();
+
+            return result ?? new AppointmentSummaryDto();
+        }
+
+        public void GetReport()
+        {
+            throw new NotImplementedException();
         }
     }
 }

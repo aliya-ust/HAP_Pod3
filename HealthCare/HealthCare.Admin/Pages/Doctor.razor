@@ -1,0 +1,590 @@
+﻿@page "/doctor"
+
+@using HealthCare.Api.DTOs.Doctor
+@using HealthCare.Admin.Services
+
+@inject DoctorService DoctorService
+@inject NavigationManager NavigationManager
+
+<div class="page-header">
+    <div>
+        <h3 class="page-title">Doctor Management</h3>
+        <p class="page-subtitle">Search, view, update status, edit and delete doctors</p>
+    </div>
+
+    <button class="btn btn-success" @onclick="GoToDoctorRegister">
+        <i class="bi bi-plus-circle"></i>
+        Register Doctor
+    </button>
+</div>
+<div class="search-card">
+    <div class="search-grid">
+
+        <div class="form-group">
+            <label>Doctor Name</label>
+            <input class="form-control small-input"
+                   placeholder="Search by doctor name"
+                   @bind="search"
+                   @bind:event="oninput" />
+        </div>
+
+        <div class="form-group">
+            <label>Specialisation</label>
+            <select class="form-select small-input" @bind="specialisation">
+                <option value="">Select specialisation</option>
+                @foreach (var item in specialisationOptions)
+                {
+                    <option value="@item">@item</option>
+                }
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Status</label>
+            <select class="form-select small-input" @bind="statusFilter">
+                <option value="">All status</option>
+                <option value="true">Active</option>
+                <option value="false">Inactive</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Experience</label>
+            <select class="form-select small-input" @bind="experienceSort">
+                <option value="">Default</option>
+                <option value="experience_desc">High to Low</option>
+                <option value="experience_asc">Low to High</option>
+            </select>
+        </div>
+
+        <div class="search-actions doctor-search-actions">
+            <button class="btn btn-success" @onclick="SearchDoctors">
+                Search
+            </button>
+
+            <button class="btn btn-outline-secondary" @onclick="ClearSearch">
+                Clear
+            </button>
+        </div>
+
+    </div>
+</div>
+
+<hr />
+
+@if (isLoading)
+{
+    <div class="loading-box">
+        <p>Loading doctors...</p>
+    </div>
+}
+else if (!string.IsNullOrWhiteSpace(errorMessage))
+{
+    <div class="alert alert-danger">@errorMessage</div>
+}
+else
+{
+    <div class="table-wrapper">
+        <table class="table doctor-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Specialisation</th>
+                    <th>Experience</th>
+                    <th>Fee</th>
+                    <th>Status</th>
+                    <th class="actions-header">Actions</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @if (doctors.Count == 0)
+                {
+                    <tr>
+                        <td colspan="6" class="empty-row">No doctors found</td>
+                    </tr>
+                }
+                else
+                {
+                    @foreach (var doctor in doctors)
+                    {
+                        <tr>
+                            <td>@doctor.FullName</td>
+                            <td>@doctor.Specialisation</td>
+                            <td>@doctor.YearsOfExperience years</td>
+                            <td>₹@doctor.ConsultationFee</td>
+
+                            <td>
+                                @if (doctor.IsActive)
+                                {
+                                    <span class="status-badge active">Active</span>
+                                }
+                                else
+                                {
+                                    <span class="status-badge inactive">Inactive</span>
+                                }
+                            </td>
+
+                            <td class="actions-cell">
+
+                                <!-- Status Toggle opens dialog -->
+                                <button type="button"
+                                        class="icon-button status-btn"
+                                        title="Change Doctor Status"
+                                        @onclick="() => OpenStatusDialog(doctor)">
+                                    @if (doctor.IsActive)
+                                    {
+                                        <i class="bi bi-toggle-on"></i>
+                                    }
+                                    else
+                                    {
+                                        <i class="bi bi-toggle-off"></i>
+                                    }
+                                </button>
+
+                                <!-- Edit Doctor -->
+                                <button type="button"
+                                        class="icon-button edit-btn"
+                                        title="Edit Doctor"
+                                        @onclick="() => OpenEditDialog(doctor)">
+                                    <i class="bi bi-pencil-square"></i>
+                                </button>
+
+                                <!-- Delete Doctor -->
+                                <button type="button"
+                                        class="icon-button delete-btn"
+                                        title="Delete Doctor"
+                                        @onclick="() => OpenDeleteDialog(doctor)">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="pagination-container">
+
+        <button class="page-btn"
+                @onclick="PreviousPage"
+                disabled="@(pageNumber == 1)">
+            ⟵
+        </button>
+
+        <span class="page-info">
+            Page @pageNumber of @totalPages
+        </span>
+
+        <button class="page-btn"
+                @onclick="NextPage"
+                disabled="@disableNextButton">
+            ⟶
+        </button>
+
+    </div>
+}
+
+<!-- STATUS UPDATE DIALOG -->
+@if (showStatusDialog)
+{
+    <div class="modal-backdrop-custom">
+        <div class="dialog-box">
+
+            <div class="dialog-header">
+                <h5>Update Doctor Status</h5>
+
+                <button type="button"
+                        class="close-button"
+                        @onclick="CloseStatusDialog">
+                    ✕
+                </button>
+            </div>
+
+            <div class="dialog-body">
+                <p>
+                    Update status for
+                    <strong>@selectedDoctorName</strong>
+                </p>
+
+                <div class="form-group">
+                    <label>Status</label>
+                    <select class="form-select" @bind="selectedStatusValue">
+                        <option value="true">Active</option>
+                        <option value="false">Inactive</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="dialog-footer">
+                <button type="button"
+                        class="btn btn-outline-secondary"
+                        @onclick="CloseStatusDialog">
+                    Cancel
+                </button>
+
+                <button type="button"
+                        class="btn btn-primary"
+                        @onclick="UpdateDoctorStatus">
+                    Save
+                </button>
+            </div>
+
+        </div>
+    </div>
+}
+
+<!-- DELETE DIALOG -->
+@if (showDeleteDialog)
+{
+    <div class="modal-backdrop-custom">
+        <div class="dialog-box">
+
+            <div class="dialog-header">
+                <h5>Confirm Delete</h5>
+
+                <button type="button"
+                        class="close-button"
+                        @onclick="CloseDeleteDialog">
+                    ✕
+                </button>
+            </div>
+
+            <div class="dialog-body">
+                <p>
+                    Are you sure you want to delete doctor
+                    <strong>@selectedDoctorName</strong>?
+                </p>
+
+                <p style="color:red;">
+                    This action cannot be undone.
+                </p>
+            </div>
+
+            <div class="dialog-footer">
+                <button type="button"
+                        class="btn btn-outline-secondary"
+                        @onclick="CloseDeleteDialog">
+                    Cancel
+                </button>
+
+                <button type="button"
+                        class="btn btn-danger"
+                        @onclick="ConfirmDeleteDoctor">
+                    Delete
+                </button>
+            </div>
+
+        </div>
+    </div>
+}
+
+<!-- EDIT DIALOG -->
+@if (showEditDialog)
+{
+    <div class="modal-backdrop-custom">
+        <div class="dialog-box">
+
+            <div class="dialog-header">
+                <h5>Update Doctor</h5>
+
+                <button type="button"
+                        class="close-button"
+                        @onclick="CloseEditDialog">
+                    ✕
+                </button>
+            </div>
+
+            <EditForm Model="@editDoctorModel" OnValidSubmit="UpdateDoctor">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+
+                <div class="dialog-body">
+
+                    <div class="form-group mb-3">
+                        <label>Doctor Name</label>
+                        <InputText class="form-control"
+                                   @bind-Value="editDoctorModel.FullName" />
+                        <ValidationMessage For="@(() => editDoctorModel.FullName)" />
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label>Specialisation</label>
+                        <InputSelect class="form-select"
+                                     @bind-Value="editDoctorModel.Specialisation">
+                            <option value="">Select specialisation</option>
+                            @foreach (var item in specialisationOptions)
+                            {
+                                <option value="@item">@item</option>
+                            }
+                        </InputSelect>
+                        <ValidationMessage For="@(() => editDoctorModel.Specialisation)" />
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label>Years Of Experience</label>
+                        <InputNumber class="form-control"
+                                     @bind-Value="editDoctorModel.YearsOfExperience" />
+                        <ValidationMessage For="@(() => editDoctorModel.YearsOfExperience)" />
+                    </div>
+
+                </div>
+
+                <div class="dialog-footer">
+                    <button type="button"
+                            class="btn btn-outline-secondary"
+                            @onclick="CloseEditDialog">
+                        Cancel
+                    </button>
+
+                    <button type="submit"
+                            class="btn btn-primary">
+                        Update
+                    </button>
+                </div>
+
+            </EditForm>
+
+        </div>
+    </div>
+}
+
+@code {
+
+    private List<DoctorListDto> doctors = new();
+
+    private string search = "";
+    private string specialisation = "";
+    private string statusFilter = "";
+    private string experienceSort = "";
+
+    private int pageNumber = 1;
+    private int pageSize = 5;
+    private int totalPages = 1;
+
+    private bool isLoading = false;
+    private bool disableNextButton = false;
+    private string errorMessage = "";
+
+    private bool showDeleteDialog = false;
+    private bool showEditDialog = false;
+    private bool showStatusDialog = false;
+
+    private int selectedDoctorId;
+    private string? selectedDoctorName;
+    private string selectedStatusValue = "true";
+
+    private UpdateDoctorDto editDoctorModel = new();
+
+    private List<string> specialisationOptions = new()
+    {
+        "Cardiologist",
+        "Dermatologist",
+        "Neurologist",
+        "Orthopedic",
+        "Pediatrician",
+        "Psychiatrist",
+        "General Physician",
+        "ENT",
+        "Dentist"
+    };
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadDoctors();
+    }
+
+    private async Task LoadDoctors()
+    {
+        try
+        {
+            isLoading = true;
+            errorMessage = "";
+
+            bool? isActive = null;
+
+            if (!string.IsNullOrWhiteSpace(statusFilter))
+                isActive = bool.Parse(statusFilter);
+
+            string? sortBy = null;
+            bool isDescending = true;
+
+            if (experienceSort == "experience_desc")
+            {
+                sortBy = "experience";
+                isDescending = true;
+            }
+            else if (experienceSort == "experience_asc")
+            {
+                sortBy = "experience";
+                isDescending = false;
+            }
+
+            var filter = new DoctorFilter
+            {
+                Search = search,
+                Specialisation = specialisation,
+                IsActive = isActive,
+                SortBy = sortBy,
+                IsDescending = isDescending,
+                PageNumber = pageNumber,
+                PageSize = pageSize
+            };
+
+            var result = await DoctorService.GetDoctorsAsync(filter);
+
+            doctors = result.Items.ToList();
+
+            totalPages = result.TotalPages == 0 ? 1 : result.TotalPages;
+
+            disableNextButton = pageNumber >= totalPages;
+        }
+        catch (Exception ex)
+        {
+            if (ex.Message.Contains("Unauthorized"))
+                NavigationManager.NavigateTo("/", true);
+            else
+                errorMessage = ex.Message;
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private async Task SearchDoctors()
+    {
+        pageNumber = 1;
+        await LoadDoctors();
+    }
+
+    private async Task ClearSearch()
+    {
+        search = "";
+        specialisation = "";
+        statusFilter = "";
+        experienceSort = "";
+        pageNumber = 1;
+
+        await LoadDoctors();
+    }
+
+    private async Task PreviousPage()
+    {
+        if (pageNumber > 1)
+        {
+            pageNumber--;
+            await LoadDoctors();
+        }
+    }
+
+    private async Task NextPage()
+    {
+        if (!disableNextButton)
+        {
+            pageNumber++;
+            await LoadDoctors();
+        }
+    }
+
+    private void OpenStatusDialog(DoctorListDto doctor)
+    {
+        selectedDoctorId = doctor.DoctorId;
+        selectedDoctorName = doctor.FullName;
+        selectedStatusValue = doctor.IsActive ? "true" : "false";
+        showStatusDialog = true;
+    }
+
+    private void CloseStatusDialog()
+    {
+        showStatusDialog = false;
+    }
+
+    private async Task UpdateDoctorStatus()
+    {
+        bool newStatus = bool.Parse(selectedStatusValue);
+
+        bool result = await DoctorService.UpdateDoctorStatusAsync(
+            selectedDoctorId,
+            newStatus);
+
+        if (result)
+        {
+            showStatusDialog = false;
+            await LoadDoctors();
+        }
+        else
+        {
+            errorMessage = "Failed to update doctor status.";
+        }
+    }
+
+    private void OpenEditDialog(DoctorListDto doctor)
+    {
+        selectedDoctorId = doctor.DoctorId;
+
+        editDoctorModel = new UpdateDoctorDto
+        {
+            FullName = doctor.FullName,
+            Specialisation = doctor.Specialisation,
+            YearsOfExperience = doctor.YearsOfExperience
+        };
+
+        showEditDialog = true;
+    }
+
+    private void CloseEditDialog()
+    {
+        showEditDialog = false;
+    }
+
+    private async Task UpdateDoctor()
+    {
+        bool result = await DoctorService.UpdateDoctorAsync(
+            selectedDoctorId,
+            editDoctorModel);
+
+        if (result)
+        {
+            showEditDialog = false;
+            await LoadDoctors();
+        }
+        else
+        {
+            errorMessage = "Failed to update doctor.";
+        }
+    }
+
+    private void OpenDeleteDialog(DoctorListDto doctor)
+    {
+        selectedDoctorId = doctor.DoctorId;
+        selectedDoctorName = doctor.FullName;
+        showDeleteDialog = true;
+    }
+
+    private void CloseDeleteDialog()
+    {
+        showDeleteDialog = false;
+    }
+
+    private async Task ConfirmDeleteDoctor()
+    {
+        bool result = await DoctorService.DeleteDoctorAsync(selectedDoctorId);
+
+        if (result)
+        {
+            showDeleteDialog = false;
+            await LoadDoctors();
+        }
+        else
+        {
+            errorMessage = "Failed to delete doctor.";
+        }
+    }
+    private void GoToDoctorRegister()
+    {
+        NavigationManager.NavigateTo("/doctor/register");
+    }
+}

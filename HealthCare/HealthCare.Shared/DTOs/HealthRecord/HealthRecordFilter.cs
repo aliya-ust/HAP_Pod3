@@ -1,4 +1,6 @@
-﻿namespace HealthCare.Api.DTOs.HealthRecord
+﻿using HealthCare.Shared.DTOs;
+
+namespace HealthCare.Shared.DTOs.HealthRecord
 {
     public class HealthRecordFilter : PaginationParams
     {

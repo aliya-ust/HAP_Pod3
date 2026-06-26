@@ -1,0 +1,244 @@
+﻿@page "/doctor/register"
+
+@using HealthCare.Api.DTOs.Doctor
+@using HealthCare.Admin.Services
+
+@inject DoctorService DoctorService
+@inject NavigationManager NavigationManager
+
+<div class="page-header">
+    <div>
+        <h3 class="page-title">Register Doctor</h3>
+        <p class="page-subtitle">Add a new doctor with available consultation time slots</p>
+    </div>
+</div>
+
+<div class="register-card">
+
+    <EditForm Model="@doctorModel" OnValidSubmit="SaveDoctor">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div class="form-grid">
+
+            <div class="form-group">
+                <label>Full Name</label>
+                <InputText class="form-control"
+                           placeholder="Enter full name"
+                           @bind-Value="doctorModel.FullName" />
+                <ValidationMessage For="@(() => doctorModel.FullName)" />
+            </div>
+
+            <div class="form-group">
+                <label>Email</label>
+                <InputText class="form-control"
+                           placeholder="Enter email"
+                           @bind-Value="doctorModel.Email" />
+                <ValidationMessage For="@(() => doctorModel.Email)" />
+            </div>
+
+            <div class="form-group">
+                <label>Password</label>
+                <InputText class="form-control"
+                           type="password"
+                           placeholder="Enter password"
+                           @bind-Value="doctorModel.Password" />
+                <ValidationMessage For="@(() => doctorModel.Password)" />
+            </div>
+
+            <div class="form-group">
+                <label>Specialisation</label>
+                <InputSelect class="form-select"
+                             @bind-Value="doctorModel.Specialisation">
+                    <option value="">Select specialisation</option>
+                    @foreach (var item in specialisationOptions)
+                    {
+                        <option value="@item">@item</option>
+                    }
+                </InputSelect>
+                <ValidationMessage For="@(() => doctorModel.Specialisation)" />
+            </div>
+
+            <div class="form-group">
+                <label>Years Of Experience</label>
+                <InputNumber class="form-control"
+                             min="0"
+                             max="60"
+                             placeholder="Enter experience"
+                             @bind-Value="YearsOfExperienceValue" />
+                <ValidationMessage For="@(() => doctorModel.YearsOfExperience)" />
+            </div>
+
+            <div class="form-group">
+                <label>Consultation Fee</label>
+                <InputNumber class="form-control"
+                             min="0.01"
+                             max="5000"
+                             step="0.01"
+                             placeholder="Enter consultation fee"
+                             @bind-Value="ConsultationFeeValue" />
+                <ValidationMessage For="@(() => doctorModel.ConsultationFee)" />
+            </div>
+
+        </div>
+
+        <div class="slots-section">
+            <label class="slots-title">Available Time Slots</label>
+
+            <div class="slots-grid">
+                @foreach (var slot in availableTimeSlots)
+                {
+                    <label class="slot-checkbox">
+                        <input type="checkbox"
+                               checked="@doctorModel.TimeSlots.Contains(slot)"
+                               @onchange="(e) => ToggleSlot(slot, e)" />
+                        <span>@slot</span>
+                    </label>
+                }
+            </div>
+
+            @if (!string.IsNullOrWhiteSpace(slotErrorMessage))
+            {
+                <p class="text-danger mt-2">@slotErrorMessage</p>
+            }
+        </div>
+
+        @if (!string.IsNullOrWhiteSpace(errorMessage))
+        {
+            <div class="alert alert-danger mt-3">
+                @errorMessage
+            </div>
+        }
+
+        <div class="form-actions">
+            <button type="button"
+                    class="btn btn-outline-secondary"
+                    @onclick="Cancel">
+                Cancel
+            </button>
+
+            <button type="submit"
+                    class="btn btn-success"
+                    disabled="@isSaving">
+                @(isSaving ? "Saving..." : "Save")
+            </button>
+        </div>
+
+    </EditForm>
+
+</div>
+
+@code {
+
+    private CreateDoctorDto doctorModel = new();
+
+    private bool isSaving = false;
+    private string errorMessage = "";
+    private string slotErrorMessage = "";
+
+    private List<string> availableTimeSlots = new()
+    {
+        "09:00 AM",
+        "10:00 AM",
+        "11:00 AM",
+        "12:00 PM",
+        "01:00 PM",
+        "02:00 PM",
+        "03:00 PM",
+        "04:00 PM",
+        "05:00 PM"
+    };
+
+    private void ToggleSlot(string slot, ChangeEventArgs e)
+    {
+        bool isChecked = Convert.ToBoolean(e.Value);
+
+        if (isChecked)
+        {
+            if (!doctorModel.TimeSlots.Contains(slot))
+            {
+                doctorModel.TimeSlots.Add(slot);
+            }
+        }
+        else
+        {
+            doctorModel.TimeSlots.Remove(slot);
+        }
+
+        slotErrorMessage = "";
+    } 
+    private async Task SaveDoctor()
+    {
+        try
+        {
+            errorMessage = "";
+            slotErrorMessage = "";
+
+            if (doctorModel.TimeSlots.Count == 0)
+            {
+                slotErrorMessage = "Please select at least one available time slot.";
+                return;
+            }
+
+            isSaving = true;
+
+            await DoctorService.CreateDoctorAsync(doctorModel);
+
+            NavigationManager.NavigateTo("/doctor");
+        }
+        catch (Exception ex)
+        {
+            errorMessage = ex.Message;
+        }
+        finally
+        {
+            isSaving = false;
+        }
+    } 
+    
+
+    private void Cancel()
+    {
+        NavigationManager.NavigateTo("/doctor");
+    }
+    private List<string> specialisationOptions = new()
+{
+    "Cardiologist",
+    "Dermatologist",
+    "Neurologist",
+    "Orthopedic",
+    "Pediatrician",
+    "Psychiatrist",
+    "General Physician",
+    "ENT",
+    "Dentist"
+};
+    private int YearsOfExperienceValue
+    {
+        get => doctorModel.YearsOfExperience;
+        set
+        {
+            if (value < 0)
+                doctorModel.YearsOfExperience = 0;
+            else if (value > 60)
+                doctorModel.YearsOfExperience = 60;
+            else
+                doctorModel.YearsOfExperience = value;
+        }
+    }
+
+    private decimal ConsultationFeeValue
+    {
+        get => doctorModel.ConsultationFee;
+        set
+        {
+            if (value < 0.01m)
+                doctorModel.ConsultationFee = 0.01m;
+            else if (value > 5000m)
+                doctorModel.ConsultationFee = 5000m;
+            else
+                doctorModel.ConsultationFee = value;
+        }
+    }
+
+}

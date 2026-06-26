@@ -68,5 +68,14 @@ namespace HealthCare.Api.Controllers
             await _doctorService.DeleteAsync(id);
             return Ok();
         }
+
+        [HttpGet("summary")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> GetSummary()
+        {
+            var result = await _doctorService.GetSummaryAsync();
+            return Ok(result);
+        }
     }
 }

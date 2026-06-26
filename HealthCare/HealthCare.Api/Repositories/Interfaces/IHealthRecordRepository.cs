@@ -8,4 +8,4 @@ namespace HealthCare.Api.Repositories.Interfaces
         Task<List<HealthRecordListDto>> GetHealthRecordByPatient(int id);
         Task<List<HealthRecordListDto>> GetHealthRecordByAppointment(int id);
     }
-}
+} 

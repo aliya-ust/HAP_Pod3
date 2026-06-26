@@ -1,4 +1,7 @@
-﻿<div class="hc-sidebar">
+﻿@inject NavigationManager Navigation
+@inject IJSRuntime JS
+
+<div class="hc-sidebar">
 
     <div class="hc-sidebar-header">
         <h2>HealthCare</h2>
@@ -9,31 +12,42 @@
 
         <NavLink class="hc-nav-item" href="/home" Match="NavLinkMatch.All">
             <span class="bi bi-speedometer2"></span>
-            Dashboard
+            <span>Dashboard</span>
         </NavLink>
 
-        <NavLink class="hc-nav-item" href="/patients">
-            <span class="bi bi-people-fill"></span>
-            Patient Management
+        <NavLink class="hc-nav-item" href="/patient" Match="NavLinkMatch.Prefix">
+            <i class="bi bi-people-fill"></i>
+            <span>Patient Management</span>
         </NavLink>
 
-        <NavLink class="hc-nav-item" href="/doctors">
+        <NavLink class="hc-nav-item" href="/doctor" Match="NavLinkMatch.Prefix">
             <span class="bi bi-person-badge-fill"></span>
-            Doctor Management
+            <span>Doctor Management</span>
         </NavLink>
 
-        <NavLink class="hc-nav-item" href="/appointments">
+        <NavLink class="hc-nav-item" href="/appointmentreport" Match="NavLinkMatch.Prefix">
             <span class="bi bi-calendar-check-fill"></span>
-            Appointment Management
-        </NavLink>
+            <span>Appointment Management</span>
+        </NavLink> 
 
     </nav>
 
-    @* <div class="logout-section">
+    <!-- ✅ Logout Button -->
+    <div class="logout-section">
         <button class="logout-btn" @onclick="Logout">
             <span class="bi bi-box-arrow-right"></span>
-            Logout
+            <span>Logout</span>
         </button>
-    </div> *@
+    </div>
 
 </div>
+
+@code {
+    private async Task Logout()
+    {
+        await JS.InvokeVoidAsync("localStorage.removeItem", "accesstoken");
+        await JS.InvokeVoidAsync("localStorage.removeItem", "role");
+
+        Navigation.NavigateTo("/", true);
+    }
+} 

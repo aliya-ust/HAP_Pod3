@@ -1,5 +1,7 @@
 ﻿using HealthCare.Api.DTOs;
 using HealthCare.Api.DTOs.HealthRecord;
+using HealthCare.Shared.DTOs;
+using HealthCare.Shared.DTOs.HealthRecord;
 
 namespace HealthCare.Api.Services.Interfaces
 {
@@ -7,10 +9,10 @@ namespace HealthCare.Api.Services.Interfaces
     {
         Task<HealthRecordListDto?> GetByIdAsync(int id);
         Task<PagedResult<HealthRecordListDto>> GetAllAsync(HealthRecordFilter filter);
-        Task AddAsync(int id,CreateHealthRecordDto dto);
+        Task AddAsync(int doctorId, CreateHealthRecordDto dto);
         Task UpdateAsync(int id, UpdateHealthRecordDto dto);
         Task DeleteAsync(int id);
         Task<List<HealthRecordListDto>> GetHealthRecordByPatient(int id);
         Task<List<HealthRecordListDto>> GetHealthRecordByAppointment(int id);
     }
-} 
+}

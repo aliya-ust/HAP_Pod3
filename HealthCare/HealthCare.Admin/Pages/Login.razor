@@ -1,147 +1,181 @@
 ﻿@page "/"
 @layout EmptyLayout
-@* @inject AuthService AuthService *@
-@inject NavigationManager Nav
+@inject HttpClient Http
+@inject NavigationManager Navigation
+@inject IJSRuntime JS
 
-<div class="login-page">
+<div class="page-container">
 
-    <h1 class="main-title">Health Care Management System</h1>
+    <h1 class="app-title">HealthCare App</h1>
 
     <div class="login-card">
+        <h3>Admin Login</h3>
 
-        <h3 class="card-title">Login</h3>
-
-        <div class="form-group">
-            <input class="form-input"
-                   type="email"
-                   placeholder="Email Address"
-                   @bind="email" />
+        <div class="input-group">
+            <label>Email</label>
+            <input @bind="email" type="email" placeholder="Enter your email" />
         </div>
 
-        <div class="form-group">
-            <input class="form-input"
-                   type="password"
-                   placeholder="Password"
-                   @bind="password" />
+        <div class="input-group">
+            <label>Password</label>
+            <input @bind="password" type="password" placeholder="Enter your password" />
         </div>
 
-        <button class="login-btn" @onclick="LoginUser">
+        <button class="login-btn" @onclick="HandleLogin">
             Login
         </button>
-
-        @if (!string.IsNullOrEmpty(error))
-        {
-            <p class="error-message">@error</p>
-        }
-
     </div>
 
 </div>
 
 @code {
 
-    private string email = string.Empty;
-    private string password = string.Empty;
-    private string error = string.Empty;
+    private string email = "";
+    private string password = "";
+    private string errorMessage = "";
 
-    private async Task LoginUser()
+    public class LoginDto
     {
-        // error = string.Empty;
+        public string Email { get; set; } = string.Empty;
+        public string Password { get; set; } = string.Empty;
+    }
 
-        // var success = await AuthService.Login(email, password);
+    public class AuthResponseDto
+    {
+        public string AccessToken { get; set; } = string.Empty;
+        public string Message { get; set; } = string.Empty;
+        public string Role { get; set; } = string.Empty;
+        public int ExpiresIn { get; set; }
+    }
 
-        // if (success)
-        // {
-        //     Nav.NavigateTo("/dashboard", true);
-        // }
-        // else
-        // {
-        //     error = "Invalid email or password.";
-        // }
+    private async Task HandleLogin()
+    {
+        errorMessage = "";
+
+        var loginDto = new LoginDto
+        {
+            Email = email,
+            Password = password
+        };
+
+        var response = await Http.PostAsJsonAsync(
+            "api/auth/login",
+            loginDto);
+
+        if (response.IsSuccessStatusCode)
+        {
+            var authresponse = await response.Content.ReadFromJsonAsync<AuthResponseDto>();
+
+            if (authresponse != null)
+            {
+                await JS.InvokeVoidAsync("localStorage.setItem", "accesstoken", authresponse.AccessToken);
+                await JS.InvokeVoidAsync("localStorage.setItem", "role", authresponse.Role);
+                Navigation.NavigateTo("/home", true);
+            }
+
+        }
+        else
+        {
+            errorMessage = "Invalid email or password.";
+        }
     }
 }
+
+
 <style>
-    .login-page {
-        min-height: 100vh;
-        background: linear-gradient(135deg, #6A11CB 0%, #8E2DE2 50%, #C471ED 100%);
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        overflow: hidden;
-    }
+html, body {
+margin: 0;
+padding: 0;
+height: 100%;
+font-family: Arial, Helvetica, sans-serif;
+background: linear-gradient(135deg, #f3e8ff, #e0c3fc);
+}
 
-    .main-title {
-        color: white;
-        font-size: 3rem;
-        font-weight: 700;
-        padding: 30px;
-        text-align: center;
-        text-shadow: 0 4px 10px rgba(0,0,0,0.25);
-    }
+.page-container {
+height: 100vh;
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: center;
+}
 
-    .login-card {
-        width: 420px;
-        background: rgba(255,255,255,0.95);
-        padding: 40px;
-        border-radius: 30px;
-        box-shadow: 0 20px 45px rgba(0,0,0,0.20);
-        transition: all 0.3s ease;
-    }
+/* Title with violet gradient */
+.app-title {
+font-size: 42px;
+font-weight: bold;
+margin-bottom: 30px;
+background: linear-gradient(to right, #6A11CB, #8E2DE2);
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+background-clip: text;
+}
 
-        .login-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 30px 60px rgba(0,0,0,0.30);
-        }
+/* Card styling */
+.login-card {
+width: 380px;
+background: white;
+padding: 35px;
+border-radius: 20px;
+box-shadow: 0 12px 30px rgba(106, 17, 203, 0.25);
+text-align: center;
+transition: transform 0.2s ease;
+}
 
-    .card-title {
-        text-align: center;
-        color: #6A11CB;
-        margin-bottom: 30px;
-        font-weight: 700;
-    }
+.login-card:hover {
+transform: translateY(-2px);
+}
 
-    .form-group {
-        margin-bottom: 18px;
-    }
+/* Heading */
+.login-card h3 {
+margin-bottom: 25px;
+color: #6A11CB;
+}
 
-    .form-input {
-        width: 100%;
-        padding: 14px 18px;
-        border: 2px solid #ddd;
-        border-radius: 50px;
-        font-size: 15px;
-        outline: none; 
-        box-sizing: border-box;
-    }
+.input-group {
+text-align: left;
+margin-bottom: 20px;
+}
 
-        .form-input:focus {
-            border-color: #8E2DE2;
-            box-shadow: 0 0 15px rgba(142,45,226,0.25);
-        }
+.input-group label {
+display: block;
+margin-bottom: 6px;
+font-weight: 600;
+color: #555;
+}
 
-    .login-btn {
-        width: 100%;
-        border: none;
-        border-radius: 50px;
-        padding: 14px;
-        background: linear-gradient(135deg, #6A11CB, #8E2DE2);
-        color: white;
-        font-size: 16px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: 0.3s;
-    }
+/* Input fields */
+.input-group input {
+width: 100%;
+padding: 12px;
+border: 1px solid #d6ccf5;
+border-radius: 10px;
+font-size: 15px;
+box-sizing: border-box;
+outline: none;
+}
 
-        .login-btn:hover {
-            transform: scale(1.03);
-            background: linear-gradient(135deg, #5A0FB5, #7A1FD1);
-        }
+/* Input focus */
+.input-group input:focus {
+border-color: #8E2DE2;
+box-shadow: 0 0 6px rgba(142, 45, 226, 0.4);
+}
 
-    .error-message {
-        margin-top: 15px;
-        text-align: center;
-        color: #dc3545;
-        font-weight: 500;
-    }
+/* Button */
+.login-btn {
+width: 100%;
+padding: 12px;
+border: none;
+border-radius: 10px;
+background: linear-gradient(to right, #6A11CB, #8E2DE2);
+color: white;
+font-size: 16px;
+font-weight: bold;
+cursor: pointer;
+transition: all 0.3s ease;
+}
+
+.login-btn:hover {
+opacity: 0.9;
+transform: scale(1.02);
+}
 </style>

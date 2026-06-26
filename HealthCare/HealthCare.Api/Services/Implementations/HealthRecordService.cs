@@ -5,6 +5,8 @@ using HealthCare.Api.DTOs.HealthRecord;
 using HealthCare.Api.Models;
 using HealthCare.Api.Repositories.Interfaces;
 using HealthCare.Api.Services.Interfaces;
+using HealthCare.Shared.DTOs;
+using HealthCare.Shared.DTOs.HealthRecord;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 

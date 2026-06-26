@@ -9,5 +9,6 @@
         public int CancelledCount { get; set; }
 
         public int CompletedCount { get; set; }
+        public decimal Revenue { get; set; }
     }
 } 

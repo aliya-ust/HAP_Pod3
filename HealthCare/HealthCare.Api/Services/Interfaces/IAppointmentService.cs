@@ -1,6 +1,8 @@
 ﻿using HealthCare.Api.DTOs;
 using HealthCare.Api.DTOs.Appointment;
 using HealthCare.Api.Models;
+using HealthCare.Shared.DTOs;
+using HealthCare.Shared.DTOs.Appointment;
 
 namespace HealthCare.Api.Services.Interfaces
 {
@@ -14,11 +16,12 @@ namespace HealthCare.Api.Services.Interfaces
         Task<bool> IsAvailable(DateOnly date, int doctorId, string timeSlot);
         Task AddAsync(CreateAppointmentDto dto, int patientId);
         Task UpdateStatusAsync(int id, UpdateAppointmentDto dto);
-        Task<List<AppointmentReportDto>> GetDailyReport();
+        Task<List<AppointmentReportDto>> GetReport(AppointmentReportFilter filter);
         Task<List<AppointmentListDto>> GetDoctorSchedule(DateOnly date, int id);
         Task<List<AppointmentListDto>> GetPatientSchedule(DateOnly date, int id);
         Task<List<AppointmentListDto>> GetAppointmentByPatient(int id);
         Task<List<AppointmentListDto>> GetAppointmentByDoctor(int id);
         Task CancelAppointmentsByDoctorDate(int doctorId, DateOnly date);
+        Task<AppointmentSummaryDto> GetSummaryAsync();
     }
 } 

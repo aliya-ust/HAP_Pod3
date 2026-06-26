@@ -65,4 +65,4 @@ namespace HealthCare.Api.Controllers
             return int.Parse(claim.Value);
         }
     }
-} 
+}

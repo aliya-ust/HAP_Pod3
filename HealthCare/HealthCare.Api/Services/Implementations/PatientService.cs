@@ -5,23 +5,36 @@ using HealthCare.Api.DTOs.Patient;
 using HealthCare.Api.Models;
 using HealthCare.Api.Repositories.Interfaces;
 using HealthCare.Api.Services.Interfaces;
+using HealthCare.Shared.DTOs;
+using HealthCare.Shared.DTOs.Patient;
 using Microsoft.EntityFrameworkCore;
-using System.Linq.Expressions;
-
 
 namespace HealthCare.Api.Services.Implementations
 {
     public class PatientService : IPatientService
     {
         private readonly IRepository<Patient> _repository;
+        private readonly IPatientRepository _patientRepository;
         private readonly HealthCareDbContext _context;
         private readonly IMapper _mapper;
+        private IRepository<Patient> object1;
+        private HealthCareDbContext object2;
+        private IMapper object3;
+        private const string NotFoundExceptionMessage = "Patient not found.";
 
-        public PatientService(IRepository<Patient> repository, HealthCareDbContext context, IMapper mapper)
+        public PatientService(IRepository<Patient> repository, IPatientRepository patientRepository, HealthCareDbContext context, IMapper mapper)
         {
             _repository = repository;
+            _patientRepository = patientRepository;
             _context = context;
             _mapper = mapper;
+        }
+
+        public PatientService(IRepository<Patient> object1, HealthCareDbContext object2, IMapper object3)
+        {
+            this.object1 = object1;
+            this.object2 = object2;
+            this.object3 = object3;
         }
 
         public async Task<PatientListDto> GetByIdAsync(int id)
@@ -29,59 +42,56 @@ namespace HealthCare.Api.Services.Implementations
             var patient = await _repository.GetByIdAsync(id);
 
             if (patient is null)
-                throw new InvalidOperationException("Patient not found.");
+                throw new InvalidOperationException(NotFoundExceptionMessage);
 
             return _mapper.Map<PatientListDto>(patient);
         }
 
         public async Task<PagedResult<PatientListDto>> GetAllAsync(PatientFilter filter)
         {
-            // Build predicate
-            Expression<Func<Patient, bool>>? predicate = null;
-            // Support three filtering scenarios similar to DoctorService:
-            // 1) SearchByName only
-            // 2) HasInsurance only
-            // 3) Both provided -> both conditions must be satisfied
-            var hasName = !string.IsNullOrWhiteSpace(filter.SearchByName);
-            var hasInsurance = filter.HasInsurance.HasValue;
+            var query = _patientRepository.GetQueryable(); // Get IQueryable from repo
 
-            if (hasName && hasInsurance)
+            // Search by name
+            if (!string.IsNullOrWhiteSpace(filter.Search))
             {
-                var name = filter.SearchByName!.Trim();
-                if (filter.HasInsurance == true)
-                    predicate = p => p.FullName.Contains(name) && p.InsuranceId != null;
-                else
-                    predicate = p => p.FullName.Contains(name) && p.InsuranceId == null;
-            }
-            else if (hasName)
-            {
-                var name = filter.SearchByName!.Trim();
-                predicate = p => p.FullName.Contains(name);
-            }
-            else if (hasInsurance)
-            {
-                if (filter.HasInsurance == true)
-                    predicate = p => p.InsuranceId != null;
-                else
-                    predicate = p => p.InsuranceId == null;
+                query = query.Where(p =>
+                    p.FullName.Contains(filter.Search));
             }
 
-            // Call repository (no ordering needed here)
-            var pagedResult = await _repository.GetAllAsync(
-                filter.PageNumber,
-                filter.PageSize,
-                predicate
-            );
+            // Insurance filter
+            if (filter.HasInsurance == true)
+            {
+                query = query.Where(p => p.InsuranceId != null);
+            }
+            else if (filter.HasInsurance == false)
+            {
+                query = query.Where(p => p.InsuranceId == null);
+            }
+
+            // Active status
+            if (filter.IsActive.HasValue)
+            {
+                query = query.Where(p => p.IsActive == filter.IsActive.Value);
+            }
+
+            // Pagination
+            var totalCount = await query.CountAsync();
+
+            var items = await query
+                .Skip((filter.PageNumber - 1) * filter.PageSize)
+                .Take(filter.PageSize)
+                .ToListAsync();
 
             // Map result
             return new PagedResult<PatientListDto>
             {
-                Items = _mapper.Map<IEnumerable<PatientListDto>>(pagedResult.Items),
-                PageNumber = pagedResult.PageNumber,
-                PageSize = pagedResult.PageSize,
-                TotalCount = pagedResult.TotalCount
+                Items = _mapper.Map<IEnumerable<PatientListDto>>(items),
+                PageNumber = filter.PageNumber,
+                PageSize = filter.PageSize,
+                TotalCount = totalCount
             };
         }
+
 
         public async Task AddAsync(CreatePatientDto dto)
         {
@@ -95,7 +105,7 @@ namespace HealthCare.Api.Services.Implementations
             var patient = await _repository.GetByIdAsync(id);
 
             if (patient is null)
-                throw new InvalidOperationException("Patient not found.");
+                throw new InvalidOperationException(NotFoundExceptionMessage);
 
             _mapper.Map(dto, patient); // maps onto the tracked entity — EF picks up the changes
 
@@ -108,7 +118,7 @@ namespace HealthCare.Api.Services.Implementations
             var patient = await _repository.GetByIdAsync(id);
 
             if (patient is null)
-                throw new InvalidOperationException("Patient not found.");
+                throw new InvalidOperationException(NotFoundExceptionMessage);
 
             patient.IsActive = isActive;
 
@@ -121,7 +131,7 @@ namespace HealthCare.Api.Services.Implementations
             var patient = await _repository.GetByIdAsync(id);
 
             if (patient is null)
-                throw new InvalidOperationException("Patient not found.");
+                throw new InvalidOperationException(NotFoundExceptionMessage);
 
             try
             {
@@ -133,5 +143,8 @@ namespace HealthCare.Api.Services.Implementations
                 throw new InvalidOperationException("Failed to delete patient. It may be referenced by existing appointments or health records.", ex);
             }
         }
+
+        public async Task<PatientSummaryDto> GetSummaryAsync() =>
+            await _patientRepository.GetSummaryAsync();
     }
 }

@@ -1,6 +1,7 @@
 ﻿using HealthCare.Api.Data;
 using HealthCare.Api.DTOs;
 using HealthCare.Api.Repositories.Interfaces;
+using HealthCare.Shared.DTOs;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 

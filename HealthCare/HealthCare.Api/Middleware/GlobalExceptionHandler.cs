@@ -1,6 +1,7 @@
 ﻿using HealthCare.Api.DTOs;
 using HealthCare.Api.Exceptions;
 using HealthCare.Api.Models;
+using HealthCare.Shared.DTOs;
 using Microsoft.AspNetCore.Diagnostics;
 
 namespace HealthCare.Api.Middleware
@@ -35,7 +36,7 @@ namespace HealthCare.Api.Middleware
 
             
 
-            var response = new ErrorResponse
+            var response = new ErrorResponseDto
             {
                 StatusCode = statusCode,
                 Message = message,

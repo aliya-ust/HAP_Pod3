@@ -8,6 +8,8 @@ using HealthCare.Api.DTOs.HealthRecord;
 using HealthCare.Api.Repositories.Interfaces;
 using HealthCare.Api.Services.Implementations;
 using System.Linq.Expressions;
+using HealthCare.Shared.DTOs;
+using HealthCare.Shared.DTOs.HealthRecord;
 
 namespace HealthCare.Api.Tests
 {

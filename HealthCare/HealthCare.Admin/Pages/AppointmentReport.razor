@@ -1,0 +1,126 @@
+﻿@page "/appointmentreport"
+@inject AppointmentService AppointmentService
+
+<PageTitle>Appointment Report</PageTitle>
+
+<div class="page-wrapper">
+    <div class="card">
+        <div class="card-header">
+            <h3>Appointment Summary</h3>
+        </div>
+
+        <div class="card-body">
+
+            <!-- Filter Section -->
+            <div class="row mb-3">
+                <div class="col-md-3">
+                    <label>Start Date</label>
+                    <InputDate @bind-Value="startDate" class="form-control" />
+                </div>
+
+                <div class="col-md-3">
+                    <label>End Date</label>
+                    <InputDate @bind-Value="endDate" class="form-control" />
+                </div>
+
+                <div class="col-md-3 align-self-end">
+                    <button class="btn btn-primary" @onclick="SearchData">
+                        Search
+                    </button>
+                </div>
+            </div>
+
+            <!-- Validation -->
+            @if (!string.IsNullOrEmpty(errorMessage))
+            {
+                <div class="alert alert-danger">@errorMessage</div>
+            }
+
+            <!-- Table -->
+            <table class="table table-hover table-bordered">
+                <thead class="table-header">
+                    <tr>
+                        <th>Date</th>
+                        <th>Pending</th>
+                        <th>Confirmed</th>
+                        <th>Cancelled</th>
+                        <th>Completed</th>
+                        <th>Revenue</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (reports != null && reports.Any())
+                    {
+                        @foreach (var item in reports)
+                        {
+                            <tr>
+                                <td>@item.Date.ToString("dd-MMM-yyyy")</td>
+                                <td>@item.PendingCount</td>
+                                <td>@item.ConfirmedCount</td>
+                                <td>@item.CancelledCount</td>
+                                <td>@item.CompletedCount</td>
+                                <td>₹ @item.Revenue</td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="6" class="text-center">No data found</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+</div>
+
+@code {
+    private DateTime startDate;
+    private DateTime endDate;
+    private List<AppointmentReportDto> reports = new();
+    private string errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        endDate = DateTime.Today;
+        startDate = endDate.AddDays(-6); // last 7 days
+
+        await LoadData();
+    }
+
+    private async Task LoadData()
+    {
+        errorMessage = string.Empty;
+
+        try
+        {
+            reports = await AppointmentService.GetAppointmentReport(startDate, endDate);
+        }
+        catch (Exception ex)
+        {
+            errorMessage = ex.Message;
+        }
+    }
+
+    private async Task SearchData()
+    {
+        errorMessage = string.Empty;
+
+        // Validation: max 7 days
+        if ((endDate - startDate).TotalDays > 6)
+        {
+            errorMessage = "You can select a maximum of 7 days only.";
+            return;
+        }
+
+        if (startDate > endDate)
+        {
+            errorMessage = "Start date cannot be greater than end date.";
+            return;
+        }
+
+        await LoadData();
+    }
+}

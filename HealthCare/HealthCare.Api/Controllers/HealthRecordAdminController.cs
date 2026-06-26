@@ -25,5 +25,6 @@ namespace HealthCare.Api.Controllers
             await _healthRecordService.DeleteAsync(id);
             return Ok();
         }
+
     }
-} 
+}

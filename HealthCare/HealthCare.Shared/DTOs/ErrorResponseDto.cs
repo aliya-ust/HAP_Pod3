@@ -1,6 +1,6 @@
-﻿namespace HealthCare.Api.DTOs
+﻿namespace HealthCare.Shared.DTOs
 {
-    public class ErrorResponse
+    public class ErrorResponseDto
     {
         public int StatusCode { get; set; }
         public string? Message { get; set; }

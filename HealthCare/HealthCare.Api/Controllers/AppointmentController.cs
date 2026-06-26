@@ -1,5 +1,6 @@
 ﻿using HealthCare.Api.DTOs.Appointment;
 using HealthCare.Api.Services.Interfaces;
+using HealthCare.Shared.DTOs.Appointment;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

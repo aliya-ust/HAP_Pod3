@@ -76,5 +76,13 @@ namespace HealthCare.Api.Controllers
             await _patientService.DeleteAsync(id);
             return Ok(new { message = "Patient Deleted Successfully" });
         }
+        [HttpGet("summary")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> GetSummary()
+        {
+            var result = await _patientService.GetSummaryAsync();
+            return Ok(result);
+        }
     }
 }
