@@ -1,6 +1,6 @@
-﻿using System.Net.Http.Headers;
+﻿
 using System.Net.Http.Json;
-using Microsoft.JSInterop;
+
 using HealthCare.Api.DTOs.Patient;
 using HealthCare.Shared.DTOs;
 
@@ -9,28 +9,21 @@ namespace HealthCare.Admin.Services
     public class PatientService
     {
         private readonly HttpClient _httpClient;
-        private readonly IJSRuntime _jsRuntime;
 
-        public PatientService(HttpClient httpClient, IJSRuntime jsRuntime)
+        private readonly AuthHeaderService _authHeaderService;
+
+        public PatientService(HttpClient httpClient, AuthHeaderService authHeaderService)
         {
             _httpClient = httpClient;
-            _jsRuntime = jsRuntime;
-        }
+            _authHeaderService = authHeaderService;
+        } 
 
-        private async Task AddAuthorizationHeaderAsync()
-        {
-            var token = await _jsRuntime.InvokeAsync<string>("localStorage.getItem", "accesstoken");
-
-            if (!string.IsNullOrWhiteSpace(token))
-            {
-                _httpClient.DefaultRequestHeaders.Authorization =
-                    new AuthenticationHeaderValue("Bearer", token);
-            } 
-        }
+        
 
         public async Task<PagedResult<PatientListDto>> GetPatientsAsync(PatientFilter filter)
         {
-            await AddAuthorizationHeaderAsync();
+            await _authHeaderService.AddAuthorizationHeaderAsync(_httpClient);
+
 
             var queryParams = new List<string>();
 
@@ -68,7 +61,8 @@ namespace HealthCare.Admin.Services
         }
         public async Task<bool> UpdatePatientStatusAsync(int patientId, bool isActive)
         {
-            await AddAuthorizationHeaderAsync();
+            await _authHeaderService.AddAuthorizationHeaderAsync(_httpClient);
+
 
             var response = await _httpClient.PatchAsJsonAsync(
                 $"api/admin/patients/{patientId}/status", isActive);
@@ -78,7 +72,8 @@ namespace HealthCare.Admin.Services
 
         public async Task<bool> DeletePatientAsync(int patientId)
         {
-            await AddAuthorizationHeaderAsync();
+            await _authHeaderService.AddAuthorizationHeaderAsync(_httpClient);
+
 
             var response = await _httpClient.DeleteAsync(
                 $"api/admin/patients/{patientId}");
@@ -88,7 +83,8 @@ namespace HealthCare.Admin.Services
 
         public async Task<PatientListDto?> GetPatientByIdAsync(int patientId)
         {
-            await AddAuthorizationHeaderAsync();
+            await _authHeaderService.AddAuthorizationHeaderAsync(_httpClient);
+
 
             var response = await _httpClient.GetAsync($"api/admin/patients/{patientId}");
 

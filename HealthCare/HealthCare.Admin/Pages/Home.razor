@@ -1,117 +1,254 @@
 ﻿@page "/Home"
 @layout MainLayout
 
+@using HealthCare.Admin.Services
+@using HealthCare.Api.DTOs.Doctor
+@using HealthCare.Api.DTOs.Patient
+@using HealthCare.Shared.DTOs.Appointment
+
+@inject DoctorService DoctorService
+@inject PatientService PatientService
+@inject AppointmentService AppointmentService
+
 <div class="dashboard-container">
 
-    <!-- Header -->
     <div class="dashboard-header">
         <h1>Admin Dashboard</h1>
         <p>Overview of HealthCare Portal System</p>
     </div>
 
-    <!-- Stats Grid -->
-    <div class="stats-grid">
-
-        <div class="stat-card">
-            <h2>40</h2>
-            <p>Total Doctors</p>
+    @if (isLoading)
+    {
+        <div class="dashboard-message loading-message">
+            Loading dashboard data...
         </div>
-
-        <div class="stat-card">
-            <h2>38</h2>
-            <p>Active Doctors</p>
+    }
+    else if (!string.IsNullOrWhiteSpace(errorMessage))
+    {
+        <div class="dashboard-message error-message">
+            @errorMessage
         </div>
+    }
+    else
+    {
+        <div class="stats-grid">
 
-        <div class="stat-card">
-            <h2>250</h2>
-            <p>Total Patients</p>
+            <div class="stat-card">
+                <h2>@totalDoctors</h2>
+                <p>Total Doctors</p>
+            </div>
+
+            <div class="stat-card">
+                <h2>@activeDoctors</h2>
+                <p>Active Doctors</p>
+            </div>
+
+            <div class="stat-card">
+                <h2>@totalPatients</h2>
+                <p>Total Patients</p>
+            </div>
+
+            <div class="stat-card">
+                <h2>@totalAppointments</h2>
+                <p>Total Appointments</p>
+            </div>
+
+            <div class="stat-card">
+                <h2>@pendingAppointments</h2>
+                <p>Pending Appointments</p>
+            </div>
+
+            <div class="stat-card">
+                <h2>@confirmedAppointments</h2>
+                <p>Confirmed Appointments</p>
+            </div>
+
+            <div class="stat-card">
+                <h2>@cancelledAppointments</h2>
+                <p>Cancelled Appointments</p>
+            </div>
+
+            <div class="stat-card">
+                <h2>@completedAppointments</h2>
+                <p>Completed Appointments</p>
+            </div>
+
         </div>
-
-        <div class="stat-card">
-            <h2>120</h2>
-            <p>Total Appointments</p>
-        </div>
-
-        <div class="stat-card">
-            <h2>15</h2>
-            <p>Pending Appointments</p>
-        </div>
-
-        <div class="stat-card">
-            <h2>95</h2>
-            <p>Confirmed Appointments</p>
-        </div>
-
-        <div class="stat-card">
-            <h2>10</h2>
-            <p>Cancelled Appointments</p> 
-        </div>
-
-        <div class="stat-card">
-            <h2>180</h2>
-            <p>Completed Appointments</p>
-        </div>
-
-    </div>
+    }
 
 </div>
+
 <style>
     .dashboard-container {
-        padding: 25px;
+        padding: 28px;
         background: #f5f3ff;
         min-height: 100vh;
     }
 
-    /* Header */
     .dashboard-header {
-        margin-bottom: 25px;
+        margin-bottom: 28px;
     }
 
         .dashboard-header h1 {
             margin: 0;
-            font-size: 32px;
+            font-size: 34px;
+            font-weight: 600;
             color: #5b21b6;
         }
 
         .dashboard-header p {
-            margin: 5px 0 0;
+            margin: 8px 0 0;
             color: #6b7280;
+            font-size: 16px;
         }
 
-    /* Grid layout */
     .stats-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-        gap: 20px;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 24px;
+        align-items: stretch;
     }
 
-    /* Card design */
     .stat-card {
-        background: white;
-        border-radius: 16px;
-        padding: 20px;
-        box-shadow: 0 6px 18px rgba(0,0,0,0.08);
-        transition: 0.3s ease;
+        background: #ffffff;
+        border-radius: 18px;
+        padding: 32px 18px;
+        min-height: 155px;
+        box-shadow: 0 8px 22px rgba(124, 58, 237, 0.10);
+        border: 1px solid rgba(124, 58, 237, 0.08);
         text-align: center;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        transition: all 0.25s ease;
     }
 
         .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 28px rgba(124, 58, 237, 0.16);
         }
 
-        /* Number style */
         .stat-card h2 {
             margin: 0;
-            font-size: 32px;
+            font-size: 38px;
+            line-height: 1.2;
             color: #7c3aed;
-            font-weight: bold;
+            font-weight: 700;
         }
 
-        /* Label */
         .stat-card p {
-            margin-top: 8px;
-            color: #6b7280;
+            margin: 12px 0 0;
+            color: #5f6b7a;
+            font-size: 16px;
             font-weight: 500;
-        } 
+        }
+
+    .dashboard-message {
+        background: #ffffff;
+        border-radius: 14px;
+        padding: 18px 22px;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+        font-size: 16px;
+    }
+
+    .loading-message {
+        color: #5b21b6;
+    }
+
+    .error-message {
+        color: #dc2626;
+        border-left: 5px solid #dc2626;
+    }
+
+    @@media (max-width: 1200px) {
+        .stats-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .dashboard-container {
+            padding: 18px;
+        }
+
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .dashboard-header h1 {
+            font-size: 28px;
+        }
+    }
 </style>
+
+@code {
+    private bool isLoading = true;
+    private string errorMessage = string.Empty;
+
+    private int totalDoctors;
+    private int activeDoctors;
+    private int totalPatients;
+    private int totalAppointments;
+
+    private int pendingAppointments;
+    private int confirmedAppointments;
+    private int cancelledAppointments;
+    private int completedAppointments;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadDashboardData();
+    }
+
+    private async Task LoadDashboardData()
+    {
+        try
+        {
+            isLoading = true;
+            errorMessage = string.Empty;
+
+            var totalDoctorResult = await DoctorService.GetDoctorsAsync(new DoctorFilter
+            {
+                PageNumber = 1,
+                PageSize = 1
+            });
+
+            var activeDoctorResult = await DoctorService.GetDoctorsAsync(new DoctorFilter
+            {
+                IsActive = true,
+                PageNumber = 1,
+                PageSize = 1
+            });
+
+            var patientResult = await PatientService.GetPatientsAsync(new PatientFilter
+            {
+                PageNumber = 1,
+                PageSize = 1
+            });
+
+            var appointmentSummary = await AppointmentService.GetDashboardAppointmentSummaryAsync();
+
+            totalDoctors = totalDoctorResult.TotalCount;
+            activeDoctors = activeDoctorResult.TotalCount;
+            totalPatients = patientResult.TotalCount;
+
+            pendingAppointments = appointmentSummary.PendingCount;
+            confirmedAppointments = appointmentSummary.ConfirmedCount;
+            cancelledAppointments = appointmentSummary.CancelledCount;
+            completedAppointments = appointmentSummary.CompletedCount;
+
+            totalAppointments = pendingAppointments
+                + confirmedAppointments
+                + cancelledAppointments
+                + completedAppointments;
+        }
+        catch (Exception ex)
+        {
+            errorMessage = ex.Message;
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+}

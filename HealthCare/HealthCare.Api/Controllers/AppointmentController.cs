@@ -28,7 +28,7 @@ namespace HealthCare.Api.Controllers
 
             var patientId = GetPatientIdFromClaims();
             await _appointmentService.AddAsync(dto, patientId);
-            return Ok();
+            return Ok(new { message = "Appointment booked Successfully" });
         }
 
         [HttpPut("{id}/status")]

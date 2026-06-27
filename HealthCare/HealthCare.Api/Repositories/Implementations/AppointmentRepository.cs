@@ -152,9 +152,27 @@ namespace HealthCare.Api.Repositories.Implementations
             return result ?? new AppointmentSummaryDto();
         }
 
-        public void GetReport()
+        public async Task<AppointmentSummaryDto> GetDashboardSummaryAsync()
         {
-            throw new NotImplementedException();
-        }
+            var result = await _dbSet
+                .GroupBy(a => 1)
+                .Select(g => new AppointmentSummaryDto
+                {
+                    PendingCount = g.Count(a => a.Status == "Pending"),
+
+                    ConfirmedCount = g.Count(a => a.Status == "Confirmed"),
+
+                    CancelledCount = g.Count(a => a.Status == "Cancelled"),
+
+                    CompletedCount = g.Count(a => a.Status == "Completed"),
+
+                    TotalRevenue = g
+                        .Where(a => a.Status == "Completed")
+                        .Sum(a => a.Doctor.ConsultationFee)
+                })
+                .FirstOrDefaultAsync();
+
+            return result ?? new AppointmentSummaryDto();
+        } 
     }
 }

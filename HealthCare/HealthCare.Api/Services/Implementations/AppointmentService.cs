@@ -224,7 +224,11 @@ namespace HealthCare.Api.Services.Implementations
             var summary = await _repository.GetSummaryAsync();
             return summary;
         }
-
+        public async Task<AppointmentSummaryDto> GetDashboardSummaryAsync()
+        {
+            var summary = await _repository.GetDashboardSummaryAsync();
+            return summary;
+        }
 
     }
 }

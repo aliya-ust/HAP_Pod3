@@ -1,6 +1,5 @@
-﻿using System.Net.Http.Headers;
-using System.Net.Http.Json;
-using Microsoft.JSInterop;
+﻿using System.Net.Http.Json;
+
 using HealthCare.Api.DTOs.Doctor;
 using HealthCare.Shared.DTOs;
 
@@ -9,30 +8,20 @@ namespace HealthCare.Admin.Services
     public class DoctorService
     {
         private readonly HttpClient _httpClient;
-        private readonly IJSRuntime _jsRuntime;
 
-        public DoctorService(HttpClient httpClient, IJSRuntime jsRuntime)
+
+        private readonly AuthHeaderService _authHeaderService;
+
+        public DoctorService(HttpClient httpClient, AuthHeaderService authHeaderService)
         {
             _httpClient = httpClient;
-            _jsRuntime = jsRuntime;
+            _authHeaderService = authHeaderService;
         }
 
-        private async Task AddAuthorizationHeaderAsync()
-        {
-            var token = await _jsRuntime.InvokeAsync<string>(
-                "localStorage.getItem",
-                "accesstoken");
-
-            if (!string.IsNullOrWhiteSpace(token))
-            {
-                _httpClient.DefaultRequestHeaders.Authorization =
-                    new AuthenticationHeaderValue("Bearer", token);
-            }
-        }
 
         public async Task<PagedResult<DoctorListDto>> GetDoctorsAsync(DoctorFilter filter)
         {
-            await AddAuthorizationHeaderAsync();
+            await _authHeaderService.AddAuthorizationHeaderAsync(_httpClient);
 
             var queryParams = new List<string>();
 
@@ -74,8 +63,7 @@ namespace HealthCare.Admin.Services
 
         public async Task<DoctorListDto?> GetDoctorByIdAsync(int doctorId)
         {
-            await AddAuthorizationHeaderAsync();
-
+            await _authHeaderService.AddAuthorizationHeaderAsync(_httpClient);
             var response = await _httpClient.GetAsync($"api/admin/doctors/{doctorId}");
 
             if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
@@ -89,7 +77,7 @@ namespace HealthCare.Admin.Services
 
         public async Task<bool> UpdateDoctorAsync(int doctorId, UpdateDoctorDto dto)
         {
-            await AddAuthorizationHeaderAsync();
+            await _authHeaderService.AddAuthorizationHeaderAsync(_httpClient);
 
             var response = await _httpClient.PutAsJsonAsync(
                 $"api/admin/doctors/{doctorId}",
@@ -100,7 +88,7 @@ namespace HealthCare.Admin.Services
 
         public async Task<bool> UpdateDoctorStatusAsync(int doctorId, bool isActive)
         {
-            await AddAuthorizationHeaderAsync();
+            await _authHeaderService.AddAuthorizationHeaderAsync(_httpClient);
 
             var response = await _httpClient.PatchAsJsonAsync(
                 $"api/admin/doctors/{doctorId}/status",
@@ -111,8 +99,7 @@ namespace HealthCare.Admin.Services
 
         public async Task<bool> DeleteDoctorAsync(int doctorId)
         {
-            await AddAuthorizationHeaderAsync();
-
+            await _authHeaderService.AddAuthorizationHeaderAsync(_httpClient);
             var response = await _httpClient.DeleteAsync(
                 $"api/admin/doctors/{doctorId}");
 
@@ -120,8 +107,7 @@ namespace HealthCare.Admin.Services
         }
         public async Task<bool> CreateDoctorAsync(CreateDoctorDto dto)
         {
-            await AddAuthorizationHeaderAsync();
-
+            await _authHeaderService.AddAuthorizationHeaderAsync(_httpClient);
             var response = await _httpClient.PostAsJsonAsync(
                 "api/auth/register/doctor",
                 dto);

@@ -51,5 +51,14 @@ namespace HealthCare.Api.Controllers
             var result = await _appointmentService.GetSummaryAsync();
             return Ok(result);
         }
+
+        [HttpGet("dashboard-summary")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> GetDashboardSummary()
+        {
+            var result = await _appointmentService.GetDashboardSummaryAsync();
+            return Ok(result);
+        } 
     }
 }
