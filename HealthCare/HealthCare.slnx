@@ -2,9 +2,5 @@
   <Project Path="HealthCare.Admin/HealthCare.Admin.csproj" Id="51777342-7808-4a34-a130-52c8b343f436" />
   <Project Path="HealthCare.Api.Tests/HealthCare.Api.Tests.csproj" Id="c0939cc7-f052-4090-ba5f-7755f46eac21" />
   <Project Path="HealthCare.Api/HealthCare.Api.csproj" />
-  <Project Path="HealthCare.Portal/HealthCare.Portal.esproj">
-    <Build />
-    <Deploy />
-  </Project>
   <Project Path="HealthCare.Shared/HealthCare.Shared.csproj" Id="7359d379-5a6e-4b93-9c2f-7a2c01469b2b" />
 </Solution>
