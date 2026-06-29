@@ -1,0 +1,71 @@
+<div class="sidebar">
+
+  <div class="logo">
+
+    <h2>HealthCare</h2>
+
+    <p>{{role}} Portal</p>
+
+  </div>
+
+  <ul>
+
+    <li routerLink="/dashboard"
+        routerLinkActive="active">
+
+      Dashboard
+
+    </li>
+
+    <li routerLink="/profile"
+        routerLinkActive="active">
+
+      My Profile
+
+    </li>
+
+    <!-- Patient Only -->
+
+    <li *ngIf="role=='Patient'"
+        routerLink="/book-appointment"
+        routerLinkActive="active">
+
+      Book Appointment
+
+    </li>
+
+    <li routerLink="/appointments"
+        routerLinkActive="active">
+
+      Appointments
+
+    </li>
+
+    <li *ngIf="role=='Patient'"
+        routerLink="/health-record"
+        routerLinkActive="active">
+
+      Health Records
+
+    </li>
+
+    <!-- Doctor Only -->
+
+    <li *ngIf="role=='Doctor'"
+        routerLink="/leave"
+        routerLinkActive="active">
+
+      Add Leaves
+
+    </li>
+
+  </ul>
+
+  <button class="logout-btn"
+          (click)="logout()">
+
+    Logout
+
+  </button>
+
+</div>

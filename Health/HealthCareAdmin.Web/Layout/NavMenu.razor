@@ -15,7 +15,7 @@
         }
     </div>
 
-    <NavLink class="nav-item" href="/dashboard" Match="NavLinkMatch.All">
+    <NavLink class="nav-item" href="/" Match="NavLinkMatch.All">
         <img src="images/Home.png" class="nav-icon" />
         @if (!collapseNavMenu)
         {
@@ -68,7 +68,7 @@
     private async Task Logout()
     {
         await JS.InvokeVoidAsync("localStorage.removeItem", "accessToken");
-        Navigation.NavigateTo("/", true);
+        Navigation.NavigateTo("http://localhost:49642", forceLoad: true);
     }
 
 }

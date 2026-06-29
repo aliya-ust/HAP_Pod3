@@ -107,10 +107,13 @@ builder.Services.AddAutoMapper(cfg =>
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowBlazorClient", policy =>
+    options.AddPolicy("AllowClients", policy =>
     {
         policy
-            .WithOrigins("https://localhost:7260")
+            .WithOrigins(
+                "https://localhost:7260", // Blazor
+                "http://localhost:49642"   // Angular
+            )
             .AllowAnyHeader()
             .AllowAnyMethod();
     });
@@ -135,10 +138,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseCors("AllowBlazorClient");
+app.UseCors("AllowClients");
 app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapControllers();
 
 app.Run();

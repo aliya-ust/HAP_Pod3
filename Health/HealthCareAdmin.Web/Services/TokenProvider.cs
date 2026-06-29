@@ -11,6 +11,6 @@ public class TokenProvider
 
     public async Task<string?> GetTokenAsync()
     {
-        return await _js.InvokeAsync<string>("localStorage.getItem", "accesstoken");
+        return await _js.InvokeAsync<string>("localStorage.getItem", "accessToken");
     }
 }

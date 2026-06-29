@@ -62,16 +62,6 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "DashboardController",
-    "Method": "GetDashboard",
-    "RelativePath": "api/admin/dashboard",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [],
-    "ReturnTypes": []
-  },
-  {
     "ContainingType": "HealthCare.Api.Controllers.DoctorAdminController",
     "Method": "GetAll",
     "RelativePath": "api/admin/DoctorAdmin",
@@ -458,6 +448,36 @@
         "IsRequired": true
       }
     ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "DashboardController",
+    "Method": "GetDashboard",
+    "RelativePath": "api/dashboard",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "DashboardController",
+    "Method": "GetDoctorDashboard",
+    "RelativePath": "api/dashboard/doctor",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "DashboardController",
+    "Method": "GetPatientDashboard",
+    "RelativePath": "api/dashboard/patient",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
     "ReturnTypes": []
   },
   {

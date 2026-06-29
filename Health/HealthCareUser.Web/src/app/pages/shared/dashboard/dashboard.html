@@ -1,0 +1,84 @@
+<div class="dashboard">
+
+  <h1>Dashboard</h1>
+
+  <!-- PATIENT -->
+
+  <div *ngIf="role=='Patient'">
+
+    <div class="cards">
+
+      <div class="card">
+
+        <h3>Upcoming Appointments</h3>
+
+        <h2>{{upcomingAppointments}}</h2>
+
+      </div>
+
+      <div class="card">
+
+        <h3>Health Records</h3>
+
+        <h2>{{healthRecordCount}}</h2>
+
+      </div>
+
+    </div>
+
+    <div class="patient-image">
+
+      <img src="assets/images/patient-dashboard.png">
+
+    </div>
+
+  </div>
+
+  <!-- DOCTOR -->
+
+  <div *ngIf="role=='Doctor'">
+
+    <div class="cards">
+
+      <div class="card">
+
+        <h3>Upcoming Appointments</h3>
+
+        <h2>{{upcomingAppointments}}</h2>
+
+      </div>
+
+      <div class="card">
+
+        <h3>Completed Appointments</h3>
+
+        <h2>{{completedAppointments}}</h2>
+
+      </div>
+
+      <div class="card">
+
+        <h3>Upcoming Leaves</h3>
+
+        <h2>{{upcomingLeaves}}</h2>
+
+      </div>
+
+    </div>
+
+    <div class="card">
+
+      <h3>Today's Appointments</h3>
+
+      <div class="slot"
+           *ngFor="let item of todayAppointments">
+
+        {{ item.slot }}
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

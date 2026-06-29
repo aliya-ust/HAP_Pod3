@@ -1,0 +1,81 @@
+<div class="login-page">
+
+  <!-- Left Panel -->
+  <div class="left-panel">
+
+    <div class="overlay">
+
+      <img src="https://cdn.gea.com/-/jssmedia/industries/migrated-from-tridion/advancing-pharmaceutical-processing-transforming-the-future-saving-lives-3065.jpg?mw=768&rev=1d2359e4c4da4c9c9874e457a02cda06"
+           alt="Healthcare">
+
+      <h1>Welcome!</h1>
+
+      <p>
+        Your trusted healthcare management system.
+        Secure, Simple and Reliable.
+      </p>
+
+    </div>
+
+  </div>
+
+  <!-- Right Panel -->
+  <div class="right-panel">
+
+    <div class="login-card">
+
+      <h2>Health Care System</h2>
+
+      <p class="subtitle">
+        Sign in to continue
+      </p>
+
+      <form (ngSubmit)="login()">
+
+        <div class="form-group">
+
+          <label>Email</label>
+
+          <input type="email"
+                 [(ngModel)]="email"
+                 name="email"
+                 placeholder="Enter Email">
+
+        </div>
+
+        <div class="form-group">
+
+          <label>Password</label>
+
+          <input type="password"
+                 [(ngModel)]="password"
+                 name="password"
+                 placeholder="Enter Password">
+
+        </div>
+
+        <button type="submit">
+          Login
+        </button>
+
+      </form>
+
+      <p class="error" *ngIf="errorMessage">
+        {{errorMessage}}
+      </p>
+
+      <div class="register-link">
+
+        Don't have an account?
+
+        <a routerLink="/register">
+          Create Account
+        </a>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

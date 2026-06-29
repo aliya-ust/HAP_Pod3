@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 [ApiController]
-[Route("api/admin/dashboard")]
+[Route("api/dashboard")]
 [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
 public class DashboardController : ControllerBase
 {
@@ -13,6 +13,39 @@ public class DashboardController : ControllerBase
     public DashboardController(IDashboardService dashboardService)
     {
         _dashboardService = dashboardService;
+    }
+    private int GetPatientId()
+    {
+        return int.Parse(User.FindFirst("PatientId")!.Value);
+    }
+
+    private int GetDoctorId()
+    {
+        return int.Parse(User.FindFirst("DoctorId")!.Value);
+    }
+
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Patient")]
+    [HttpGet("patient")]
+    public async Task<IActionResult> GetPatientDashboard()
+    {
+        var patientId = GetPatientId();
+
+        var result = await _dashboardService
+            .GetPatientDashboardSummaryAsync(patientId);
+
+        return Ok(result);
+    }
+
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Doctor")]
+    [HttpGet("doctor")]
+    public async Task<IActionResult> GetDoctorDashboard()
+    {
+        var doctorId = GetDoctorId();
+
+        var result = await _dashboardService
+            .GetDoctorDashboardSummaryAsync(doctorId);
+
+        return Ok(result);
     }
 
     [HttpGet]

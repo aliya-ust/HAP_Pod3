@@ -1,0 +1,101 @@
+<div class="profile-container">
+
+  <!-- Patient Profile -->
+
+  <div class="profile-card" *ngIf="patient">
+
+    <div class="profile-header">
+
+      <h2>Patient Profile</h2>
+
+    </div>
+
+    <div class="profile-body">
+
+      <div class="profile-row">
+        <span class="profile-label">Patient ID</span>
+        <span class="profile-value">{{patient.patientId}}</span>
+      </div>
+
+      <div class="profile-row">
+        <span class="profile-label">Full Name</span>
+        <span class="profile-value">{{patient.fullName}}</span>
+      </div>
+
+      <div class="profile-row">
+        <span class="profile-label">Email</span>
+        <span class="profile-value">{{patient.email}}</span>
+      </div>
+
+      <div class="profile-row">
+        <span class="profile-label">Phone Number</span>
+        <span class="profile-value">{{patient.phoneNumber}}</span>
+      </div>
+
+      <div class="profile-row">
+        <span class="profile-label">Date of Birth</span>
+        <span class="profile-value">{{patient.dateOfBirth}}</span>
+      </div>
+
+      <div class="profile-row">
+        <span class="profile-label">Gender</span>
+        <span class="profile-value">{{patient.gender}}</span>
+      </div>
+
+      <div class="profile-row">
+        <span class="profile-label">Insurance ID</span>
+        <span class="profile-value">{{patient.insuranceId}}</span>
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- Doctor Profile -->
+
+  <div class="profile-card" *ngIf="doctor">
+
+    <div class="profile-header">
+
+      <h2>Doctor Profile</h2>
+
+    </div>
+
+    <div class="profile-body">
+
+      <div class="profile-row">
+        <span class="profile-label">Doctor ID</span>
+        <span class="profile-value">{{doctor.doctorId}}</span>
+      </div>
+
+      <div class="profile-row">
+        <span class="profile-label">Full Name</span>
+        <span class="profile-value">{{doctor.fullName}}</span>
+      </div>
+
+      <div class="profile-row">
+        <span class="profile-label">Email</span>
+        <span class="profile-value">{{doctor.email}}</span>
+      </div>
+
+      <div class="profile-row">
+        <span class="profile-label">Specialisation</span>
+        <span class="profile-value">{{doctor.specialisation}}</span>
+      </div>
+
+      <div class="profile-row">
+        <span class="profile-label">Experience</span>
+        <span class="profile-value">{{doctor.yearsOfExperience}} Years</span>
+      </div>
+
+      <div class="profile-row">
+        <span class="profile-label">Consultation Fee</span>
+        <span class="profile-value">₹{{doctor.consultationFee}}</span>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

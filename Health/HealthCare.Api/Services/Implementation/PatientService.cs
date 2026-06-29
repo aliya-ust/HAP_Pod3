@@ -24,14 +24,32 @@ namespace HealthCare.Api.Services.Implementations
             _mapper = mapper;
         }
 
-        public async Task<PatientListDto> GetByIdAsync(int id)
+        public async Task<PatientProfileDto> GetByIdAsync(int id)
         {
-            var patient = await _repository.GetByIdAsync(id);
+            var patient = await
+            (
+                from p in _context.Patients
+                join u in _context.Users
+                    on p.UserId equals u.Id
 
-            if (patient is null)
-                throw new InvalidOperationException(NotFoundExceptionMessage);
+                where p.PatientId == id
 
-            return _mapper.Map<PatientListDto>(patient);
+                select new PatientProfileDto
+                {
+                    PatientId = p.PatientId,
+                    FullName = p.FullName,
+                    Email = u.Email,
+                    PhoneNumber = p.PhoneNumber,
+                    DateOfBirth = p.DateOfBirth,
+                    Gender = p.Gender,
+                    InsuranceId = p.InsuranceId
+                }
+            ).FirstOrDefaultAsync();
+
+            if (patient == null)
+                throw new InvalidOperationException("Patient not found.");
+
+            return patient;
         }
 
         public async Task<PagedResult<PatientListDto>> GetAllAsync(PatientFilter filter)

@@ -3,4 +3,8 @@
   <Project Path="HealthCare.Api/HealthCare.Api.csproj" />
   <Project Path="HealthCare.Shared/HealthCare.Shared.csproj" Id="99e644b9-ff0e-4ce0-ae5e-146ae4d391c1" />
   <Project Path="HealthCareAdmin.Web/HealthCareAdmin.Web.csproj" Id="e8cb7f28-6dbd-4986-97f4-5b511347cdd5" />
+  <Project Path="HealthCareUser.Web/HealthCareUser.Web.esproj">
+    <Build />
+    <Deploy />
+  </Project>
 </Solution>

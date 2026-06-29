@@ -363,7 +363,31 @@
         }
       }
     },
-    "/api/admin/dashboard": {
+    "/api/dashboard/patient": {
+      "get": {
+        "tags": [
+          "Dashboard"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/dashboard/doctor": {
+      "get": {
+        "tags": [
+          "Dashboard"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/dashboard": {
       "get": {
         "tags": [
           "Dashboard"

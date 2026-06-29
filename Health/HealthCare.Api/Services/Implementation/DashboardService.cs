@@ -43,4 +43,62 @@ public class DashboardService : IDashboardService
                 .SumAsync(a => (decimal?)a.Doctor.ConsultationFee) ?? 0
         };
     }
+
+    public async Task<DashboardPatientDto> GetPatientDashboardSummaryAsync(int patientId)
+    {
+        var today = DateOnly.FromDateTime(DateTime.Today);
+
+        var patient = await _context.Patients
+            .FirstAsync(x => x.PatientId == patientId);
+
+        return new DashboardPatientDto
+        {
+            PatientName = patient.FullName,
+
+            UpcomingAppointments = await _context.Appointments
+                .CountAsync(a =>
+                    a.PatientId == patientId &&
+                    a.ScheduledDate >= today &&
+                    a.Status != "Cancelled"),
+
+            HealthRecordCount = await _context.HealthRecords
+                .CountAsync(h => h.PatientId == patientId)
+        };
+    }
+
+    public async Task<DashboardDoctorDto> GetDoctorDashboardSummaryAsync(int doctorId)
+    {
+        var today = DateOnly.FromDateTime(DateTime.Today);
+
+        return new DashboardDoctorDto
+        {
+            UpcomingAppointments = await _context.Appointments
+                .CountAsync(a =>
+                    a.DoctorId == doctorId &&
+                    a.ScheduledDate >= today &&
+                    a.Status == "Confirmed"),
+
+            CompletedAppointments = await _context.Appointments
+                .CountAsync(a =>
+                    a.DoctorId == doctorId &&
+                    a.Status == "Completed"),
+
+            UpcomingLeaves = await _context.DoctorLeaves
+                .CountAsync(l =>
+                    l.DoctorId == doctorId &&
+                    l.LeaveDate >= today),
+
+            TodayAppointments = await _context.Appointments
+                .Where(a =>
+                     a.DoctorId == doctorId &&
+                     a.ScheduledDate == today &&
+                     a.Status == "Confirmed")
+                     .OrderBy(a => a.TimeSlot)
+                    .Select(a => new TodayAppointmentSlotDto
+                     {
+                        Slot = a.TimeSlot
+                     })
+                    .ToListAsync()
+                    };
+    }
 }

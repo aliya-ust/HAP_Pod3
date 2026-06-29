@@ -1,0 +1,90 @@
+.register-page {
+  height: 100vh;
+  background: linear-gradient(135deg, #0a1f44, #123a7a);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: Arial, sans-serif;
+}
+
+.register-card {
+  width: 420px;
+  background: white;
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+  transition: 0.3s;
+}
+
+  .register-card:hover {
+    transform: scale(1.02);
+  }
+
+  .register-card h2 {
+    text-align: center;
+    color: #0a1f44;
+  }
+
+  .register-card p {
+    text-align: center;
+    font-size: 13px;
+    color: gray;
+  }
+
+input, select {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  outline: none;
+}
+
+  input:focus, select:focus {
+    border-color: #123a7a;
+  }
+
+button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 20px;
+  background: #123a7a;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+  button:hover {
+    background: #0a1f44;
+  }
+
+.error small {
+  color: red;
+  font-size: 11px;
+}
+
+/* SUCCESS DIALOG */
+.dialog {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.dialog-box {
+  background: white;
+  padding: 30px;
+  border-radius: 10px;
+  text-align: center;
+}
+
+  .dialog-box button {
+    margin-top: 15px;
+  }
