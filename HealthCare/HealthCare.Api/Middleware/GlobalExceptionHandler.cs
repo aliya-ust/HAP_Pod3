@@ -25,10 +25,8 @@ namespace HealthCare.Api.Middleware
                 AppointmentNotFoundException => (StatusCodes.Status404NotFound, exception.Message),
                 HealthRecordNotFoundException => (StatusCodes.Status404NotFound, exception.Message),
 
-                // ADD THIS LINE 
                 InvalidOperationException => (StatusCodes.Status400BadRequest, exception.Message),
 
-                // Default fallback
                 _ => (StatusCodes.Status500InternalServerError, "Internal server error")
             };
 

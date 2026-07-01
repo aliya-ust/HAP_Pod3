@@ -48,7 +48,6 @@ namespace HealthCare.Api.Services.Impl
         {
             Expression<Func<Patient, bool>> predicate = p => true;
 
-            // Filter by insurance
             if (filter.HasInsurance.HasValue)
             {
                 if (filter.HasInsurance.Value)
@@ -63,8 +62,7 @@ namespace HealthCare.Api.Services.Impl
                 }
             }
 
-            // Filter by patient name
-            // Filter by patient name
+        
             if (!string.IsNullOrWhiteSpace(filter.FullName))
             {
                 var search = filter.FullName.Trim();
@@ -116,7 +114,7 @@ namespace HealthCare.Api.Services.Impl
             if (patient is null)
                 throw new InvalidOperationException(NotFoundMessage);
 
-            _mapper.Map(dto, patient); // maps onto the tracked entity — EF picks up the changes
+            _mapper.Map(dto, patient); 
 
             await _repository.UpdateAsync(patient);
             await _context.SaveChangesAsync();
@@ -159,6 +157,24 @@ namespace HealthCare.Api.Services.Impl
 
             return await _context.Patients
                 .CountAsync(p => p.CreatedDate >= fromDate);
+        }
+
+        public async Task<PatientDashboardDto> GetDashboardAsync(int patientId)
+        {
+            var upcomingAppointments = await _context.Appointments
+                .CountAsync(a =>
+                    a.PatientId == patientId &&
+                    a.ScheduledDate >= DateOnly.FromDateTime(DateTime.Today) &&
+                    a.Status != "Cancelled");
+
+            var latestRecords = await _context.HealthRecords
+                .CountAsync(h => h.PatientId == patientId);
+
+            return new PatientDashboardDto
+            {
+                UpcomingAppointmentsCount = upcomingAppointments,
+                LatestRecordsCount = latestRecords
+            };
         }
 
     }

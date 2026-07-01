@@ -4,15 +4,7 @@ namespace HealthCare.Shared.DTOs.HealthRecord
 {
     public class CreateHealthRecordDto
     {
-        [Required]
         public required int AppointmentId { get; set; }
-
-        [Required]
-        public required int PatientId { get; set; }
-
-        [Required]
-        [PastOrTodayDateValidationAttribute]
-        public required DateTime VisitDate { get; set; }
 
         [Required]
         [MaxLength(500)]

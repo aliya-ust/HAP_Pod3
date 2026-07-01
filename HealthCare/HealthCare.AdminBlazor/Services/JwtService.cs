@@ -12,13 +12,10 @@ public class JwtService
         _js = js;
     }
 
-    // ✅ Get Token
     public async Task<string?> GetToken()
     {
         return await _js.InvokeAsync<string>("localStorage.getItem", "token");
     }
-
-    // ✅ Set Token in HttpClient
     public async Task SetAuthorizationHeader(HttpClient http)
     {
         var token = await GetToken();
@@ -34,7 +31,6 @@ public class JwtService
         }
     }
 
-    // ✅ Clear token (logout)
     public async Task ClearToken()
     {
         await _js.InvokeVoidAsync("localStorage.removeItem", "token");

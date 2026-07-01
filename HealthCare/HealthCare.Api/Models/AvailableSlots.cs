@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace HealthCare.Api.Models
 {
-    public class AvailableSlots // Available slots model for doctor with necessary constraints
+    public class AvailableSlots 
     {
         [Key]
         public int Id { get; set; }

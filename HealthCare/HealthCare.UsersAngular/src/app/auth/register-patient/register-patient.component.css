@@ -1,0 +1,280 @@
+.page-container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg,#0b1b3a,#1f6feb,#4fc3f7);
+  padding: 20px;
+}
+
+/* Card */
+
+.register-card {
+  width: 900px;
+  max-width: 95%;
+  background: rgba(15,31,61,0.75);
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 28px;
+  padding: 35px;
+  box-shadow: 0 15px 40px rgba(0,0,0,.4);
+  position: relative;
+  transition: .3s;
+}
+
+  .register-card:hover {
+    transform: translateY(-6px);
+  }
+
+/* Header */
+
+.top-section {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.top-icon {
+  width: 70px;
+  height: 70px;
+  margin: auto;
+  border-radius: 50%;
+  background: linear-gradient(45deg,#1e90ff,#42a5f5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 30px;
+  color: white;
+  box-shadow: 0 0 20px rgba(30,144,255,.5);
+}
+
+.top-section h2 {
+  color: white;
+  margin-top: 15px;
+  font-size: 28px;
+}
+
+.top-section p {
+  color: #cbd5e1;
+  font-size: 14px;
+}
+
+/* Close */
+
+.close-btn {
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+/* Form */
+
+form {
+  display: grid;
+  grid-template-columns: repeat(2,1fr);
+  gap: 22px;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 320px;
+  color: white;
+}
+
+/* Inputs */
+
+input,
+select {
+  width: 100%;
+  padding: 14px 18px;
+  border: none;
+  border-radius: 16px;
+  background: rgba(255,255,255,.08);
+  color: white;
+  font-size: 14px;
+  outline: none;
+  transition: .3s;
+}
+
+  input::placeholder {
+    color: white;
+  }
+
+  input:focus,
+  select:focus {
+    border: 2px solid #4fc3f7;
+    box-shadow: 0 0 15px rgba(79,195,247,.5);
+    transform: scale(1.02);
+    background:black;
+    color: white;
+  }
+
+  /* Date icon */
+
+  input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+    cursor: pointer;
+  }
+
+/* Errors */
+
+.error {
+  color: #ff8a8a;
+  font-size: 12px;
+  margin-top: 8px;
+  padding-left: 5px;
+  min-height: 15px;
+}
+
+/* Button */
+
+.register-btn {
+  grid-column: span 2;
+  width: 250px;
+  justify-self: center;
+  padding: 14px;
+  border: none;
+  border-radius: 30px;
+  background: linear-gradient(45deg,#1e90ff,#42a5f5);
+  color: white;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: .3s;
+  margin-top: 10px;
+}
+
+  .register-btn:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 25px rgba(66,165,245,.5);
+  }
+
+.success-message {
+  background: rgba(34, 197, 94, 0.15);
+  color: #86efac;
+  border: 1px solid #22c55e;
+  padding: 12px;
+  border-radius: 10px;
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+/* Mobile */
+
+@media(max-width:768px) {
+
+  form {
+    grid-template-columns: 1fr;
+  }
+
+  .register-btn {
+    grid-column: span 1;
+  }
+}
+
+/* Popup Overlay */
+
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,.65);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+/* Popup Box */
+
+.custom-popup {
+  width: 380px;
+  max-width: 90%;
+  background: #0f1f3d;
+  border-radius: 25px;
+  padding: 35px;
+  text-align: center;
+  box-shadow: 0 15px 40px rgba(0,0,0,.5);
+  animation: popupAnimation .3s ease;
+}
+
+/* Icon */
+
+.popup-icon {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  margin: auto auto 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 45px;
+  color: white;
+}
+
+.success-icon {
+  background: #22c55e;
+}
+
+.error-icon {
+  background: #ef4444;
+}
+
+/* Titles */
+
+.custom-popup h2 {
+  color: white;
+  margin-bottom: 12px;
+}
+
+.error-title {
+  color: #ff8a8a;
+}
+
+.custom-popup p {
+  color: #d1d5db;
+  margin-bottom: 25px;
+}
+
+/* Button */
+
+.popup-btn {
+  padding: 12px 30px;
+  border: none;
+  border-radius: 30px;
+  background: linear-gradient(45deg,#1e90ff,#42a5f5);
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+  .popup-btn:hover {
+    transform: translateY(-2px);
+  }
+
+/* Animation */
+
+@keyframes popupAnimation {
+
+  from {
+    transform: scale(.6);
+    opacity: 0;
+  }
+
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+

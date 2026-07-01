@@ -31,14 +31,12 @@
                         <td>@patient.PhoneNumber</td>
                         <td>@patient.Gender</td>
 
-                        <!-- ✅ INSURANCE FIRST -->
                         <td>
                             <span class="insurance-badge @(string.IsNullOrWhiteSpace(patient.InsuranceId) ? "no" : "yes")">
                                 @(string.IsNullOrWhiteSpace(patient.InsuranceId) ? "No" : "Yes")
                             </span>
                         </td>
 
-                        <!-- ✅ STATUS AFTER -->
                         <td>
                             <span class="status-badge @(patient.IsActive ? "active" : "inactive")">
                                 @(patient.IsActive ? "Active" : "Inactive")
@@ -47,7 +45,6 @@
 
                         <td class="action-icons">
 
-                            <!-- TOGGLE STATUS -->
                             @if (!patient.IsActive)
                             {
                                 <i class="bi bi-check-circle-fill text-success action-icon"
@@ -63,7 +60,6 @@
                                 </i>
                             }
 
-                            <!-- DELETE -->
                             <i class="bi bi-trash-fill text-danger action-icon"
                                    title="Delete Patient"
                                    @onclick="() => DeletePatient(patient.PatientId)">

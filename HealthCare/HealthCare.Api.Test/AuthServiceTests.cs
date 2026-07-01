@@ -11,6 +11,7 @@ using HealthCare.Api.Repositories.Interfaces;
 using HealthCare.Api.Services.Implementations;
 using HealthCare.Api.Services.Interfaces;
 
+
 namespace HealthCare.Api.Tests
 {
     public class AuthServiceTests
@@ -51,58 +52,149 @@ namespace HealthCare.Api.Tests
             );
         }
 
-        //  Register Patient
         [Fact]
         public async Task RegisterPatientAsync_ShouldCreateUserAndPatient()
         {
-            var dto = new CreatePatientDto { Email = "test@mail.com", Password = "Password123!" };
-            var user = new IdentityUser();
+            // Arrange
+            var dto = new CreatePatientDto
+            {
+                Email = "test@mail.com",
+                Password = "Password123!"
+            };
 
-            _userManagerMock.Setup(u => u.FindByEmailAsync(dto.Email))
+            _userManagerMock.Setup(x => x.FindByEmailAsync(dto.Email))
                 .ReturnsAsync((IdentityUser?)null);
 
-            _userManagerMock.Setup(u => u.CreateAsync(It.IsAny<IdentityUser>(), dto.Password))
+            _userManagerMock.Setup(x =>
+                x.CreateAsync(It.IsAny<IdentityUser>(), dto.Password))
                 .ReturnsAsync(IdentityResult.Success);
 
-            _userManagerMock.Setup(u => u.AddToRoleAsync(It.IsAny<IdentityUser>(), "Patient"))
+            _userManagerMock.Setup(x =>
+                x.AddToRoleAsync(It.IsAny<IdentityUser>(), "Patient"))
                 .ReturnsAsync(IdentityResult.Success);
 
-            _mapperMock.Setup(m => m.Map<Patient>(dto)).Returns(new Patient());
+            _mapperMock.Setup(x => x.Map<Patient>(dto))
+                .Returns(new Patient());
 
+            // Act
             await _service.RegisterPatientAsync(dto);
 
-            _patientRepoMock.Verify(r => r.AddAsync(It.IsAny<Patient>()), Times.Once);
+            // Assert
+            _patientRepoMock.Verify(
+                x => x.AddAsync(It.IsAny<Patient>()),
+                Times.Once);
         }
 
-        //  Register Doctor
         [Fact]
         public async Task RegisterDoctorAsync_ShouldCreateDoctorAndSlots()
         {
+            // Arrange
             var dto = new CreateDoctorDto
             {
                 Email = "doc@mail.com",
                 Password = "Password123!",
-                TimeSlots = new List<string> { "09:00-10:00" }
+                TimeSlots = new List<string>
+        {
+            "09:00-10:00"
+        }
             };
 
-            _userManagerMock.Setup(u => u.FindByEmailAsync(dto.Email))
+            _userManagerMock.Setup(x => x.FindByEmailAsync(dto.Email))
                 .ReturnsAsync((IdentityUser?)null);
 
-            _userManagerMock.Setup(u => u.CreateAsync(It.IsAny<IdentityUser>(), dto.Password))
+            _userManagerMock.Setup(x =>
+                x.CreateAsync(It.IsAny<IdentityUser>(), dto.Password))
                 .ReturnsAsync(IdentityResult.Success);
 
-            _userManagerMock.Setup(u => u.AddToRoleAsync(It.IsAny<IdentityUser>(), "Doctor"))
+            _userManagerMock.Setup(x =>
+                x.AddToRoleAsync(It.IsAny<IdentityUser>(), "Doctor"))
                 .ReturnsAsync(IdentityResult.Success);
 
-            var doctor = new Doctor { DoctorId = 1 };
+            var doctor = new Doctor
+            {
+                DoctorId = 1
+            };
 
-            _mapperMock.Setup(m => m.Map<Doctor>(dto)).Returns(doctor);
+            _mapperMock.Setup(x => x.Map<Doctor>(dto))
+                .Returns(doctor);
 
+            // Act
             await _service.RegisterDoctorAsync(dto);
 
-            _doctorRepoMock.Verify(r => r.AddAsync(doctor), Times.Once);
-            _doctorRepoMock.Verify(r => r.CreateSlots(doctor.DoctorId, dto.TimeSlots), Times.Once);
+            // Assert
+            _doctorRepoMock.Verify(
+                x => x.AddAsync(doctor),
+                Times.Once);
+
+            _doctorRepoMock.Verify(
+                x => x.CreateSlots(
+                    doctor.DoctorId,
+                    dto.TimeSlots),
+                Times.Once);
         }
+
+        [Fact]
+        public async Task RegisterPatientAsync_ShouldThrow_WhenEmailExists()
+        {
+            // Arrange
+            var dto = new CreatePatientDto
+            {
+                Email = "test@mail.com",
+                Password = "Password123!"
+            };
+
+            _userManagerMock.Setup(x => x.FindByEmailAsync(dto.Email))
+                .ReturnsAsync(new IdentityUser
+                {
+                    Id = "1",
+                    Email = dto.Email,
+                    UserName = dto.Email
+                });
+
+            // Act & Assert
+            await Assert.ThrowsAsync<InvalidOperationException>(() =>
+                _service.RegisterPatientAsync(dto));
+        }
+
+        [Fact]
+        public async Task RegisterDoctorAsync_ShouldThrow_WhenEmailExists()
+        {
+            // Arrange
+            var dto = new CreateDoctorDto
+            {
+                Email = "doc@mail.com",
+                Password = "Password123!",
+                TimeSlots = new List<string>()
+            };
+
+            _userManagerMock.Setup(x => x.FindByEmailAsync(dto.Email))
+                .ReturnsAsync(new IdentityUser
+                {
+                    Id = "1",
+                    Email = dto.Email,
+                    UserName = dto.Email
+                });
+
+            // Act & Assert
+            await Assert.ThrowsAsync<InvalidOperationException>(() =>
+                _service.RegisterDoctorAsync(dto));
+        }
+
+        [Fact]
+        public async Task ChangePasswordAsync_ShouldThrow_WhenUserNotFound()
+        {
+            _userManagerMock.Setup(x => x.FindByIdAsync("1"))
+                .ReturnsAsync((IdentityUser?)null);
+
+            await Assert.ThrowsAsync<InvalidOperationException>(() =>
+                _service.ChangePasswordAsync("1",
+                    new ChangePasswordDto
+                    {
+                        CurrentPassword = "old",
+                        NewPassword = "new"
+                    }));
+        }
+
 
         //  Login - patient
         [Fact]

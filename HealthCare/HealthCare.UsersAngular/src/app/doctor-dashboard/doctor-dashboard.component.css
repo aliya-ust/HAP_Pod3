@@ -1,0 +1,166 @@
+/* ===== GLOBAL ===== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", sans-serif;
+}
+
+/* ===== PAGE ===== */
+.dashboard-page {
+  display: flex;
+  height: 100vh; 
+  overflow: hidden;
+  background: linear-gradient(135deg, #eaf3ff, #f7fbff);
+  position: relative;
+}
+
+  /* ===== BLUE EDGE SHAPES ===== */
+  .dashboard-page::before {
+    content: "";
+    position: absolute;
+    width: 350px;
+    height: 350px;
+    background: rgba(37, 99, 235, 0.25);
+    border-radius: 50%;
+    top: -100px;
+    right: -100px;
+  }
+
+  .dashboard-page::after {
+    content: "";
+    position: absolute;
+    width: 280px;
+    height: 280px;
+    background: rgba(37, 99, 235, 0.15);
+    border-radius: 50%;
+    bottom: -160px;
+    left: 180px;
+  }
+
+/* ===== MAIN ===== */
+.main-content {
+  flex: 1;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center; 
+  align-items: center;
+  padding: 20px;
+}
+
+/* ===== HEADER ===== */
+.header {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+  .header h1 {
+    font-size: 38px;
+    font-weight: 700;
+    color: #0f172a;
+  }
+
+  .header p {
+    color: #64748b;
+    font-size: 16px;
+    margin-top: 6px;
+  }
+
+/* ===== CARDS ===== */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* ✅ 4 cards in one row */
+  gap: 20px;
+  width: 100%;
+  max-width: 1150px;
+}
+
+/* ===== CARD ===== */
+.card {
+  padding: 22px;
+  border-radius: 20px;
+  background: rgba(255,255,255,0.75);
+  backdrop-filter: blur(12px);
+  text-align: center;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.12);
+  transition: 0.3s ease;
+}
+
+  .card:hover {
+    transform: translateY(-6px) scale(1.02);
+    box-shadow: 0 25px 55px rgba(0,0,0,0.18);
+  }
+
+/* ===== ICON ===== */
+.icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 24px;
+  margin: auto;
+  margin-bottom: 15px;
+}
+
+/* COLOR THEMES */
+.blue {
+  background: linear-gradient(135deg, #2563eb, #60a5fa);
+}
+
+.green {
+  background: linear-gradient(135deg, #16a34a, #4ade80);
+}
+
+.purple {
+  background: linear-gradient(135deg, #7c3aed, #c084fc);
+}
+
+.orange {
+  background: linear-gradient(135deg, #f97316, #fbbf24);
+}
+
+/* ===== TEXT ===== */
+.card h3 {
+  font-size: 16px;
+  color: #1e293b;
+  margin-top: 5px;
+}
+
+.card h1 {
+  font-size: 40px;
+  font-weight: 700;
+  margin: 10px 0;
+}
+
+.card p {
+  font-size: 12px;
+  min-height: 18px;
+  color: #64748b;
+}
+
+/* ===== SCHEDULE ===== */
+.schedule-card .slots {
+  margin-top: 10px;
+}
+
+.slot {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin: 6px 0;
+  font-size: 14px;
+  color: #334155;
+}
+
+/* DOT */
+.dot {
+  width: 7px;
+  height: 7px;
+  background: #f97316;
+  border-radius: 50%;
+}

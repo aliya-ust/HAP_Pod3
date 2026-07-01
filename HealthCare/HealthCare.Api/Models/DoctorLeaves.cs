@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace HealthCare.Api.Models
 {
-    public class DoctorLeaves // Doctor leave model for doctor with necessary constraints
+    public class DoctorLeaves 
     {
         [Key]
         public int Id { get; set; }

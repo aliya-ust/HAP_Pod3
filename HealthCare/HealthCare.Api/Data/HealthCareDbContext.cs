@@ -21,7 +21,6 @@ namespace HealthCare.Api.Data
         {
             base.OnModelCreating(builder);
 
-            // -- Constraints not expressible via data annotations --
 
             builder.Entity<Appointment>()
                 .HasIndex(a => new { a.DoctorId, a.ScheduledDate, a.TimeSlot })
@@ -40,8 +39,6 @@ namespace HealthCare.Api.Data
             builder.Entity<HealthRecord>()
                 .HasIndex(hr => new { hr.PatientId, hr.VisitDate })
                 .HasDatabaseName("IX_HealthRecords_Patient_VisitDate");
-
-            // -- Delete behaviour (can't be set via annotations) --
 
             builder.Entity<Patient>()
                 .HasOne(p => p.User)

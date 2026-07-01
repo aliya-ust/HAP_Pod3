@@ -1,0 +1,44 @@
+<aside class="sidebar">
+
+  <h2>Health<span>Care</span></h2>
+  <p class="subtitle">Patient Portal</p>
+
+  <ul>
+
+    <li routerLink="/patient-dashboard"
+        routerLinkActive="active">
+      <i class="bi bi-speedometer2"></i>
+      Dashboard
+    </li>
+
+    <li routerLink="/patient-profile"
+        routerLinkActive="active">
+      <i class="bi bi-person-circle"></i>
+      My Profile
+    </li>
+
+    <li routerLink="/book-appointment"
+        routerLinkActive="active">
+      <i class="bi bi-calendar-plus"></i>
+      Book Appointment
+    </li>
+
+    <li routerLink="/my-appointments"
+        routerLinkActive="active">
+      <i class="bi bi-calendar-check"></i>
+      My Appointments
+    </li>
+
+    <li routerLink="/medical-history" routerLinkActive="active">
+      <i class="bi bi-file-earmark-medical"></i> Medical History
+    </li>
+
+    <li class="logout"
+        (click)="logout()">
+      <i class="bi bi-box-arrow-right"></i>
+      Logout
+    </li>
+
+  </ul>
+
+</aside>

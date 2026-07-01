@@ -7,7 +7,7 @@ namespace HealthCare.Api.Models
 {
 
     [Index(nameof(Specialisation), Name = "IX_Doctors_Specialisation")]
-    public class Doctor // Doctor model with necessary constraints
+    public class Doctor 
     {
         [Key]
         public int DoctorId { get; set; }

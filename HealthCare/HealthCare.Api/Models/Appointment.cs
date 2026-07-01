@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace HealthCare.Api.Models
 {
 
-    public class Appointment // Appointment model with necessary constraints
+    public class Appointment 
     {
         [Key]
         public int AppointmentId { get; set; }

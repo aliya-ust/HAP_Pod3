@@ -90,26 +90,123 @@ namespace HealthCare.Api.Tests
 
             Assert.Equal(1, result.TotalCount);
         }
-
-        //  AddAsync
         [Fact]
         public async Task AddAsync_ShouldAddRecord()
         {
-            var dto = new CreateHealthRecordDto
+            var patient = new Patient
+            {
+                PatientId = 2,
+                FullName = "Test Patient",
+                DateOfBirth = new DateOnly(1995, 1, 1),
+                Gender = "Male",
+                PhoneNumber = "9876543210",
+                Email = "patient@test.com"
+            };
+
+            var doctor = new Doctor
+            {
+                DoctorId = 1,
+                FullName = "Test Doctor",
+                Specialisation = "Cardiology",
+                YearsOfExperience = 5,
+                ConsultationFee = 500,
+                IsActive = true
+            };
+
+            var appointment = new Appointment
             {
                 AppointmentId = 1,
-                PatientId = 1,
-                VisitDate = DateTime.Now,
+                PatientId = 2,
+                DoctorId = 1,
+                ScheduledDate = DateOnly.FromDateTime(DateTime.Today),
+                TimeSlot = "09:00-10:00",
+                Status = "Confirmed",
+                Patient = patient,
+                Doctor = doctor
             };
+
+            _context.Appointments.Add(appointment);
+
+            await _context.SaveChangesAsync();
+
+            var dto = new CreateHealthRecordDto
+            {
+                AppointmentId = 1
+            };
+
             var record = new HealthRecord();
 
-            _mapperMock.Setup(m => m.Map<HealthRecord>(dto)).Returns(record);
-            int doctorId = 1;
+            _mapperMock.Setup(m => m.Map<HealthRecord>(dto))
+                .Returns(record);
 
-            await _service.AddAsync(doctorId, dto);
+            await _service.AddAsync(1, dto);
 
             _repoMock.Verify(r => r.AddAsync(record), Times.Once);
+
+            Assert.Equal("Completed", appointment.Status);
         }
+
+        [Fact]
+        public async Task AddAsync_ShouldThrow_WhenAppointmentNotFound()
+        {
+            var dto = new CreateHealthRecordDto
+            {
+                AppointmentId = 999
+            };
+
+            await Assert.ThrowsAsync<Exception>(() =>
+                _service.AddAsync(1, dto));
+        }
+
+        [Fact]
+        public async Task AddAsync_ShouldThrow_WhenAppointmentNotConfirmed()
+        {
+            var patient = new Patient
+            {
+                PatientId = 2,
+                FullName = "Test Patient",
+                DateOfBirth = new DateOnly(1995, 1, 1),
+                Gender = "Male",
+                PhoneNumber = "9876543210",
+                Email = "patient@test.com"
+            };
+
+            var doctor = new Doctor
+            {
+                DoctorId = 1,
+                FullName = "Test Doctor",
+                Specialisation = "Cardiology",
+                YearsOfExperience = 5,
+                ConsultationFee = 500,
+                IsActive = true
+            };
+
+            var appointment = new Appointment
+            {
+                AppointmentId = 1,
+                PatientId = 2,
+                DoctorId = 1,
+                ScheduledDate = DateOnly.FromDateTime(DateTime.Today),
+                TimeSlot = "09:00-10:00",
+                Status = "Pending",
+                Patient = patient,
+                Doctor = doctor
+            };
+
+            _context.Appointments.Add(appointment);
+
+            await _context.SaveChangesAsync();
+
+            var dto = new CreateHealthRecordDto
+            {
+                AppointmentId = 1
+            };
+
+            await Assert.ThrowsAsync<Exception>(() =>
+                _service.AddAsync(1, dto));
+        }
+
+
 
         //  UpdateAsync
         [Fact]
@@ -123,6 +220,7 @@ namespace HealthCare.Api.Tests
 
             _repoMock.Verify(r => r.UpdateAsync(record), Times.Once);
         }
+
 
         [Fact]
         public async Task UpdateAsync_ShouldThrow_WhenNotFound()

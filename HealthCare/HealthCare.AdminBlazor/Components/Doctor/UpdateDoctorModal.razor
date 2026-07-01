@@ -135,8 +135,8 @@
 
             await DoctorService.UpdateDoctor(Doctor.DoctorId, model);
 
-            await OnSaved.InvokeAsync();   // ✅ notify parent (IMPORTANT)
-            await OnClose.InvokeAsync();   // ✅ CLOSE MODAL
+            await OnSaved.InvokeAsync();  
+            await OnClose.InvokeAsync(); 
         }
         catch (Exception ex)
         {
@@ -224,7 +224,7 @@
     }
 
         .button-section button {
-            flex: 1; /* both take equal width */
+            flex: 1; 
             height: 55px;
             margin: 0 !important;
             padding: 0 !important;

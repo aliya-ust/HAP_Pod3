@@ -1,0 +1,39 @@
+<aside class="sidebar">
+
+  <h2>Health<span>Care</span></h2>
+  <p class="subtitle">Doctor Portal</p>
+
+  <ul>
+
+    <li routerLink="/doctor-dashboard"
+        routerLinkActive="active">
+      <i class="bi bi-speedometer2"></i>
+      Dashboard
+    </li>
+
+    <li routerLink="/doctor-profile"
+        routerLinkActive="active">
+      <i class="bi bi-person-circle"></i>
+      My Profile
+    </li>
+
+    <li routerLink="/doctor-leaves"
+        routerLinkActive="active">
+      <i class="bi bi-calendar-plus"></i>
+      Add Leaves
+    </li>
+
+    <li routerLink="/doctor-appointments"
+        routerLinkActive="active">
+      <i class="bi bi-calendar-check"></i>
+      My Appointments
+    </li>
+
+    <li class="logout" (click)="logout()">
+      <i class="bi bi-box-arrow-right"></i>
+      Logout
+    </li>
+
+  </ul>
+
+</aside>

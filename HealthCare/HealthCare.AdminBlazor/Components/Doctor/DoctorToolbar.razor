@@ -3,7 +3,6 @@
 
 <div class="filter-bar">
 
-    <!-- ✅ NAME -->
     <div class="name-container">
         <input class="filter-input"
                placeholder="Search by name"
@@ -18,15 +17,12 @@
         }
     </div>
 
-
-    <!-- ✅ EXPERIENCE -->
     <select class="filter-dropdown" @bind="ExperienceOrder">
         <option value="">Experience</option>
         <option value="asc">Low → High</option>
         <option value="desc">High → Low</option>
     </select>
 
-    <!-- ✅ SPECIALISATION -->
     <select class="filter-dropdown" @bind="Specialisation">
         <option value="">Specialisation</option>
         @foreach (var spec in Enum.GetNames(typeof(DoctorSpecialization)))
@@ -35,14 +31,12 @@
         }
     </select>
 
-    <!-- ✅ STATUS -->
     <select class="filter-dropdown" @bind="Status">
         <option value="">Status</option>
         <option value="true">Active</option>
         <option value="false">Inactive</option>
     </select>
 
-    <!-- ✅ SEARCH BUTTON -->
     <button class="btn-search" @onclick="ApplyFilter">
         Search
     </button>
@@ -63,8 +57,6 @@
     private string Status = "";
     private string validationMessage = "";
 
-
-    // ✅ Allow only alphabets in Name field
     private void AllowOnlyText(ChangeEventArgs e)
     {
         var value = e.Value?.ToString() ?? "";
@@ -81,10 +73,9 @@
         Name = value;
     }
 
-    // ✅ Send filter to parent
     private async Task ApplyFilter()
     {
-        // ✅ STOP if invalid
+
         if (!string.IsNullOrEmpty(validationMessage))
             return;
 

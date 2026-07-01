@@ -12,5 +12,6 @@ namespace HealthCare.Api.Services.Interfaces
         Task DeleteAsync(int id);
         Task UpdateStatusAsync(int id, bool isActive);
         Task<int> GetRecentPatientCount();
+        Task<PatientDashboardDto> GetDashboardAsync(int patientId);
     }
 }

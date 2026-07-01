@@ -49,6 +49,15 @@ namespace HealthCare.Api.Controllers
             return Ok(result);
         }
 
+        [HttpGet("by-patient/{id}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize(Roles = "Doctor")]
+        public async Task<IActionResult> GetRecordsByPatient(int id)
+        {
+            var result = await _healthRecordService.GetHealthRecordByPatient(id);
+            return Ok(result);
+        }
+
         private int GetPatientIdFromClaims()
         {
             var claim = User.FindFirst("PatientId")

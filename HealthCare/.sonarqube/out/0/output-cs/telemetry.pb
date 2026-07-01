@@ -1,1 +1,1 @@
-oRXC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Api\HealthCare.Api.csproj¢net10.0òCSharp14
+uR^C:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\HealthCare.Shared.csproj¢net10.0òCSharp14

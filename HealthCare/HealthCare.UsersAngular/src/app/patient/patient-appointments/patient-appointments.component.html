@@ -1,0 +1,72 @@
+<div class="appointments-page">
+
+  <app-patient-sidebar></app-patient-sidebar>
+
+  <div class="main">
+
+    <!-- Heading -->
+    <div class="heading">
+      <h2>
+        <i class="bi bi-calendar-check"></i> My Appointments
+      </h2>
+      <p>View your upcoming appointments</p>
+    </div>
+
+    <div class="table-card">
+
+      <table>
+
+        <!-- Table Header -->
+        <thead>
+          <tr>
+            <th><i class="bi bi-person"></i> Patient</th>
+            <th><i class="bi bi-person-badge"></i> Doctor</th>
+            <th><i class="bi bi-calendar"></i> Date</th>
+            <th><i class="bi bi-clock"></i> Time</th>
+            <th><i class="bi bi-activity"></i> Status</th>
+          </tr>
+        </thead>
+
+        <!-- Table Body -->
+        <tbody>
+
+          <!-- SHOW DATA -->
+          <tr *ngFor="let a of appointments">
+            <td>{{ a.patientName }}</td>
+            <td>{{ a.doctorName }}</td>
+            <td>{{ a.scheduledDate }}</td>
+
+            <!--  NO CONVERSION (24 hr) -->
+            <td>
+              <i class="bi bi-clock"></i>
+              {{ a.timeSlot }}
+            </td>
+
+            <td>
+              <span class="status" [ngClass]="a.status?.toLowerCase()">
+
+                <i *ngIf="a.status === 'Pending'" class="bi bi-hourglass-split"></i>
+                <i *ngIf="a.status === 'Confirmed'" class="bi bi-check-circle"></i>
+                <i *ngIf="a.status === 'Completed'" class="bi bi-check2-circle"></i>
+                <i *ngIf="a.status === 'Cancelled'" class="bi bi-x-circle"></i>
+
+                {{ a.status }}
+
+              </span>
+            </td>
+          </tr>
+
+          <!-- EMPTY STATE -->
+          <tr *ngIf="!loading && appointments.length === 0">
+            <td colspan="5" class="empty">
+              No upcoming appointments
+            </td>
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+  </div>
+</div>

@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace HealthCare.Api.Models
 {
-    public class HealthRecord // Health Record model with necessary constraints
+    public class HealthRecord 
     {
         [Key]
         public int RecordId { get; set; }

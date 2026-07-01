@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace HealthCare.Api.Models
 {
 
-    public class Patient // Patient model with necessary constraints
+    public class Patient 
     {
         [Key]
         public int PatientId { get; set; }

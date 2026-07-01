@@ -1,0 +1,88 @@
+<div class="dashboard-page">
+
+  <app-doctor-sidebar></app-doctor-sidebar>
+
+  <!-- MAIN -->
+  <main class="main-content">
+
+    <div class="header">
+      <h1>Welcome back, Doctor!</h1>
+      <p>Your healthcare activity overview</p>
+    </div>
+
+    <div class="cards">
+
+      <!-- Card 1 -->
+      <div class="card">
+        <div class="icon blue">
+          <i class="bi bi-calendar-event"></i>
+        </div>
+
+        <h3>Upcoming Appointments</h3>
+
+        <h2>{{ upcomingAppointments }}</h2>
+
+        <p>Appointments Scheduled</p>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="card">
+        <div class="icon green">
+          <i class="bi bi-people"></i>
+        </div>
+
+        <h3>Patients Treated</h3>
+
+        <h2>{{ patientsTreated }}</h2>
+
+        <p>Patients Treated</p>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="card">
+        <div class="icon purple">
+          <i class="bi bi-calendar-x"></i>
+        </div>
+
+        <h3>Upcoming Leaves</h3>
+
+        <h2>{{ upcomingLeaves }}</h2>
+
+        <p>Leaves Approved</p>
+      </div>
+
+      <!-- Card 4 - Today's Schedule -->
+      <div class="card schedule-card">
+
+        <div class="icon orange">
+          <i class="bi bi-clock"></i>
+        </div>
+
+        <h3>Today's Schedule</h3>
+
+        <div class="slots">
+
+          <div class="slot"
+               *ngFor="let slot of todaySlots">
+
+            <span class="dot"></span>
+            {{ slot }}
+
+          </div>
+
+          <div class="slot"
+               *ngIf="todaySlots.length === 0">
+
+            No Appointments Today
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+</div>

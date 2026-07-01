@@ -37,7 +37,7 @@ namespace HealthCare.Api.Services.Implementations
 
         public async Task<PagedResult<AppointmentListDto>> GetAllAsync(AppointmentFilter filter)
         {
-            // Build predicate (filtering)
+           
             Expression<Func<Appointment, bool>>? predicate = null;
 
             if (!string.IsNullOrWhiteSpace(filter.Status) && filter.ScheduledDate.HasValue)
@@ -55,11 +55,9 @@ namespace HealthCare.Api.Services.Implementations
                 predicate = a => a.ScheduledDate == filter.ScheduledDate.Value;
             }
 
-            // Ordering (by scheduled date)
             Func<IQueryable<Appointment>, IOrderedQueryable<Appointment>> orderBy =
                 q => q.OrderBy(a => a.ScheduledDate);
 
-            // Call repository
             var pagedResult = await _repository.GetAllAsync(
                 filter.PageNumber,
                 filter.PageSize,
@@ -67,7 +65,6 @@ namespace HealthCare.Api.Services.Implementations
                 orderBy
             );
 
-            // Map result
             return new PagedResult<AppointmentListDto>
             {
                 Items = _mapper.Map<IEnumerable<AppointmentListDto>>(pagedResult.Items),
@@ -168,16 +165,28 @@ namespace HealthCare.Api.Services.Implementations
             var allSlots = await _doctorService.GetSlots(doctorId);
             var bookedSlots = await _repository.BookedTimeSlots(date, doctorId);
 
-            var freeSlots = allSlots.Except(bookedSlots).ToList();
+            var freeSlots = allSlots
+    .Where(slot =>
+        !bookedSlots.Any(b =>
+            b.Trim().ToLower().StartsWith(slot.Trim().ToLower().Substring(0, 4))
+        )
+    )
+    .ToList();
 
             return freeSlots;
         }
 
         public async Task<bool> IsAvailable(DateOnly date, int doctorId, string timeSlot)
         {
-            var available = await _repository.IsAvailable(date, doctorId, timeSlot);
+            var bookedSlots = await _repository.BookedTimeSlots(date, doctorId);
 
-            if (!available)
+            var normalized = timeSlot.Trim().ToLower();
+
+            var exists = bookedSlots.Any(b =>
+                b.Trim().ToLower().StartsWith(normalized.Substring(0, 4))
+            );
+
+            if (exists)
                 throw new InvalidOperationException("This time slot is already booked.");
 
             return true;
@@ -199,67 +208,33 @@ namespace HealthCare.Api.Services.Implementations
         {
             var appointments = await _repository.GetAppointmentByPatient(id);
 
-            var now = DateTime.Now;
-
-            var upcomingAppointments = appointments
-     .Where(a =>
-     {
-         if (string.IsNullOrEmpty(a.TimeSlot))
-             return false;
-
-         var slots = a.TimeSlot.Split(',');
-
-         foreach (var slot in slots)
-         {
-             if (TimeSpan.TryParse(slot, out var time))
-             {
-                 var appointmentDateTime =
-                     a.ScheduledDate.ToDateTime(TimeOnly.MinValue) + time;
-
-                 if (appointmentDateTime > now && a.Status == "Pending")
-                     return true;
-             }
-         }
-
-         return false;
-     })
-     .ToList();
-
-            return upcomingAppointments;
+            return appointments
+                .Where(a => a.Status == "Pending" || a.Status == "Confirmed")
+                .OrderBy(a => a.ScheduledDate)  // optional (nice UI)
+                .ToList();
         }
-
         public async Task<List<AppointmentListDto>> GetAppointmentByDoctor(int id)
         {
+            
             var appointments = await _repository.GetAppointmentByDoctor(id);
 
-            var now = DateTime.Now;
+            
+            var today = DateOnly.FromDateTime(DateTime.Today);
 
-            var upcomingAppointments = appointments
-    .Where(a =>
-    {
-        if (string.IsNullOrEmpty(a.TimeSlot))
-            return false;
+            
+            var result = appointments
+                .Where(a =>
+                    a.ScheduledDate >= today &&  
+                    (
+                        a.Status.Equals("Pending", StringComparison.OrdinalIgnoreCase) ||
+                        a.Status.Equals("Confirmed", StringComparison.OrdinalIgnoreCase)
+                    )
+                )
+                .OrderBy(a => a.ScheduledDate)   
+                .ThenBy(a => a.TimeSlot)         
+                .ToList();
 
-        var slots = a.TimeSlot.Split(',');
-
-        foreach (var slot in slots)
-        {
-            if (TimeSpan.TryParse(slot, out var time))
-            {
-                var appointmentDateTime =
-                    a.ScheduledDate.ToDateTime(TimeOnly.MinValue) + time;
-
-                if (appointmentDateTime > now && a.Status == "Pending")
-                    return true;
-            }
-        }
-
-        return false;
-    })
-    .ToList();
-
-
-            return upcomingAppointments;
+            return result;
         }
 
         public async Task CancelAppointmentsByDoctorDate(int doctorId, DateOnly date)

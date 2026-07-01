@@ -154,8 +154,8 @@
 
     private List<string> slots = new()
     {
-        "09:00 AM","10:00 AM","11:00 AM","12:00 PM",
-        "01:00 PM","02:00 PM","03:00 PM","04:00 PM","05:00 PM"
+        "9:00","10:00","11:00","12:00",
+        "13:00","14:00","15:00","16:00","17:00"
     };
 
     private async Task HandleSubmit(EditContext context)
@@ -163,19 +163,17 @@
         messageStore!.Clear();
 
         if (!context.Validate())
-            return;   // stop if normal validation fails
+            return;  
 
-        await RegisterDoctor();  // then call API
+        await RegisterDoctor();  
     }
 
     private void HandleEmailInput(ChangeEventArgs e)
     {
         var value = e.Value?.ToString();
 
-        // ✅ Always clear custom errors (like duplicate)
         messageStore!.Clear(() => doctorModel.Email);
 
-        // ✅ If user typed something → remove error
         if (!string.IsNullOrWhiteSpace(value))
         {
             editContext!.NotifyFieldChanged(
@@ -183,7 +181,6 @@
             );
         }
 
-        // ✅ Refresh validation UI
         editContext!.NotifyValidationStateChanged();
     }
 
@@ -195,7 +192,7 @@
         bool isChecked = (bool)val!;
         if (isChecked) doctorModel.TimeSlots.Add(slot);
         else doctorModel.TimeSlots.Remove(slot);
-        
+
         editContext!.NotifyFieldChanged(
                 FieldIdentifier.Create(() => doctorModel.TimeSlots)
             );
@@ -204,7 +201,7 @@
 
     private async Task RegisterDoctor()
     {
-        messageStore!.Clear();   // ✅ clear previous errors
+        messageStore!.Clear();  
 
         var res = await Http.PostAsJsonAsync("api/auth/register/doctor", doctorModel);
 
@@ -212,6 +209,7 @@
         {
             await OnSaved.InvokeAsync();
             await Close();
+  
         }
         else
         {
@@ -219,13 +217,13 @@
 
             if (error.Contains("Email already exists"))
             {
-                
+
                 messageStore!.Clear(() => doctorModel.Email);
 
-               
+
                 messageStore.Add(() => doctorModel.Email, "Email already exists");
 
-                
+
                 editContext!.NotifyValidationStateChanged();
             }
         }

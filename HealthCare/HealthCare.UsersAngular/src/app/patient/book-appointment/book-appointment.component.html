@@ -1,0 +1,125 @@
+<div class="profile-page">
+
+  <app-patient-sidebar></app-patient-sidebar>
+
+  <div class="main">
+
+    <!-- Heading -->
+    <div class="heading">
+      <h2><i class="bi bi-calendar-check"></i> Book Appointment</h2>
+      <p>Select doctor and schedule your visit</p>
+    </div>
+
+    <!-- Card -->
+    <div class="card">
+
+      <!-- Date -->
+      <div class="form-group">
+        <i class="bi bi-calendar icon"></i>
+
+        <div class="input-container">
+          <label>Date</label>
+          <input type="date"
+                 [(ngModel)]="selectedDate"
+                 [min]="minDate"
+                 (ngModelChange)="getDoctors()" />
+        </div>
+      </div>
+
+      <!-- Specialization -->
+      <div class="form-group">
+        <i class="bi bi-heart-pulse icon"></i>
+
+        <div class="input-container">
+          <label>Specialization</label>
+
+          <select [(ngModel)]="selectedSpecialization"
+                  (ngModelChange)="getDoctors()">
+            <option value="">Select Specialization</option>
+
+            <option *ngFor="let s of specializations" [value]="s">
+              {{ s }}
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <i class="bi bi-person icon"></i>
+
+        <div class="input-container">
+          <label>Doctor</label>
+
+          <!-- BEFORE SEARCH → EMPTY FIELD -->
+          <select *ngIf="!hasSearched">
+            <option>Select Doctor</option>
+          </select>
+
+          <!-- AFTER SEARCH + DOCTORS EXIST -->
+          <select *ngIf="hasSearched && doctors.length > 0"
+                  [(ngModel)]="selectedDoctor"
+                  (ngModelChange)="onDoctorChange()">
+
+            <option value="">Select Doctor</option>
+
+            <option *ngFor="let d of doctors" [ngValue]="d">
+              {{ d.fullName }}
+            </option>
+          </select>
+
+          <!-- AFTER SEARCH + NO DOCTORS -->
+          <div *ngIf="hasSearched && doctors.length === 0" class="no-doctor-box">
+            <i class="bi bi-info-circle"></i>
+            {{ noDoctorsMessage }}
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Time Slot -->
+      <div class="form-group">
+        <i class="bi bi-clock icon"></i>
+
+        <div class="input-container">
+          <label>Time Slot</label>
+
+          <select [(ngModel)]="selectedSlot"
+                  [disabled]="!selectedDoctor || doctors.length === 0">
+
+            <option value="">Select Time Slot</option>
+
+            <option *ngFor="let s of timeSlots" [value]="s">
+              {{ s }}
+            </option>
+          </select>
+
+        </div>
+      </div>
+
+      <!-- Button -->
+      <div class="btn-container">
+        <button type="button"
+                class="btn"
+                (click)="bookAppointment()">
+          <i class="bi bi-calendar-check"></i>
+          Book Appointment
+        </button>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+<div class="card modal-parent">
+
+  <!-- SUCCESS MODAL -->
+  <div *ngIf="showSuccessModal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="check-icon">✔</div>
+      <h2>Appointment Booked Successfully</h2>
+      <button (click)="closeSuccessModal()">OK</button>
+    </div>
+  </div>
+
+</div>

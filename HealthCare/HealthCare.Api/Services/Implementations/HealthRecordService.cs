@@ -70,9 +70,27 @@ namespace HealthCare.Api.Services.Implementations
 
         public async Task AddAsync(int doctorId, CreateHealthRecordDto dto)
         {
+            // Get appointment
+            var appointment = await _context.Appointments
+                .FirstOrDefaultAsync(a => a.AppointmentId == dto.AppointmentId);
+
+            if (appointment == null)
+                throw new Exception("Appointment not found");
+
+            // ONLY allow if confirmed
+            if (appointment.Status != "Confirmed")
+                throw new Exception("Health record can only be added for confirmed appointments");
+
             var record = _mapper.Map<HealthRecord>(dto);
+
             record.DoctorId = doctorId;
+            record.PatientId = appointment.PatientId;
+            record.VisitDate = appointment.ScheduledDate.ToDateTime(TimeOnly.MinValue);
+
             await _repository.AddAsync(record);
+
+            appointment.Status = "Completed";
+
             await _context.SaveChangesAsync();
         }
 
@@ -83,7 +101,7 @@ namespace HealthCare.Api.Services.Implementations
             if (record is null)
                 throw new InvalidOperationException("Health record not found.");
 
-            _mapper.Map(dto, record); // maps onto the tracked entity — EF picks up the changes
+            _mapper.Map(dto, record); 
             await _repository.UpdateAsync(record);
             await _context.SaveChangesAsync();
         }

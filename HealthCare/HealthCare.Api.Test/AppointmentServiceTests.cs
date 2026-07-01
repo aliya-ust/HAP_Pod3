@@ -75,8 +75,8 @@ namespace HealthCare.Api.Tests
                 TimeSlot = "09:00-10:00"
             };
 
-            _repoMock.Setup(r => r.IsAvailable(dto.ScheduledDate, 1, dto.TimeSlot))
-                .ReturnsAsync(true);
+            _repoMock.Setup(r => r.BookedTimeSlots(dto.ScheduledDate, 1))
+     .ReturnsAsync(new List<string>());
 
             var appointment = new Appointment();
             _mapperMock.Setup(m => m.Map<Appointment>(dto)).Returns(appointment);
@@ -111,8 +111,11 @@ namespace HealthCare.Api.Tests
                 TimeSlot = "09:00-10:00"
             };
 
-            _repoMock.Setup(r => r.IsAvailable(dto.ScheduledDate, 1, dto.TimeSlot))
-                .ReturnsAsync(false);
+            _repoMock.Setup(r => r.BookedTimeSlots(dto.ScheduledDate, 1))
+    .ReturnsAsync(new List<string>
+    {
+        "09:00-10:00"
+    });
 
             await Assert.ThrowsAsync<InvalidOperationException>(() =>
                 _service.AddAsync(dto, 1));
@@ -213,10 +216,14 @@ namespace HealthCare.Api.Tests
         [Fact]
         public async Task IsAvailable_ShouldReturnTrue()
         {
-            _repoMock.Setup(r => r.IsAvailable(It.IsAny<DateOnly>(), 1, "09:00"))
-                .ReturnsAsync(true);
+            _repoMock.Setup(r =>
+                r.BookedTimeSlots(It.IsAny<DateOnly>(), 1))
+                .ReturnsAsync(new List<string>());
 
-            var result = await _service.IsAvailable(DateOnly.FromDateTime(DateTime.Today), 1, "09:00");
+            var result = await _service.IsAvailable(
+                DateOnly.FromDateTime(DateTime.Today),
+                1,
+                "09:00-10:00");
 
             Assert.True(result);
         }
@@ -224,11 +231,71 @@ namespace HealthCare.Api.Tests
         [Fact]
         public async Task IsAvailable_ShouldThrow_WhenFalse()
         {
-            _repoMock.Setup(r => r.IsAvailable(It.IsAny<DateOnly>(), 1, "09:00"))
-                .ReturnsAsync(false);
+            _repoMock.Setup(r =>
+                r.BookedTimeSlots(It.IsAny<DateOnly>(), 1))
+                .ReturnsAsync(new List<string>
+                {
+            "09:00-10:00"
+                });
 
             await Assert.ThrowsAsync<InvalidOperationException>(() =>
-                _service.IsAvailable(DateOnly.FromDateTime(DateTime.Today), 1, "09:00"));
+                _service.IsAvailable(
+                    DateOnly.FromDateTime(DateTime.Today),
+                    1,
+                    "09:00-10:00"));
+        }
+
+        [Fact]
+        public async Task UpdateStatusAsync_ShouldThrow_WhenInvalidStatus()
+        {
+            var appointment = new Appointment();
+
+            _repoMock.Setup(r => r.GetByIdAsync(1))
+                .ReturnsAsync(appointment);
+
+            var dto = new UpdateAppointmentDto
+            {
+                Status = "WrongStatus"
+            };
+
+            await Assert.ThrowsAsync<InvalidOperationException>(() =>
+                _service.UpdateStatusAsync(1, dto));
+        }
+
+        [Fact]
+        public async Task UpdateStatusAsync_ShouldThrow_WhenCancelledWithoutReason()
+        {
+            var appointment = new Appointment();
+
+            _repoMock.Setup(r => r.GetByIdAsync(1))
+                .ReturnsAsync(appointment);
+
+            var dto = new UpdateAppointmentDto
+            {
+                Status = "Cancelled",
+                CancellationReason = ""
+            };
+
+            await Assert.ThrowsAsync<InvalidOperationException>(() =>
+                _service.UpdateStatusAsync(1, dto));
+        }
+
+        [Fact]
+        public async Task UpdateStatusAsync_ShouldUpdateConfirmedStatus()
+        {
+            var appointment = new Appointment();
+
+            _repoMock.Setup(r => r.GetByIdAsync(1))
+                .ReturnsAsync(appointment);
+
+            var dto = new UpdateAppointmentDto
+            {
+                Status = "Confirmed"
+            };
+
+            await _service.UpdateStatusAsync(1, dto);
+
+            Assert.Equal("Confirmed", appointment.Status);
         }
 
         //  GetDailyReport

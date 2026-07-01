@@ -14,7 +14,8 @@ namespace HealthCare.Api.Services.Interfaces
         Task UpdateStatusAsync(int id, bool isActive);
         Task CreateSlots(int id, List<string> timeslots);
         Task<CreateLeaveResultDto> CreateLeave(int id, List<CreateLeaveDto> leaves);
-        Task<List<DoctorListDto>> AvailableDoctors(string specialisation, DateOnly date);
+        Task<AvailableDoctorsResponseDto> AvailableDoctors(string specialisation, DateOnly date);
         Task<DoctorSummaryDto> GetSummaryAsync();
+        Task<DoctorDashboardDto> GetDashboardAsync(int doctorId);
     }
 }

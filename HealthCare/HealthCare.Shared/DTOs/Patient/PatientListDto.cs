@@ -10,6 +10,9 @@
         public string InsuranceId { get; set; } = null!;
         public bool IsActive { get; set; }
 
+        public DateOnly? DateOfBirth { get; set; }
+        public DateTimeOffset CreatedDate { get; set; }
+
         public string UserId { get; set; } = null!;
 
         public bool HasInsurance => !string.IsNullOrWhiteSpace(InsuranceId);

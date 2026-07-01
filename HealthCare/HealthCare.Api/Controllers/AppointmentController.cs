@@ -97,5 +97,16 @@ namespace HealthCare.Api.Controllers
 
             return int.Parse(claim.Value);
         }
+
+        [HttpGet("slots")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize(Roles = "Patient")]
+        public async Task<IActionResult> GetAvailableSlots(
+    [FromQuery] DateOnly date,
+    [FromQuery] int doctorId)
+        {
+            var slots = await _appointmentService.AvailableTimeSlots(date, doctorId);
+            return Ok(slots);
+        }
     }
 }

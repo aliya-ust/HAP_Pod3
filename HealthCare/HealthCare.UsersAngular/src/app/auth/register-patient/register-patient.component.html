@@ -1,0 +1,213 @@
+<div class="page-container">
+
+  <div class="register-card">
+
+    <!-- Close -->
+    <button class="close-btn" (click)="goBack()">
+      <i class="bi bi-x-lg"></i>
+    </button>
+
+    <!-- Header -->
+    <div class="top-section">
+      <div class="top-icon">
+        <i class="bi bi-person-plus-fill"></i>
+      </div>
+
+      <h2>Create Patient Account</h2>
+      <p>Join our Healthcare System</p>
+    </div>
+
+    <div class="success-message" *ngIf="successMessage">
+      {{ successMessage }}
+    </div>
+
+    <form [formGroup]="registerForm"
+          (ngSubmit)="register()">
+
+      <!-- Full Name -->
+      <div class="form-field">
+        <input type="text"
+               formControlName="fullName"
+               placeholder="Full Name">
+
+        <div class="error"
+             *ngIf="submitted && f['fullName'].errors">
+
+          <span *ngIf="f['fullName'].errors?.['required']">
+            Full Name is required
+          </span>
+
+          <span *ngIf="f['fullName'].errors?.['pattern']">
+            Enter first and last name using alphabets only
+          </span>
+
+        </div>
+      </div>
+
+
+      <!-- Email -->
+      <div class="form-field">
+        <input type="email"
+               formControlName="email"
+               placeholder="Email Address">
+
+        <div class="error"
+             *ngIf="submitted && f['email'].errors">
+
+          <span *ngIf="f['email'].errors?.['required']">
+            Email is required
+          </span>
+
+          <span *ngIf="f['email'].errors?.['pattern']">
+            Email should be in format eg: priya@gmail.com
+          </span>
+
+          <span class="error" *ngIf="emailExists">
+            Email already exists
+          </span>
+
+        </div>
+      </div>
+
+
+      <!-- Phone -->
+      <div class="form-field">
+        <input type="text"
+               formControlName="phoneNumber"
+               placeholder="Phone Number">
+
+        <div class="error"
+             *ngIf="submitted && f['phoneNumber'].errors">
+
+          <span *ngIf="f['phoneNumber'].errors?.['required']">
+            Phone number is required
+          </span>
+
+          <span *ngIf="f['phoneNumber'].errors?.['pattern']">
+            Phone number must start with 6-9 and contain 10 digits
+          </span>
+
+        </div>
+      </div>
+
+
+      <!-- Gender -->
+      <div class="form-field">
+        <select formControlName="gender">
+          <option value="">Select Gender</option>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+          <option value="Other">Other</option>
+        </select>
+
+        <div class="error"
+             *ngIf="submitted && f['gender'].errors">
+          Gender is required
+        </div>
+      </div>
+
+
+      <!-- DOB -->
+      <div class="form-field">
+        <input type="date"
+               formControlName="dateOfBirth">
+
+        <div class="error"
+             *ngIf="submitted && f['dateOfBirth'].errors">
+          Date of Birth is required
+        </div>
+      </div>
+
+
+      <!-- Insurance -->
+      <div class="form-field">
+        <input type="text"
+               formControlName="insuranceId"
+               placeholder="Insurance ID">
+      </div>
+
+
+      <!-- Password -->
+      <div class="form-field">
+        <input type="password"
+               formControlName="password"
+               placeholder="Password">
+
+        <div class="error"
+             *ngIf="submitted && f['password'].errors">
+
+          <span *ngIf="f['password'].errors?.['required']">
+            Password is required
+          </span>
+
+          <span *ngIf="f['password'].errors?.['pattern']">
+            Password must contain uppercase, lowercase,
+            number, special character and minimum 6 characters
+          </span>
+
+        </div>
+      </div>
+
+
+      <button type="submit"
+              class="register-btn">
+        Register Account
+      </button>
+
+    </form>
+
+  </div>
+
+</div>
+
+<!-- Popup Overlay -->
+<div class="popup-overlay" *ngIf="showPopup">
+
+  <div class="custom-popup">
+
+    <!-- Success Popup -->
+    <div *ngIf="isSuccess">
+
+      <div class="popup-icon success-icon">
+        <i class="bi bi-check-circle-fill"></i>
+      </div>
+
+      <h2>Registration Successful</h2>
+
+      <p>
+        Your account has been created successfully.
+      </p>
+
+      <button class="popup-btn"
+              (click)="goToLogin()">
+        Back to Login
+      </button>
+
+    </div>
+
+
+    <!-- Error Popup -->
+    <div *ngIf="!isSuccess">
+
+      <div class="popup-icon error-icon">
+        <i class="bi bi-exclamation-circle-fill"></i>
+      </div>
+
+      <h2 class="error-title">
+        Email already exists
+      </h2>
+
+      <p class="error-subtitle">
+        Please use another email address.
+      </p>
+
+      <button class="popup-btn"
+              (click)="showPopup = false">
+        OK
+      </button>
+
+    </div>
+
+  </div>
+
+</div>

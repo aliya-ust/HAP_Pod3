@@ -26,14 +26,27 @@ namespace HealthCare.Api.Services.Implementations
             _mapper = mapper;
         }
 
-        public async Task<DoctorListDto> GetByIdAsync(int id)
+        public async Task<DoctorListDto?> GetByIdAsync(int id)
         {
-            var doctor = await _repository.GetByIdAsync(id);
+            var doctor = await (
+                from d in _context.Doctors
+                join u in _context.Users
+            on d.UserId equals u.Id
+        where d.DoctorId == id
+ 
+        select new DoctorListDto
+        {
+            DoctorId = d.DoctorId,
+            FullName = d.FullName,
+            Email = u.Email,
+            Specialisation = d.Specialisation,
+            YearsOfExperience = d.YearsOfExperience,
+            ConsultationFee = d.ConsultationFee,
+            IsActive = d.IsActive
+        }
+     ).FirstOrDefaultAsync();
 
-            if (doctor is null)
-                return null;
-
-            return _mapper.Map<DoctorListDto>(doctor);
+            return doctor;
         }
 
         public async Task<PagedResult<DoctorListDto>> GetAllAsync(DoctorFilter filter)
@@ -48,10 +61,10 @@ namespace HealthCare.Api.Services.Implementations
 
                     (!filter.IsActive.HasValue ||
                         d.IsActive == filter.IsActive.Value);
-            // ✅ ORDERING
+
             Func<IQueryable<Doctor>, IOrderedQueryable<Doctor>> orderBy = q =>
             {
-                // ✅ If user selected experience sorting
+
                 if (!string.IsNullOrEmpty(filter.ExperienceOrder))
                 {
                     if (filter.ExperienceOrder == "asc")
@@ -60,7 +73,6 @@ namespace HealthCare.Api.Services.Implementations
                     return q.OrderByDescending(d => d.YearsOfExperience);
                 }
 
-                // ✅ DEFAULT SORT (by ID)
                 return q.OrderBy(d => d.DoctorId);
             };
 
@@ -97,7 +109,7 @@ namespace HealthCare.Api.Services.Implementations
             if (doctor is null)
                 throw new InvalidOperationException(NotFoundExceptionMessage);
 
-            _mapper.Map(dto, doctor); // maps onto the tracked entity — EF picks up the changes
+            _mapper.Map(dto, doctor); 
 
             await _repository.UpdateAsync(doctor);
             await _context.SaveChangesAsync();
@@ -178,13 +190,12 @@ namespace HealthCare.Api.Services.Implementations
 
                 if (availableSlots.Count != allSlots.Count)
                 {
-                    // Doctor has confirmed/pending appointments that day — cancel them and proceed
                     await _appointmentRepository.CancelAppointmentsByDoctorDate(id, leave.LeaveDate);
                     result.CreatedWithCancelledAppointments.Add(leave.LeaveDate);
                 }
 
-                leavesToCreate.Add(leave);
-            }
+                leavesToCreate.Add(leave); 
+}
 
             if (leavesToCreate.Count > 0)
             {
@@ -195,11 +206,66 @@ namespace HealthCare.Api.Services.Implementations
             return result;
         }
 
-        public async Task<List<DoctorListDto>> AvailableDoctors(string specialisation, DateOnly date) =>
-            await _repository.AvailableDoctors(specialisation, date);
-    
+        public async Task<AvailableDoctorsResponseDto> AvailableDoctors(string specialisation, DateOnly date)
+        {
+            var allDoctors = await _context.Doctors
+                .Where(d => d.Specialisation == specialisation)
+                .ToListAsync();
 
-    public async Task<DoctorSummaryDto> GetSummaryAsync()
+            if (!allDoctors.Any())
+            {
+                return new AvailableDoctorsResponseDto
+                {
+                    Doctors = new List<DoctorListDto>(),
+                    Message = "No doctors available for this specialization"
+                };
+            }
+
+            var activeDoctors = allDoctors.Where(d => d.IsActive).ToList();
+
+            if (!activeDoctors.Any())
+            {
+                return new AvailableDoctorsResponseDto
+                {
+                    Doctors = new List<DoctorListDto>(),
+                    Message = "Doctor is not active"
+                };
+            }
+
+            var availableDoctors = new List<Doctor>();
+
+            foreach (var doctor in activeDoctors)
+            {
+                var isOnLeave = await _context.DoctorLeaves
+                    .AnyAsync(l =>
+                        l.DoctorId == doctor.DoctorId &&
+                        l.LeaveDate == date);
+
+                if (!isOnLeave)
+                {
+                    availableDoctors.Add(doctor);
+                }
+            }
+
+            if (!availableDoctors.Any())
+            {
+                return new AvailableDoctorsResponseDto
+                {
+                    Doctors = new List<DoctorListDto>(),
+                    Message = "Doctor is on leave"
+                };
+            }
+
+            var result = _mapper.Map<List<DoctorListDto>>(availableDoctors);
+
+            return new AvailableDoctorsResponseDto
+            {
+                Doctors = result,
+                Message = ""
+            };
+        }
+
+        public async Task<DoctorSummaryDto> GetSummaryAsync()
         {
             var fromDate = DateTimeOffset.UtcNow.AddDays(-30);
             var toDate = DateTimeOffset.UtcNow;
@@ -216,6 +282,44 @@ namespace HealthCare.Api.Services.Implementations
                 .FirstOrDefaultAsync();
 
             return result ?? new DoctorSummaryDto();
+        }
+
+        public async Task<DoctorDashboardDto> GetDashboardAsync(int doctorId)
+        {
+            var today = DateOnly.FromDateTime(DateTime.Today);
+
+            var upcomingAppointments = await _context.Appointments
+                .CountAsync(a =>
+                    a.DoctorId == doctorId &&
+                    a.ScheduledDate >= today &&
+                    a.Status != "Cancelled");
+
+            var patientsTreated = await _context.Appointments
+                .CountAsync(a =>
+                    a.DoctorId == doctorId &&
+                    a.Status == "Completed");
+
+            var upcomingLeaves = await _context.DoctorLeaves
+                .CountAsync(l =>
+                    l.DoctorId == doctorId &&
+                    l.LeaveDate >= today);
+
+            var todaysSchedule = await _context.Appointments
+                .Where(a =>
+                    a.DoctorId == doctorId &&
+                    a.ScheduledDate == today &&
+                    a.Status != "Cancelled")
+                .OrderBy(a => a.TimeSlot)
+                .Select(a => a.TimeSlot)
+                .ToListAsync();
+
+            return new DoctorDashboardDto
+            {
+                UpcomingAppointments = upcomingAppointments,
+                PatientsTreated = patientsTreated,
+                UpcomingLeaves = upcomingLeaves,
+                TodaysSchedule = todaysSchedule
+            };
         }
     }
 }

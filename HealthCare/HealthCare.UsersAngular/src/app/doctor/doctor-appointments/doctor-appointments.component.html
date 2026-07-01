@@ -1,0 +1,290 @@
+<div class="appointments-page">
+
+  <app-doctor-sidebar></app-doctor-sidebar>
+
+  <div class="main">
+
+    <div class="heading">
+      <h2>
+        <i class="bi bi-calendar-check"></i> My Appointments
+      </h2>
+      <p>Manage your upcoming appointments</p>
+    </div>
+
+    <div class="table-card">
+
+      <table>
+
+        <thead>
+          <tr>
+            <th><i class="bi bi-person"></i> Patient</th>
+            <th><i class="bi bi-calendar"></i> Date</th>
+            <th><i class="bi bi-clock"></i> Time</th>
+            <th><i class="bi bi-activity"></i> Status</th>
+            <th><i class="bi bi-gear"></i> Actions</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          <tr *ngFor="let a of appointments">
+
+            <td>{{ a.patientName }}</td>
+
+            <td>{{ a.scheduledDate | date:'dd-MM-yyyy' }}</td>
+
+            <td>{{ a.timeSlot }}</td>
+
+            <td>
+              <span class="status" [ngClass]="a.status?.toLowerCase()">
+                {{ a.status }}
+              </span>
+            </td>
+
+            <td>
+
+              <div class="action-buttons">
+
+                <!-- Pending -->
+                <ng-container *ngIf="a.status === 'Pending'">
+
+                  <button class="btn confirm"
+                          (click)="updateStatus(a.appointmentId, 'Confirmed')">
+                    <i class="bi bi-check-circle"></i> Confirm
+                  </button>
+
+                  <button class="btn cancel"
+                          (click)="openCancelModal(a.appointmentId)">
+                    <i class="bi bi-x-circle"></i> Cancel
+                  </button>
+
+                </ng-container>
+
+                <!-- Confirmed -->
+                <ng-container *ngIf="a.status === 'Confirmed'">
+
+                  <button class="btn view"
+                          (click)="openView(a.patientId)">
+                    <i class="bi bi-eye"></i> View
+                  </button>
+
+                  <button class="btn add"
+                          (click)="openAddRecord(a.appointmentId)">
+                    <i class="bi bi-plus-circle"></i> Add Record
+                  </button>
+
+                </ng-container>
+
+
+              </div>
+
+            </td>
+
+          </tr>
+
+          <tr *ngIf="!loading && appointments.length === 0">
+            <td colspan="5">No appointments</td>
+          </tr>
+
+        </tbody>
+
+      </table>
+
+
+      <!-- VIEW MODAL -->
+      <div class="modal-backdrop" *ngIf="showViewModal">
+
+        <div class="modal-box">
+
+          <div class="modal-header">
+            <h3>Health Records</h3>
+            <span class="close" (click)="closeModal()">×</span>
+          </div>
+
+          <div *ngIf="selectedPatientRecords.length === 0">
+            No records available
+          </div>
+
+          <div *ngFor="let r of selectedPatientRecords" class="record">
+
+            <p><b>Date:</b> {{ r.visitDate | date:'dd MMM yyyy' }}</p>
+            <p><b>Diagnosis:</b> {{ r.diagnosis }}</p>
+            <p><b>Prescription:</b> {{ r.prescription }}</p>
+            <p><b>Notes:</b> {{ r.notes || '-' }}</p>
+
+            <hr>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- CANCEL APPOINTMENT MODAL -->
+
+      <div class="modal-backdrop"
+           *ngIf="showCancelModal">
+
+        <div class="modal-box cancel-modal">
+
+          <div class="modal-header">
+
+            <h3>
+              Cancel Appointment
+            </h3>
+
+            <span class="close"
+                  (click)="closeCancelModal()">
+
+              ×
+
+            </span>
+
+          </div>
+
+          <div class="cancel-body">
+
+            <label>
+              Cancellation Reason
+            </label>
+
+            <textarea [(ngModel)]="cancellationReason"
+                      placeholder="Enter cancellation reason">
+</textarea>
+
+            <div class="error"
+                 *ngIf="cancelSubmitted && !cancellationReason.trim()">
+
+              Cancellation Reason is required
+
+            </div>
+
+            <div class="cancel-btn-wrapper">
+
+              <button class="btn submit-cancel"
+                      (click)="submitCancellation()">
+
+                Submit
+
+              </button>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- ADD RECORD MODAL -->
+      <div class="modal-backdrop" *ngIf="showAddModal">
+
+        <div class="modal-box">
+
+          <div class="modal-header">
+            <h3>Add Health Record</h3>
+            <span class="close" (click)="closeModal()">×</span>
+          </div>
+
+          <div class="form" [formGroup]="recordForm">
+            <input [value]="selectedAppointmentDate | date:'dd-MM-yyyy'"
+                   readonly>
+
+            <!-- Diagnosis -->
+            <div class="form-field">
+
+              <input type="text"
+                     placeholder="Diagnosis"
+                     formControlName="diagnosis">
+
+              <div class="error"
+                   *ngIf="submitted && f['diagnosis'].errors">
+
+                <span *ngIf="f['diagnosis'].errors?.['required']">
+                  Diagnosis is required
+                </span>
+
+                <span *ngIf="f['diagnosis'].errors?.['pattern']">
+                  Only letters and numbers are allowed
+                </span>
+
+                <span *ngIf="f['diagnosis'].errors?.['maxlength']">
+                  Maximum 500 characters allowed
+                </span>
+
+              </div>
+
+            </div>
+
+            <!-- Prescription -->
+            <div class="form-field">
+
+              <input type="text"
+                     placeholder="Prescription"
+                     formControlName="prescription">
+
+              <div class="error"
+                   *ngIf="submitted && f['prescription'].errors">
+
+                <span *ngIf="f['prescription'].errors?.['required']">
+                  Prescription is required
+                </span>
+
+                <span *ngIf="f['prescription'].errors?.['pattern']">
+                  Only letters and numbers are allowed
+                </span>
+
+                <span *ngIf="f['prescription'].errors?.['maxlength']">
+                  Maximum 500 characters allowed
+                </span>
+
+              </div>
+
+            </div>
+
+            <!-- Notes -->
+            <div class="form-field">
+
+              <textarea placeholder="Notes"
+                        formControlName="notes">
+        </textarea>
+
+              <div class="error"
+                   *ngIf="submitted && f['notes'].errors">
+
+                <span *ngIf="f['notes'].errors?.['pattern']">
+                  Only letters and numbers are allowed
+                </span>
+
+                <span *ngIf="f['notes'].errors?.['maxlength']">
+                  Maximum 1000 characters allowed
+                </span>
+
+              </div>
+
+            </div>
+
+            <!-- CENTERED SAVE BUTTON -->
+            <div class="save-btn-wrapper">
+
+              <button type="button"
+                      class="btn save"
+                      (click)="saveRecord()">
+
+                <i class="bi bi-save"></i>
+                Save
+
+              </button>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+    </div>
+
+  </div>
+</div>

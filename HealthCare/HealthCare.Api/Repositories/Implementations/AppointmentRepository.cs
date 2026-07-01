@@ -23,10 +23,13 @@ namespace HealthCare.Api.Repositories.Implementations
         public async Task<bool> IsAvailable(DateOnly date, int doctorId, string timeSlot)
         {
             var exists = await _dbSet.AnyAsync(a =>
-                a.ScheduledDate == date
-                && a.DoctorId == doctorId
-                && a.TimeSlot == timeSlot
-                && a.Status != Cancelled);
+            a.ScheduledDate == date
+            && a.DoctorId == doctorId
+            && a.Status != Cancelled
+            && a.TimeSlot.Contains(timeSlot)
+            && a.TimeSlot.Contains(timeSlot.Substring(0, 4)) 
+        );
+
 
             return !exists;
         }
@@ -75,18 +78,18 @@ namespace HealthCare.Api.Repositories.Implementations
                 .ToListAsync();
 
         public async Task<List<AppointmentListDto>> GetAppointmentByPatient(int id) =>
-            await _dbSet
-                .Where(a => a.PatientId == id && a.ScheduledDate >= DateOnly.FromDateTime(DateTime.Today))
-                .Select(a => new AppointmentListDto
-                {
-                    AppointmentId = a.AppointmentId,
-                    PatientName = a.Patient.FullName,
-                    DoctorName = a.Doctor.FullName,
-                    ScheduledDate = a.ScheduledDate,
-                    TimeSlot = a.TimeSlot,
-                    Status = a.Status
-                })
-                .ToListAsync();
+    await _dbSet
+        .Where(a => a.PatientId == id) 
+        .Select(a => new AppointmentListDto
+        {
+            AppointmentId = a.AppointmentId,
+            PatientName = a.Patient.FullName,
+            DoctorName = a.Doctor.FullName,
+            ScheduledDate = a.ScheduledDate,
+            TimeSlot = a.TimeSlot,
+            Status = a.Status
+        })
+        .ToListAsync();
 
         public async Task<List<AppointmentListDto>> GetAppointmentByDoctor(int id) =>
             await _dbSet
@@ -94,6 +97,7 @@ namespace HealthCare.Api.Repositories.Implementations
                 .Select(a => new AppointmentListDto
                 {
                     AppointmentId = a.AppointmentId,
+                    PatientId = a.PatientId,
                     PatientName = a.Patient.FullName,
                     DoctorName = a.Doctor.FullName,
                     ScheduledDate = a.ScheduledDate,

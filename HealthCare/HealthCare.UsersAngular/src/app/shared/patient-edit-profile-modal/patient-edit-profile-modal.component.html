@@ -1,0 +1,84 @@
+<div class="modal-backdrop" *ngIf="visible">
+
+  <div class="modal-box">
+
+    <div class="modal-header">
+      <h3>Edit Profile</h3>
+      <span class="close" (click)="close()">×</span>
+    </div>
+
+    <form class="form" [formGroup]="editForm">
+
+      <input placeholder="Full Name"
+             formControlName="fullName">
+
+      <small class="error"
+             *ngIf="f['fullName'].touched && f['fullName'].errors?.['required']">
+        Full Name is required
+      </small>
+
+      <small class="error"
+             *ngIf="f['fullName'].touched && f['fullName'].errors?.['pattern']">
+        Enter name using alphabets only
+      </small>
+
+
+      <select formControlName="gender">
+        <option value="">Select Gender</option>
+        <option>Male</option>
+        <option>Female</option>
+        <option>Other</option>
+      </select>
+
+      <small class="error"
+             *ngIf="f['gender'].touched && f['gender'].errors?.['required']">
+        Gender is required
+      </small>
+
+
+      <input placeholder="Phone Number"
+             formControlName="phoneNumber">
+
+      <small class="error"
+             *ngIf="f['phoneNumber'].touched && f['phoneNumber'].errors?.['required']">
+        Phone number is required
+      </small>
+
+      <small class="error"
+             *ngIf="f['phoneNumber'].touched && f['phoneNumber'].errors?.['pattern']">
+        Phone number must start with 6-9 and contain 10 digits
+      </small>
+
+
+
+      <input placeholder="Insurance ID (Optional)"
+             formControlName="insuranceId">
+
+      <small class="error"
+             *ngIf="f['insuranceId'].touched && f['insuranceId'].errors?.['pattern']">
+        Insurance ID must contain only letters and numbers
+      </small>
+
+
+      <div class="actions">
+
+        <button type="button"
+                class="cancel"
+                (click)="close()">
+          Cancel
+        </button>
+
+        <button type="button"
+                class="save"
+                (click)="saveChanges()"
+                [disabled]="editForm.invalid">
+          Save Changes
+        </button>
+
+      </div>
+
+    </form>
+
+  </div>
+
+</div>

@@ -35,7 +35,7 @@
                         <td>₹@doctor.ConsultationFee</td>
 
                         <td>
-                            <span class="status-badge">
+                            <span class="status-badge @(doctor.IsActive ? "active" : "inactive")">
                                 @(doctor.IsActive ? "Active" : "Inactive")
                             </span>
                         </td>
@@ -157,13 +157,22 @@
     }
 
     .status-badge {
-        background: #d1fae5;
-        color: #047857;
         padding: 8px 18px;
         border-radius: 20px;
         font-size: 14px;
         font-weight: 600;
     }
+
+        .status-badge.active {
+            background: #d1fae5;
+            color: #047857;
+        }
+
+        
+        .status-badge.inactive {
+            background: #fee2e2;
+            color: #dc2626;
+        }
 
     .action-btn {
         border: none;

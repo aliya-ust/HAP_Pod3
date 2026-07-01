@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Azure;
 using HealthCare.Api.Data;
 using HealthCare.Shared.DTOs.Authentication;
 using HealthCare.Shared.DTOs.Doctor;
@@ -9,7 +8,7 @@ using HealthCare.Api.Repositories.Interfaces;
 using HealthCare.Api.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using System.Data;
-using System.Numerics;
+
 
 namespace HealthCare.Api.Services.Implementations
 {
@@ -38,14 +37,20 @@ namespace HealthCare.Api.Services.Implementations
             _context = context;
         }
 
-        private async Task<IdentityUser> CreateUserWithRoleAsync(string email, string password, string role)
+        private async Task<IdentityUser> CreateUserWithRoleAsync(
+     string email,
+     string password,
+     string role)
         {
-            // Check email
+            // Check whether the email already exists in AspNetUsers
             var existingUser = await _userManager.FindByEmailAsync(email);
-            if (existingUser != null)
-                throw new InvalidOperationException("Email already exists");
 
-            // Create user
+            if (existingUser != null)
+            {
+                throw new InvalidOperationException("Email already exists");
+            }
+
+            // Create Identity user
             var user = new IdentityUser
             {
                 UserName = email,
@@ -55,10 +60,21 @@ namespace HealthCare.Api.Services.Implementations
             var result = await _userManager.CreateAsync(user, password);
 
             if (!result.Succeeded)
-                throw new InvalidOperationException(string.Join(", ", result.Errors.Select(e => e.Description)));
+            {
+                throw new InvalidOperationException(
+                    string.Join(", ", result.Errors.Select(e => e.Description))
+                );
+            }
 
             // Assign role
-            await _userManager.AddToRoleAsync(user, role);
+            var roleResult = await _userManager.AddToRoleAsync(user, role);
+
+            if (!roleResult.Succeeded)
+            {
+                throw new InvalidOperationException(
+                    string.Join(", ", roleResult.Errors.Select(e => e.Description))
+                );
+            }
 
             return user;
         }
@@ -180,13 +196,13 @@ namespace HealthCare.Api.Services.Implementations
             if (user == null)
                 throw new InvalidOperationException("User not found");
 
-            // ✅ CHECK UNIQUE EMAIL (IDENTITY TABLE)
+            // CHECK UNIQUE EMAIL (IDENTITY TABLE)
             var existingUser = await _userManager.FindByEmailAsync(newEmail);
 
             if (existingUser != null && existingUser.Id != userId)
                 throw new InvalidOperationException("Email already exists");
 
-            // ✅ UPDATE EMAIL
+            // UPDATE EMAIL
             user.Email = newEmail;
             user.UserName = newEmail;
 

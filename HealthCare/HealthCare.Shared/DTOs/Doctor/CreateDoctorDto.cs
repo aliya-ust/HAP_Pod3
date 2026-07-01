@@ -26,12 +26,10 @@ namespace HealthCare.Shared.DTOs.Doctor
        
         public string Password { get; set; } = null!;
 
-        // ✅ FIXED: nullable
         [Required(ErrorMessage = "Experience is required.")]
         [Range(0, 60, ErrorMessage = "Experience must be between 0 and 60.")]
         public int? YearsOfExperience { get; set; }
 
-        // ✅ FIXED: nullable
         [Required(ErrorMessage = "Consultation fee is required.")]
         [Range(1, 5000, ErrorMessage = "Consultation fee must be between 1 and 5000.")]
         public decimal? ConsultationFee { get; set; }

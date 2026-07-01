@@ -69,5 +69,17 @@ namespace HealthCare.Api.Controllers
 
             return int.Parse(claim.Value);
         }
+
+        [HttpGet("dashboard")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize(Roles = "Doctor")]
+        public async Task<IActionResult> GetDashboard()
+        {
+            var doctorId = GetDoctorIdFromClaims();
+
+            var data = await _doctorService.GetDashboardAsync(doctorId);
+
+            return Ok(data);
+        }
     }
 }

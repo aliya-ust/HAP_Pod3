@@ -1,5 +1,4 @@
-﻿using HealthCare.Api.Services.Implementations;
-using HealthCare.Api.Services.Interfaces;
+﻿using HealthCare.Api.Services.Interfaces;
 using HealthCare.Shared.DTOs.Patient;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -12,10 +11,12 @@ namespace HealthCare.Api.Controllers
     public class PatientController : ControllerBase
     {
         private readonly IPatientService _patientService;
+        
 
         public PatientController(IPatientService patientService)
         {
             _patientService = patientService;
+            
         }
 
         [HttpGet("profile")]
@@ -41,12 +42,27 @@ namespace HealthCare.Api.Controllers
             return Ok(new {message = "Patient profile updated successfully"});
         }
 
+
         private int GetPatientIdFromClaims()
         {
-            var claim = User.FindFirst("PatientId")
-                ?? throw new InvalidOperationException("PatientId claim not found in token.");
+            var claim = User.Claims.FirstOrDefault(c => c.Type == "PatientId");
+
+            if (claim == null)
+                throw new InvalidOperationException("PatientId claim not found in token.");
 
             return int.Parse(claim.Value);
+        }
+
+        [HttpGet("dashboard")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize(Roles = "Patient")]
+        public async Task<IActionResult> GetDashboard()
+        {
+            var patientId = GetPatientIdFromClaims();
+
+            var data = await _patientService.GetDashboardAsync(patientId);
+
+            return Ok(data);
         }
     }
 }

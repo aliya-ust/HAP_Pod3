@@ -1,0 +1,87 @@
+<div *ngIf="!profile" class="loading">
+  Loading profile...
+</div>
+
+<div class="profile-page" *ngIf="profile">
+
+  <!-- SIDEBAR -->
+  <app-doctor-sidebar></app-doctor-sidebar>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <div class="dashboard-heading">
+      <h2>Welcome back, {{ profile?.fullName }}</h2>
+      <p>Here’s your profile overview</p>
+    </div>
+
+    <div class="profile-container">
+
+      <div class="profile-card">
+
+        <!-- HEADER -->
+        <div class="profile-header">
+
+          <div class="avatar">
+            <i class="bi bi-person-fill"></i>
+          </div>
+
+          <div class="profile-info">
+            <h1>{{ profile?.fullName }}</h1>
+
+            <div class="status">
+              <span class="active">
+                {{ profile?.isActive ? 'Active' : 'Inactive' }}
+              </span>
+            </div>
+          </div>
+
+        </div>
+
+        <hr class="divider">
+
+        <!-- SECTION -->
+        <h3 class="section-title">Personal Information</h3>
+
+        <div class="info-grid">
+
+          <div class="info-box">
+            <i class="bi bi-briefcase"></i>
+            <div>
+              <label>Specialisation</label>
+              <p>{{ profile?.specialisation }}</p>
+            </div>
+          </div>
+
+          <div class="info-box">
+            <i class="bi bi-award"></i>
+            <div>
+              <label>Experience</label>
+              <p>{{ profile?.yearsOfExperience }} years</p>
+            </div>
+          </div>
+
+          <div class="info-box">
+            <i class="bi bi-currency-rupee"></i>
+            <div>
+              <label>Consultation Fee</label>
+              <p>₹ {{ profile?.consultationFee }}</p>
+            </div>
+          </div>
+
+          <div class="info-box">
+            <i class="bi bi-envelope"></i>
+            <div>
+              <label>Email</label>
+              <p>{{ profile?.email }}</p>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+</div>

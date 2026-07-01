@@ -8,5 +8,6 @@
         public int YearsOfExperience { get; set; }
         public decimal ConsultationFee { get; set; }
         public bool IsActive { get; set; }
+        public string Email { get; set; } = null!;
     }
 }

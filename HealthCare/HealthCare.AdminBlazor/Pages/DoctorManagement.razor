@@ -13,7 +13,6 @@
         </div>
     }
 
-    <!-- ✅ HEADER -->
     <div class="page-header">
 
         <div>
@@ -21,7 +20,6 @@
             <p>Manage doctors in the healthcare system</p>
         </div>
 
-        <!-- ✅ ONLY BUTTONS HERE -->
         <div class="top-actions">
             <button class="btn-showall"
                     @onclick="LoadDoctors">
@@ -36,11 +34,9 @@
 
     </div>
 
-    <!-- ✅ FILTER TOOLBAR BELOW HEADER -->
     <DoctorToolbar @ref="toolbarRef"
                    OnFilter="ApplyFilter" />
 
-    <!-- ✅ TABLE -->
     <div class="table-wrapper">
         <DoctorTable Doctors="doctors"
                      IsSearchPerformed="isSearchPerformed"
@@ -71,7 +67,6 @@
 
 </div>
 
-<!-- ✅ MODALS (UNCHANGED) -->
 <UpdateDoctorModal Doctor="selectedDoctor"
                    Visible="showEditModal"
                    OnClose="CloseEditModal"
@@ -79,7 +74,7 @@
 
 <RegisterDoctorModal Visible="showRegisterModal"
                      OnClose="CloseRegisterModal"
-                     OnSaved="LoadDoctors" />
+                     OnSaved="DoctorRegistered" />
 
 <DeleteDoctorModal Visible="showDeleteModal"
                    OnCancel="CancelDelete"
@@ -90,6 +85,9 @@
     private List<DoctorListDto> doctors = new();
     private DoctorListDto? selectedDoctor;
     private DoctorToolbar? toolbarRef;
+
+    private string successMessage = "";
+    private bool showSuccessMessage = false;
 
 
     private bool isSearchPerformed = false;
@@ -104,17 +102,23 @@
     private int currentPage = 1;
     private int pageSize = 5;
 
-    private string successMessage = "";
-    private bool showSuccessMessage = false;
-
     protected override async Task OnInitializedAsync()
     {
         await LoadDoctors();
     }
 
+    private async Task DoctorRegistered()
+    {
+        showRegisterModal = false;
+
+        await LoadDoctors();
+
+        await ShowSuccessMessage("Doctor registered successfully.");
+    }
+
     private async Task LoadDoctors()
     {
-        currentPage = 1;   // ✅ reset
+        currentPage = 1;  
 
         var filter = new DoctorFilter
         {
@@ -167,11 +171,9 @@
     }
 
 
-
-    // ✅ NEW FILTER METHOD
     private async Task ApplyFilter(DoctorFilter filter)
     {
-        currentPage = 1;   // ✅ VERY IMPORTANT
+        currentPage = 1;   
 
         filter.PageNumber = currentPage;
         filter.PageSize = pageSize;
@@ -258,7 +260,7 @@
 
         await LoadDoctors();     
 
-        await ShowSuccessMessage("Doctor updated successfully.");  // ✅ show toast
+        await ShowSuccessMessage("Doctor updated successfully.");  
     }
 }
 
@@ -291,7 +293,6 @@
         font-size: 1.1rem;
     }
 
-    /* ✅ TOP RIGHT BUTTONS */
     .top-actions {
         display: flex;
         gap: 20px;
@@ -330,7 +331,7 @@
         z-index: 9999;
         min-width: 350px;
         text-align: center;
-        animation: slideDown 0.3s ease; /* ✅ smooth entry */
+        animation: slideDown 0.3s ease; 
     }
 
     .pagination-container {

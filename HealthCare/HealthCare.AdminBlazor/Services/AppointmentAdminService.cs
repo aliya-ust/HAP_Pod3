@@ -21,17 +21,15 @@ public class AppointmentAdminService
         int pageNumber,
         int pageSize)
     {
-        // ✅ Set token using JwtService
+       
         await _jwt.SetAuthorizationHeader(_http);
 
         var start = startDate.ToString("yyyy-MM-dd");
         var end = endDate.ToString("yyyy-MM-dd");
 
-        // ✅ API call
         var response = await _http.GetAsync(
             $"api/admin/appointments/report?startDate={start}&endDate={end}");
 
-        // ✅ Handle failure safely
         if (!response.IsSuccessStatusCode)
         {
             return new PagedResult<AppointmentReportDto>
@@ -43,12 +41,10 @@ public class AppointmentAdminService
             };
         }
 
-        // ✅ Read response
         var data = await response.Content
             .ReadFromJsonAsync<List<AppointmentReportDto>>()
             ?? new List<AppointmentReportDto>();
 
-        // ✅ Frontend pagination
         var totalCount = data.Count;
 
         var items = data

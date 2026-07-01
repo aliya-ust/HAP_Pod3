@@ -1,0 +1,136 @@
+<div class="page">
+
+  <app-doctor-sidebar></app-doctor-sidebar>
+
+  <div class="main">
+
+    <div class="page-header">
+
+      <h1>
+        <i class="bi bi-calendar2-check"></i>
+        Manage Leave Dates
+      </h1>
+
+      <p>
+        Select future dates to mark your availability and manage your leave schedule effectively.
+      </p>
+
+    </div>
+
+    <div class="card">
+
+      <h2>
+        <i class="bi bi-calendar-x"></i>
+        Doctor Leaves
+      </h2>
+
+      <!-- DATE INPUTS -->
+      <div *ngFor="let date of leaveDates; let i = index" class="field">
+
+        <div class="input-group">
+
+          <i class="bi bi-calendar-date"></i>
+
+          <input type="date"
+                 [(ngModel)]="leaveDates[i]"
+                 [min]="todayString">
+
+        </div>
+
+        <button *ngIf="i > 0"
+                class="remove"
+                (click)="removeDate(i)">
+
+          <i class="bi bi-x-lg"></i>
+
+        </button>
+
+      </div>
+
+      <!-- ADD ANOTHER DATE -->
+      <div class="btn-center">
+
+        <button class="save-btn secondary"
+                (click)="addDate()">
+
+          <i class="bi bi-plus-circle"></i>
+          Add Another Date
+
+        </button>
+
+      </div>
+
+      <!-- REASON -->
+      <div class="reason-container">
+
+        <label>
+          <i class="bi bi-chat-left-text"></i>
+          Reason (Optional)
+        </label>
+
+        <textarea [(ngModel)]="reason"
+                  placeholder="Enter reason for leave...">
+        </textarea>
+
+      </div>
+
+      <!-- SAVE BUTTON -->
+      <div class="btn-center">
+
+        <button class="save-btn"
+                (click)="submit()">
+
+          <i class="bi bi-save"></i>
+          Save
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<!-- SUCCESS MODAL -->
+<div *ngIf="showSuccessModal" class="modal-overlay">
+
+  <div class="modal-card">
+
+    <div class="success-icon">
+      ✔
+    </div>
+
+    <h2>Leaves Added Successfully</h2>
+
+    <p>Your leave dates have been saved.</p>
+
+    <button (click)="closeSuccessModal()">
+      OK
+    </button>
+
+  </div>
+
+</div>
+
+<!-- ERROR MODAL -->
+<div *ngIf="showErrorModal" class="modal-overlay">
+
+  <div class="modal-card">
+
+    <div class="error-icon">
+      ✖
+    </div>
+
+    <h2>Notice</h2>
+
+    <p>{{ errorMessage }}</p>
+
+    <button (click)="closeErrorModal()">
+      OK
+    </button>
+
+  </div>
+
+</div>

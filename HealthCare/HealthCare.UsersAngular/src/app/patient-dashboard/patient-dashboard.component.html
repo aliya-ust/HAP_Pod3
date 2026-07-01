@@ -1,0 +1,40 @@
+<div class="dashboard-page">
+
+  <app-patient-sidebar></app-patient-sidebar>
+
+  <!-- Main -->
+  <main class="main-content">
+
+    <div class="header">
+      <h1>Welcome back!</h1>
+      <p>Here’s your health overview</p>
+    </div>
+
+    <!-- Cards -->
+    <div class="cards">
+
+      <!-- Card 1 -->
+      <div class="card">
+        <div class="icon blue">
+          <i class="bi bi-calendar-event"></i>
+        </div>
+        <h3>{{ dashboard.upcomingAppointmentsCount }}</h3>
+        <p>Upcoming Appointments</p>
+        <p>Appointments Scheduled</p>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="card">
+        <div class="icon purple">
+          <i class="bi bi-clipboard2-pulse"></i>
+        </div>
+        <h3>{{ dashboard.latestRecordsCount }}</h3>
+        <p>Latest Records</p>
+        <p>Health Records Available</p>
+      </div>
+
+    </div>
+
+  </main>
+
+</div>

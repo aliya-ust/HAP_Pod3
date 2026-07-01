@@ -17,11 +17,6 @@ namespace HealthCare.Shared.DTOs.Patient
         public string PhoneNumber { get; set; } = null!;
 
         [Required]
-        [MaxLength(100)]
-        [EmailAddress]
-        public string Email { get; set; } = null!;
-
-        [Required]
         [MaxLength(10)]
         [RegularExpression(@"^(Male|Female|Other)$", ErrorMessage = "Gender must be Male, Female, or Other.")]
         public string Gender { get; set; } = null!;

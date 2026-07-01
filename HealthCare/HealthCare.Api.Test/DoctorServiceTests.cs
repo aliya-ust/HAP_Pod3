@@ -1,10 +1,11 @@
 ﻿using AutoMapper;
 using HealthCare.Api.Data;
-using HealthCare.Shared.DTOs;
-using HealthCare.Shared.DTOs.Doctor;
 using HealthCare.Api.Models;
 using HealthCare.Api.Repositories.Interfaces;
 using HealthCare.Api.Services.Implementations;
+using HealthCare.Shared.DTOs;
+using HealthCare.Shared.DTOs.Doctor;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 using System.Linq.Expressions;
@@ -39,28 +40,75 @@ namespace HealthCare.Api.Tests
             );
         }
 
-        //  GetById
         [Fact]
         public async Task GetByIdAsync_ShouldReturnDoctor()
         {
-            var doctor = new Doctor();
-            var dto = new DoctorListDto();
+            var user = new IdentityUser
+            {
+                Id = "u1",
+                Email = "cardio@test.com",
+                UserName = "cardio@test.com"
+            };
 
-            _repoMock.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(doctor);
-            _mapperMock.Setup(m => m.Map<DoctorListDto>(doctor)).Returns(dto);
+            var doctor = new Doctor
+            {
+                DoctorId = 1,
+                UserId = user.Id,
+                FullName = "Test Doctor",
+                Specialisation = "Cardiology",
+                YearsOfExperience = 10,
+                ConsultationFee = 500,
+                IsActive = true
+            };
+
+            _context.Users.Add(user);
+            _context.Doctors.Add(doctor);
+
+            await _context.SaveChangesAsync();
 
             var result = await _service.GetByIdAsync(1);
 
             Assert.NotNull(result);
+            Assert.Equal(1, result.DoctorId);
         }
 
         [Fact]
-        public async Task GetByIdAsync_ShouldThrow_WhenNotFound()
+        public async Task GetByIdAsync_ShouldReturnNull_WhenNotFound()
         {
-            _repoMock.Setup(r => r.GetByIdAsync(1)).ReturnsAsync((Doctor?)null);
+            var result = await _service.GetByIdAsync(999);
 
-            await Assert.ThrowsAsync<InvalidOperationException>(() =>
-                _service.GetByIdAsync(1));
+            Assert.Null(result);
+        }
+        [Fact]
+        public async Task GetByIdAsync_ShouldReturnEmailFromUserTable()
+        {
+            var user = new IdentityUser
+            {
+                Id = "u1",
+                Email = "cardio@test.com",
+                UserName = "cardio@test.com"
+            };
+
+            var doctor = new Doctor
+            {
+                DoctorId = 10,
+                UserId = "u1",
+                FullName = "Doctor",
+                Specialisation = "Cardiology",
+                YearsOfExperience = 5,
+                ConsultationFee = 500,
+                IsActive = true
+            };
+
+            _context.Users.Add(user);
+            _context.Doctors.Add(doctor);
+
+            await _context.SaveChangesAsync();
+
+            var result = await _service.GetByIdAsync(10);
+
+            Assert.NotNull(result);
+            Assert.Equal("cardio@test.com", result.Email);
         }
 
         //  GetAll
@@ -250,16 +298,33 @@ namespace HealthCare.Api.Tests
         [Fact]
         public async Task AvailableDoctors_ShouldReturnDoctors()
         {
-            _repoMock.Setup(r =>
-                r.AvailableDoctors("Cardiology", It.IsAny<DateOnly>()))
-                .ReturnsAsync(new List<DoctorListDto>
+            _context.Doctors.Add(new Doctor
+            {
+                DoctorId = 1,
+                FullName = "Test Doctor",
+                Specialisation = "Cardiology",
+                IsActive = true
+            });
+
+            await _context.SaveChangesAsync();
+
+            _mapperMock.Setup(m =>
+                m.Map<List<DoctorListDto>>(It.IsAny<List<Doctor>>()))
+                .Returns(new List<DoctorListDto>
                 {
-                    new DoctorListDto()
+            new DoctorListDto()
                 });
 
-            var result = await _service.AvailableDoctors("Cardiology", DateOnly.FromDateTime(DateTime.Today));
+            // Act 
+            var result = await _service.AvailableDoctors(
+                "Cardiology",
+                DateOnly.FromDateTime(DateTime.Today)
+            );
 
-            Assert.NotEmpty(result);
+            // Assert 
+            Assert.NotNull(result);
+            Assert.NotEmpty(result.Doctors);
+            Assert.Equal(string.Empty, result.Message);
         }
     }
 }

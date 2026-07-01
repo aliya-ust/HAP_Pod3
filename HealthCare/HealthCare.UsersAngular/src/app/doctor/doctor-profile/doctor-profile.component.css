@@ -1,0 +1,160 @@
+.loading {
+  text-align: center;
+  padding: 30px;
+  font-size: 18px;
+  color: #555;
+}
+
+.profile-page {
+  display: flex;
+  min-height: 100vh;
+  background: radial-gradient(circle at 20% 20%, rgba(76,110,245,0.15), transparent 40%), radial-gradient(circle at 80% 80%, rgba(110,168,254,0.15), transparent 40%), linear-gradient(135deg, #eef2ff, #f8fbff);
+}
+
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding-top: 25px;
+}
+
+.dashboard-heading {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+  .dashboard-heading h2 {
+    font-size: 36px;
+    font-weight: 600;
+    color: #2c3e50;
+  }
+
+  .dashboard-heading p {
+    font-size: 16px;
+    color: gray;
+  }
+
+.profile-container {
+  width: 650px;
+}
+
+.profile-card {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow: 0px 15px 40px rgba(0,0,0,0.1);
+}
+
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #6ea8fe, #4c6ef5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+  .avatar i {
+    font-size: 30px;
+    color: white;
+  }
+
+.profile-info h1 {
+  margin: 0;
+  font-size: 22px;
+}
+
+.status {
+  margin-top: 5px;
+}
+
+.active {
+  background: #d4edda;
+  color: green;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+}
+
+.divider {
+  border: none;
+  border-top: 1px solid #eee;
+  margin: 20px 0;
+}
+
+.section-title {
+  font-weight: 600;
+  margin-bottom: 15px;
+  color: #1d3b72;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+}
+
+.info-box {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #f6f8fc;
+  padding: 15px;
+  border-radius: 12px;
+  transition: 0.3s;
+}
+
+  .info-box:hover {
+    background: #eef4ff;
+  }
+
+  .info-box i {
+    font-size: 18px;
+    color: #4c6ef5;
+  }
+
+  .info-box label {
+    font-size: 12px;
+    color: gray;
+  }
+
+  .info-box p {
+    margin: 0;
+    font-weight: 600;
+    font-size: 14px;
+  }
+
+.edit-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.edit-btn {
+  background: linear-gradient(to right, #4c6ef5, #4361ee);
+  color: white;
+  border: none;
+  padding: 10px 26px;
+  border-radius: 12px;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: 0.3s ease;
+}
+
+  .edit-btn:hover {
+    background: linear-gradient(to right, #3b5bdb, #364fc7);
+    transform: translateY(-1px);
+  }

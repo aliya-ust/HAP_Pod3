@@ -1,7 +1,6 @@
 using HealthCare.Api.Data;
 using HealthCare.Api.Mapping;
 using HealthCare.Api.Middleware;
-using HealthCare.Api.Models;
 using HealthCare.Api.Repositories.Implementations;
 using HealthCare.Api.Repositories.Interfaces;
 using HealthCare.Api.Services.Impl;
@@ -20,7 +19,12 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddProblemDetails();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.PropertyNamingPolicy =
+            System.Text.Json.JsonNamingPolicy.CamelCase;
+    });
 
 builder.Services.AddAutoMapper(cfg =>
 {
@@ -63,7 +67,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     {
         OnAuthenticationFailed = context =>
         {
-            // Set a breakpoint here in Visual Studio
             Console.WriteLine($"JWT Error: {context.Exception.Message}");
             return Task.CompletedTask;
         }
@@ -87,12 +90,11 @@ builder.Services.AddScoped<IHealthRecordService, HealthRecordService>();
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("BlazorPolicy", policy =>
+    options.AddPolicy("AllowAllClients", policy =>
     {
-       policy.WithOrigins("https://localhost:7206")
-      .AllowAnyHeader()
-      .AllowAnyMethod()
-      .AllowCredentials();
+        policy.WithOrigins("http://localhost:50358", "https://localhost:7206")
+       .AllowAnyHeader()
+       .AllowAnyMethod();
     });
 });
 builder.Services.AddEndpointsApiExplorer();
@@ -142,7 +144,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseRouting();
-app.UseCors("BlazorPolicy");
+app.UseCors("AllowAllClients");
 app.UseAuthentication();
 app.UseAuthorization();
 

@@ -1,0 +1,175 @@
+/* ===== GLOBAL ===== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", sans-serif;
+}
+
+/* ===== PAGE ===== */
+.dashboard-page {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+  background: linear-gradient(135deg, #eaf3ff, #f7fbff);
+  position: relative;
+}
+
+  /* ===== BLUE SHAPES ===== */
+  .dashboard-page::before {
+    content: "";
+    position: absolute;
+    width: 350px;
+    height: 350px;
+    background: rgba(37, 99, 235, 0.25);
+    border-radius: 50%;
+    top: -100px;
+    right: -100px;
+  }
+
+  .dashboard-page::after {
+    content: "";
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    background: rgba(37, 99, 235, 0.15);
+    border-radius: 50%;
+    bottom: -120px;
+    left: 200px;
+  }
+
+/* ===== MAIN CONTENT ===== */
+.main-content {
+  flex: 1;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+/* ===== HEADER ===== */
+.header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+  .header h1 {
+    font-size: 38px;
+    font-weight: 700;
+    color: #0f172a;
+  }
+
+  .header p {
+    font-size: 16px;
+    color: #64748b;
+    margin-top: 6px;
+  }
+
+/* ===== CARDS ===== */
+.cards {
+  display: flex;
+  gap: 30px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* ===== CARD ===== */
+.card {
+  width: 300px;
+  padding: 25px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  text-align: center;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 2;
+}
+
+  .card:hover {
+    transform: translateY(-6px);
+  }
+
+/* ===== ICON ===== */
+.icon {
+  width: 65px;
+  height: 65px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 15px;
+  color: white;
+  font-size: 26px;
+}
+
+/* ===== COLORS ===== */
+.blue {
+  background: linear-gradient(135deg, #2563eb, #60a5fa);
+}
+
+.purple {
+  background: linear-gradient(135deg, #7c3aed, #c084fc);
+}
+
+/* ===== TEXT ===== */
+.card h3 {
+  font-size: 18px;
+  color: #1e293b;
+}
+
+.card h1 {
+  font-size: 42px;
+  font-weight: 700;
+  margin: 12px 0;
+  color: #2563eb;
+}
+
+.card p {
+  font-size: 13px;
+  color: #64748b;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 992px) {
+  .sidebar {
+    width: 220px;
+  }
+
+    .sidebar li {
+      font-size: 16px;
+    }
+
+      .sidebar li i {
+        font-size: 20px;
+      }
+
+  .header h1 {
+    font-size: 32px;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-page {
+    flex-direction: column;
+    overflow-y: auto;
+  }
+
+  .sidebar {
+    width: 100%;
+    height: auto;
+  }
+
+  .main-content {
+    height: auto;
+    padding: 30px 15px;
+  }
+
+  .cards {
+    flex-direction: column;
+    align-items: center;
+  }
+}

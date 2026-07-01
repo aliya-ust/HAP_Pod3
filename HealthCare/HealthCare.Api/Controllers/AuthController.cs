@@ -24,9 +24,22 @@ namespace HealthCare.Api.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> RegisterPatient(CreatePatientDto dto)
         {
-            await _authService.RegisterPatientAsync(dto);
-            return Ok("Registration successful");
+            try
+            {
+                await _authService.RegisterPatientAsync(dto);
+
+                return Ok(new { message = "Registration successful" });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
         }
+
 
         [HttpPost("register/doctor")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
@@ -41,12 +54,10 @@ namespace HealthCare.Api.Controllers
             }
             catch (InvalidOperationException ex)
             {
-                // ✅ duplicate email error
                 return BadRequest(ex.Message);
             }
             catch (Exception)
             {
-                // ✅ fallback error
                 return StatusCode(500, "Something went wrong");
             }
         }
@@ -55,8 +66,23 @@ namespace HealthCare.Api.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginDto dto)
         {
-            var response = await _authService.LoginAsync(dto);
-            return Ok(response);
+            try
+            {
+                var response = await _authService.LoginAsync(dto);
+                return Ok(response);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return Unauthorized("Invalid email or password");
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, "Something went wrong");
+            }
         }
 
         [HttpPost("change-password")]

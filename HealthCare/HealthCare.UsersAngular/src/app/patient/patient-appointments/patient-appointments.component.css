@@ -1,0 +1,120 @@
+.appointments-page {
+  display: flex;
+  min-height: 100vh;
+}
+
+.main {
+  flex: 1;
+  padding: 20px;
+  overflow-x: auto;
+}
+
+/* Heading */
+.heading h2 {
+  font-weight: bold;
+  color: #0b2a4a;
+  margin-bottom: 8px;
+}
+
+.heading p {
+  color: gray;
+  margin-bottom: 20px;
+}
+
+/* Card */
+.table-card {
+  margin-top: 20px;
+  background: #fff;
+  border-radius: 20px;
+  overflow-x: auto;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Table */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: auto;
+}
+
+/* Header */
+thead {
+  background: linear-gradient(90deg, #0b2a4a, #2f6ad9);
+  color: white;
+}
+
+th {
+  padding: 18px 15px;
+  text-align: left;
+  font-weight: 600;
+}
+
+tbody {
+  display: table-row-group !important;
+}
+
+  tbody tr {
+    display: table-row !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+
+/* Rows */
+td {
+  display: table-cell !important;
+  padding: 18px 15px;
+  color: #333;
+  vertical-align: middle;
+}
+
+/* Alternate rows */
+tbody tr:nth-child(even) {
+  background: #f3f5f9;
+}
+
+tbody tr:hover {
+  background: #eef4ff;
+}
+
+/* Status badges */
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-weight: 500;
+}
+
+  .status.pending {
+    background: #ffeaa7;
+    color: #856404;
+  }
+
+  .status.confirmed {
+    background: #b8e6c1;
+    color: #0f5132;
+  }
+
+  .status.completed {
+    background: #cfe2ff;
+    color: #084298;
+  }
+
+  .status.cancelled {
+    background: #f8d7da;
+    color: #842029;
+  }
+
+/* Empty State */
+.empty {
+  text-align: center;
+  padding: 30px;
+  color: gray;
+  font-size: 16px;
+}
+
+th i,
+td i {
+  margin-right: 6px;
+}
