@@ -1,0 +1,14 @@
+<div class="page">
+  <h2>My Profile</h2>
+
+  <div class="card" *ngIf="profile">
+    <div class="profile-view">
+      <div class="field"><label>Name</label><span>{{ profile.fullName }}</span></div>
+      <div class="field"><label>Email</label><span>{{ profile.email }}</span></div>
+      <div class="field"><label>Phone</label><span>{{ profile.phoneNumber }}</span></div>
+      <div class="field"><label>Gender</label><span>{{ profile.gender }}</span></div>
+      <div class="field"><label>Insurance ID</label><span>{{ profile.insuranceId || 'N/A' }}</span></div>
+      <button class="btn btn-primary" (click)="openEditDialog()">Edit Profile</button>
+    </div>
+  </div>
+</div>

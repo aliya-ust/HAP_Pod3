@@ -1,0 +1,25 @@
+<nav class="navbar">
+  <div class="navbar-brand">
+    <a routerLink="/">HealthCare Portal</a>
+  </div>
+
+  <button class="navbar-toggle" (click)="toggleMenu()">
+    <span></span><span></span><span></span>
+  </button>
+
+  <div class="navbar-menu" [class.open]="menuOpen">
+    <a
+      *ngFor="let link of visibleLinks"
+      [routerLink]="link.route"
+      routerLinkActive="active"
+      (click)="menuOpen = false"
+    >
+      {{ link.label }}
+    </a>
+  </div>
+
+  <div class="navbar-actions" *ngIf="tokenService.isLoggedIn()">
+    <span class="navbar-role">{{ tokenService.getRole() }}</span>
+    <button class="btn-logout" (click)="logout()">Logout</button>
+  </div>
+</nav>
