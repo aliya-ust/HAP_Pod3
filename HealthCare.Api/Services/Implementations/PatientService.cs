@@ -6,6 +6,7 @@ using HealthCare.Api.Exceptions;
 using HealthCare.Api.Models;
 using HealthCare.Api.Repositories.Interfaces;
 using HealthCare.Api.Services.Interfaces;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace HealthCare.Api.Services.Implementations
@@ -16,13 +17,15 @@ namespace HealthCare.Api.Services.Implementations
         private readonly IPatientRepository _patientRepository;
         private readonly HealthCareDbContext _context;
         private readonly IMapper _mapper;
+        private readonly UserManager<User> _userManager;
 
-        public PatientService(IRepository<Patient> repository, IPatientRepository patientRepository, HealthCareDbContext context, IMapper mapper)
+        public PatientService(IRepository<Patient> repository, IPatientRepository patientRepository, HealthCareDbContext context, IMapper mapper, UserManager<User> userManager)
         {
             _repository = repository;
             _patientRepository = patientRepository;
             _context = context;
             _mapper = mapper;
+            _userManager = userManager;
         }
 
         public async Task<PatientListDto> GetByIdAsync(int id)
@@ -125,6 +128,19 @@ namespace HealthCare.Api.Services.Implementations
 
             try
             {
+                if (patient.UserId is not null)
+                {
+                    var user = await _userManager.FindByIdAsync(patient.UserId);
+                    if (user is not null)
+                    {
+                        var result = await _userManager.DeleteAsync(user);
+                        if (!result.Succeeded)
+                            throw new IdentityOperationException(
+                                string.Join(", ", result.Errors.Select(e => e.Description)));
+                        return;
+                    }
+                }
+
                 await _repository.DeleteAsync(id);
                 await _context.SaveChangesAsync();
             }

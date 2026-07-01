@@ -1,13 +1,14 @@
-﻿using AutoMapper;
+using AutoMapper;
 using HealthCare.Api.Data;
-using HealthCare.Api.DTOs;
-using HealthCare.Api.DTOs.Doctor;
+using HealthCare.Api.Exceptions;
+using HealthCare.Shared.DTOs;
+using HealthCare.Shared.DTOs.Doctor;
 using HealthCare.Api.Models;
 using HealthCare.Api.Repositories.Interfaces;
 using HealthCare.Api.Services.Implementations;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Moq;
-using System.Linq.Expressions;
 
 namespace HealthCare.Api.Tests
 {
@@ -16,6 +17,7 @@ namespace HealthCare.Api.Tests
         private readonly Mock<IDoctorRepository> _repoMock;
         private readonly Mock<IAppointmentRepository> _appointmentRepoMock;
         private readonly Mock<IMapper> _mapperMock;
+        private readonly Mock<UserManager<User>> _userManagerMock;
         private readonly HealthCareDbContext _context;
         private readonly DoctorService _service;
 
@@ -24,6 +26,9 @@ namespace HealthCare.Api.Tests
             _repoMock = new Mock<IDoctorRepository>();
             _appointmentRepoMock = new Mock<IAppointmentRepository>();
             _mapperMock = new Mock<IMapper>();
+
+            _userManagerMock = new Mock<UserManager<User>>(
+                Mock.Of<IUserStore<User>>(), null, null, null, null, null, null, null, null);
 
             var options = new DbContextOptionsBuilder<HealthCareDbContext>()
                 .UseInMemoryDatabase(Guid.NewGuid().ToString())
@@ -35,7 +40,8 @@ namespace HealthCare.Api.Tests
                 _repoMock.Object,
                 _appointmentRepoMock.Object,
                 _context,
-                _mapperMock.Object
+                _mapperMock.Object,
+                _userManagerMock.Object
             );
         }
 
@@ -59,33 +65,24 @@ namespace HealthCare.Api.Tests
         {
             _repoMock.Setup(r => r.GetByIdAsync(1)).ReturnsAsync((Doctor?)null);
 
-            await Assert.ThrowsAsync<InvalidOperationException>(() =>
-                _service.GetByIdAsync(1));
+            await Assert.ThrowsAsync<DoctorNotFoundException>(() => _service.GetByIdAsync(1));
         }
 
         //  GetAll
         [Fact]
         public async Task GetAllAsync_ShouldReturnPagedResult()
         {
-            var doctors = new List<Doctor> { new Doctor() };
-
-            var paged = new PagedResult<Doctor>
+            _context.Set<Doctor>().Add(new Doctor
             {
-                Items = doctors,
-                PageNumber = 1,
-                PageSize = 10,
-                TotalCount = 1
-            };
+                FullName = "Test Doctor",
+                Specialisation = "Cardiology"
+            });
+            await _context.SaveChangesAsync();
 
-            _repoMock.Setup(r => r.GetAllAsync(
-                It.IsAny<int>(),
-                It.IsAny<int>(),
-                It.IsAny<Expression<Func<Doctor, bool>>>(),
-                It.IsAny<Func<IQueryable<Doctor>, IOrderedQueryable<Doctor>>>()))
-                .ReturnsAsync(paged);
+            _repoMock.Setup(r => r.GetQueryable())
+                .Returns(_context.Set<Doctor>());
 
-
-            _mapperMock.Setup(m => m.Map<IEnumerable<DoctorListDto>>(doctors))
+            _mapperMock.Setup(m => m.Map<IEnumerable<DoctorListDto>>(It.IsAny<IEnumerable<Doctor>>()))
                 .Returns(new List<DoctorListDto> { new DoctorListDto() });
 
             var result = await _service.GetAllAsync(new DoctorFilter());
@@ -130,8 +127,7 @@ namespace HealthCare.Api.Tests
         {
             _repoMock.Setup(r => r.GetByIdAsync(1)).ReturnsAsync((Doctor?)null);
 
-            await Assert.ThrowsAsync<InvalidOperationException>(() =>
-                _service.UpdateAsync(1, new UpdateDoctorDto()));
+            await Assert.ThrowsAsync<DoctorNotFoundException>(() => _service.UpdateAsync(1, new UpdateDoctorDto()));
         }
 
         //  UpdateStatus
@@ -165,8 +161,7 @@ namespace HealthCare.Api.Tests
         {
             _repoMock.Setup(r => r.GetByIdAsync(1)).ReturnsAsync((Doctor?)null);
 
-            await Assert.ThrowsAsync<InvalidOperationException>(() =>
-                _service.DeleteAsync(1));
+            await Assert.ThrowsAsync<DoctorNotFoundException>(() => _service.DeleteAsync(1));
         }
 
         //  GetSlots
@@ -187,8 +182,7 @@ namespace HealthCare.Api.Tests
             _repoMock.Setup(r => r.GetSlots(1))
                 .ReturnsAsync(new List<string>());
 
-            await Assert.ThrowsAsync<InvalidOperationException>(() =>
-                _service.GetSlots(1));
+            await Assert.ThrowsAsync<NoAvailableSlotsException>(() => _service.GetSlots(1));
         }
 
         //  CreateSlots

@@ -1,10 +1,12 @@
-﻿using AutoMapper;
+using AutoMapper;
 using HealthCare.Api.Data;
-using HealthCare.Api.DTOs;
-using HealthCare.Api.DTOs.Doctor;
+using HealthCare.Shared.DTOs;
+using HealthCare.Shared.DTOs.Doctor;
+using HealthCare.Api.Exceptions;
 using HealthCare.Api.Models;
 using HealthCare.Api.Repositories.Interfaces;
 using HealthCare.Api.Services.Interfaces;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
@@ -16,14 +18,15 @@ namespace HealthCare.Api.Services.Implementations
         private readonly IAppointmentRepository _appointmentRepository;
         private readonly HealthCareDbContext _context;
         private readonly IMapper _mapper;
-        private const string NotFoundExceptionMessage = "Doctor not found.";
+        private readonly UserManager<User> _userManager;
 
-        public DoctorService(IDoctorRepository repository, IAppointmentRepository appointmentRepository, HealthCareDbContext context, IMapper mapper)
+        public DoctorService(IDoctorRepository repository, IAppointmentRepository appointmentRepository, HealthCareDbContext context, IMapper mapper, UserManager<User> userManager)
         {
             _repository = repository;
             _appointmentRepository = appointmentRepository;
             _context = context;
             _mapper = mapper;
+            _userManager = userManager;
         }
 
         public async Task<DoctorListDto> GetByIdAsync(int id)
@@ -31,7 +34,7 @@ namespace HealthCare.Api.Services.Implementations
             var doctor = await _repository.GetByIdAsync(id);
 
             if (doctor is null)
-                throw new InvalidOperationException(NotFoundExceptionMessage);
+                throw new DoctorNotFoundException(id);
 
             return _mapper.Map<DoctorListDto>(doctor);
         }
@@ -115,9 +118,9 @@ namespace HealthCare.Api.Services.Implementations
             var doctor = await _repository.GetByIdAsync(id);
 
             if (doctor is null)
-                throw new InvalidOperationException(NotFoundExceptionMessage);
+                throw new DoctorNotFoundException(id);
 
-            _mapper.Map(dto, doctor); // maps onto the tracked entity — EF picks up the changes
+            _mapper.Map(dto, doctor); // maps onto the tracked entity � EF picks up the changes
 
             await _repository.UpdateAsync(doctor);
             await _context.SaveChangesAsync();
@@ -128,7 +131,7 @@ namespace HealthCare.Api.Services.Implementations
             var doctor = await _repository.GetByIdAsync(id);
 
             if (doctor is null)
-                throw new InvalidOperationException(NotFoundExceptionMessage);
+                throw new DoctorNotFoundException(id);
 
             doctor.IsActive = isActive;
 
@@ -141,16 +144,29 @@ namespace HealthCare.Api.Services.Implementations
             var doctor = await _repository.GetByIdAsync(id);
 
             if (doctor is null)
-                throw new InvalidOperationException(NotFoundExceptionMessage);
+                throw new DoctorNotFoundException(id);
 
             try
             {
+                if (doctor.UserId is not null)
+                {
+                    var user = await _userManager.FindByIdAsync(doctor.UserId);
+                    if (user is not null)
+                    {
+                        var result = await _userManager.DeleteAsync(user);
+                        if (!result.Succeeded)
+                            throw new IdentityOperationException(
+                                string.Join(", ", result.Errors.Select(e => e.Description)));
+                        return;
+                    }
+                }
+
                 await _repository.DeleteAsync(id);
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateException ex)
             {
-                throw new InvalidOperationException("Failed to delete Doctor. It may be referenced by existing appointments or health records.", ex);
+                throw new DbHandleException("Failed to delete Doctor. It may be referenced by existing appointments or health records.");
             }
         }
 
@@ -159,7 +175,7 @@ namespace HealthCare.Api.Services.Implementations
             var slots = await _repository.GetSlots(doctorId);
 
             if (slots.Count == 0)
-                throw new InvalidOperationException("No available slots found for this doctor.");
+                throw new NoAvailableSlotsException();
 
             return slots;
         }
@@ -198,7 +214,7 @@ namespace HealthCare.Api.Services.Implementations
 
                 if (availableSlots.Count != allSlots.Count)
                 {
-                    // Doctor has confirmed/pending appointments that day — cancel them and proceed
+                    // Doctor has confirmed/pending appointments that day � cancel them and proceed
                     await _appointmentRepository.CancelAppointmentsByDoctorDate(id, leave.LeaveDate);
                     result.CreatedWithCancelledAppointments.Add(leave.LeaveDate);
                 }

@@ -16,9 +16,13 @@ namespace HealthCare.Shared.DTOs.Doctor
         [Required]
         [MaxLength(100)]
         [EmailAddress]
+        [RegularExpression(@"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$",
+            ErrorMessage = "Enter a valid email address with domain (e.g., name@example.com).")]
         public string Email { get; set; } = null!;
 
         [Required]
+        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,}$",
+            ErrorMessage = "Password must be at least 8 characters with uppercase, lowercase, digit, and special character.")]
         public string Password { get; set; } = null!;
 
         [Required]
@@ -26,7 +30,7 @@ namespace HealthCare.Shared.DTOs.Doctor
         public int YearsOfExperience { get; set; }
 
         [Required]
-        [Range(0.01, 5000, ErrorMessage = "Consultation fee cannot exceed 5000.")]
+        [Range(0.01, 5000, ErrorMessage = "Consultation fee must be between ₹1 and ₹5,000.")]
         public decimal ConsultationFee { get; set; }
 
         [Required]

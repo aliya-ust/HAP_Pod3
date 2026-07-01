@@ -7,6 +7,7 @@ using HealthCare.Api.Services.Implementations;
 using HealthCare.Api.Repositories.Interfaces;
 using HealthCare.Shared.DTOs;
 using HealthCare.Shared.DTOs.Patient;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace HealthCare.Api.Tests
@@ -16,6 +17,7 @@ namespace HealthCare.Api.Tests
         private readonly Mock<IRepository<Patient>> _repoMock;
         private readonly Mock<IPatientRepository> _patientRepoMock;
         private readonly Mock<IMapper> _mapperMock;
+        private readonly Mock<UserManager<User>> _userManagerMock;
         private readonly HealthCareDbContext _context;
         private readonly PatientService _service;
 
@@ -24,6 +26,9 @@ namespace HealthCare.Api.Tests
             _repoMock = new Mock<IRepository<Patient>>();
             _patientRepoMock = new Mock<IPatientRepository>();
             _mapperMock = new Mock<IMapper>();
+
+            _userManagerMock = new Mock<UserManager<User>>(
+                Mock.Of<IUserStore<User>>(), null, null, null, null, null, null, null, null);
 
             var options = new DbContextOptionsBuilder<HealthCareDbContext>()
                 .UseInMemoryDatabase(Guid.NewGuid().ToString())
@@ -35,7 +40,8 @@ namespace HealthCare.Api.Tests
                 _repoMock.Object,
                 _patientRepoMock.Object,
                 _context,
-                _mapperMock.Object
+                _mapperMock.Object,
+                _userManagerMock.Object
             );
         }
 
