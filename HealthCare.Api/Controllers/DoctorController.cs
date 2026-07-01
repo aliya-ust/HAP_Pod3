@@ -1,5 +1,7 @@
-﻿using HealthCare.Api.DTOs.Doctor;
+using HealthCare.Shared.DTOs.Doctor;
 using HealthCare.Api.Services.Interfaces;
+using HealthCare.Api.Utilities;
+using HealthCare.Shared;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -18,56 +20,44 @@ namespace HealthCare.Api.Controllers
         }
 
         [HttpGet("profile")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        [Authorize(Roles = "Doctor")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Doctor")]
         public async Task<IActionResult> GetMyProfile()
         {
-            var doctorId = GetDoctorIdFromClaims();
+            var doctorId = ClaimsHelper.GetDoctorId(User);
             var result = await _doctorService.GetByIdAsync(doctorId);
-            return Ok(result);
+            return Ok(ApiResponse<DoctorListDto>.Ok(result));
         }
 
         [HttpPut("profile")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        [Authorize(Roles = "Doctor")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Doctor")]
         public async Task<IActionResult> UpdateDoctor([FromBody] UpdateDoctorDto dto)
         {
             if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+                return BadRequest(ApiResponse.Fail("Invalid data."));
 
-            var doctorId = GetDoctorIdFromClaims();
+            var doctorId = ClaimsHelper.GetDoctorId(User);
             await _doctorService.UpdateAsync(doctorId, dto);
-            return Ok();
+            return Ok(ApiResponse.Ok("Profile updated successfully"));
         }
 
         [HttpGet("available")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        [Authorize(Roles = "Patient")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Patient")]
         public async Task<IActionResult> GetAvailableDoctors([FromQuery] string specialisation, [FromQuery] DateOnly date)
         {
             var result = await _doctorService.AvailableDoctors(specialisation, date);
-            return Ok(result);
+            return Ok(ApiResponse<List<DoctorListDto>>.Ok(result));
         }
 
         [HttpPost("leaves")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        [Authorize(Roles = "Doctor")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Doctor")]
         public async Task<IActionResult> AddDoctorLeaves([FromBody] List<CreateLeaveDto> leaves)
         {
             if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+                return BadRequest(ApiResponse.Fail("Invalid data."));
 
-            var doctorId = GetDoctorIdFromClaims();
+            var doctorId = ClaimsHelper.GetDoctorId(User);
             var result = await _doctorService.CreateLeave(doctorId, leaves);
-            return Ok(result);
-        }
-
-        private int GetDoctorIdFromClaims()
-        {
-            var claim = User.FindFirst("DoctorId")
-                ?? throw new InvalidOperationException("DoctorId claim not found in token.");
-
-            return int.Parse(claim.Value);
+            return Ok(ApiResponse<CreateLeaveResultDto>.Ok(result));
         }
     }
 }

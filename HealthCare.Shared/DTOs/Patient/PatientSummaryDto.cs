@@ -1,8 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace HealthCare.Api.DTOs.Patient
+namespace HealthCare.Shared.DTOs.Patient
 {
     public class PatientSummaryDto
     {

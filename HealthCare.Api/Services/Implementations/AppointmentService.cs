@@ -1,7 +1,8 @@
-﻿using AutoMapper;
+using AutoMapper;
 using HealthCare.Api.Data;
-using HealthCare.Api.DTOs;
-using HealthCare.Api.DTOs.Appointment;
+using HealthCare.Shared.DTOs;
+using HealthCare.Shared.DTOs.Appointment;
+using HealthCare.Api.Exceptions;
 using HealthCare.Api.Models;
 using HealthCare.Api.Repositories.Interfaces;
 using HealthCare.Api.Services.Interfaces;
@@ -29,7 +30,7 @@ namespace HealthCare.Api.Services.Implementations
             var appointment = await _repository.GetByIdAsync(id);
 
             if (appointment is null)
-                throw new InvalidOperationException("Appointment not found.");
+                throw new AppointmentNotFoundException();
 
             return _mapper.Map<AppointmentListDto>(appointment);
         }
@@ -56,6 +57,7 @@ namespace HealthCare.Api.Services.Implementations
                 .Select(a => new AppointmentListDto
                 {
                     AppointmentId = a.AppointmentId,
+                    PatientId = a.PatientId,
                     PatientName = a.Patient.FullName,
                     DoctorName = a.Doctor.FullName,
                     ScheduledDate = a.ScheduledDate,
@@ -76,7 +78,7 @@ namespace HealthCare.Api.Services.Implementations
         public async Task AddAsync(CreateAppointmentDto dto, int patientId)
         {
             if (dto.ScheduledDate < DateOnly.FromDateTime(DateTime.Today))
-                throw new InvalidOperationException("Cannot book an appointment for a past date.");
+                throw new PastAppointmentException();
 
             await IsAvailable(dto.ScheduledDate, dto.DoctorId, dto.TimeSlot);
 
@@ -90,7 +92,7 @@ namespace HealthCare.Api.Services.Implementations
             }
             catch (DbUpdateException ex)
             {
-                throw new InvalidOperationException("Failed to book the appointment.", ex);
+                throw new DbHandleException("Failed to create appointment.");
             }
         }
 
@@ -99,7 +101,7 @@ namespace HealthCare.Api.Services.Implementations
             var appointment = await _repository.GetByIdAsync(id);
 
             if (appointment is null) 
-                throw new InvalidOperationException("Appointment not found.");
+                throw new AppointmentNotFoundException();
 
             _mapper.Map(dto, appointment);
             await _repository.UpdateAsync(appointment);
@@ -111,7 +113,7 @@ namespace HealthCare.Api.Services.Implementations
             var appointment = await _repository.GetByIdAsync(id);
 
             if (appointment is null)
-                throw new InvalidOperationException("Patient not found.");
+                throw new AppointmentNotFoundException();
 
             appointment.Status = dto.Status;
             appointment.CancellationReason = dto.CancellationReason;
@@ -125,7 +127,7 @@ namespace HealthCare.Api.Services.Implementations
             var appointment = await _repository.GetByIdAsync(id);
 
             if (appointment is null)
-                throw new InvalidOperationException("Appointment not found.");
+                throw new AppointmentNotFoundException();
             try
             {
                 await _repository.DeleteAsync(id);
@@ -133,14 +135,14 @@ namespace HealthCare.Api.Services.Implementations
             }
             catch (DbUpdateException ex)
             {
-                throw new InvalidOperationException("Failed to delete appointment. It may be referenced by existing health records.", ex);
+                throw new DbHandleException("Failed to delete appointment. It may be referenced by existing health records.");
             }
         }
 
         public async Task<List<string>> AvailableTimeSlots(DateOnly date, int doctorId)
         {
             if (date < DateOnly.FromDateTime(DateTime.Today))
-                throw new InvalidOperationException("Cannot check availability for a past date.");
+                throw new PastAppointmentException("Cannot check availability for a past date.");
 
             var allSlots = await _doctorService.GetSlots(doctorId);
             var bookedSlots = await _repository.BookedTimeSlots(date, doctorId);
@@ -155,7 +157,7 @@ namespace HealthCare.Api.Services.Implementations
             var available = await _repository.IsAvailable(date, doctorId, timeSlot);
 
             if (!available)
-                throw new InvalidOperationException("This time slot is already booked.");
+                throw new SlotAlreadyBookedException();
 
             return true;
         }

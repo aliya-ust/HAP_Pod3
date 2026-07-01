@@ -1,4 +1,4 @@
-﻿namespace HealthCare.Api.DTOs.Doctor
+namespace HealthCare.Shared.DTOs.Doctor
 {
     public class CreateLeaveResultDto
     {

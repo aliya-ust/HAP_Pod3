@@ -1,4 +1,4 @@
-﻿namespace HealthCare.Api.DTOs
+namespace HealthCare.Shared.DTOs
 {
     public class PaginationParams
     {

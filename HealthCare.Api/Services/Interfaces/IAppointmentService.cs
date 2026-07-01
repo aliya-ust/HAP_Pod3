@@ -1,5 +1,5 @@
-﻿using HealthCare.Api.DTOs;
-using HealthCare.Api.DTOs.Appointment;
+using HealthCare.Shared.DTOs;
+using HealthCare.Shared.DTOs.Appointment;
 using HealthCare.Api.Models;
 
 namespace HealthCare.Api.Services.Interfaces

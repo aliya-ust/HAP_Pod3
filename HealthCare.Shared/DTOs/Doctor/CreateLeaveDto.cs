@@ -1,6 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
-namespace HealthCare.Api.DTOs.Doctor
+namespace HealthCare.Shared.DTOs.Doctor
 {
     public class CreateLeaveDto
     {

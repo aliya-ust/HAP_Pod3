@@ -1,0 +1,19 @@
+@page "/auth-callback"
+@layout MainLayout
+@inject TokenService TokenService
+@inject NavigationManager NavManager
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        var uri = NavManager.ToAbsoluteUri(NavManager.Uri);
+        var token = System.Web.HttpUtility.ParseQueryString(uri.Query).Get("token");
+
+        if (!string.IsNullOrEmpty(token))
+        {
+            await TokenService.SetToken(token);
+        }
+
+        NavManager.NavigateTo("/");
+    }
+}

@@ -1,4 +1,7 @@
-﻿<div class="layout-wrapper">
+﻿@inject TokenService TokenService
+@inject NavigationManager NavigationManager
+
+<div class="layout-wrapper">
 
     <!-- Sidebar -->
     <div class="sidebar-container @NavMenuCssClass">
@@ -34,6 +37,13 @@
                 <span>Appointments</span>
             </NavLink>
 
+            <div class="nav-divider">Account</div>
+
+            <a class="nav-item-link" href="" @onclick="Logout" @onclick:preventDefault="true">
+                <i class="bi bi-box-arrow-right"></i>
+                <span>Logout</span>
+            </a>
+
         </nav>
 
     </div>
@@ -44,4 +54,10 @@
     private bool collapseNavMenu = true;
     private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
     private void ToggleNavMenu() => collapseNavMenu = !collapseNavMenu;
+
+    private async Task Logout()
+    {
+        await TokenService.RemoveToken();
+        NavigationManager.NavigateTo("http://localhost:4200/logout");
+    }
 }

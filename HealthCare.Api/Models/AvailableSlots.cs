@@ -11,6 +11,9 @@ namespace HealthCare.Api.Models
         public int DoctorId { get; set; }
 
         [Required]
+        public DateOnly Date { get; set; }
+
+        [Required]
         [MaxLength(20)]
         public string TimeSlot { get; set; } = null!;
 

@@ -1,0 +1,110 @@
+.page {
+  max-width: 700px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+h2 { margin-bottom: 1.25rem; }
+
+.card {
+  background: #fff;
+  border-radius: 8px;
+  padding: 1.25rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  margin-bottom: 1.25rem;
+}
+
+.filter-row {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-end;
+  flex-wrap: wrap;
+
+  .form-group {
+    flex: 1;
+    min-width: 180px;
+  }
+}
+
+.form-group {
+  label {
+    display: block;
+    margin-bottom: 0.35rem;
+    font-size: 0.85rem;
+    color: #555;
+  }
+
+  input,
+  select {
+    width: 100%;
+    padding: 0.5rem 0.7rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    box-sizing: border-box;
+  }
+}
+
+.btn {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: #1a73e8;
+  color: #fff;
+  &:disabled { opacity: 0.6; cursor: not-allowed; }
+}
+
+.doctor-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.doctor-item {
+  padding: 0.75rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  &:hover, &.selected {
+    border-color: #1a73e8;
+    background: #f0f6ff;
+  }
+}
+.doctor-info { display: flex; flex-direction: column; gap: 0.2rem; }
+.doctor-spec { font-size: 0.8rem; color: #888; }
+.doctor-fee { font-weight: 600; color: #1a73e8; font-size: 0.95rem; }
+
+.slots-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.slot-btn {
+  padding: 0.5rem 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background: #fff;
+  cursor: pointer;
+
+  &.active {
+    background: #1a73e8;
+    color: #fff;
+    border-color: #1a73e8;
+  }
+}
+
+.btn-book {
+  margin-top: 0.5rem;
+}
+.no-results { text-align: center; }
+.placeholder { color: #999; font-size: 0.9rem; text-align: center; padding: 1rem; }

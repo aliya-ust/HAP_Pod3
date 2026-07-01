@@ -1,4 +1,4 @@
-﻿namespace HealthCare.Api.DTOs.Auth
+namespace HealthCare.Shared.DTOs.Auth
 {
     public class AuthResponseDto
     {

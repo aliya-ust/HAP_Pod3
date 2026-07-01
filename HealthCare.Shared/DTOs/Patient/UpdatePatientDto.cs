@@ -1,8 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
-namespace HealthCare.Api.DTOs.Patient
+namespace HealthCare.Shared.DTOs.Patient
 {
-    // DateOfBirth intentionally excluded — not editable after registration
+    // DateOfBirth intentionally excluded � not editable after registration
     // IsActive intentionally excluded
     public class UpdatePatientDto
     {
@@ -16,7 +16,6 @@ namespace HealthCare.Api.DTOs.Patient
         [RegularExpression(@"^[6-9]\d{9}$", ErrorMessage = "Phone number must be 10 digits and start with 6, 7, 8, or 9.")]
         public string PhoneNumber { get; set; } = null!;
 
-        [Required]
         [MaxLength(100)]
         [EmailAddress]
         public string Email { get; set; } = null!;

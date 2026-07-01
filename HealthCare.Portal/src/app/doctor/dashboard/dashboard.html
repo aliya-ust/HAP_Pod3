@@ -1,0 +1,53 @@
+<div class="page">
+  <h2>Doctor Dashboard</h2>
+
+  <div class="stats-grid" *ngIf="!loading">
+    <div class="stat-card">
+      <span class="stat-value">{{ todayAppointments.length }}</span>
+      <span class="stat-label">Today's Appointments</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-value">{{ upcomingCount }}</span>
+      <span class="stat-label">Upcoming Appointments</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-value">{{ pendingCount }}</span>
+      <span class="stat-label">Pending Confirmation</span>
+    </div>
+    <div class="stat-card">
+      <a routerLink="/doctor-profile" class="stat-link">
+        <span class="stat-value">Apply</span>
+        <span class="stat-label">Leave</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Today's Schedule</h3>
+    <div *ngIf="todayAppointments.length === 0" class="placeholder">No appointments today</div>
+    <div *ngFor="let a of todayAppointments" class="schedule-item">
+      <span class="schedule-time">{{ a.timeSlot }}</span>
+      <span class="schedule-patient">{{ a.patientName }}</span>
+      <span class="status-badge" [class.pending]="a.status === 'Pending'"
+                                 [class.confirmed]="a.status === 'Confirmed'"
+                                 [class.cancelled]="a.status === 'Cancelled'">
+        {{ a.status }}
+      </span>
+    </div>
+  </div>
+
+  <div class="quick-links">
+    <a routerLink="/manage-appointments" class="quick-link-card">
+      <span class="ql-title">Manage Appointments</span>
+      <span class="ql-desc">View, confirm, or cancel appointments</span>
+    </a>
+    <a routerLink="/doctor-profile" class="quick-link-card">
+      <span class="ql-title">My Profile</span>
+      <span class="ql-desc">View profile and apply for leave</span>
+    </a>
+    <a routerLink="/change-password" class="quick-link-card">
+      <span class="ql-title">Change Password</span>
+      <span class="ql-desc">Update your account password</span>
+    </a>
+  </div>
+</div>

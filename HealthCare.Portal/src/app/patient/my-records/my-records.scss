@@ -1,0 +1,32 @@
+.page { max-width: 800px; margin: 2rem auto; padding: 0 1rem; }
+h2 { margin-bottom: 1.25rem; }
+.card { background: #fff; border-radius: 8px; padding: 1.25rem; box-shadow: 0 2px 8px rgba(0,0,0,0.08); margin-bottom: 1rem; }
+.placeholder { color: #999; font-size: 0.9rem; text-align: center; padding: 2rem; }
+.record-card {
+  background: #fff;
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  margin-bottom: 0.75rem;
+}
+.record-meta {
+  display: flex;
+  gap: 1.5rem;
+  font-size: 0.85rem;
+  color: #666;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #f0f0f0;
+}
+.record-field {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.3rem 0;
+  font-size: 0.9rem;
+}
+.record-field label {
+  font-weight: 600;
+  color: #555;
+  min-width: 90px;
+}
+.record-field span { color: #333; }

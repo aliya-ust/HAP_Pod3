@@ -1,0 +1,57 @@
+<div class="page">
+  <h2>Appointments</h2>
+
+  <div class="card filter-card">
+    <div class="filter-row">
+      <label for="statusFilter">Filter by Status</label>
+      <select id="statusFilter" [(ngModel)]="statusFilter" (ngModelChange)="applyFilter()">
+        <option value="All">All</option>
+        <option value="Pending">Pending</option>
+        <option value="Confirmed">Confirmed</option>
+        <option value="Cancelled">Cancelled</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="loading" *ngIf="loading">Loading appointments...</div>
+
+  <div class="card appointment-card" *ngFor="let a of pagedAppointments">
+    <div class="appt-header">
+      <span class="patient-name">{{ a.patientName }}</span>
+      <span class="status-badge" [class.pending]="a.status === 'Pending'"
+                                   [class.confirmed]="a.status === 'Confirmed'"
+                                   [class.cancelled]="a.status === 'Cancelled'">
+        {{ a.status }}
+      </span>
+    </div>
+    <div class="appt-details">
+      <span>Date: {{ a.scheduledDate }}</span>
+      <span>Time: {{ a.timeSlot }}</span>
+    </div>
+    <div class="appt-actions">
+      <ng-container [ngSwitch]="a.status">
+        <ng-container *ngSwitchCase="'Pending'">
+          <button class="btn btn-primary btn-sm" (click)="confirmAppointment(a.appointmentId)">Confirm</button>
+          <button class="btn btn-danger btn-sm" (click)="cancelAppointment(a.appointmentId)">Cancel</button>
+        </ng-container>
+        <ng-container *ngSwitchCase="'Confirmed'">
+          <button class="btn btn-secondary btn-sm" (click)="viewHealthRecords(a)">View Records</button>
+          <button class="btn btn-primary btn-sm" (click)="addHealthRecord(a)">Add Record</button>
+        </ng-container>
+        <ng-container *ngSwitchCase="'Cancelled'">
+          <span class="cancelled-label">Appointment Cancelled</span>
+        </ng-container>
+      </ng-container>
+    </div>
+  </div>
+
+  <div class="pagination" *ngIf="!loading && filteredAppointments.length > 0">
+    <button class="btn btn-sm btn-outline" [disabled]="currentPage === 1" (click)="goToPage(currentPage - 1)">Previous</button>
+    <span class="page-info">Page {{ currentPage }} of {{ totalPages }}</span>
+    <button class="btn btn-sm btn-outline" [disabled]="currentPage === totalPages" (click)="goToPage(currentPage + 1)">Next</button>
+  </div>
+
+  <div class="empty" *ngIf="!loading && filteredAppointments.length === 0">
+    No appointments found.
+  </div>
+</div>

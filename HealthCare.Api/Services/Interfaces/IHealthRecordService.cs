@@ -1,5 +1,5 @@
-﻿using HealthCare.Api.DTOs;
-using HealthCare.Api.DTOs.HealthRecord;
+using HealthCare.Shared.DTOs;
+using HealthCare.Shared.DTOs.HealthRecord;
 
 namespace HealthCare.Api.Services.Interfaces
 {

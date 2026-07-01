@@ -1,4 +1,4 @@
-﻿namespace HealthCare.Api.DTOs.Appointment
+namespace HealthCare.Shared.DTOs.Appointment
 {
     public class AppointmentReportDto
     {

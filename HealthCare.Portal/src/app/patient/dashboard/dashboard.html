@@ -1,0 +1,25 @@
+<div class="page">
+  <h2>Patient Dashboard</h2>
+
+  <div class="dashboard-grid">
+    <div class="card">
+      <h3>Upcoming Appointments</h3>
+      <div *ngIf="upcomingAppointments.length === 0" class="placeholder">No upcoming appointments</div>
+      <div *ngFor="let a of upcomingAppointments" class="dash-item">
+        <span class="dash-date">{{ a.scheduledDate }}</span>
+        <span class="dash-detail">{{ a.timeSlot }} &middot; {{ a.doctorName }}</span>
+      </div>
+      <a routerLink="/my-appointments" class="dash-link" *ngIf="upcomingAppointments.length > 0">View all</a>
+    </div>
+
+    <div class="card">
+      <h3>Latest Health Records</h3>
+      <div *ngIf="latestRecords.length === 0" class="placeholder">No recent records</div>
+      <div *ngFor="let r of latestRecords" class="dash-item">
+        <span class="dash-date">{{ r.visitDate }}</span>
+        <span class="dash-detail">{{ r.diagnosis }}</span>
+      </div>
+      <a routerLink="/my-records" class="dash-link" *ngIf="latestRecords.length > 0">View all</a>
+    </div>
+  </div>
+</div>

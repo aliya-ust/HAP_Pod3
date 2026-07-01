@@ -1,4 +1,4 @@
-﻿using HealthCare.Api.DTOs;
+using HealthCare.Shared.DTOs;
 using System.Linq.Expressions;
 
 namespace HealthCare.Api.Repositories.Interfaces

@@ -1,5 +1,5 @@
-﻿using HealthCare.Api.Data;
-using HealthCare.Api.DTOs.Patient;
+using HealthCare.Api.Data;
+using HealthCare.Shared.DTOs.Patient;
 using HealthCare.Api.Models;
 using HealthCare.Api.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;

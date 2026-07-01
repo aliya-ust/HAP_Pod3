@@ -2,12 +2,13 @@
 using Moq;
 using Microsoft.EntityFrameworkCore;
 using HealthCare.Api.Data;
+using HealthCare.Api.Exceptions;
 using HealthCare.Api.Models;
-using HealthCare.Api.DTOs;
-using HealthCare.Api.DTOs.Appointment;
 using HealthCare.Api.Repositories.Interfaces;
 using HealthCare.Api.Services.Implementations;
 using HealthCare.Api.Services.Interfaces;
+using HealthCare.Shared.DTOs;
+using HealthCare.Shared.DTOs.Appointment;
 
 namespace HealthCare.Api.Tests
 {
@@ -59,7 +60,7 @@ namespace HealthCare.Api.Tests
         {
             _repoMock.Setup(r => r.GetByIdAsync(1)).ReturnsAsync((Appointment?)null);
 
-            await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            await Assert.ThrowsAsync<AppointmentNotFoundException>(() =>
                 _service.GetByIdAsync(1));
         }
 
@@ -95,7 +96,7 @@ namespace HealthCare.Api.Tests
                 ScheduledDate = DateOnly.FromDateTime(DateTime.Today.AddDays(-1))
             };
 
-            await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            await Assert.ThrowsAsync<PastAppointmentException>(() =>
                 _service.AddAsync(dto, 1));
         }
 
@@ -113,7 +114,7 @@ namespace HealthCare.Api.Tests
             _repoMock.Setup(r => r.IsAvailable(dto.ScheduledDate, 1, dto.TimeSlot))
                 .ReturnsAsync(false);
 
-            await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            await Assert.ThrowsAsync<SlotAlreadyBookedException>(() =>
                 _service.AddAsync(dto, 1));
         }
 
@@ -135,7 +136,7 @@ namespace HealthCare.Api.Tests
         {
             _repoMock.Setup(r => r.GetByIdAsync(1)).ReturnsAsync((Appointment?)null);
 
-            await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            await Assert.ThrowsAsync<AppointmentNotFoundException>(() =>
                 _service.UpdateAsync(1, new UpdateAppointmentDto()));
         }
 
@@ -176,7 +177,7 @@ namespace HealthCare.Api.Tests
         {
             _repoMock.Setup(r => r.GetByIdAsync(1)).ReturnsAsync((Appointment?)null);
 
-            await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            await Assert.ThrowsAsync<AppointmentNotFoundException>(() =>
                 _service.DeleteAsync(1));
         }
 
@@ -204,7 +205,7 @@ namespace HealthCare.Api.Tests
         {
             var date = DateOnly.FromDateTime(DateTime.Today.AddDays(-1));
 
-            await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            await Assert.ThrowsAsync<PastAppointmentException>(() =>
                 _service.AvailableTimeSlots(date, 1));
         }
 
@@ -226,20 +227,8 @@ namespace HealthCare.Api.Tests
             _repoMock.Setup(r => r.IsAvailable(It.IsAny<DateOnly>(), 1, "09:00"))
                 .ReturnsAsync(false);
 
-            await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            await Assert.ThrowsAsync<SlotAlreadyBookedException>(() =>
                 _service.IsAvailable(DateOnly.FromDateTime(DateTime.Today), 1, "09:00"));
-        }
-
-        //  GetDailyReport
-        [Fact]
-        public async Task GetDailyReport_ShouldReturnList()
-        {
-            _repoMock.Setup(r => r.GetDailyReport())
-                .ReturnsAsync(new List<AppointmentReportDto>());
-
-            var result = await _service.GetDailyReport();
-
-            Assert.NotNull(result);
         }
 
         //  Schedule methods

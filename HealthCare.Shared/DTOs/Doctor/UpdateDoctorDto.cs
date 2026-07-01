@@ -1,8 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
-namespace HealthCare.Api.DTOs.Doctor
+namespace HealthCare.Shared.DTOs.Doctor
 {
-    // IsActive not included here — admin toggles it via delete
+    // IsActive not included here � admin toggles it via delete
     // TimeSlots not included here
     // ConsultationFee not included here
     public class UpdateDoctorDto

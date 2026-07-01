@@ -1,6 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
-namespace HealthCare.Api.DTOs.HealthRecord
+namespace HealthCare.Shared.DTOs.HealthRecord
 {
     public class UpdateHealthRecordDto
     {

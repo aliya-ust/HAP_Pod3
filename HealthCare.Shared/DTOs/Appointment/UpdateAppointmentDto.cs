@@ -1,6 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
-namespace HealthCare.Api.DTOs.Appointment
+namespace HealthCare.Shared.DTOs.Appointment
 {
     public class UpdateAppointmentDto
     {

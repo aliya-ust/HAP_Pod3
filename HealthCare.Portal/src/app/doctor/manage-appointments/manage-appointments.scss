@@ -1,0 +1,132 @@
+.page {
+  max-width: 720px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+h2 { margin-bottom: 1rem; }
+
+.card {
+  background: #fff;
+  border-radius: 8px;
+  padding: 1.25rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  margin-bottom: 1rem;
+}
+
+.filter-card {
+  padding: 0.75rem 1.25rem;
+}
+
+.filter-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+
+  label {
+    font-size: 0.85rem;
+    color: #555;
+    font-weight: 600;
+  }
+
+  select {
+    padding: 0.4rem 0.6rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 0.9rem;
+  }
+}
+
+.loading {
+  text-align: center;
+  color: #999;
+  padding: 2rem;
+}
+
+.empty {
+  text-align: center;
+  color: #999;
+  padding: 3rem;
+  font-size: 0.9rem;
+}
+
+.appointment-card {
+  .appt-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+  }
+
+  .patient-name {
+    font-weight: 600;
+    font-size: 1rem;
+    color: #333;
+  }
+
+  .appt-details {
+    display: flex;
+    gap: 1.5rem;
+    font-size: 0.85rem;
+    color: #777;
+    margin-bottom: 0.75rem;
+  }
+
+  .appt-actions {
+    display: flex;
+    gap: 0.5rem;
+  }
+}
+
+.status-badge {
+  padding: 0.2rem 0.6rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+
+  &.pending { background: #fff3cd; color: #856404; }
+  &.confirmed { background: #d4edda; color: #155724; }
+  &.cancelled { background: #f8d7da; color: #721c24; }
+}
+
+.cancelled-label {
+  color: #999;
+  font-size: 0.85rem;
+  font-style: italic;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin: 1rem 0;
+}
+
+.page-info {
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.btn-outline {
+  background: #fff;
+  border: 1px solid #ccc;
+  color: #333;
+  &:hover:not(:disabled) { background: #f5f5f5; }
+  &:disabled { opacity: 0.5; cursor: not-allowed; }
+}
+
+.btn {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  &:disabled { opacity: 0.6; cursor: not-allowed; }
+}
+
+.btn-sm { padding: 0.35rem 0.7rem; font-size: 0.8rem; }
+.btn-primary { background: #1a73e8; color: #fff; }
+.btn-secondary { background: #e0e0e0; color: #333; }
+.btn-danger { background: #d93025; color: #fff; }

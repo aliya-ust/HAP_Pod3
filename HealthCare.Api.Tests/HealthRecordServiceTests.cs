@@ -1,10 +1,11 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Moq;
 using Microsoft.EntityFrameworkCore;
 using HealthCare.Api.Data;
+using HealthCare.Api.Exceptions;
 using HealthCare.Api.Models;
-using HealthCare.Api.DTOs;
-using HealthCare.Api.DTOs.HealthRecord;
+using HealthCare.Shared.DTOs;
+using HealthCare.Shared.DTOs.HealthRecord;
 using HealthCare.Api.Repositories.Interfaces;
 using HealthCare.Api.Services.Implementations;
 using System.Linq.Expressions;
@@ -57,8 +58,7 @@ namespace HealthCare.Api.Tests
             _repoMock.Setup(r => r.GetByIdAsync(1))
                 .ReturnsAsync((HealthRecord?)null);
 
-            await Assert.ThrowsAsync<InvalidOperationException>(() =>
-                _service.GetByIdAsync(1));
+            await Assert.ThrowsAsync<HealthRecordNotFoundException>(() => _service.GetByIdAsync(1));
         }
 
         //  GetAll
@@ -99,7 +99,7 @@ namespace HealthCare.Api.Tests
             {
                 AppointmentId = 1,
                 PatientId = 1,
-                VisitDate = DateTime.Now,
+                VisitDate = DateOnly.FromDateTime(DateTime.Now),
             };
             var record = new HealthRecord();
 
@@ -130,8 +130,7 @@ namespace HealthCare.Api.Tests
             _repoMock.Setup(r => r.GetByIdAsync(1))
                 .ReturnsAsync((HealthRecord?)null);
 
-            await Assert.ThrowsAsync<InvalidOperationException>(() =>
-                _service.UpdateAsync(1, new UpdateHealthRecordDto()));
+            await Assert.ThrowsAsync<HealthRecordNotFoundException>(() => _service.UpdateAsync(1, new UpdateHealthRecordDto()));
         }
 
         //  Delete
@@ -153,8 +152,7 @@ namespace HealthCare.Api.Tests
             _repoMock.Setup(r => r.GetByIdAsync(1))
                 .ReturnsAsync((HealthRecord?)null);
 
-            await Assert.ThrowsAsync<InvalidOperationException>(() =>
-                _service.DeleteAsync(1));
+            await Assert.ThrowsAsync<HealthRecordNotFoundException>(() => _service.DeleteAsync(1));
         }
 
         [Fact]
@@ -167,8 +165,7 @@ namespace HealthCare.Api.Tests
             _repoMock.Setup(r => r.DeleteAsync(1))
                 .ThrowsAsync(new DbUpdateException());
 
-            await Assert.ThrowsAsync<InvalidOperationException>(() =>
-                _service.DeleteAsync(1));
+            await Assert.ThrowsAsync<DbHandleException>(() => _service.DeleteAsync(1));
         }
 
         //  GetHealthRecordByPatient

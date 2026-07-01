@@ -1,0 +1,16 @@
+﻿<div class="mb-3">
+    <div class="d-flex justify-content-between mb-1">
+        <span>@Label</span>
+        <span class="fw-bold">@Value</span>
+    </div>
+    <div class="progress" style="height: 15px;">
+        <div class="progress-bar @CssClass" style="width: @Width"></div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public string Label { get; set; } = "";
+    [Parameter] public int Value { get; set; }
+    [Parameter] public string CssClass { get; set; } = "";
+    [Parameter] public string Width { get; set; } = "0%";
+}

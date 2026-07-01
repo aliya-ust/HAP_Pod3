@@ -1,7 +1,8 @@
-﻿using AutoMapper;
+using AutoMapper;
 using HealthCare.Api.Data;
-using HealthCare.Api.DTOs;
-using HealthCare.Api.DTOs.HealthRecord;
+using HealthCare.Shared.DTOs;
+using HealthCare.Shared.DTOs.HealthRecord;
+using HealthCare.Api.Exceptions;
 using HealthCare.Api.Models;
 using HealthCare.Api.Repositories.Interfaces;
 using HealthCare.Api.Services.Interfaces;
@@ -28,7 +29,7 @@ namespace HealthCare.Api.Services.Implementations
             var record = await _repository.GetByIdAsync(id);
 
             if (record is null)
-                throw new InvalidOperationException("Health Record not found.");
+                throw new HealthRecordNotFoundException(id);
 
             return _mapper.Map<HealthRecordListDto>(record);
         }
@@ -40,10 +41,7 @@ namespace HealthCare.Api.Services.Implementations
 
             if (filter.VisitDate.HasValue)
             {
-                var start = filter.VisitDate.Value.ToDateTime(TimeOnly.MinValue); // 00:00
-                var end = start.AddDays(1); // next day
-
-                predicate = hr => hr.VisitDate >= start && hr.VisitDate < end;
+                predicate = hr => hr.VisitDate == filter.VisitDate.Value;
             }
 
             // Ordering (by VisitDate)
@@ -70,6 +68,9 @@ namespace HealthCare.Api.Services.Implementations
 
         public async Task AddAsync(int doctorId, CreateHealthRecordDto dto)
         {
+            if (dto.VisitDate > DateOnly.FromDateTime(DateTime.Today))
+                throw new InvalidOperationException("Visit date must be today or in the past.");
+
             var record = _mapper.Map<HealthRecord>(dto);
             record.DoctorId = doctorId;
             await _repository.AddAsync(record);
@@ -81,9 +82,9 @@ namespace HealthCare.Api.Services.Implementations
             var record = await _repository.GetByIdAsync(id);
 
             if (record is null) 
-                throw new InvalidOperationException("Health record not found.");
+                throw new HealthRecordNotFoundException(id);
 
-            _mapper.Map(dto, record); // maps onto the tracked entity — EF picks up the changes
+            _mapper.Map(dto, record); // maps onto the tracked entity � EF picks up the changes
             await _repository.UpdateAsync(record);
             await _context.SaveChangesAsync();
         }
@@ -93,7 +94,7 @@ namespace HealthCare.Api.Services.Implementations
             var record = await _repository.GetByIdAsync(id);
 
             if (record is null)
-                throw new InvalidOperationException("Health record not found.");
+                throw new HealthRecordNotFoundException(id);
 
             try
             {
@@ -102,7 +103,7 @@ namespace HealthCare.Api.Services.Implementations
             }
             catch (DbUpdateException ex)
             {
-                throw new InvalidOperationException("Failed to delete health record.", ex);
+                throw new DbHandleException("Failed to delete health record.");
             }
         }
 

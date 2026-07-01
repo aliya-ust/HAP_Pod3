@@ -1,15 +1,13 @@
-﻿using AutoMapper;
-using Azure;
+using AutoMapper;
 using HealthCare.Api.Data;
-using HealthCare.Api.DTOs.Auth;
-using HealthCare.Api.DTOs.Doctor;
-using HealthCare.Api.DTOs.Patient;
+using HealthCare.Shared.DTOs.Auth;
+using HealthCare.Shared.DTOs.Doctor;
+using HealthCare.Shared.DTOs.Patient;
+using HealthCare.Api.Exceptions;
 using HealthCare.Api.Models;
 using HealthCare.Api.Repositories.Interfaces;
 using HealthCare.Api.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
-using System.Data;
-using System.Numerics;
 
 namespace HealthCare.Api.Services.Implementations
 {
@@ -43,7 +41,7 @@ namespace HealthCare.Api.Services.Implementations
             // Check email
             var existingUser = await _userManager.FindByEmailAsync(email);
             if (existingUser != null)
-                throw new InvalidOperationException("Email already in use");
+                throw new EmailAlreadyInUseException();
 
             // Create user
             var user = new User
@@ -55,7 +53,7 @@ namespace HealthCare.Api.Services.Implementations
             var result = await _userManager.CreateAsync(user, password);
 
             if (!result.Succeeded)
-                throw new InvalidOperationException(string.Join(", ", result.Errors.Select(e => e.Description)));
+                throw new IdentityOperationException(string.Join(", ", result.Errors.Select(e => e.Description)));
 
             // Assign role
             await _userManager.AddToRoleAsync(user, role);
@@ -97,18 +95,18 @@ namespace HealthCare.Api.Services.Implementations
             // Find user
             var user = await _userManager.FindByEmailAsync(dto.Email);
             if (user == null)
-                throw new InvalidOperationException("Email already in use");
+                throw new InvalidLoginException();
 
             // Verify password
             var isValid = await _userManager.CheckPasswordAsync(user, dto.Password);
             if (!isValid)
-                throw new UnauthorizedAccessException("Invalid credentials");
+                throw new InvalidLoginException();
 
             // Get roles
             var roles = await _userManager.GetRolesAsync(user);
             if (roles == null || !roles.Any())
             {
-                throw new InvalidOperationException("Role is not assigned.");
+                throw new RoleNotAssignedException();
             }
 
             // Getting patient or doctor Id using UserId
@@ -119,7 +117,7 @@ namespace HealthCare.Api.Services.Implementations
                 var patient = await _patientRepo.GetByUserIdAsync(user.Id);
 
                 if (patient == null)
-                    throw new InvalidOperationException("Patient record not found.");
+                    throw new PatientNotFoundException();
 
                 // Generate JWT
                 token = await _jwtService.GenerateToken(user, patientId: patient.PatientId);
@@ -129,7 +127,7 @@ namespace HealthCare.Api.Services.Implementations
                 var doctor = await _doctorRepo.GetByUserIdAsync(user.Id);
 
                 if (doctor == null)
-                    throw new InvalidOperationException("Doctor record not found.");
+                    throw new DoctorNotFoundException();
 
                 // Generate JWT
                 token = await _jwtService.GenerateToken(user, doctorId: doctor.DoctorId);
@@ -141,7 +139,7 @@ namespace HealthCare.Api.Services.Implementations
             }
             else
             {
-                throw new InvalidOperationException("Invalid role.");
+                throw new InvalidRoleException();
             }
 
 
@@ -159,7 +157,7 @@ namespace HealthCare.Api.Services.Implementations
             var user = await _userManager.FindByIdAsync(userId);
 
             if (user == null)
-                throw new InvalidOperationException("User not found");
+                throw new UserNotFoundException();
 
             var result = await _userManager.ChangePasswordAsync(
                 user,
@@ -168,7 +166,7 @@ namespace HealthCare.Api.Services.Implementations
             );
 
             if (!result.Succeeded)
-                throw new InvalidOperationException(
+                throw new IdentityOperationException(
                     string.Join(", ", result.Errors.Select(e => e.Description))
                 );
         }

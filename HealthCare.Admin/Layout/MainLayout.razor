@@ -1,15 +1,23 @@
 ﻿@using HealthCare.Admin.Shared
-@inject NotificationService ToastService
+@inject ToastService ToastService
 @implements IDisposable
 
 @inherits LayoutComponentBase
 <div class="page">
+    <div class="sidebar">
         <NavMenu />
+    </div>
 
-    <div class="toast-container">
-        @foreach (var message in errors)
+    <div class="toast-container position-fixed top-0 end-0 p-3">
+        @foreach (var note in _messages)
         {
-            <div class="alert alert-danger">@message</div>
+            <div class="toast show" role="alert">
+                <div class="toast-header">
+                    <strong class="me-auto">@note.Title</strong>
+                    <button type="button" class="btn-close" @onclick="() => RemoveMessage(note)"></button>
+                </div>
+                <div class="toast-body">@note.Message</div>
+            </div>
         }
     </div>
 
@@ -36,32 +44,27 @@
 
 @code {
     private ErrorBoundary? errorBoundary;
-    private List<string> errors = new();
+
+    private List<NotificationMessage> _messages = new();
 
     protected override void OnInitialized()
+        => ToastService.OnNotificationReceived += HandleNotification;
+
+    private void HandleNotification(NotificationMessage note)
     {
-        // Subscribe to the event
-        ToastService.OnErrorReceived += HandleError;
+        _messages.Add(note);                              
+        StateHasChanged();
+
+        // Auto-remove after 3 seconds
+        Task.Delay(3000).ContinueWith(_ => InvokeAsync(() => RemoveMessage(note)));
     }
 
-    private void HandleError(string message)
+    private void RemoveMessage(NotificationMessage note)
     {
-        // InvokeAsync is required because event triggers might happen off the main UI thread
-        InvokeAsync(() =>
-        {
-            errors.Add(message);
-            StateHasChanged();
-        });
+        _messages.Remove(note);
+        StateHasChanged();
     }
 
     public void Dispose()
-    {
-        // Unsubscribe
-        ToastService.OnErrorReceived -= HandleError;
-    }
-
-    protected override void OnParametersSet()
-    {
-        errorBoundary?.Recover();
-    }
+        => ToastService.OnNotificationReceived -= HandleNotification;
 }

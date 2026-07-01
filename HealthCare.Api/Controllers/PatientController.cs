@@ -1,5 +1,7 @@
-﻿using HealthCare.Api.DTOs.Patient;
+using HealthCare.Shared.DTOs.Patient;
 using HealthCare.Api.Services.Interfaces;
+using HealthCare.Api.Utilities;
+using HealthCare.Shared;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -18,34 +20,24 @@ namespace HealthCare.Api.Controllers
         }
 
         [HttpGet("profile")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        [Authorize(Roles = "Patient")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Patient")]
         public async Task<IActionResult> GetMyProfile()
         {
-            var patientId = GetPatientIdFromClaims();
+            var patientId = ClaimsHelper.GetPatientId(User);
             var result = await _patientService.GetByIdAsync(patientId);
-            return Ok(result);
+            return Ok(ApiResponse<PatientListDto>.Ok(result));
         }
 
         [HttpPut("profile")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        [Authorize(Roles = "Patient")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Patient")]
         public async Task<IActionResult> UpdatePatient([FromBody] UpdatePatientDto dto)
         {
             if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+                return BadRequest(ApiResponse.Fail("Invalid data."));
 
-            var patientId = GetPatientIdFromClaims();
+            var patientId = ClaimsHelper.GetPatientId(User);
             await _patientService.UpdateAsync(patientId, dto);
-            return Ok();
-        }
-
-        private int GetPatientIdFromClaims()
-        {
-            var claim = User.FindFirst("PatientId")
-                ?? throw new InvalidOperationException("PatientId claim not found in token.");
-
-            return int.Parse(claim.Value);
+            return Ok(ApiResponse.Ok("Profile updated successfully"));
         }
     }
 }

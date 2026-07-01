@@ -13,7 +13,7 @@ namespace HealthCare.Api.Models
         public int DoctorId { get; set; }
 
         [Required]
-        public DateTime VisitDate { get; set; }
+        public DateOnly VisitDate { get; set; }
 
         [Required]
         [MaxLength(500)]

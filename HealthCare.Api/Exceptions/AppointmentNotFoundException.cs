@@ -3,8 +3,8 @@
     public class AppointmentNotFoundException : Exception
     {
 
-        public AppointmentNotFoundException(int id)
-                   : base($"Appointment with ID {id} not found") { }
+        public AppointmentNotFoundException()
+                   : base($"Appointment not found") { }
 
     }
 }

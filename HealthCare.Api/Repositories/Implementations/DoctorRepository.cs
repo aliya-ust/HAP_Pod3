@@ -1,5 +1,6 @@
-﻿using HealthCare.Api.Data;
-using HealthCare.Api.DTOs.Doctor;
+using HealthCare.Api.Constants;
+using HealthCare.Api.Data;
+using HealthCare.Shared.DTOs.Doctor;
 using HealthCare.Api.Models;
 using HealthCare.Api.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -63,7 +64,7 @@ namespace HealthCare.Api.Repositories.Implementations
                 .Where(d => d.AvailableSlots
                     .Select(s => s.TimeSlot)
                     .Except(d.Appointments
-                        .Where(a => a.ScheduledDate == date && a.Status != "Cancelled")
+                        .Where(a => a.ScheduledDate == date && a.Status != AppointmentStatus.Cancelled)
                         .Select(a => a.TimeSlot))
                     .Any())
                 .Select(d => new DoctorListDto
@@ -71,6 +72,7 @@ namespace HealthCare.Api.Repositories.Implementations
                     DoctorId = d.DoctorId,
                     FullName = d.FullName,
                     Specialisation = d.Specialisation,
+                    YearsOfExperience = d.YearsOfExperience,
                     ConsultationFee = d.ConsultationFee,
                     IsActive = d.IsActive
                 })

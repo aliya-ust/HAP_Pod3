@@ -1,4 +1,6 @@
-﻿namespace HealthCare.Api.DTOs.Doctor
+using HealthCare.Shared.DTOs;
+
+namespace HealthCare.Shared.DTOs.Doctor
 {
     public class DoctorFilter : PaginationParams
     {

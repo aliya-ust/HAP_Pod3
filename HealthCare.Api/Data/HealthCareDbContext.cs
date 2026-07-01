@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HealthCare.Api.Data
 {
-    public class HealthCareDbContext : IdentityDbContext<IdentityUser>
+    public class HealthCareDbContext : IdentityDbContext<User>
     {
         // Db Context connection setup
         public HealthCareDbContext(DbContextOptions<HealthCareDbContext> options) : base(options) { }
@@ -40,6 +40,10 @@ namespace HealthCare.Api.Data
             builder.Entity<HealthRecord>()
                 .HasIndex(hr => new { hr.PatientId, hr.VisitDate })
                 .HasDatabaseName("IX_HealthRecords_Patient_VisitDate");
+
+            builder.Entity<HealthRecord>()
+                .Property(hr => hr.VisitDate)
+                .HasColumnType("date");
 
             // -- Delete behaviour (can't be set via annotations) --
 

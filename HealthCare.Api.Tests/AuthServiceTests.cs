@@ -3,13 +3,14 @@ using Moq;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using HealthCare.Api.Data;
+using HealthCare.Api.Exceptions;
 using HealthCare.Api.Models;
-using HealthCare.Api.DTOs.Auth;
-using HealthCare.Api.DTOs.Patient;
-using HealthCare.Api.DTOs.Doctor;
 using HealthCare.Api.Repositories.Interfaces;
 using HealthCare.Api.Services.Implementations;
 using HealthCare.Api.Services.Interfaces;
+using HealthCare.Shared.DTOs.Auth;
+using HealthCare.Shared.DTOs.Patient;
+using HealthCare.Shared.DTOs.Doctor;
 
 namespace HealthCare.Api.Tests
 {
@@ -178,7 +179,7 @@ namespace HealthCare.Api.Tests
             _userManagerMock.Setup(u => u.CheckPasswordAsync(user, "wrong"))
                 .ReturnsAsync(false);
 
-            await Assert.ThrowsAsync<UnauthorizedAccessException>(() =>
+            await Assert.ThrowsAsync<InvalidLoginException>(() =>
                 _service.LoginAsync(new LoginDto { Email = user.Email, Password = "wrong" }));
         }
 
@@ -189,7 +190,7 @@ namespace HealthCare.Api.Tests
             _userManagerMock.Setup(u => u.FindByEmailAsync("test@mail.com"))
                 .ReturnsAsync((User?)null);
 
-            await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            await Assert.ThrowsAsync<InvalidLoginException>(() =>
                 _service.LoginAsync(new LoginDto { Email = "test@mail.com", Password = "pass" }));
         }
 
@@ -233,7 +234,7 @@ namespace HealthCare.Api.Tests
                     new IdentityError { Description = "Error" }
                 ));
 
-            await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            await Assert.ThrowsAsync<IdentityOperationException>(() =>
                 _service.ChangePasswordAsync("1", new ChangePasswordDto
                 {
                     CurrentPassword = "old",

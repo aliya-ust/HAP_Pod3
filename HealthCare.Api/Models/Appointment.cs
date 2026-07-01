@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using HealthCare.Api.Constants;
 
 namespace HealthCare.Api.Models
 {
@@ -21,9 +22,9 @@ namespace HealthCare.Api.Models
 
         [Required]
         [MaxLength(20)]
-        [AllowedValues("Pending", "Confirmed", "Cancelled", "Completed",
+        [AllowedValues(AppointmentStatus.Pending, AppointmentStatus.Confirmed, AppointmentStatus.Cancelled, AppointmentStatus.Completed,
             ErrorMessage = "Status must be Pending, Confirmed, Cancelled, or Completed.")]
-        public string Status { get; set; } = "Pending";
+        public string Status { get; set; } = AppointmentStatus.Pending;
 
         [MaxLength(500)]
         public string? CancellationReason { get; set; }

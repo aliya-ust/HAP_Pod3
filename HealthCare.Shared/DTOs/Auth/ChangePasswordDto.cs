@@ -1,6 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
-namespace HealthCare.Api.DTOs.Auth
+namespace HealthCare.Shared.DTOs.Auth
 {
     public class ChangePasswordDto
     {

@@ -1,6 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
-namespace HealthCare.Api.DTOs.HealthRecord
+namespace HealthCare.Shared.DTOs.HealthRecord
 {
     public class CreateHealthRecordDto
     {
@@ -11,8 +11,8 @@ namespace HealthCare.Api.DTOs.HealthRecord
         public required int PatientId { get; set; }
 
         [Required]
-        [PastOrTodayDateValidationAttribute]
-        public required DateTime VisitDate { get; set; }
+        [PastOrTodayDateValidation]
+        public required DateOnly VisitDate { get; set; }
 
         [Required]
         [MaxLength(500)]
@@ -34,7 +34,7 @@ namespace HealthCare.Api.DTOs.HealthRecord
     {
         protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
         {
-            if (value is DateTime visitDate && visitDate.Date > DateTime.Today)
+            if (value is DateOnly date && date > DateOnly.FromDateTime(DateTime.Today))
             {
                 return new ValidationResult("Visit date must be today or in the past.");
             }

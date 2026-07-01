@@ -1,5 +1,6 @@
-﻿using HealthCare.Api.Data;
-using HealthCare.Api.DTOs.Appointment;
+using HealthCare.Api.Constants;
+using HealthCare.Api.Data;
+using HealthCare.Shared.DTOs.Appointment;
 using HealthCare.Api.Models;
 using HealthCare.Api.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -8,7 +9,6 @@ namespace HealthCare.Api.Repositories.Implementations
 {
     public class AppointmentRepository : Repository<Appointment>, IAppointmentRepository
     {
-        private const string Cancelled = "Cancelled";
         public AppointmentRepository(HealthCareDbContext context) : base(context) { }
 
         public IQueryable<Appointment> GetQueryable()
@@ -20,7 +20,7 @@ namespace HealthCare.Api.Repositories.Implementations
             await _dbSet
                 .Where(a => a.ScheduledDate == date
                          && a.DoctorId == doctorId
-                         && a.Status != Cancelled)
+                         && a.Status != AppointmentStatus.Cancelled)
                 .Select(a => a.TimeSlot)
                 .ToListAsync();
 
@@ -30,7 +30,7 @@ namespace HealthCare.Api.Repositories.Implementations
                 a.ScheduledDate == date
                 && a.DoctorId == doctorId
                 && a.TimeSlot == timeSlot
-                && a.Status != Cancelled);
+                && a.Status != AppointmentStatus.Cancelled);
 
             return !exists;
         }
@@ -43,13 +43,13 @@ namespace HealthCare.Api.Repositories.Implementations
                 .Select(g => new AppointmentReportDto
                 {
                     Date = g.Key,
-                    PendingCount = g.Count(a => a.Status == "Pending"),
-                    ConfirmedCount = g.Count(a => a.Status == "Confirmed"),
-                    CancelledCount = g.Count(a => a.Status == "Cancelled"),
-                    CompletedCount = g.Count(a => a.Status == "Completed"),
+                    PendingCount = g.Count(a => a.Status == AppointmentStatus.Pending),
+                    ConfirmedCount = g.Count(a => a.Status == AppointmentStatus.Confirmed),
+                    CancelledCount = g.Count(a => a.Status == AppointmentStatus.Cancelled),
+                    CompletedCount = g.Count(a => a.Status == AppointmentStatus.Completed),
 
                     Revenue = g
-                        .Where(a => a.Status == "Completed")
+                        .Where(a => a.Status == AppointmentStatus.Completed)
                         .Sum(a => a.Doctor.ConsultationFee)
                 })
                 .OrderBy(r => r.Date)
@@ -62,6 +62,7 @@ namespace HealthCare.Api.Repositories.Implementations
                 .Select(a => new AppointmentListDto
                 {
                     AppointmentId = a.AppointmentId,
+                    PatientId = a.PatientId,
                     PatientName = a.Patient.FullName,
                     DoctorName = a.Doctor.FullName,
                     ScheduledDate = a.ScheduledDate,
@@ -76,6 +77,7 @@ namespace HealthCare.Api.Repositories.Implementations
                 .Select(a => new AppointmentListDto
                 {
                     AppointmentId = a.AppointmentId,
+                    PatientId = a.PatientId,
                     PatientName = a.Patient.FullName,
                     DoctorName = a.Doctor.FullName,
                     ScheduledDate = a.ScheduledDate,
@@ -90,6 +92,7 @@ namespace HealthCare.Api.Repositories.Implementations
                 .Select(a => new AppointmentListDto
                 {
                     AppointmentId = a.AppointmentId,
+                    PatientId = a.PatientId,
                     PatientName = a.Patient.FullName,
                     DoctorName = a.Doctor.FullName,
                     ScheduledDate = a.ScheduledDate,
@@ -104,6 +107,7 @@ namespace HealthCare.Api.Repositories.Implementations
                 .Select(a => new AppointmentListDto
                 {
                     AppointmentId = a.AppointmentId,
+                    PatientId = a.PatientId,
                     PatientName = a.Patient.FullName,
                     DoctorName = a.Doctor.FullName,
                     ScheduledDate = a.ScheduledDate,
@@ -117,12 +121,12 @@ namespace HealthCare.Api.Repositories.Implementations
             var appointments = await _dbSet
                 .Where(a => a.DoctorId == doctorId
                          && a.ScheduledDate == date
-                         && a.Status != Cancelled)
+                         && a.Status != AppointmentStatus.Cancelled)
                 .ToListAsync();
 
             foreach (var appointment in appointments)
             {
-                appointment.Status = Cancelled;
+                appointment.Status = AppointmentStatus.Cancelled;
                 appointment.CancellationReason = "Doctor on leave";
             }
         }
@@ -137,13 +141,13 @@ namespace HealthCare.Api.Repositories.Implementations
                 .GroupBy(a => 1)
                 .Select(g => new AppointmentSummaryDto
                 {
-                    PendingCount = g.Count(a => a.Status == "Pending"),
-                    ConfirmedCount = g.Count(a => a.Status == "Confirmed"),
-                    CancelledCount = g.Count(a => a.Status == "Cancelled"),
-                    CompletedCount = g.Count(a => a.Status == "Completed"),
+                    PendingCount = g.Count(a => a.Status == AppointmentStatus.Pending),
+                    ConfirmedCount = g.Count(a => a.Status == AppointmentStatus.Confirmed),
+                    CancelledCount = g.Count(a => a.Status == AppointmentStatus.Cancelled),
+                    CompletedCount = g.Count(a => a.Status == AppointmentStatus.Completed),
 
                     TotalRevenue = g
-                        .Where(a => a.Status == "Completed")
+                        .Where(a => a.Status == AppointmentStatus.Completed)
                         .Sum(a => a.Doctor.ConsultationFee)
                 })
                 .FirstOrDefaultAsync();

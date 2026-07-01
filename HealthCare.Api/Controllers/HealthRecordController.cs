@@ -1,5 +1,7 @@
-﻿using HealthCare.Api.DTOs.HealthRecord;
+using HealthCare.Shared.DTOs.HealthRecord;
 using HealthCare.Api.Services.Interfaces;
+using HealthCare.Api.Utilities;
+using HealthCare.Shared;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -18,51 +20,46 @@ namespace HealthCare.Api.Controllers
         }
 
         [HttpPost("create")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        [Authorize(Roles = "Doctor")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Doctor")]
         public async Task<IActionResult> CreateHealthRecord([FromBody] CreateHealthRecordDto dto)
         {
             if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            {
+                var errors = ModelState.Values
+                    .SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage)
+                    .ToList();
+                return BadRequest(ApiResponse.Fail("Invalid data.", errors));
+            }
 
-            var doctorId = GetDoctorIdFromClaims();
+            var doctorId = ClaimsHelper.GetDoctorId(User);
             await _healthRecordService.AddAsync(doctorId, dto);
-            return Ok();
+            return Ok(ApiResponse.Ok("Health record created successfully"));
         }
 
         [HttpGet("by-appointment/{id}")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        [Authorize(Roles = "Doctor")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Doctor")]
         public async Task<IActionResult> GetHealthRecordByAppointment(int id)
         {
             var result = await _healthRecordService.GetHealthRecordByAppointment(id);
-            return Ok(result);
+            return Ok(ApiResponse<List<HealthRecordListDto>>.Ok(result));
+        }
+
+        [HttpGet("by-patient/{patientId}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Doctor")]
+        public async Task<IActionResult> GetHealthRecordsByPatient(int patientId)
+        {
+            var result = await _healthRecordService.GetHealthRecordByPatient(patientId);
+            return Ok(ApiResponse<List<HealthRecordListDto>>.Ok(result));
         }
 
         [HttpGet("my-records")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        [Authorize(Roles = "Patient")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Patient")]
         public async Task<IActionResult> GetHealthRecordByPatient()
         {
-            var patientId = GetPatientIdFromClaims();
+            var patientId = ClaimsHelper.GetPatientId(User);
             var result = await _healthRecordService.GetHealthRecordByPatient(patientId);
-            return Ok(result);
-        }
-
-        private int GetPatientIdFromClaims()
-        {
-            var claim = User.FindFirst("PatientId")
-                ?? throw new InvalidOperationException("PatientId claim not found in token.");
-
-            return int.Parse(claim.Value);
-        }
-
-        private int GetDoctorIdFromClaims()
-        {
-            var claim = User.FindFirst("DoctorId")
-                ?? throw new InvalidOperationException("DoctorId claim not found in token.");
-
-            return int.Parse(claim.Value);
+            return Ok(ApiResponse<List<HealthRecordListDto>>.Ok(result));
         }
     }
 }

@@ -1,0 +1,33 @@
+.page { max-width: 800px; margin: 2rem auto; padding: 0 1rem; }
+h2 { margin-bottom: 1.25rem; }
+.card { background: #fff; border-radius: 8px; padding: 1.25rem; box-shadow: 0 2px 8px rgba(0,0,0,0.08); margin-bottom: 1rem; }
+.placeholder { color: #999; font-size: 0.9rem; text-align: center; padding: 2rem; }
+.appointment-card {
+  background: #fff;
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  margin-bottom: 0.75rem;
+}
+.appt-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+.appt-date { font-weight: 600; font-size: 0.95rem; color: #333; }
+.appt-time { color: #666; font-size: 0.85rem; }
+.appt-body { margin-top: 0.25rem; }
+.appt-field { display: flex; gap: 0.5rem; font-size: 0.85rem; }
+.appt-field label { font-weight: 600; color: #555; min-width: 50px; }
+.badge {
+  padding: 0.2rem 0.6rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+.badge-pending { background: #fef7e0; color: #e37400; }
+.badge-confirmed { background: #e6f4ea; color: #188038; }
+.badge-cancelled { background: #fce8e6; color: #d93025; }
+.badge-completed { background: #e8f0fe; color: #1a73e8; }

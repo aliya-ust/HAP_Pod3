@@ -11,7 +11,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
-using System.Net.Security;
 using System.Security.Claims;
 using System.Text;
 
@@ -19,16 +18,24 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
-
 builder.Services.AddAutoMapper(cfg =>
 {
     cfg.AddProfile<MappingProfile>();
 });
 
+builder.Services.AddCors(p =>
+{
+    p.AddPolicy("CorsPolicy", cfg =>
+    {
+        cfg.WithOrigins("https://localhost:7166", "http://localhost:4200")
+
+        .AllowAnyHeader().AllowAnyMethod();
+    });
+});
+
 builder.Services.AddProblemDetails();
-builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddControllers();
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
 builder.Services.AddDbContext<HealthCareDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("HealthCareDbConnection"))
@@ -112,6 +119,8 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
+builder.Services.AddAuthorization();
+
 var app = builder.Build();
 app.UseExceptionHandler();
 
@@ -122,8 +131,12 @@ using (var scope = app.Services.CreateScope())
     var userManager = services.GetRequiredService<UserManager<User>>();
     var config = services.GetRequiredService<IConfiguration>();
 
+    var dbContext = services.GetRequiredService<HealthCareDbContext>();
+    await dbContext.Database.EnsureCreatedAsync();
+
     await RoleSeeder.SeedRolesAsync(roleManager);
     await UserSeeder.SeedAdminAsync(userManager, roleManager, config);
+    await DataSeeder.SeedTestDataAsync(services);
 }
 
 // Configure the HTTP request pipeline.
@@ -135,6 +148,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseRouting();
+app.UseCors("CorsPolicy");
 app.UseAuthentication();
 app.UseAuthorization();
 

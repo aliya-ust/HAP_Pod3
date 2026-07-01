@@ -1,0 +1,19 @@
+<div class="dialog-overlay">
+  <div class="dialog">
+    <h3>{{ data.title }}</h3>
+    <p>{{ data.message }}</p>
+    <div class="dialog-actions">
+      <button class="btn btn-secondary" (click)="cancel()">
+        {{ data.cancelText || 'Cancel' }}
+      </button>
+      <button
+        class="btn"
+        [class.btn-danger]="data.confirmClass === 'danger'"
+        [class.btn-primary]="data.confirmClass !== 'danger'"
+        (click)="confirm()"
+      >
+        {{ data.confirmText || 'Confirm' }}
+      </button>
+    </div>
+  </div>
+</div>

@@ -1,8 +1,9 @@
-﻿namespace HealthCare.Api.DTOs.Appointment
+namespace HealthCare.Shared.DTOs.Appointment
 {
     public class AppointmentListDto
     {
         public int AppointmentId { get; set; }
+        public int PatientId { get; set; }
         public string PatientName { get; set; } = null!;
         public string DoctorName { get; set; } = null!;
         public DateOnly ScheduledDate { get; set; }

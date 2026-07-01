@@ -1,5 +1,5 @@
-﻿using HealthCare.Api.DTOs;
-using HealthCare.Api.DTOs.Patient;
+using HealthCare.Shared.DTOs;
+using HealthCare.Shared.DTOs.Patient;
 using HealthCare.Api.Models;
 
 namespace HealthCare.Api.Services.Interfaces

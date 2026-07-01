@@ -1,4 +1,4 @@
-﻿using HealthCare.Api.DTOs.HealthRecord;
+using HealthCare.Shared.DTOs.HealthRecord;
 using HealthCare.Api.Models;
 
 namespace HealthCare.Api.Repositories.Interfaces
