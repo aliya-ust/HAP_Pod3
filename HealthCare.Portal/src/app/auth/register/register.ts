@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NgIf, NgFor } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { ToastService } from '../../core/services/toast.service';
+import { extractErrorMessage } from '../../core/utils/error-utils';
 
 @Component({
   selector: 'app-register',
@@ -21,7 +22,7 @@ export class Register {
   gender = '';
   phoneNumber = '';
   insuranceId = '';
-  loading = false;
+  loading = signal(false);
 
   readonly passwordPattern = '^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^\\da-zA-Z]).{8,}$';
   readonly phonePattern = '[6-9][0-9]{9}';
@@ -46,7 +47,7 @@ export class Register {
       return;
     }
 
-    this.loading = true;
+    this.loading.set(true);
     this.authService.registerPatient({
       fullName: this.fullName,
       email: this.email,
@@ -57,13 +58,13 @@ export class Register {
       insuranceId: this.insuranceId || undefined,
     }).subscribe({
       next: () => {
-        this.loading = false;
+        this.loading.set(false);
         this.toastService.success('Registration successful. Please sign in.');
         this.router.navigate(['/login']);
       },
-      error: () => {
-        this.loading = false;
-        this.toastService.error('Registration failed');
+      error: (err) => {
+        this.loading.set(false);
+        this.toastService.error(extractErrorMessage(err));
       },
     });
   }

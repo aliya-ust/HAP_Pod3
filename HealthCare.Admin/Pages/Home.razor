@@ -1,135 +1,107 @@
 ﻿@page "/"
+@inject DashboardService DashboardService
+@inject ToastService ToastService
 
-<div class="dashboard-wrapper">
-
-    <div class="dashboard-container">
-
-        <!-- Header -->
-        <div class="mb-4">
-            <h2 class="fw-bold dashboard-title">Dashboard</h2>
-        </div>
-
-        <!-- ✅ Top Stats -->
-        <div class="row g-4 mb-4">
-
-            <div class="col-md-3">
-                <div class="stat-card">
-                    <h6>Active Doctors</h6>
-                    <h3>@activeDoctors</h3>
-                </div>
-            </div>
-
-            <div class="col-md-3">
-                <div class="stat-card">
-                    <h6>Active Patients</h6>
-                    <h3>@activePatients</h3>
-                </div>
-            </div>
-
-            <div class="col-md-3">
-                <div class="stat-card">
-                    <h6>Completed Appointments</h6>
-                    <h3>@completedAppointments</h3>
-                </div>
-            </div>
-
-            <div class="col-md-3">
-                <div class="stat-card highlight">
-                    <h6>Revenue</h6>
-                    <h3>@revenue.ToString("C0")</h3>
-                </div>
-            </div>
-
-        </div>
-
-        <!-- ✅ Chart Panel -->
-        <div class="main-panel mb-4">
-            <h5 class="fw-semibold mb-4">Appointments Performance</h5>
-
-            <div class="custom-bar-chart">
-
-                @foreach (var item in chartData)
-                {
-                    <div class="bar-row">
-                        <span class="label">Completed</span>
-                        <div class="bar-container">
-                            <div class="bar completed" style="width:@GetWidth(item.Completed)"></div>
-                        </div>
-                        <span class="value">@item.Completed</span>
-                    </div>
-
-                    <div class="bar-row">
-                        <span class="label">Confirmed</span>
-                        <div class="bar-container">
-                            <div class="bar confirmed" style="width:@GetWidth(item.Confirmed)"></div>
-                        </div>
-                        <span class="value">@item.Confirmed</span>
-                    </div>
-
-                    <div class="bar-row">
-                        <span class="label">Pending</span>
-                        <div class="bar-container">
-                            <div class="bar pending" style="width:@GetWidth(item.Pending)"></div>
-                        </div>
-                        <span class="value">@item.Pending</span>
-                    </div>
-
-                    <div class="bar-row">
-                        <span class="label">Cancelled</span>
-                        <div class="bar-container">
-                            <div class="bar cancelled" style="width:@GetWidth(item.Cancelled)"></div>
-                        </div>
-                        <span class="value">@item.Cancelled</span>
-                    </div>
-                }
-
-            </div>
-        </div>
-
-        <!-- ✅ Bottom Stats -->
-        <div class="row g-4">
-
-            <div class="col-md-6">
-                <div class="stat-card">
-                    <h6>Total Doctors</h6>
-                    <h3>@totalDoctors</h3>
-                    <div class="small-text">@inactiveDoctors inactive</div>
-                </div>
-            </div>
-
-            <div class="col-md-6">
-                <div class="stat-card">
-                    <h6>Total Patients</h6>
-                    <h3>@totalPatients</h3>
-                    <div class="small-text">@inactivePatients inactive</div>
-                </div>
-            </div>
-
-        </div>
-
+@if (_isLoading)
+{
+    <div class="d-flex justify-content-center align-items-center vh-100">
+        <div class="spinner-border text-primary" role="status"></div>
     </div>
-</div>
+}
+else if (_hasError)
+{
+    <div class="alert alert-danger m-4">Error loading dashboard data. Please refresh the page.</div>
+}
+else
+{
+    <div class="container-fluid p-4" style="background-color: #f8fafc; min-height: 100vh;">
+        <header class="mb-4 d-flex justify-content-between align-items-center">
+            <h2 class="fw-bold text-dark">Dashboard</h2>
+        </header>
+
+        <div class="row bg-white p-4 rounded-3 shadow-sm mb-4">
+            <div class="col-md-3 border-end">
+                <StatCard Title="Active Doctors" Value="@_doctorDto.ActiveDoctors.ToString()" />
+            </div>
+            <div class="col-md-3 border-end">
+                <StatCard Title="Active Patients" Value="@_patientDto.ActivePatients.ToString()" />
+            </div>
+            <div class="col-md-3 border-end">
+                <StatCard Title="Completed Appts" Value="@_appointmentDto.CompletedCount.ToString()" />
+            </div>
+            <div class="col-md-3">
+                <StatCard Title="Revenue" Value="@($"₹{_appointmentDto.TotalRevenue:N0}")" />
+            </div>
+        </div>
+
+        <div class="card p-4 mb-4 shadow-sm">
+            <h5 class="fw-semibold mb-4">Appointments Performance (Last 30 Days)</h5>
+            <AppointmentBar Label="Completed" Value="_appointmentDto.CompletedCount" CssClass="bg-success" Width="@GetWidth(_appointmentDto.CompletedCount)" />
+            <AppointmentBar Label="Confirmed" Value="_appointmentDto.ConfirmedCount" CssClass="bg-info" Width="@GetWidth(_appointmentDto.ConfirmedCount)" />
+            <AppointmentBar Label="Pending" Value="_appointmentDto.PendingCount" CssClass="bg-warning" Width="@GetWidth(_appointmentDto.PendingCount)" />
+            <AppointmentBar Label="Cancelled" Value="_appointmentDto.CancelledCount" CssClass="bg-danger" Width="@GetWidth(_appointmentDto.CancelledCount)" />
+        </div>
+
+        <div class="row g-3">
+            <div class="col-md-6">
+                <div class="card p-3 shadow-sm">
+                    <StatCard Title="Total Doctors" Value="@_doctorDto.TotalDoctors.ToString()" />
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card p-3 shadow-sm">
+                    <StatCard Title="Total Patients" Value="@_patientDto.TotalPatients.ToString()" />
+                </div>
+            </div>
+        </div>
+    </div>
+}
 
 @code {
-    private int activeDoctors = 12;
-    private int activePatients = 48;
-    private int completedAppointments = 32;
-    private decimal revenue = 25600;
-    private int totalDoctors = 15;
-    private int inactiveDoctors = 3;
-    private int totalPatients = 60;
-    private int inactivePatients = 12;
+    private DoctorSummaryDto _doctorDto = new();
+    private PatientSummaryDto _patientDto = new();
+    private AppointmentSummaryDto _appointmentDto = new();
+    
+    private bool _isLoading = true;
+    private bool _hasError = false;
 
-    private List<ChartData> chartData = new() { new ChartData { Completed = 32, Confirmed = 20, Pending = 10, Cancelled = 5 } };
-    private double maxValue = 40;
-
-    private string GetWidth(int value) => $"{(value / maxValue) * 100}%";
-
-    public class ChartData
+    protected override async Task OnInitializedAsync()
     {
-        public int Completed { get; set; }
-        public int Confirmed { get; set; }
-        public int Pending { get; set; }
-        public int Cancelled { get; set; }
+        var timeout = Task.Delay(10000).ContinueWith(_ => { _hasError = true; _isLoading = false; StateHasChanged(); });
+
+        try
+        {
+            var doctorTask = DashboardService.GetDoctorSummaryAsync();
+            var patientTask = DashboardService.GetPatientSummaryAsync();
+            var appointmentTask = DashboardService.GetAppointmentSummaryAsync();
+
+            var dataTask = Task.WhenAll(doctorTask, patientTask, appointmentTask);
+            var completed = await Task.WhenAny(dataTask, timeout);
+
+            if (completed == dataTask)
+            {
+                _doctorDto = await doctorTask;
+                _patientDto = await patientTask;
+                _appointmentDto = await appointmentTask;
+            }
+        }
+        catch
+        {
+            _hasError = true;
+            ToastService.Show("Dashboard Error", "Failed to retrieve system statistics.", NotificationType.Error);
+        }
+        finally
+        {
+            _isLoading = false;
+            StateHasChanged();
+        }
+    }
+
+    private int GetMaxVal() => new[] { _appointmentDto.CompletedCount, _appointmentDto.ConfirmedCount, _appointmentDto.PendingCount, _appointmentDto.CancelledCount }.Max();
+
+    private string GetWidth(int value)
+    {
+        int max = GetMaxVal();
+        return max == 0 ? "0%" : $"{(value * 100 / max)}%";
     }
 }

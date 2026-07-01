@@ -73,8 +73,8 @@
           <span>Must be alphanumeric.</span>
         </div>
       </div>
-      <button type="submit" class="btn btn-primary btn-block" [disabled]="formRef.invalid || loading">
-        {{ loading ? 'Registering...' : 'Register' }}
+      <button type="submit" class="btn btn-primary btn-block" [disabled]="formRef.invalid || loading()">
+        {{ loading() ? 'Registering...' : 'Register' }}
       </button>
     </form>
     <p class="login-link">
