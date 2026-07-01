@@ -15,8 +15,9 @@ import { extractErrorMessage } from '../../core/utils/error-utils';
 })
 export class BookAppointment {
   specialisations = [
-    'Cardiology', 'Dermatology', 'Neurology', 'Orthopedics',
-    'Pediatrics', 'Psychiatry', 'Radiology', 'General Medicine',
+    'Cardiology', 'Dentist', 'Dermatology', 'Neurology',
+    'Orthopedics', 'Pediatrics', 'Psychiatry', 'Radiology',
+    'General Medicine',
   ];
 
   selectedSpecialisation = '';
@@ -37,6 +38,13 @@ export class BookAppointment {
     private readonly toastService: ToastService,
     private readonly cdr: ChangeDetectorRef,
   ) {}
+
+  clearResults(): void {
+    this.doctors = [];
+    this.selectedDoctor = null;
+    this.timeSlots = [];
+    this.selectedSlot = '';
+  }
 
   searchDoctors(): void {
     if (!this.selectedSpecialisation || !this.selectedDate) {

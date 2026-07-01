@@ -3,14 +3,16 @@
     public static class DoctorConstants
     {
         public static readonly List<string> Specialisations = new()
-    {
-        "Cardiologist",
-        "Dentist",
-        "Dermatologist",
-        "Neurologist",
-        "Orthopedic",
-        "Pediatrician",
-        "General Physician"
-    };
+        {
+            "Cardiology",
+            "Dentist",
+            "Dermatology",
+            "Neurology",
+            "Orthopedics",
+            "Pediatrics",
+            "Psychiatry",
+            "Radiology",
+            "General Medicine"
+        };
     }
 }
