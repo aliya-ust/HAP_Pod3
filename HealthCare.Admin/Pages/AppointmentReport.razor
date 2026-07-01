@@ -1,97 +1,125 @@
-﻿@using HealthCare.Api.DTOs.Appointment
+﻿@page "/appointments-report"
+@inject ToastService ToastService
+@inject AppointmentService AppointmentService
 
-@page "/appointments-report"
+<div class="p-4" style="background-color: #f8fafc; min-height: 100vh;">
+    <header class="mb-4">
+        <h2 class="fw-bold text-dark mb-1">Appointments Report</h2>
+        <p class="text-secondary small">Analyze appointment trends for a 7-day period</p>
+    </header>
 
-<h2 class="fw-bold mb-1">Appointments Report</h2>
-<p class="text-muted mb-4">Daily appointment summary</p>
-
-<!-- Card Wrapper -->
-<div class="card shadow-sm border-0 rounded-4">
-    <div class="card-body p-0">
-
-        @if (isLoading)
-        {
-            <div class="text-center py-5">
-                <div class="spinner-border text-primary"></div>
-                <p class="mt-2 text-muted">Loading report...</p>
+    <div class="bg-white p-3 mb-4 rounded-3 border shadow-sm">
+        <div class="row g-2 align-items-center">
+            <div class="col-md-3">
+                <label class="form-label small fw-bold text-uppercase text-muted">From</label>
+                <input type="date" class="form-control"
+                       @bind="fromDate"
+                       @bind:after="OnFromDateChanged"
+                       min="@FromDateMin"
+                       max="@FromDateMax" />
             </div>
-        }
-        else if (reports.Count == 0)
-        {
-            <div class="text-center py-5">
-                <p>No data available</p>
+            <div class="col-md-3">
+                <label class="form-label small fw-bold text-uppercase text-muted">To</label>
+                <input type="date" class="form-control"
+                       @bind="toDate"
+                       @bind:after="OnToDateChanged"
+                       min="@ToDateMin"
+                       max="@ToDateMax" />
             </div>
-        }
-        else
-        {
-            <table class="table table-hover align-middle mb-0">
-
-                <thead class="table-light">
-                    <tr>
-                        <th class="ps-4">Date</th>
-                        <th>Pending</th>
-                        <th>Confirmed</th>
-                        <th>Cancelled</th>
-                        <th>Completed</th>
-                        <th class="pe-4 text-end">Total</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    @foreach (var item in reports)
-                    {
-                        <tr>
-
-                            <!-- Date -->
-                            <td class="ps-4 fw-semibold">
-                                @item.Date.ToString("dd MMM yyyy")
-                            </td>
-
-                            <!-- Pending -->
-                            <td>
-                                <span class="badge bg-warning-subtle text-dark">
-                                    @item.PendingCount
-                                </span>
-                            </td>
-
-                            <!-- Confirmed -->
-                            <td>
-                                <span class="badge bg-primary-subtle text-primary">
-                                    @item.ConfirmedCount
-                                </span>
-                            </td>
-
-                            <!-- Cancelled -->
-                            <td>
-                                <span class="badge bg-danger-subtle text-danger">
-                                    @item.CancelledCount
-                                </span>
-                            </td>
-
-                            <!-- Completed -->
-                            <td>
-                                <span class="badge bg-success-subtle text-success">
-                                    @item.CompletedCount
-                                </span>
-                            </td>
-
-                            <!-- Total -->
-                            <td class="pe-4 text-end fw-bold">
-                                @(item.PendingCount + item.ConfirmedCount + item.CancelledCount + item.CompletedCount)
-                            </td>
-
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        }
-
+            <div class="col-md-2 mt-4">
+                <button class="btn btn-primary w-100" @onclick="GenerateReport">Generate Report</button>
+            </div>
+        </div>
     </div>
+
+    <AdminTable TItem="AppointmentReportDto" Items="reports" IsLoading="isLoading" EmptyText="Select a date range to view report.">
+        <HeaderTemplate>
+            <th class="ps-4">Date</th>
+            <th>Pending</th>
+            <th>Confirmed</th>
+            <th>Cancelled</th>
+            <th>Completed</th>
+            <th class="text-end pe-4">Total</th>
+        </HeaderTemplate>
+        <RowTemplate Context="report">
+            <tr>
+                <td class="ps-4 fw-semibold">@report.Date.ToString("dd MMM yyyy")</td>
+                <td><span class="badge bg-warning-subtle text-dark border">@report.PendingCount</span></td>
+                <td><span class="badge bg-primary-subtle text-primary border">@report.ConfirmedCount</span></td>
+                <td><span class="badge bg-danger-subtle text-danger border">@report.CancelledCount</span></td>
+                <td><span class="badge bg-success-subtle text-success border">@report.CompletedCount</span></td>
+                <td class="text-end pe-4 fw-bold">@(report.PendingCount + report.ConfirmedCount + report.CancelledCount + report.CompletedCount)</td>
+            </tr>
+        </RowTemplate>
+    </AdminTable>
 </div>
 
 @code {
     private List<AppointmentReportDto> reports = new();
     private bool isLoading = false;
+
+    private DateOnly fromDate = DateOnly.FromDateTime(DateTime.Today.AddDays(-6));
+    private DateOnly toDate = DateOnly.FromDateTime(DateTime.Today);
+
+    private string FromDateMax
+    {
+        get
+        {
+            var today = DateOnly.FromDateTime(DateTime.Today);
+            if (toDate == default) return today.ToString("yyyy-MM-dd");
+            return (toDate < today ? toDate : today).ToString("yyyy-MM-dd");
+        }
+    }
+
+    private string? FromDateMin
+    {
+        get
+        {
+            if (toDate == default) return null;
+            return toDate.AddDays(-7).ToString("yyyy-MM-dd");
+        }
+    }
+
+    private string? ToDateMin
+    {
+        get
+        {
+            if (fromDate == default) return null;
+            return fromDate.ToString("yyyy-MM-dd");
+        }
+    }
+
+    private string ToDateMax
+    {
+        get
+        {
+            var today = DateOnly.FromDateTime(DateTime.Today);
+            if (fromDate == default) return today.ToString("yyyy-MM-dd");
+            var maxAllowed = fromDate.AddDays(7);
+            var capped = maxAllowed < today ? maxAllowed : today;
+            return capped.ToString("yyyy-MM-dd");
+        }
+    }
+
+    private void OnFromDateChanged()
+    {
+        var maxTo = fromDate.AddDays(7);
+        var today = DateOnly.FromDateTime(DateTime.Today);
+        if (toDate > maxTo)
+            toDate = maxTo > today ? today : maxTo;
+    }
+
+    private void OnToDateChanged()
+    {
+        var minFrom = toDate.AddDays(-7);
+        if (fromDate < minFrom)
+            fromDate = minFrom;
+    }
+
+    private async Task GenerateReport()
+    {
+        await LoadData();
+    }
 
     protected override async Task OnInitializedAsync()
     {
@@ -101,29 +129,20 @@
     private async Task LoadData()
     {
         isLoading = true;
-
         try
         {
-            // API CALL
-            // reports = await Http.GetFromJsonAsync<List<AppointmentReportDto>>("/api/admin/reports/appointments");
+            var filter = new AppointmentReportFilter
+            {
+                FromDate = fromDate,
+                ToDate = toDate
+            };
 
-            // TEMP DUMMY DATA
-            reports = GetDummyData();
+            reports = await AppointmentService.GetReportAsync(filter);
         }
         finally
         {
             isLoading = false;
+            StateHasChanged();
         }
-    }
-
-    private List<AppointmentReportDto> GetDummyData()
-    {
-        return new()
-        {
-            new() { Date = DateOnly.FromDateTime(DateTime.Today), PendingCount = 5, ConfirmedCount = 10, CancelledCount = 2, CompletedCount = 8 },
-            new() { Date = DateOnly.FromDateTime(DateTime.Today.AddDays(-1)), PendingCount = 3, ConfirmedCount = 7, CancelledCount = 1, CompletedCount = 6 },
-            new() { Date = DateOnly.FromDateTime(DateTime.Today.AddDays(-2)), PendingCount = 4, ConfirmedCount = 9, CancelledCount = 3, CompletedCount = 5 },
-            new() { Date = DateOnly.FromDateTime(DateTime.Today.AddDays(-3)), PendingCount = 2, ConfirmedCount = 6, CancelledCount = 2, CompletedCount = 7 }
-        };
     }
 }
