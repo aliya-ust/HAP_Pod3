@@ -1,7 +1,8 @@
-﻿using HealthCare.Api.DTOs.Auth;
-using HealthCare.Api.DTOs.Doctor;
-using HealthCare.Api.DTOs.Patient;
+using HealthCare.Shared.DTOs.Auth;
+using HealthCare.Shared.DTOs.Doctor;
+using HealthCare.Shared.DTOs.Patient;
 using HealthCare.Api.Services.Interfaces;
+using HealthCare.Shared;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -25,23 +26,26 @@ namespace HealthCare.Api.Controllers
         public async Task<IActionResult> RegisterPatient(CreatePatientDto dto)
         {
             await _authService.RegisterPatientAsync(dto);
-            return Ok("Registration successful");
+            return Ok(ApiResponse.Ok("Registration successful"));
         }
 
         [HttpPost("register/doctor")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        [Authorize(Roles = "Admin")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
         public async Task<IActionResult> RegisterDoctor(CreateDoctorDto dto)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ApiResponse.Fail("Validation failed."));
+
             await _authService.RegisterDoctorAsync(dto);
-            return Ok("Registration successful");
+            return Ok(ApiResponse.Ok("Registration successful"));
         }
 
         [HttpPost("login")]
+        [AllowAnonymous]
         public async Task<IActionResult> Login(LoginDto dto)
         {
             var response = await _authService.LoginAsync(dto);
-            return Ok(response);
+            return Ok(ApiResponse<AuthResponseDto>.Ok(response));
         }
 
         [HttpPost("change-password")]
@@ -53,9 +57,12 @@ namespace HealthCare.Api.Controllers
 
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-            await _authService.ChangePasswordAsync(userId!, dto);
+            if (userId is null)
+                return BadRequest(ApiResponse.Fail("User ID claim not found."));
 
-            return Ok("Password changed successfully");
+            await _authService.ChangePasswordAsync(userId, dto);
+
+            return Ok(ApiResponse.Ok("Password changed successfully"));
         }
 
     }

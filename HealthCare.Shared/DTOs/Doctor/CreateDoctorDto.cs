@@ -1,8 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
-namespace HealthCare.Api.DTOs.Doctor
+namespace HealthCare.Shared.DTOs.Doctor
 {
-    public class CreateDoctorDto
+    public class CreateDoctorDto : IValidatableObject
     {
         [Required]
         [MaxLength(100)]
@@ -31,5 +31,13 @@ namespace HealthCare.Api.DTOs.Doctor
 
         [Required]
         public List<string> TimeSlots { get; set; } = new();
+
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        {
+            if (TimeSlots == null || TimeSlots.Count == 0)
+            {
+                yield return new ValidationResult("At least one time slot must be selected.", [nameof(TimeSlots)]);
+            }
+        }
     }
 }
