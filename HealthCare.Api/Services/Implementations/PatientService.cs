@@ -1,7 +1,8 @@
-﻿using AutoMapper;
+using AutoMapper;
 using HealthCare.Api.Data;
-using HealthCare.Api.DTOs;
-using HealthCare.Api.DTOs.Patient;
+using HealthCare.Shared.DTOs;
+using HealthCare.Shared.DTOs.Patient;
+using HealthCare.Api.Exceptions;
 using HealthCare.Api.Models;
 using HealthCare.Api.Repositories.Interfaces;
 using HealthCare.Api.Services.Interfaces;
@@ -15,7 +16,6 @@ namespace HealthCare.Api.Services.Implementations
         private readonly IPatientRepository _patientRepository;
         private readonly HealthCareDbContext _context;
         private readonly IMapper _mapper;
-        private const string NotFoundExceptionMessage = "Patient not found.";
 
         public PatientService(IRepository<Patient> repository, IPatientRepository patientRepository, HealthCareDbContext context, IMapper mapper)
         {
@@ -27,10 +27,12 @@ namespace HealthCare.Api.Services.Implementations
 
         public async Task<PatientListDto> GetByIdAsync(int id)
         {
-            var patient = await _repository.GetByIdAsync(id);
+            var patient = await _patientRepository.GetQueryable()
+                .Include(p => p.User)
+                .FirstOrDefaultAsync(p => p.PatientId == id);
 
             if (patient is null)
-                throw new InvalidOperationException(NotFoundExceptionMessage);
+                throw new PatientNotFoundException(id);
 
             return _mapper.Map<PatientListDto>(patient);
         }
@@ -93,9 +95,9 @@ namespace HealthCare.Api.Services.Implementations
             var patient = await _repository.GetByIdAsync(id);
 
             if (patient is null)
-                throw new InvalidOperationException(NotFoundExceptionMessage);
+                throw new PatientNotFoundException(id);
 
-            _mapper.Map(dto, patient); // maps onto the tracked entity — EF picks up the changes
+            _mapper.Map(dto, patient); // maps onto the tracked entity � EF picks up the changes
 
             await _repository.UpdateAsync(patient);
             await _context.SaveChangesAsync();
@@ -106,7 +108,7 @@ namespace HealthCare.Api.Services.Implementations
             var patient = await _repository.GetByIdAsync(id);
 
             if (patient is null)
-                throw new InvalidOperationException(NotFoundExceptionMessage);
+                throw new PatientNotFoundException(id);
 
             patient.IsActive = isActive;
 
@@ -119,7 +121,7 @@ namespace HealthCare.Api.Services.Implementations
             var patient = await _repository.GetByIdAsync(id);
 
             if (patient is null)
-                throw new InvalidOperationException(NotFoundExceptionMessage);
+                throw new PatientNotFoundException(id);
 
             try
             {
@@ -128,7 +130,7 @@ namespace HealthCare.Api.Services.Implementations
             }
             catch (DbUpdateException ex)
             {
-                throw new InvalidOperationException("Failed to delete patient. It may be referenced by existing appointments or health records.", ex);
+                throw new DbHandleException("Failed to delete patient. It may be referenced by existing appointments or health records.");
             }
         }
 

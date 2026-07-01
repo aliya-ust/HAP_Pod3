@@ -2,18 +2,19 @@
 using AutoMapper;
 using HealthCare.Api.Models;
 using HealthCare.Api.Data;
+using HealthCare.Api.Exceptions;
 using HealthCare.Api.Services.Implementations;
 using HealthCare.Api.Repositories.Interfaces;
-using HealthCare.Api.DTOs;
-using HealthCare.Api.DTOs.Patient;
+using HealthCare.Shared.DTOs;
+using HealthCare.Shared.DTOs.Patient;
 using Microsoft.EntityFrameworkCore;
-using System.Linq.Expressions;
 
 namespace HealthCare.Api.Tests
 {
     public class PatientServiceTests
     {
         private readonly Mock<IRepository<Patient>> _repoMock;
+        private readonly Mock<IPatientRepository> _patientRepoMock;
         private readonly Mock<IMapper> _mapperMock;
         private readonly HealthCareDbContext _context;
         private readonly PatientService _service;
@@ -21,6 +22,7 @@ namespace HealthCare.Api.Tests
         public PatientServiceTests()
         {
             _repoMock = new Mock<IRepository<Patient>>();
+            _patientRepoMock = new Mock<IPatientRepository>();
             _mapperMock = new Mock<IMapper>();
 
             var options = new DbContextOptionsBuilder<HealthCareDbContext>()
@@ -31,6 +33,7 @@ namespace HealthCare.Api.Tests
 
             _service = new PatientService(
                 _repoMock.Object,
+                _patientRepoMock.Object,
                 _context,
                 _mapperMock.Object
             );
@@ -40,11 +43,13 @@ namespace HealthCare.Api.Tests
         [Fact]
         public async Task GetByIdAsync_ShouldReturnPatient_WhenExists()
         {
-            var patient = new Patient { PatientId = 1 };
-            var dto = new PatientListDto();
+            var patient = new Patient { PatientId = 1, FullName = "Test", Gender = "Male", PhoneNumber = "9876543210" };
+            _context.Set<Patient>().Add(patient);
+            await _context.SaveChangesAsync();
 
-            _repoMock.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(patient);
-            _mapperMock.Setup(m => m.Map<PatientListDto>(patient)).Returns(dto);
+            var dto = new PatientListDto();
+            _patientRepoMock.Setup(r => r.GetQueryable()).Returns(_context.Set<Patient>());
+            _mapperMock.Setup(m => m.Map<PatientListDto>(It.IsAny<Patient>())).Returns(dto);
 
             var result = await _service.GetByIdAsync(1);
 
@@ -55,10 +60,9 @@ namespace HealthCare.Api.Tests
         [Fact]
         public async Task GetByIdAsync_ShouldThrow_WhenPatientNotFound()
         {
-            _repoMock.Setup(r => r.GetByIdAsync(1))
-                .ReturnsAsync((Patient?)null);
+            _patientRepoMock.Setup(r => r.GetQueryable()).Returns(_context.Set<Patient>());
 
-            await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            await Assert.ThrowsAsync<PatientNotFoundException>(() =>
                 _service.GetByIdAsync(1));
         }
 
@@ -66,23 +70,18 @@ namespace HealthCare.Api.Tests
         [Fact]
         public async Task GetAllAsync_ShouldReturnPagedResult()
         {
-            var patients = new List<Patient> { new Patient() };
-
-            var paged = new PagedResult<Patient>
+            _context.Set<Patient>().Add(new Patient
             {
-                Items = patients,
-                PageNumber = 1,
-                PageSize = 10,
-                TotalCount = 1
-            };
+                FullName = "Test Patient",
+                Gender = "Male",
+                PhoneNumber = "1234567890"
+            });
+            await _context.SaveChangesAsync();
 
-            _repoMock.Setup(r => r.GetAllAsync(
-                It.IsAny<int>(),
-                It.IsAny<int>(),
-                It.IsAny<Expression<Func<Patient, bool>>?>()))
-                .ReturnsAsync(paged);
+            _patientRepoMock.Setup(r => r.GetQueryable())
+                .Returns(_context.Set<Patient>());
 
-            _mapperMock.Setup(m => m.Map<IEnumerable<PatientListDto>>(patients))
+            _mapperMock.Setup(m => m.Map<IEnumerable<PatientListDto>>(It.IsAny<IEnumerable<Patient>>()))
                 .Returns(new List<PatientListDto> { new PatientListDto() });
 
             var result = await _service.GetAllAsync(new PatientFilter());
@@ -131,7 +130,7 @@ namespace HealthCare.Api.Tests
             _repoMock.Setup(r => r.GetByIdAsync(1))
                 .ReturnsAsync((Patient?)null);
 
-            await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            await Assert.ThrowsAsync<PatientNotFoundException>(() =>
                 _service.UpdateAsync(1, new UpdatePatientDto()));
         }
 
@@ -169,7 +168,7 @@ namespace HealthCare.Api.Tests
             _repoMock.Setup(r => r.GetByIdAsync(1))
                 .ReturnsAsync((Patient?)null);
 
-            await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            await Assert.ThrowsAsync<PatientNotFoundException>(() =>
                 _service.DeleteAsync(1));
         }
 
@@ -184,7 +183,7 @@ namespace HealthCare.Api.Tests
             _repoMock.Setup(r => r.DeleteAsync(1))
                 .ThrowsAsync(new DbUpdateException());
 
-            await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            await Assert.ThrowsAsync<DbHandleException>(() =>
                 _service.DeleteAsync(1));
         }
     }

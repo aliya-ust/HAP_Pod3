@@ -15,23 +15,15 @@ import { UpdatePatientDto } from '../../core/models/patient.models';
         <form #formRef="ngForm" (ngSubmit)="save()">
           <div class="form-group">
             <label for="fullName">Full Name</label>
-            <input id="fullName" name="fullName" type="text" [(ngModel)]="form.fullName" required pattern="[A-Za-z\s]+" #fullName="ngModel" />
+            <input id="fullName" name="fullName" type="text" [(ngModel)]="form.fullName" required pattern="[A-Za-z ]+" #fullName="ngModel" />
             <div class="error" *ngIf="fullName.invalid && fullName.touched">
               <span *ngIf="fullName.errors?.['required']">Full name is required.</span>
               <span *ngIf="fullName.errors?.['pattern']">Full name must contain only alphabets.</span>
             </div>
           </div>
           <div class="form-group">
-            <label for="email">Email</label>
-            <input id="email" name="email" type="email" [(ngModel)]="form.email" required email #email="ngModel" />
-            <div class="error" *ngIf="email.invalid && email.touched">
-              <span *ngIf="email.errors?.['required']">Email is required.</span>
-              <span *ngIf="email.errors?.['email']">Enter a valid email address.</span>
-            </div>
-          </div>
-          <div class="form-group">
             <label for="phoneNumber">Phone Number</label>
-            <input id="phoneNumber" name="phoneNumber" type="tel" [(ngModel)]="form.phoneNumber" required pattern="[6-9]\d{9}" #phone="ngModel" />
+            <input id="phoneNumber" name="phoneNumber" type="tel" [(ngModel)]="form.phoneNumber" required pattern="[6-9][0-9]{9}" #phone="ngModel" />
             <div class="error" *ngIf="phone.invalid && phone.touched">
               <span *ngIf="phone.errors?.['required']">Phone number is required.</span>
               <span *ngIf="phone.errors?.['pattern']">Phone must be 10 digits starting with 6-9.</span>
