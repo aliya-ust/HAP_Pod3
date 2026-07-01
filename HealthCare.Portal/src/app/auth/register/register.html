@@ -1,0 +1,84 @@
+<div class="register-page">
+  <div class="register-card">
+    <h2>Patient Registration</h2>
+    <form #formRef="ngForm" (ngSubmit)="register()">
+      <div class="form-group">
+        <label for="fullName">Full Name</label>
+        <input id="fullName" name="fullName" type="text" [(ngModel)]="fullName" required pattern="{{ namePattern }}" #mFullName="ngModel" />
+        <div class="error" *ngIf="mFullName.invalid && mFullName.touched">
+          <span *ngIf="mFullName.errors?.['required']">Full name is required.</span>
+          <span *ngIf="mFullName.errors?.['pattern']">Only alphabets and spaces allowed.</span>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input id="email" name="email" type="email" [(ngModel)]="email" required pattern="{{ emailPattern }}" #mEmail="ngModel" />
+        <div class="error" *ngIf="mEmail.invalid && mEmail.touched">
+          <span *ngIf="mEmail.errors?.['required']">Email is required.</span>
+          <span *ngIf="mEmail.errors?.['pattern']">Enter a valid email address.</span>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input id="password" name="password" type="password" [(ngModel)]="password" required pattern="{{ passwordPattern }}" #mPassword="ngModel" />
+        <div class="error" *ngIf="mPassword.invalid && mPassword.touched">
+          <span *ngIf="mPassword.errors?.['required']">Password is required.</span>
+          <span *ngIf="mPassword.errors?.['pattern']">Must be 8+ characters with uppercase, lowercase, digit, and special character.</span>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="confirmPassword">Confirm Password</label>
+        <input id="confirmPassword" name="confirmPassword" type="password" [(ngModel)]="confirmPassword" required #mConfirm="ngModel" />
+        <div class="error" *ngIf="mConfirm.invalid && mConfirm.touched">
+          <span *ngIf="mConfirm.errors?.['required']">Please confirm your password.</span>
+        </div>
+        <div class="error" *ngIf="password && confirmPassword && password !== confirmPassword && mConfirm.touched">
+          <span>Passwords do not match.</span>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="dateOfBirth">Date of Birth</label>
+          <input id="dateOfBirth" name="dateOfBirth" type="date" [(ngModel)]="dateOfBirth" required max="{{ yesterday }}" #mDob="ngModel" />
+          <div class="error" *ngIf="mDob.invalid && mDob.touched">
+            <span *ngIf="mDob.errors?.['required']">Date of birth is required.</span>
+            <span *ngIf="mDob.errors?.['max']">Date of birth must be in the past.</span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="gender">Gender</label>
+          <select id="gender" name="gender" [(ngModel)]="gender" required #mGender="ngModel">
+            <option value="">Select</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+          </select>
+          <div class="error" *ngIf="mGender.invalid && mGender.touched">
+            <span>Please select a gender.</span>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="phoneNumber">Phone Number</label>
+        <input id="phoneNumber" name="phoneNumber" type="tel" [(ngModel)]="phoneNumber" required pattern="{{ phonePattern }}" #mPhone="ngModel" />
+        <div class="error" *ngIf="mPhone.invalid && mPhone.touched">
+          <span *ngIf="mPhone.errors?.['required']">Phone number is required.</span>
+          <span *ngIf="mPhone.errors?.['pattern']">Phone must be 10 digits starting with 6-9.</span>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="insuranceId">Insurance ID (optional)</label>
+        <input id="insuranceId" name="insuranceId" type="text" [(ngModel)]="insuranceId" pattern="[A-Za-z0-9]+" #mInsurance="ngModel" />
+        <div class="error" *ngIf="mInsurance.invalid && mInsurance.touched">
+          <span>Must be alphanumeric.</span>
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary btn-block" [disabled]="formRef.invalid || loading">
+        {{ loading ? 'Registering...' : 'Register' }}
+      </button>
+    </form>
+    <p class="login-link">
+      Already have an account? <a routerLink="/login">Sign in</a>
+    </p>
+  </div>
+</div>
