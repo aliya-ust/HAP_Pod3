@@ -1,4 +1,5 @@
 using AutoMapper;
+using HealthCare.Api.Constants;
 using HealthCare.Api.Data;
 using HealthCare.Shared.DTOs;
 using HealthCare.Shared.DTOs.HealthRecord;
@@ -14,12 +15,14 @@ namespace HealthCare.Api.Services.Implementations
     public class HealthRecordService : IHealthRecordService
     {
         private readonly IHealthRecordRepository _repository;
+        private readonly IAppointmentRepository _appointmentRepository;
         private readonly HealthCareDbContext _context;
         private readonly IMapper _mapper;
 
-        public HealthRecordService(IHealthRecordRepository repository, HealthCareDbContext context, IMapper mapper)
+        public HealthRecordService(IHealthRecordRepository repository, IAppointmentRepository appointmentRepository, HealthCareDbContext context, IMapper mapper)
         {
             _repository = repository;
+            _appointmentRepository = appointmentRepository;
             _context = context;
             _mapper = mapper;
         }
@@ -74,6 +77,13 @@ namespace HealthCare.Api.Services.Implementations
             var record = _mapper.Map<HealthRecord>(dto);
             record.DoctorId = doctorId;
             await _repository.AddAsync(record);
+            await _context.SaveChangesAsync();
+
+            var appointment = await _appointmentRepository.GetByIdAsync(dto.AppointmentId);
+            if (appointment is null)
+                throw new AppointmentNotFoundException();
+            appointment.Status = AppointmentStatus.Completed;
+            await _appointmentRepository.UpdateAsync(appointment);
             await _context.SaveChangesAsync();
         }
 

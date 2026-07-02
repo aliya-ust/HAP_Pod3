@@ -1,4 +1,4 @@
-import { Component, ChangeDetectorRef, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { NgClass, NgFor, NgIf } from '@angular/common';
 import { PatientService } from '../../core/services/patient.service';
 import { ToastService } from '../../core/services/toast.service';
@@ -13,13 +13,12 @@ import { extractErrorMessage } from '../../core/utils/error-utils';
   styleUrl: './my-appointments.scss',
 })
 export class MyAppointments implements OnInit {
-  appointments: AppointmentListDto[] = [];
-  loading = false;
+  appointments = signal<AppointmentListDto[]>([]);
+  loading = signal(false);
 
   constructor(
     private readonly patientService: PatientService,
     private readonly toastService: ToastService,
-    private readonly cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {
@@ -27,17 +26,15 @@ export class MyAppointments implements OnInit {
   }
 
   private loadAppointments(): void {
-    this.loading = true;
+    this.loading.set(true);
     this.patientService.getUpcomingAppointments().subscribe({
       next: (res) => {
-        this.appointments = (res ?? []).filter(a => a.status !== 'Completed');
-        this.loading = false;
-        this.cdr.detectChanges();
+        this.appointments.set((res ?? []).filter(a => a.status !== 'Completed'));
+        this.loading.set(false);
       },
       error: (err) => {
-        this.loading = false;
+        this.loading.set(false);
         this.toastService.error(extractErrorMessage(err));
-        this.cdr.detectChanges();
       },
     });
   }

@@ -14,21 +14,21 @@
         <label for="date">Date</label>
         <input id="date" type="date" [(ngModel)]="selectedDate" [min]="todayDate" (change)="clearResults()" />
       </div>
-      <button class="btn btn-primary" (click)="searchDoctors()" [disabled]="searching">
-        {{ searching ? 'Searching...' : 'Search' }}
+      <button class="btn btn-primary" (click)="searchDoctors()" [disabled]="searching()">
+        {{ searching() ? 'Searching...' : 'Search' }}
       </button>
     </div>
   </div>
 
-  <div class="card no-results" *ngIf="!searching && doctors.length === 0 && (selectedSpecialisation || selectedDate)">
+  <div class="card no-results" *ngIf="!searching() && doctors().length === 0 && (selectedSpecialisation || selectedDate)">
     <p class="placeholder">No doctors available for this specialisation and date.</p>
   </div>
 
-  <div class="card" *ngIf="doctors.length > 0">
+  <div class="card" *ngIf="doctors().length > 0">
     <h3>Available Doctors</h3>
     <div class="doctor-list">
       <div
-        *ngFor="let doc of doctors"
+        *ngFor="let doc of doctors()"
         class="doctor-item"
         [class.selected]="selectedDoctor?.doctorId === doc.doctorId"
         (click)="selectDoctor(doc)"
@@ -44,10 +44,10 @@
 
   <div class="card" *ngIf="selectedDoctor">
     <h3>Available Time Slots — {{ selectedDoctor.fullName }}</h3>
-    <div *ngIf="timeSlots.length === 0" class="placeholder">No available time slots for this doctor on the selected date.</div>
-    <div *ngIf="timeSlots.length > 0" class="slots-grid">
+    <div *ngIf="timeSlots().length === 0" class="placeholder">No available time slots for this doctor on the selected date.</div>
+    <div *ngIf="timeSlots().length > 0" class="slots-grid">
       <button
-        *ngFor="let slot of timeSlots"
+        *ngFor="let slot of timeSlots()"
         class="slot-btn"
         [class.active]="selectedSlot === slot"
         (click)="selectedSlot = slot"
@@ -55,7 +55,7 @@
         {{ slot }}
       </button>
     </div>
-    <button class="btn btn-primary btn-book" (click)="book()" [disabled]="!selectedSlot || booking">
-      {{ booking ? 'Booking...' : 'Confirm Booking' }}
+    <button class="btn btn-primary btn-book" (click)="book()" [disabled]="!selectedSlot || booking()">
+      {{ booking() ? 'Booking...' : 'Confirm Booking' }}
     </button>
   </div>

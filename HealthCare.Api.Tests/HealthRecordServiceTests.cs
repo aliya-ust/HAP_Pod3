@@ -1,6 +1,7 @@
 using AutoMapper;
 using Moq;
 using Microsoft.EntityFrameworkCore;
+using HealthCare.Api.Constants;
 using HealthCare.Api.Data;
 using HealthCare.Api.Exceptions;
 using HealthCare.Api.Models;
@@ -15,6 +16,7 @@ namespace HealthCare.Api.Tests
     public class HealthRecordServiceTests
     {
         private readonly Mock<IHealthRecordRepository> _repoMock;
+        private readonly Mock<IAppointmentRepository> _appointmentRepoMock;
         private readonly Mock<IMapper> _mapperMock;
         private readonly HealthCareDbContext _context;
         private readonly HealthRecordService _service;
@@ -22,6 +24,7 @@ namespace HealthCare.Api.Tests
         public HealthRecordServiceTests()
         {
             _repoMock = new Mock<IHealthRecordRepository>();
+            _appointmentRepoMock = new Mock<IAppointmentRepository>();
             _mapperMock = new Mock<IMapper>();
 
             var options = new DbContextOptionsBuilder<HealthCareDbContext>()
@@ -32,6 +35,7 @@ namespace HealthCare.Api.Tests
 
             _service = new HealthRecordService(
                 _repoMock.Object,
+                _appointmentRepoMock.Object,
                 _context,
                 _mapperMock.Object
             );
@@ -102,13 +106,17 @@ namespace HealthCare.Api.Tests
                 VisitDate = DateOnly.FromDateTime(DateTime.Now),
             };
             var record = new HealthRecord();
+            var appointment = new Appointment { Status = AppointmentStatus.Pending };
 
             _mapperMock.Setup(m => m.Map<HealthRecord>(dto)).Returns(record);
+            _appointmentRepoMock.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(appointment);
             int doctorId = 1;
 
             await _service.AddAsync(doctorId, dto);
 
             _repoMock.Verify(r => r.AddAsync(record), Times.Once);
+            _appointmentRepoMock.Verify(r => r.UpdateAsync(appointment), Times.Once);
+            Assert.Equal(AppointmentStatus.Completed, appointment.Status);
         }
 
         //  UpdateAsync

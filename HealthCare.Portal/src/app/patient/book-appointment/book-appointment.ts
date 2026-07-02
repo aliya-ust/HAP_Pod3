@@ -1,4 +1,4 @@
-import { Component, ChangeDetectorRef } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NgFor, NgIf } from '@angular/common';
 import { PatientService } from '../../core/services/patient.service';
@@ -22,12 +22,12 @@ export class BookAppointment {
 
   selectedSpecialisation = '';
   selectedDate = '';
-  doctors: DoctorListDto[] = [];
+  doctors = signal<DoctorListDto[]>([]);
   selectedDoctor: DoctorListDto | null = null;
-  timeSlots: string[] = [];
+  timeSlots = signal<string[]>([]);
   selectedSlot = '';
-  searching = false;
-  booking = false;
+  searching = signal(false);
+  booking = signal(false);
 
   get todayDate(): string {
     return new Date().toISOString().split('T')[0];
@@ -36,13 +36,12 @@ export class BookAppointment {
   constructor(
     private readonly patientService: PatientService,
     private readonly toastService: ToastService,
-    private readonly cdr: ChangeDetectorRef,
   ) {}
 
   clearResults(): void {
-    this.doctors = [];
+    this.doctors.set([]);
     this.selectedDoctor = null;
-    this.timeSlots = [];
+    this.timeSlots.set([]);
     this.selectedSlot = '';
   }
 
@@ -52,25 +51,23 @@ export class BookAppointment {
       return;
     }
 
-    this.searching = true;
-    this.doctors = [];
+    this.searching.set(true);
+    this.doctors.set([]);
     this.selectedDoctor = null;
-    this.timeSlots = [];
+    this.timeSlots.set([]);
     this.selectedSlot = '';
 
     this.patientService.getAvailableDoctors(this.selectedSpecialisation, this.selectedDate).subscribe({
       next: (res) => {
-        this.doctors = res ?? [];
-        this.searching = false;
-        if (this.doctors.length === 0) {
+        this.doctors.set(res ?? []);
+        this.searching.set(false);
+        if (this.doctors().length === 0) {
           this.toastService.info('No doctors available for this specialisation and date');
         }
-        this.cdr.detectChanges();
       },
       error: (err) => {
-        this.searching = false;
+        this.searching.set(false);
         this.toastService.error(extractErrorMessage(err));
-        this.cdr.detectChanges();
       },
     });
   }
@@ -78,19 +75,17 @@ export class BookAppointment {
   selectDoctor(doctor: DoctorListDto): void {
     this.selectedDoctor = doctor;
     this.selectedSlot = '';
-    this.timeSlots = [];
+    this.timeSlots.set([]);
 
     this.patientService.getAvailableSlots(doctor.doctorId, this.selectedDate).subscribe({
       next: (res) => {
-        this.timeSlots = res ?? [];
-        if (this.timeSlots.length === 0) {
+        this.timeSlots.set(res ?? []);
+        if (this.timeSlots().length === 0) {
           this.toastService.info('No available time slots for this doctor on the selected date');
         }
-        this.cdr.detectChanges();
       },
       error: (err) => {
         this.toastService.error(extractErrorMessage(err));
-        this.cdr.detectChanges();
       },
     });
   }
@@ -98,27 +93,25 @@ export class BookAppointment {
   book(): void {
     if (!this.selectedDoctor || !this.selectedSlot) return;
 
-    this.booking = true;
+    this.booking.set(true);
     this.patientService.bookAppointment({
       doctorId: this.selectedDoctor.doctorId,
       scheduledDate: this.selectedDate,
       timeSlot: this.selectedSlot,
     }).subscribe({
       next: () => {
-        this.booking = false;
+        this.booking.set(false);
         this.toastService.success(`Appointment booked with ${this.selectedDoctor!.fullName} at ${this.selectedSlot}`);
         this.selectedDoctor = null;
-        this.timeSlots = [];
+        this.timeSlots.set([]);
         this.selectedSlot = '';
-        this.doctors = [];
+        this.doctors.set([]);
         this.selectedSpecialisation = '';
         this.selectedDate = '';
-        this.cdr.detectChanges();
       },
       error: (err) => {
-        this.booking = false;
+        this.booking.set(false);
         this.toastService.error(extractErrorMessage(err));
-        this.cdr.detectChanges();
       },
     });
   }

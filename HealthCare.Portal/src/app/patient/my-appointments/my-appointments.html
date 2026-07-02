@@ -1,16 +1,16 @@
 <div class="page">
   <h2>My Appointments</h2>
 
-  <div class="card" *ngIf="loading">
+  <div class="card" *ngIf="loading()">
     <p class="placeholder">Loading...</p>
   </div>
 
-  <div class="card" *ngIf="!loading && appointments.length === 0">
+  <div class="card" *ngIf="!loading() && appointments().length === 0">
     <p class="placeholder">No appointments found</p>
   </div>
 
-  <div *ngIf="!loading && appointments.length > 0">
-    <div *ngFor="let a of appointments" class="appointment-card">
+  <div *ngIf="!loading() && appointments().length > 0">
+    <div *ngFor="let a of appointments()" class="appointment-card">
       <div class="appt-header">
         <span class="appt-date">{{ a.scheduledDate }}</span>
         <span class="appt-time">{{ a.timeSlot }}</span>
