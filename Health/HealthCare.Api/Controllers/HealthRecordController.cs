@@ -1,4 +1,5 @@
 ﻿using HealthCare.Api.DTOs.HealthRecord;
+using HealthCare.Api.Models;
 using HealthCare.Api.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -60,7 +61,7 @@ namespace HealthCare.Api.Controllers
         }
 
         // Patient - Get own health records
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Patient")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Patient" )]
         [HttpGet("patient")]
         public async Task<IActionResult> GetByPatient()
         {
@@ -69,6 +70,17 @@ namespace HealthCare.Api.Controllers
             var records = await _healthRecordService.GetHealthRecordByPatient(patientId);
 
             return Ok(records);
+        }
+
+        [HttpGet("patient/{id}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize(Roles = "Doctor")]
+        public async Task<IActionResult> GetRecordsByPatient(int id)
+        {
+            var records = await _healthRecordService.GetHealthRecordByPatient(id);
+
+            return Ok(records);
+
         }
     }
 }

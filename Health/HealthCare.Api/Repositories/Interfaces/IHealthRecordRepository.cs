@@ -5,7 +5,7 @@ namespace HealthCare.Api.Repositories.Interfaces
 {
     public interface IHealthRecordRepository : IRepository<HealthRecord>
     {
-        Task<List<HealthRecordListDto>> GetHealthRecordByPatient(int id);
+        Task<List<HealthRecordListDto>> GetPatientHealthRecords(int patientId);
         Task<List<HealthRecordListDto>> GetHealthRecordByAppointment(int id);
     }
 }

@@ -21,5 +21,14 @@ namespace HealthCare.Api.Services.Interfaces
         Task<List<AppointmentListDto>> GetPatientSchedule(DateOnly date, int id);
         Task<List<AppointmentListDto>> GetAppointmentByPatient(int id);
         Task<List<AppointmentListDto>> GetAppointmentByDoctor(int id);
+        Task ConfirmAppointment(int appointmentId);
+
+        Task CancelAppointment(int appointmentId);
+
+        Task<List<DoctorDropdownDto>>GetAvailableDoctorsAsync(DateOnly date, string specialization);
+
+        Task<List<string>>GetAvailableSlotsAsync(int doctorId, DateOnly date);
+
+        Task ValidateDoctorAvailability(int doctorId, DateOnly date);
     }
 }

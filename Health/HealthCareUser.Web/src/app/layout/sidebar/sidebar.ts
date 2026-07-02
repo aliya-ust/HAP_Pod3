@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 
@@ -15,12 +15,13 @@ import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 })
 export class SidebarComponent implements OnInit {
 
-  role = '';
+  role = signal('');
 
   constructor(private router: Router) { }
 
   ngOnInit(): void {
-    this.role = localStorage.getItem('role') ?? '';
+    const roleValue = localStorage.getItem('role') ?? '';
+    this.role.set(roleValue);
   }
 
   logout() {
@@ -28,8 +29,7 @@ export class SidebarComponent implements OnInit {
     localStorage.removeItem('token');
     localStorage.removeItem('role');
 
-    this.router.navigate(['/login']);
-
+    this.router.navigate(['/']);
   }
 
 }

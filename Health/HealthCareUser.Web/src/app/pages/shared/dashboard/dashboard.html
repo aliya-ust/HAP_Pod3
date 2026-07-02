@@ -1,79 +1,78 @@
-<div class="dashboard">
+<div class="page">
 
-  <h1>Dashboard</h1>
+  <div class="dashboard">
 
-  <!-- PATIENT -->
+    <h1><i class="bi bi-speedometer2"></i> Dashboard</h1>
 
-  <div *ngIf="role=='Patient'">
+    <!-- PATIENT -->
+    <div *ngIf="role() === 'Patient'">
 
-    <div class="cards">
+      <div class="cards">
 
-      <div class="card">
+        <div class="card blue">
+          <div class="icon"><i class="bi bi-calendar-check"></i></div>
+          <div>
+            <h3>Appointments</h3>
+            <h2>{{ upcomingAppointments() }}</h2>
+          </div>
+        </div>
 
-        <h3>Upcoming Appointments</h3>
-
-        <h2>{{upcomingAppointments}}</h2>
-
-      </div>
-
-      <div class="card">
-
-        <h3>Health Records</h3>
-
-        <h2>{{healthRecordCount}}</h2>
-
-      </div>
-
-    </div>
-
-    <div class="patient-image">
-
-      <img src="assets/images/patient-dashboard.png">
-
-    </div>
-
-  </div>
-
-  <!-- DOCTOR -->
-
-  <div *ngIf="role=='Doctor'">
-
-    <div class="cards">
-
-      <div class="card">
-
-        <h3>Upcoming Appointments</h3>
-
-        <h2>{{upcomingAppointments}}</h2>
-
-      </div>
-
-      <div class="card">
-
-        <h3>Completed Appointments</h3>
-
-        <h2>{{completedAppointments}}</h2>
-
-      </div>
-
-      <div class="card">
-
-        <h3>Upcoming Leaves</h3>
-
-        <h2>{{upcomingLeaves}}</h2>
+        <div class="card green">
+          <div class="icon"><i class="bi bi-file-medical"></i></div>
+          <div>
+            <h3>Health Records</h3>
+            <h2>{{ healthRecordCount() }}</h2>
+          </div>
+        </div>
 
       </div>
 
     </div>
 
-    <div class="card">
+    <!-- DOCTOR -->
+    <div *ngIf="role() === 'Doctor'">
 
-      <h3>Today's Appointments</h3>
+      <div class="cards">
 
-      <div class="slot"
-           *ngFor="let item of todayAppointments">
+        <div class="card blue">
+          <div class="icon"><i class="bi bi-calendar-check"></i></div>
+          <div>
+            <h3>Appointments</h3>
+            <h2>{{ upcomingAppointments() }}</h2>
+          </div>
+        </div>
 
-        {{ item.slot }}
+        <div class="card green">
+          <div class="icon"><i class="bi bi-check2-circle"></i></div>
+          <div>
+            <h3>Completed</h3>
+            <h2>{{ completedAppointments() }}</h2>
+          </div>
+        </div>
+
+        <div class="card purple">
+          <div class="icon"><i class="bi bi-calendar-x"></i></div>
+          <div>
+            <h3>Leaves</h3>
+            <h2>{{ upcomingLeaves() }}</h2>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Today's Appointments -->
+      <div class="today-card">
+
+        <h3><i class="bi bi-clock-history"></i> Today's Appointments</h3>
+
+        <div class="slots">
+
+          <div class="slot"
+               *ngFor="let item of todayAppointments()">
+            <i class="bi bi-clock"></i> {{ item.slot }}
+          </div>
+
+        </div>
 
       </div>
 

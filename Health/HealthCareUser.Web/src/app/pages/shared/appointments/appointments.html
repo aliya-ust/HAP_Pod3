@@ -1,0 +1,153 @@
+<div class="page">
+
+  <div class="container">
+
+    <h2>
+      <i class="bi bi-calendar-check"></i>
+      {{ patient() ? 'Upcoming Appointments' : 'Doctor Appointments' }}
+    </h2>
+
+    <!-- Loading -->
+    <div *ngIf="loading()" class="state loading">
+      <i class="bi bi-hourglass-split"></i>
+      Loading...
+    </div>
+
+    <!-- Empty -->
+    <div *ngIf="!loading() && appointments().length === 0" class="state empty">
+      <i class="bi bi-calendar-x"></i>
+      No upcoming appointments
+    </div>
+
+    <!-- TABLE -->
+    <div class="table-wrapper" *ngIf="appointments().length > 0">
+
+      <table>
+        <thead>
+          <tr>
+            <th *ngIf="patient()">Doctor</th>
+            <th *ngIf="doctor()">Patient</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Status</th>
+            <th *ngIf="doctor()">Actions</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          <tr *ngFor="let appt of appointments()">
+
+            <td *ngIf="patient()">
+              <i class="bi bi-person-badge"></i>
+              {{ appt.doctorName }}
+            </td>
+
+            <td *ngIf="doctor()">
+              <i class="bi bi-person"></i>
+              {{ appt.patientName }}
+            </td>
+
+            <td>{{ appt.scheduledDate }}</td>
+            <td>{{ appt.timeSlot }}</td>
+
+            <td>
+              <span class="badge"
+                    [ngClass]="{
+                      'pending': appt.status === 'Pending',
+                      'confirmed': appt.status === 'Confirmed'
+                    }">
+                {{ appt.status }}
+              </span>
+            </td>
+
+            <td *ngIf="doctor()">
+
+              <ng-container *ngIf="appt.status === 'Pending'">
+
+                <button class="btn success"
+                        (click)="confirmAppointment(appt.appointmentId)">
+                  <i class="bi bi-check-circle"></i>
+                </button>
+
+                <button class="btn danger"
+                        (click)="cancelAppointment(appt.appointmentId)">
+                  <i class="bi bi-x-circle"></i>
+                </button>
+
+              </ng-container>
+
+              <ng-container *ngIf="appt.status === 'Confirmed'">
+
+                <button class="btn primary"
+                        (click)="viewHealthRecord(appt.patientId)">
+                  <i class="bi bi-eye"></i>
+                </button>
+
+                <button class="btn purple"
+                        (click)="addHealthRecord(appt.appointmentId, appt.patientId)">
+                  <i class="bi bi-plus-circle"></i>
+                </button>
+
+              </ng-container>
+
+            </td>
+
+          </tr>
+
+        </tbody>
+      </table>
+
+    </div>
+
+  </div>
+
+</div>
+
+<!-- VIEW DIALOG -->
+<div class="dialog" *ngIf="showViewDialog()">
+  <div class="dialog-content">
+
+    <h3><i class="bi bi-file-medical"></i> Health Records</h3>
+
+    <div *ngIf="healthRecords().length === 0" class="empty">
+      No records found
+    </div>
+
+    <div *ngFor="let record of healthRecords()" class="record-card">
+      <p><b>Diagnosis:</b> {{ record.diagnosis }}</p>
+      <p><b>Prescription:</b> {{ record.prescription }}</p>
+      <p><b>Notes:</b> {{ record.notes }}</p>
+    </div>
+
+    <button class="btn close" (click)="showViewDialog.set(false)">Close</button>
+
+  </div>
+</div>
+
+<!-- ADD DIALOG -->
+<div class="dialog" *ngIf="showAddDialog()">
+  <div class="dialog-content">
+
+    <h3><i class="bi bi-plus-square"></i> Add Health Record</h3>
+
+    <input type="text" placeholder="Diagnosis"
+           [ngModel]="newRecord().diagnosis"
+           (ngModelChange)="newRecord.set({...newRecord(), diagnosis: $event})">
+
+    <input type="text" placeholder="Prescription"
+           [ngModel]="newRecord().prescription"
+           (ngModelChange)="newRecord.set({...newRecord(), prescription: $event})">
+
+    <textarea placeholder="Notes"
+              [ngModel]="newRecord().notes"
+              (ngModelChange)="newRecord.set({...newRecord(), notes: $event})">
+    </textarea>
+
+    <div class="actions">
+      <button class="btn success" (click)="submitHealthRecord()">Submit</button>
+      <button class="btn danger" (click)="showAddDialog.set(false)">Cancel</button>
+    </div>
+
+  </div>
+</div>

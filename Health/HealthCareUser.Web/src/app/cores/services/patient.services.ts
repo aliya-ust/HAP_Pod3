@@ -18,4 +18,11 @@ export class PatientService {
       `${this.apiUrl}/patient/profile`
     );
   }
+
+  updateProfile(data: PatientProfile): Observable<any> {
+    return this.http.put<any>(
+      `${this.apiUrl}/patient/profile`,
+      data
+    );
+  }
 }

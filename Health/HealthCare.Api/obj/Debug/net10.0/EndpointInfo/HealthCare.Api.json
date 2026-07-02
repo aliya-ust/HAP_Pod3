@@ -5,6 +5,65 @@
     "version": "v1"
   },
   "paths": {
+    "/api/Appointment/available-doctors": {
+      "get": {
+        "tags": [
+          "Appointment"
+        ],
+        "parameters": [
+          {
+            "name": "date",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "specialization",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Appointment/available-slots": {
+      "get": {
+        "tags": [
+          "Appointment"
+        ],
+        "parameters": [
+          {
+            "name": "doctorId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "date",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/Appointment": {
       "post": {
         "tags": [
@@ -138,6 +197,52 @@
       "get": {
         "tags": [
           "Appointment"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Appointment/{id}/confirm": {
+      "put": {
+        "tags": [
+          "Appointment"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Appointment/{id}/cancel": {
+      "put": {
+        "tags": [
+          "Appointment"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
         ],
         "responses": {
           "200": {
@@ -747,6 +852,29 @@
         }
       }
     },
+    "/api/HealthRecord/patient/{id}": {
+      "get": {
+        "tags": [
+          "HealthRecord"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/admin/HealthRecordAdmin/{id}": {
       "delete": {
         "tags": [
@@ -1265,7 +1393,6 @@
       },
       "UpdatePatientDto": {
         "required": [
-          "email",
           "fullName",
           "gender",
           "phoneNumber"
@@ -1283,12 +1410,6 @@
             "minLength": 1,
             "pattern": "^[6-9]\\d{9}$",
             "type": "string"
-          },
-          "email": {
-            "maxLength": 100,
-            "minLength": 1,
-            "type": "string",
-            "format": "email"
           },
           "gender": {
             "maxLength": 10,

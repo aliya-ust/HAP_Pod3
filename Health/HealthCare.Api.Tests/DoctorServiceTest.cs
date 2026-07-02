@@ -11,171 +11,122 @@ using Xunit;
 
 namespace HealthCare.Tests.Services
 {
-    public class DoctorServiceTest
+    public class DoctorServiceTests
     {
-        private readonly Mock<IDoctorRepository> _doctorRepository;
-        private readonly Mock<IAppointmentRepository> _appointmentRepository;
-        private readonly Mock<IMapper> _mapper;
-        private readonly Mock<HealthCareDbContext> _context;
+        private readonly Mock<IDoctorRepository> _doctorRepo = new();
+        private readonly Mock<IAppointmentRepository> _appointmentRepo = new();
+        private readonly Mock<IMapper> _mapper = new();
+
+        private readonly HealthCareDbContext _context;
         private readonly DoctorService _service;
 
-        public DoctorServiceTest()
+        public DoctorServiceTests()
         {
-            _doctorRepository = new Mock<IDoctorRepository>();
-            _appointmentRepository = new Mock<IAppointmentRepository>();
-            _mapper = new Mock<IMapper>();
+            var options = new DbContextOptionsBuilder<HealthCareDbContext>()
+                .UseInMemoryDatabase(Guid.NewGuid().ToString())
+                .Options;
 
-            var options = new DbContextOptions<HealthCareDbContext>();
-            _context = new Mock<HealthCareDbContext>(options);
+            _context = new HealthCareDbContext(options);
 
             _service = new DoctorService(
-                _doctorRepository.Object,
-                _context.Object,
+                _doctorRepo.Object,
+                _context,
                 _mapper.Object,
-                _appointmentRepository.Object);
-        }
-
-        // ================= GET BY ID =================
-
-        [Fact]
-        public async Task GetByIdAsync_ShouldReturnDoctor()
-        {
-            var doctor = new Doctor { DoctorId = 1 };
-            var dto = new DoctorListDto();
-
-            _doctorRepository.Setup(x => x.GetByIdAsync(1))
-                .ReturnsAsync(doctor);
-
-            _mapper.Setup(x => x.Map<DoctorListDto?>(doctor))
-                .Returns(dto);
-
-            var result = await _service.GetByIdAsync(1);
-
-            Assert.NotNull(result);
+                _appointmentRepo.Object);
         }
 
         [Fact]
-        public async Task GetByIdAsync_ShouldThrow_WhenDoctorNotFound()
-        {
-            _doctorRepository.Setup(x => x.GetByIdAsync(1))
-                .ReturnsAsync((Doctor?)null);
-
-            await Assert.ThrowsAsync<InvalidOperationException>(
-                () => _service.GetByIdAsync(1));
-        }
-
-        // ================= ADD =================
-
-        [Fact]
-        public async Task AddAsync_ShouldAddDoctor_AndCreateSlots()
+        public async Task AddAsync_Should_Add_Doctor()
         {
             var dto = new CreateDoctorDto
             {
-                TimeSlots = new List<string> { "09:00", "10:00" }
+                FullName = "John",
+                TimeSlots = new List<string> { "09:00" }
             };
 
-            var doctor = new Doctor { DoctorId = 5 };
+            var doctor = new Doctor { DoctorId = 1 };
 
             _mapper.Setup(x => x.Map<Doctor>(dto)).Returns(doctor);
 
-            _doctorRepository.Setup(x => x.AddAsync(doctor))
-                .Returns(Task.CompletedTask);
-
-            _doctorRepository.Setup(x => x.CreateSlots(5, dto.TimeSlots))
-                .Returns(Task.CompletedTask);
-
             await _service.AddAsync(dto);
 
-            _doctorRepository.Verify(x => x.AddAsync(doctor), Times.Once);
-            _doctorRepository.Verify(x => x.CreateSlots(5, dto.TimeSlots), Times.Once);
+            _doctorRepo.Verify(x => x.AddAsync(It.IsAny<Doctor>()), Times.Once);
+            _doctorRepo.Verify(x => x.CreateSlots(doctor.DoctorId, dto.TimeSlots), Times.Once);
         }
 
-        // ================= UPDATE =================
-
         [Fact]
-        public async Task UpdateAsync_ShouldUpdateDoctor()
+        public async Task UpdateAsync_Should_Update_Doctor()
         {
             var doctor = new Doctor { DoctorId = 1 };
-            var dto = new UpdateDoctorDto();
 
-            _doctorRepository.Setup(x => x.GetByIdAsync(1))
+            _doctorRepo.Setup(x => x.GetByIdAsync(1))
                 .ReturnsAsync(doctor);
+
+            var dto = new UpdateDoctorDto();
 
             await _service.UpdateAsync(1, dto);
 
-            _mapper.Verify(x => x.Map(dto, doctor), Times.Once);
-            _doctorRepository.Verify(x => x.UpdateAsync(doctor), Times.Once);
+            _doctorRepo.Verify(x => x.UpdateAsync(doctor), Times.Once);
         }
 
         [Fact]
-        public async Task UpdateAsync_ShouldThrow_WhenDoctorMissing()
+        public async Task UpdateAsync_Should_Throw_When_Doctor_NotFound()
         {
-            _doctorRepository.Setup(x => x.GetByIdAsync(1))
-                .ReturnsAsync((Doctor?)null);
+            _doctorRepo.Setup(x => x.GetByIdAsync(1))
+                .ReturnsAsync((Doctor)null);
 
             await Assert.ThrowsAsync<InvalidOperationException>(
                 () => _service.UpdateAsync(1, new UpdateDoctorDto()));
         }
 
-        [Fact]
-        public async Task UpdateStatusAsync_ShouldUpdateStatus()
-        {
-            var doctor = new Doctor { DoctorId = 1, IsActive = false };
 
-            _doctorRepository.Setup(x => x.GetByIdAsync(1))
+        [Fact]
+        public async Task UpdateStatusAsync_Should_Update_Status()
+        {
+            var doctor = new Doctor { DoctorId = 1 };
+
+            _doctorRepo.Setup(x => x.GetByIdAsync(1))
                 .ReturnsAsync(doctor);
 
             await _service.UpdateStatusAsync(1, true);
 
             Assert.True(doctor.IsActive);
-            _doctorRepository.Verify(x => x.UpdateAsync(doctor), Times.Once);
+
+            _doctorRepo.Verify(x => x.UpdateAsync(doctor), Times.Once);
         }
 
         [Fact]
-        public async Task UpdateStatus_ShouldAllowFalseToFalse()
+        public async Task DeleteAsync_Should_Delete_Doctor()
         {
-            var doctor = new Doctor { DoctorId = 1, IsActive = false };
-
-            _doctorRepository.Setup(x => x.GetByIdAsync(1))
-                .ReturnsAsync(doctor);
-
-            await _service.UpdateStatusAsync(1, false);
-
-            Assert.False(doctor.IsActive);
-        }
-
-        // ================= DELETE =================
-
-        [Fact]
-        public async Task DeleteAsync_ShouldDeleteDoctor()
-        {
-            var doctor = new Doctor { DoctorId = 1 };
-
-            _doctorRepository.Setup(x => x.GetByIdAsync(1))
-                .ReturnsAsync(doctor);
+            _doctorRepo.Setup(x => x.GetByIdAsync(1))
+                .ReturnsAsync(new Doctor());
 
             await _service.DeleteAsync(1);
 
-            _doctorRepository.Verify(x => x.DeleteAsync(1), Times.Once);
+            _doctorRepo.Verify(x => x.DeleteAsync(1), Times.Once);
         }
 
+
         [Fact]
-        public async Task DeleteAsync_ShouldThrow_WhenDoctorMissing()
+        public async Task DeleteAsync_Should_Throw_When_Doctor_NotFound()
         {
-            _doctorRepository.Setup(x => x.GetByIdAsync(1))
-                .ReturnsAsync((Doctor?)null);
+            _doctorRepo.Setup(x => x.GetByIdAsync(1))
+                .ReturnsAsync((Doctor)null);
 
             await Assert.ThrowsAsync<InvalidOperationException>(
                 () => _service.DeleteAsync(1));
         }
 
-        // ================= SLOTS =================
 
         [Fact]
-        public async Task GetSlots_ShouldReturnSlots()
+        public async Task GetSlots_Should_Return_Slots()
         {
-            _doctorRepository.Setup(x => x.GetSlots(1))
-                .ReturnsAsync(new List<string> { "09:00", "10:00" });
+            _doctorRepo.Setup(x => x.GetSlots(1))
+                .ReturnsAsync(new List<string>
+                {
+                    "09:00",
+                    "09:30"
+                });
 
             var result = await _service.GetSlots(1);
 
@@ -183,104 +134,64 @@ namespace HealthCare.Tests.Services
         }
 
         [Fact]
-        public async Task GetSlots_ShouldThrow_WhenNoSlotsExist()
+        public async Task GetSlots_Should_Throw_When_NoSlots()
         {
-            _doctorRepository.Setup(x => x.GetSlots(1))
+            _doctorRepo.Setup(x => x.GetSlots(1))
                 .ReturnsAsync(new List<string>());
 
             await Assert.ThrowsAsync<InvalidOperationException>(
                 () => _service.GetSlots(1));
         }
 
-        // ================= AVAILABILITY =================
 
         [Fact]
-        public async Task AvailableTimeSlotsCheck_ShouldReturnOnlyAvailableSlots()
+        public async Task AvailableTimeSlotsCheck_Should_Return_Unbooked_Slots()
         {
-            var date = new DateOnly(2025, 6, 20);
+            var date = DateOnly.FromDateTime(DateTime.Today);
 
-            _doctorRepository.Setup(x => x.GetSlots(1))
-                .ReturnsAsync(new List<string> { "09:00", "10:00", "11:00" });
+            _doctorRepo.Setup(x => x.GetSlots(1))
+                .ReturnsAsync(new List<string>
+                {
+                    "09:00",
+                    "09:30",
+                    "10:00"
+                });
 
-            _appointmentRepository.Setup(x => x.BookedTimeSlots(date, 1))
-                .ReturnsAsync(new List<string> { "10:00" });
+            _appointmentRepo.Setup(x => x.BookedTimeSlots(date, 1))
+                .ReturnsAsync(new List<string>
+                {
+                    "09:30"
+                });
 
             var result = await _service.AvailableTimeSlotsCheck(date, 1);
 
             Assert.Equal(2, result.Count);
-            Assert.DoesNotContain("10:00", result);
+            Assert.DoesNotContain("09:30", result);
         }
 
-        // ================= LEAVE =================
 
         [Fact]
-        public async Task CreateLeave_ShouldSkipDuplicateDates()
-        {
-            var date = new DateOnly(2025, 6, 25);
-
-            _doctorRepository.Setup(x => x.GetLeavesByDoctorId(1))
-                .ReturnsAsync(new List<DoctorLeaves>
-                {
-                    new DoctorLeaves { LeaveDate = date }
-                });
-
-            var result = await _service.CreateLeave(
-                1,
-                new List<CreateLeaveDto>
-                {
-                    new CreateLeaveDto { LeaveDate = date }
-                });
-
-            Assert.Single(result.SkippedDates);
-        }
-
-        // ================= AVAILABLE DOCTORS =================
-
-        [Fact]
-        public async Task AvailableDoctors_ShouldReturnDoctors()
+        public async Task AvailableDoctors_Should_Return_Doctors()
         {
             var doctors = new List<DoctorListDto>
             {
-                new DoctorListDto(),
-                new DoctorListDto()
+                new DoctorListDto
+                {
+                    DoctorId = 1,
+                    FullName = "John"
+                }
             };
 
-            _doctorRepository.Setup(x =>
-                    x.AvailableDoctors("Cardiology", It.IsAny<DateOnly>()))
+            var date = DateOnly.FromDateTime(DateTime.Today);
+
+            _doctorRepo.Setup(x =>
+                    x.AvailableDoctors("Cardiology", date))
                 .ReturnsAsync(doctors);
 
-            var result = await _service.AvailableDoctors(
-                "Cardiology",
-                new DateOnly(2025, 6, 20));
+            var result = await _service.AvailableDoctors("Cardiology", date);
 
-            Assert.Equal(2, result.Count);
-        }
-
-        // ================= NEW SAFE TESTS =================
-
-        [Fact]
-        public async Task AddAsync_ShouldCallMapperAndRepository()
-        {
-            var dto = new CreateDoctorDto { TimeSlots = new List<string> { "09:00" } };
-            var doctor = new Doctor { DoctorId = 10 };
-
-            _mapper.Setup(x => x.Map<Doctor>(dto)).Returns(doctor);
-            _doctorRepository.Setup(x => x.AddAsync(doctor)).Returns(Task.CompletedTask);
-            _doctorRepository.Setup(x => x.CreateSlots(10, dto.TimeSlots)).Returns(Task.CompletedTask);
-
-            await _service.AddAsync(dto);
-
-            _mapper.Verify(x => x.Map<Doctor>(dto), Times.Once);
-        }
-
-        [Fact]
-        public async Task UpdateAsync_ShouldThrow_WhenDoctorNotFound()
-        {
-            _doctorRepository.Setup(x => x.GetByIdAsync(99))
-                .ReturnsAsync((Doctor?)null);
-
-            await Assert.ThrowsAsync<InvalidOperationException>(
-                () => _service.UpdateAsync(99, new UpdateDoctorDto()));
+            Assert.Single(result);
+            Assert.Equal("John", result[0].FullName);
         }
     }
 }

@@ -315,6 +315,38 @@
   },
   {
     "ContainingType": "HealthCare.Api.Controllers.AppointmentController",
+    "Method": "CancelAppointment",
+    "RelativePath": "api/Appointment/{id}/cancel",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HealthCare.Api.Controllers.AppointmentController",
+    "Method": "ConfirmAppointment",
+    "RelativePath": "api/Appointment/{id}/confirm",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HealthCare.Api.Controllers.AppointmentController",
     "Method": "UpdateAppointmentStatus",
     "RelativePath": "api/Appointment/{id}/status",
     "HttpMethod": "PATCH",
@@ -330,6 +362,48 @@
         "Name": "dto",
         "Type": "HealthCare.Api.DTOs.Appointment.UpdateAppointmentDto",
         "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HealthCare.Api.Controllers.AppointmentController",
+    "Method": "GetAvailableDoctors",
+    "RelativePath": "api/Appointment/available-doctors",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "date",
+        "Type": "System.DateOnly",
+        "IsRequired": false
+      },
+      {
+        "Name": "specialization",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HealthCare.Api.Controllers.AppointmentController",
+    "Method": "GetAvailableSlots",
+    "RelativePath": "api/Appointment/available-slots",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "doctorId",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "date",
+        "Type": "System.DateOnly",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": []
@@ -583,6 +657,22 @@
     "IsController": true,
     "Order": 0,
     "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HealthCare.Api.Controllers.HealthRecordController",
+    "Method": "GetRecordsByPatient",
+    "RelativePath": "api/HealthRecord/patient/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
     "ReturnTypes": []
   },
   {

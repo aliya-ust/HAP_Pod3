@@ -1,0 +1,204 @@
+.page {
+  min-height: 100vh;
+  padding: 30px;
+  background: linear-gradient(135deg, #0a1f44, #1e88e5);
+  font-family: 'Segoe UI', sans-serif;
+}
+
+/* Container */
+.container {
+  background: white;
+  padding: 25px;
+  border-radius: 15px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+}
+
+/* Title */
+h2 {
+  margin-bottom: 20px;
+  color: #0a1f44;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Table */
+.table-wrapper {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+thead {
+  background: linear-gradient(135deg, #0a1f44, #1e88e5);
+  color: white;
+}
+
+th, td {
+  padding: 14px;
+  text-align: left;
+}
+
+tbody tr {
+  border-bottom: 1px solid #eee;
+  transition: 0.2s;
+}
+
+  tbody tr:hover {
+    background: #f4f8ff;
+  }
+
+/* Status Badge */
+.badge {
+  padding: 5px 10px;
+  border-radius: 15px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.pending {
+  background: #fff3cd;
+  color: #ff9800;
+}
+
+.confirmed {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+/* Buttons */
+.btn {
+  border: none;
+  padding: 7px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-right: 5px;
+  transition: 0.3s;
+}
+
+  .btn i {
+    pointer-events: none;
+  }
+
+.success {
+  background: #28a745;
+  color: white;
+}
+
+  .success:hover {
+    background: #218838;
+  }
+
+.danger {
+  background: #e53935;
+  color: white;
+}
+
+  .danger:hover {
+    background: #c62828;
+  }
+
+.primary {
+  background: #1e88e5;
+  color: white;
+}
+
+  .primary:hover {
+    background: #1565c0;
+  }
+
+.purple {
+  background: #6f42c1;
+  color: white;
+}
+
+  .purple:hover {
+    background: #5b35a8;
+  }
+
+.close {
+  width: 100%;
+  margin-top: 10px;
+}
+
+/* States */
+.state {
+  text-align: center;
+  padding: 20px;
+}
+
+.loading {
+  color: #1e88e5;
+}
+
+.empty {
+  color: gray;
+}
+
+/* Dialog */
+.dialog {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.dialog-content {
+  background: white;
+  padding: 25px;
+  width: 420px;
+  border-radius: 12px;
+  animation: pop 0.3s ease;
+}
+
+  /* Dialog Inputs */
+  .dialog-content input,
+  .dialog-content textarea {
+    width: 100%;
+    margin-top: 10px;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+  }
+
+    .dialog-content input:focus,
+    .dialog-content textarea:focus {
+      border-color: #1e88e5;
+      outline: none;
+    }
+
+/* Record card inside dialog */
+.record-card {
+  background: #f4f8ff;
+  padding: 10px;
+  border-radius: 8px;
+  margin-top: 10px;
+}
+
+/* Actions */
+.actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 15px;
+}
+
+/* Animation */
+@keyframes pop {
+  from {
+    transform: scale(0.85);
+    opacity: 0;
+  }
+
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}

@@ -1,5 +1,7 @@
 import { Routes } from '@angular/router';
 import { LayoutComponent } from './layout/layout/layout';
+import { AuthGuard } from './cores/guards/auth-guard';
+import { RoleGuard } from './cores/guards/role-guard';
 
 export const routes: Routes = [
 
@@ -28,50 +30,65 @@ export const routes: Routes = [
         path: 'dashboard',
         loadComponent: () =>
           import('./pages/shared/dashboard/dashboard')
-            .then(c => c.DashboardComponent)
+            .then(c => c.DashboardComponent),
+         canActivate: [AuthGuard]
       },
 
       {
         path: 'profile',
         loadComponent: () =>
           import('./pages/shared/profile/profile')
-            .then(c => c.ProfileComponent)
+            .then(c => c.ProfileComponent),
+        canActivate: [AuthGuard]
+      },
+
+      {
+        path: 'appointments',
+        loadComponent: () =>
+          import('./pages/shared/appointments/appointments')
+            .then(c => c.AppointmentsComponent),
+        canActivate: [AuthGuard]
+      },
+
+      {
+        path: 'book-appointment',
+        loadComponent: () =>
+          import('./pages/book-appointment/book-appointment')
+            .then(c => c.BookAppointmentComponent),
+
+        canActivate: [AuthGuard, RoleGuard],
+        data: { role: 'Patient' }
+
+      },
+
+      {
+        path: 'health-record',
+        loadComponent: () =>
+          import('./pages/health-record/health-record')
+            .then(c => c.HealthRecordComponent),
+        canActivate: [AuthGuard, RoleGuard],
+        data: { role: 'Patient' }
+      },
+
+      {
+        path: 'leave',
+        loadComponent: () =>
+          import('./pages/doctor-leave/doctor-leave')
+            .then(c => c.DoctorLeaveComponent),
+
+        canActivate: [AuthGuard, RoleGuard],
+        data: { role: 'Doctor' } 
+
       }
-
-      //{
-      //  path: 'appointments',
-      //  loadComponent: () =>
-      //    import('./pages/shared/appointments/appointments')
-      //      .then(c => c.AppointmentsComponent)
-      //},
-
-      //{
-      //  path: 'book-appointment',
-      //  loadComponent: () =>
-      //    import('./pages/patient/book-appointment/book-appointment')
-      //      .then(c => c.BookAppointmentComponent)
-      //},
-
-      //{
-      //  path: 'health-record',
-      //  loadComponent: () =>
-      //    import('./pages/patient/health-record/health-record')
-      //      .then(c => c.HealthRecordComponent)
-      //},
-
-      //{
-      //  path: 'leave',
-      //  loadComponent: () =>
-      //    import('./pages/doctor/add-leave/add-leave')
-      //      .then(c => c.AddLeaveComponent)
-      //}
 
     ]
   },
 
   {
     path: '**',
-    redirectTo: ''
+    redirectTo: 'login',
+    pathMatch: 'full'
+
   }
 
 ];

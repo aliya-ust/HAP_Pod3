@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { DashboardService } from '../../../cores/services/dashboard.services';
@@ -12,34 +12,28 @@ import { DashboardService } from '../../../cores/services/dashboard.services';
 })
 export class DashboardComponent implements OnInit {
 
-  role = '';
+  role = signal('');
 
-  upcomingAppointments = 0;
-  healthRecordCount = 0;
+  upcomingAppointments = signal(0);
+  healthRecordCount = signal(0);
 
-  completedAppointments = 0;
-  upcomingLeaves = 0;
-  todayAppointments: any[] = [];
+  completedAppointments = signal(0);
+  upcomingLeaves = signal(0);
+  todayAppointments = signal<any[]>([]);
 
-  constructor(
-    private dashboardService: DashboardService
-  ) { }
+  constructor(private dashboardService: DashboardService) { }
 
   ngOnInit(): void {
 
-    this.role = localStorage.getItem('role') ?? '';
+    const roleValue = localStorage.getItem('role') ?? '';
+    this.role.set(roleValue);
 
-    if (this.role === 'Patient') {
-
-      this.loadPatientDashboard();
-
-    }
-    else {
-
+    if (roleValue === 'Doctor') {
       this.loadDoctorDashboard();
-
     }
-
+    else if (roleValue === 'Patient') {
+      this.loadPatientDashboard();
+    }
   }
 
   loadPatientDashboard() {
@@ -49,20 +43,16 @@ export class DashboardComponent implements OnInit {
 
         next: (response) => {
 
-          this.upcomingAppointments = response.upcomingAppointments;
-
-          this.healthRecordCount = response.healthRecordCount;
+          this.upcomingAppointments.set(response.upcomingAppointments);
+          this.healthRecordCount.set(response.healthRecordCount);
 
         },
 
         error: (err) => {
-
           console.log(err);
-
         }
 
       });
-
   }
 
   loadDoctorDashboard() {
@@ -72,24 +62,18 @@ export class DashboardComponent implements OnInit {
 
         next: (response) => {
 
-          this.upcomingAppointments = response.upcomingAppointments;
-
-          this.completedAppointments = response.completedAppointments;
-
-          this.upcomingLeaves = response.upcomingLeaves;
-
-          this.todayAppointments = response.todayAppointments;
+          this.upcomingAppointments.set(response.upcomingAppointments);
+          this.completedAppointments.set(response.completedAppointments);
+          this.upcomingLeaves.set(response.upcomingLeaves);
+          this.todayAppointments.set(response.todayAppointments);
 
         },
 
         error: (err) => {
-
           console.log(err);
-
         }
 
       });
-
   }
 
 }

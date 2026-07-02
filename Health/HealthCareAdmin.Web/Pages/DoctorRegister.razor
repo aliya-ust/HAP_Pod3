@@ -71,7 +71,7 @@
                 <label class="checkbox-item">
                     <input type="checkbox"
                            checked="@model.TimeSlots.Contains(slot)"
-                           @onchange="@(e => OnSlotChanged(e, slot))" />
+                           @onchange="(e => OnSlotChanged(e, slot))" />
                     @slot
                 </label>
             }
@@ -93,6 +93,11 @@
 @code {
 
     private CreateDoctorDto model = new();
+
+    protected override void OnInitialized()
+    {
+        model.TimeSlots = new List<string>();
+    }
 
     private List<string> specialisations = new()
     {
@@ -122,7 +127,7 @@
 
     private void OnSlotChanged(ChangeEventArgs e, string slot)
     {
-        var isChecked = e.Value?.ToString() == "true";
+        var isChecked = (bool)e.Value;
 
         if (isChecked)
         {

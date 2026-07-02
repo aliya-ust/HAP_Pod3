@@ -7,23 +7,20 @@
 
     <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
 
-      <!-- Full Name -->
       <input type="text" formControlName="fullName" placeholder="Full Name">
 
-      <div class="error" *ngIf="submitted && f['fullName'].errors">
+      <div class="error" *ngIf="submitted() && f['fullName'].errors">
         <small *ngIf="f['fullName'].errors?.['required']">Full name is required</small>
         <small *ngIf="f['fullName'].errors?.['maxlength']">Max 100 characters</small>
         <small *ngIf="f['fullName'].errors?.['pattern']">Only alphabets allowed</small>
       </div>
 
-      <!-- DOB -->
       <input type="date" formControlName="dateOfBirth">
 
-      <div class="error" *ngIf="submitted && f['dateOfBirth'].errors">
+      <div class="error" *ngIf="submitted() && f['dateOfBirth'].errors">
         <small>Date of birth is required</small>
       </div>
 
-      <!-- Gender -->
       <select formControlName="gender">
         <option value="">Select Gender</option>
         <option>Male</option>
@@ -31,52 +28,53 @@
         <option>Other</option>
       </select>
 
-      <div class="error" *ngIf="submitted && f['gender'].errors">
+      <div class="error" *ngIf="submitted() && f['gender'].errors">
         <small>Gender must be Male, Female, or Other</small>
       </div>
 
-      <!-- Phone -->
       <input type="text" formControlName="phoneNumber" placeholder="Phone Number">
 
-      <div class="error" *ngIf="submitted && f['phoneNumber'].errors">
+      <div class="error" *ngIf="submitted() && f['phoneNumber'].errors">
         <small>Enter valid 10-digit number starting 6-9</small>
       </div>
 
-      <!-- Email -->
       <input type="email" formControlName="email" placeholder="Email">
 
-      <div class="error" *ngIf="submitted && f['email'].errors">
+      <div class="error" *ngIf="submitted() && f['email'].errors">
         <small>Enter valid email</small>
       </div>
 
-      <!-- Password -->
       <input type="password" formControlName="password" placeholder="Password">
 
-      <div class="error" *ngIf="submitted && f['password'].errors">
-
-        <small *ngIf="f['password'].errors?.['required']"> Password is required. </small>
-
-        <small *ngIf="f['password'].errors?.['minlength']">Password must be at least 8 characters long. </small>
-
-        <small *ngIf="f['password'].errors?.['pattern']">Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character. </small>
-
+      <div class="error" *ngIf="submitted() && f['password'].errors">
+        <small *ngIf="f['password'].errors?.['required']">Password is required</small>
+        <small *ngIf="f['password'].errors?.['minlength']">Min 8 characters</small>
+        <small *ngIf="f['password'].errors?.['pattern']">
+          Must contain uppercase, lowercase, number & special char
+        </small>
       </div>
 
-      <!-- Insurance ID -->
       <input type="text" formControlName="insuranceId" placeholder="Insurance ID (optional)">
 
-      <div class="error" *ngIf="submitted && f['insuranceId'].errors">
+      <div class="error" *ngIf="submitted() && f['insuranceId'].errors">
         <small>Only alphanumeric allowed</small>
       </div>
 
-      <button type="submit">Register</button>
+      <!-- ✅ Error message -->
+      <div class="error" *ngIf="errorMessage()">
+        {{ errorMessage() }}
+      </div>
+
+      <!-- ✅ Button -->
+      <button type="submit">
+        {{ loading() ? 'Registering...' : 'Register' }}
+      </button>
 
     </form>
-
   </div>
 
-  <!-- SUCCESS DIALOG -->
-  <div class="dialog" *ngIf="showSuccessDialog">
+  <!-- ✅ SUCCESS DIALOG -->
+  <div class="dialog" *ngIf="showSuccessDialog()">
     <div class="dialog-box">
       <h3>Registration Successful 🎉</h3>
       <button (click)="goToLogin()">Go to Login</button>

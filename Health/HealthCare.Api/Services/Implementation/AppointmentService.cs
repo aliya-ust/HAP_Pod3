@@ -78,6 +78,8 @@ namespace HealthCare.Api.Services.Implementations
             if (dto.ScheduledDate < DateOnly.FromDateTime(DateTime.Today))
                 throw new InvalidOperationException("Cannot book an appointment for a past date.");
 
+            await ValidateDoctorAvailability(dto.DoctorId, dto.ScheduledDate);
+
             await IsAvailable(dto.ScheduledDate, dto.DoctorId, dto.TimeSlot);
 
             var appointment = _mapper.Map<Appointment>(dto);
@@ -189,6 +191,81 @@ namespace HealthCare.Api.Services.Implementations
         {
             var appointments = await _repository.GetAppointmentByDoctor(id);
             return appointments.Count == 0 ? new List<AppointmentListDto>() : appointments;
+        }
+
+        public async Task ValidateDoctorAvailability(int doctorId, DateOnly date)
+        {
+            var doctor = await _context.Doctors
+                .FirstOrDefaultAsync(d => d.DoctorId == doctorId);
+
+            if (doctor == null)
+                throw new InvalidOperationException("Doctor not found.");
+
+            if (!doctor.IsActive)
+                throw new InvalidOperationException("Doctor is inactive.");
+
+            var isOnLeave = await _context.DoctorLeaves
+                .AnyAsync(l => l.DoctorId == doctorId && l.LeaveDate == date);
+
+            if (isOnLeave)
+                throw new InvalidOperationException("Doctor is on leave on selected date.");
+        }
+        public async Task<List<DoctorDropdownDto>>GetAvailableDoctorsAsync(DateOnly date, string specialization)
+        {
+            var doctors = await _context.Doctors
+                .Where(d => d.IsActive)
+                .Where(d => d.Specialisation == specialization)
+                .Where(d => !_context.DoctorLeaves
+                    .Any(l => l.DoctorId == d.DoctorId && l.LeaveDate == date))
+                .ToListAsync();
+
+            var result = new List<DoctorDropdownDto>();
+
+            foreach (var doctor in doctors)
+            {
+                var slots = await GetAvailableSlotsAsync(doctor.DoctorId, date);
+
+                if (slots.Any())
+                {
+                    result.Add(new DoctorDropdownDto
+                    {
+                        DoctorId = doctor.DoctorId,
+                        fullName = doctor.FullName,
+                        Specialization = doctor.Specialisation
+                    });
+                }
+            }
+
+            return result;
+        }
+
+        public async Task<List<string>> GetAvailableSlotsAsync(int doctorId, DateOnly date)
+        {
+            // Get all possible slots for that doctor on that day
+            var allSlots = await _doctorService.AvailableTimeSlotsCheck(date, doctorId);
+
+            // Get already booked slots
+            var bookedSlots = await _context.Appointments
+                .Where(a => a.DoctorId == doctorId && a.ScheduledDate == date)
+                .Select(a => a.TimeSlot)
+                .ToListAsync();
+
+            // Remove booked slots
+            var availableSlots = allSlots
+                .Except(bookedSlots)
+                .ToList();
+
+            return availableSlots;
+        }
+
+        public async Task ConfirmAppointment(int appointmentId)
+        {
+            await _repository.ConfirmAppointment(appointmentId);
+        }
+
+        public async Task CancelAppointment(int appointmentId)
+        {
+            await _repository.CancelAppointment(appointmentId);
         }
     }
 }

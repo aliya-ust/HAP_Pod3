@@ -1,71 +1,42 @@
 <div class="sidebar">
 
   <div class="logo">
-
-    <h2>HealthCare</h2>
-
-    <p>{{role}} Portal</p>
-
+    <h2><i class="bi bi-heart-pulse"></i> HealthCare</h2>
+    <p>User Portal</p>
   </div>
 
   <ul>
 
-    <li routerLink="/dashboard"
-        routerLinkActive="active">
-
-      Dashboard
-
+    <li routerLink="/dashboard" routerLinkActive="active">
+      <i class="bi bi-speedometer2"></i> Dashboard
     </li>
 
-    <li routerLink="/profile"
-        routerLinkActive="active">
-
-      My Profile
-
+    <li routerLink="/profile" routerLinkActive="active">
+      <i class="bi bi-person-circle"></i> My Profile
     </li>
 
     <!-- Patient Only -->
-
-    <li *ngIf="role=='Patient'"
-        routerLink="/book-appointment"
-        routerLinkActive="active">
-
-      Book Appointment
-
+    <li *ngIf="role() == 'Patient'" routerLink="/book-appointment" routerLinkActive="active">
+      <i class="bi bi-calendar-plus"></i> Book Appointment
     </li>
 
-    <li routerLink="/appointments"
-        routerLinkActive="active">
-
-      Appointments
-
+    <li routerLink="/appointments" routerLinkActive="active">
+      <i class="bi bi-calendar-check"></i> Appointments
     </li>
 
-    <li *ngIf="role=='Patient'"
-        routerLink="/health-record"
-        routerLinkActive="active">
-
-      Health Records
-
+    <li *ngIf="role() == 'Patient'" routerLink="/health-record" routerLinkActive="active">
+      <i class="bi bi-file-medical"></i> Health Records
     </li>
 
     <!-- Doctor Only -->
-
-    <li *ngIf="role=='Doctor'"
-        routerLink="/leave"
-        routerLinkActive="active">
-
-      Add Leaves
-
+    <li *ngIf="role() == 'Doctor'" routerLink="/leave" routerLinkActive="active">
+      <i class="bi bi-calendar-x"></i> Add Leaves
     </li>
 
   </ul>
 
-  <button class="logout-btn"
-          (click)="logout()">
-
-    Logout
-
+  <button class="logout-btn" (click)="logout()">
+    <i class="bi bi-box-arrow-right"></i> Logout
   </button>
 
 </div>

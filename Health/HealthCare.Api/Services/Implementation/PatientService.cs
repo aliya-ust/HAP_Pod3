@@ -64,9 +64,9 @@ namespace HealthCare.Api.Services.Implementations
                 &&
 
                 (filter.HasInsurance == null
-                    || (filter.HasInsurance.Value
-                            ? p.InsuranceId != null
-                            : p.InsuranceId == null));
+                   || (filter.HasInsurance.Value
+                   ? !string.IsNullOrWhiteSpace(p.InsuranceId)
+                   : string.IsNullOrWhiteSpace(p.InsuranceId)));
 
             var pagedResult = await _repository.GetAllAsync(
                 filter.PageNumber,

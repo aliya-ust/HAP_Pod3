@@ -11,20 +11,20 @@ namespace HealthCare.Api.Repositories.Implementations
     {
         public HealthRecordRepository(HealthCareDbContext context) : base(context) { }
 
-        public async Task<List<HealthRecordListDto>> GetHealthRecordByPatient(int id) =>
-            await _dbSet
-                .Where(hr => hr.PatientId == id)
-                .Select(hr => new HealthRecordListDto
+        public async Task<List<HealthRecordListDto>> GetPatientHealthRecords(int patientId)
+        {
+            return await _dbSet
+                .Where(x => x.PatientId == patientId)
+                .OrderByDescending(x => x.VisitDate)
+                .Select(x => new HealthRecordListDto
                 {
-                    RecordId = hr.RecordId,
-                    PatientName = hr.Patient.FullName,
-                    DoctorName = hr.Doctor.FullName,
-                    VisitDate = hr.VisitDate,
-                    Diagnosis = hr.Diagnosis,
-                    Prescription = hr.Prescription,
-                    Notes = hr.Notes
+                    Diagnosis = x.Diagnosis,
+                    Prescription = x.Prescription,
+                    Notes = x.Notes,
+                    VisitDate = x.VisitDate
                 })
                 .ToListAsync();
+        }
 
         public async Task<List<HealthRecordListDto>> GetHealthRecordByAppointment(int id) =>
             await _dbSet

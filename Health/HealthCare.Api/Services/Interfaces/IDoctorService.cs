@@ -15,5 +15,7 @@ namespace HealthCare.Api.Services.Interfaces
         Task<List<string>> GetSlots(int doctorId);
         Task<CreateLeaveResultDto> CreateLeave(int id, List<CreateLeaveDto> leaves);
         Task<List<DoctorListDto>> AvailableDoctors(string specialisation, DateOnly date);
+
+        Task<List<string>> AvailableTimeSlotsCheck(DateOnly date, int doctorId);
     }
 }

@@ -14,3 +14,11 @@ export interface PatientProfile {
 
   insuranceId: number;
 }
+
+export interface UpdatePatient {
+  fullName: string;
+  phoneNumber: string;
+  gender: string;
+  insuranceId: string;
+}
+

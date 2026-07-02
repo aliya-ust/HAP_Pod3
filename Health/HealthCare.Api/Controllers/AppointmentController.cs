@@ -34,6 +34,24 @@ namespace HealthCare.Api.Controllers
             return int.Parse(claim.Value);
         }
 
+        // Get available doctors for a specific date and specialization
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Patient")]
+        [HttpGet("available-doctors")]
+        public async Task<IActionResult> GetAvailableDoctors(DateOnly date,string specialization)
+        {
+            return Ok(await _appointmentService
+                .GetAvailableDoctorsAsync(date, specialization));
+        }
+
+        // Get available time slots for a specific doctor on a specific date
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Patient")]
+        [HttpGet("available-slots")]
+        public async Task<IActionResult> GetAvailableSlots(int doctorId, DateOnly date)
+        {
+            return Ok(await _appointmentService
+                .GetAvailableSlotsAsync(doctorId, date));
+        }
+
         // Patient - Book appointment
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Patient")]
         [HttpPost]
@@ -104,6 +122,24 @@ namespace HealthCare.Api.Controllers
             var result = await _appointmentService.GetAppointmentByDoctor(doctorId);
 
             return Ok(result);
+        }
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Doctor")]
+        [HttpPut("{id}/confirm")]
+        public async Task<IActionResult> ConfirmAppointment(int id)
+        {
+            await _appointmentService.ConfirmAppointment(id);
+
+            return Ok();
+        }
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Doctor")]
+        [HttpPut("{id}/cancel")]
+        public async Task<IActionResult> CancelAppointment(int id)
+        {
+            await _appointmentService.CancelAppointment(id);
+
+            return Ok();
         }
     }
 }

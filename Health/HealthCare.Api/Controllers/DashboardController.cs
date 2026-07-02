@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 
 [ApiController]
 [Route("api/dashboard")]
-[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
 public class DashboardController : ControllerBase
 {
     private readonly IDashboardService _dashboardService;
@@ -48,6 +47,7 @@ public class DashboardController : ControllerBase
         return Ok(result);
     }
 
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
     [HttpGet]
     public async Task<IActionResult> GetDashboard()
     {

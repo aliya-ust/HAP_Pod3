@@ -97,23 +97,17 @@ namespace HealthCare.Api.Repositories.Implementation
                 })
                 .ToListAsync();
 
-        public async Task<List<AppointmentListDto>> GetAppointmentByPatient(int id) =>
-            await _dbSet
-                .Where(a => a.PatientId == id && a.ScheduledDate >= DateOnly.FromDateTime(DateTime.Today))
-                .Select(a => new AppointmentListDto
-                {
-                    AppointmentId = a.AppointmentId,
-                    PatientName = a.Patient.FullName,
-                    DoctorName = a.Doctor.FullName,
-                    ScheduledDate = a.ScheduledDate,
-                    TimeSlot = a.TimeSlot,
-                    Status = a.Status
-                })
-                .ToListAsync();
+        public async Task<List<AppointmentListDto>> GetAppointmentByPatient(int id)
+        {
+            var today = DateOnly.FromDateTime(DateTime.Today);
 
-        public async Task<List<AppointmentListDto>> GetAppointmentByDoctor(int id) =>
-            await _dbSet
-                .Where(a => a.DoctorId == id && a.ScheduledDate >= DateOnly.FromDateTime(DateTime.Today))
+            return await _dbSet
+                .Where(a =>
+                    a.PatientId == id &&
+                    a.ScheduledDate >= today &&
+                    (a.Status == "Pending" || a.Status == "Confirmed"))
+                .OrderBy(a => a.ScheduledDate)
+                .ThenBy(a => a.TimeSlot)
                 .Select(a => new AppointmentListDto
                 {
                     AppointmentId = a.AppointmentId,
@@ -124,5 +118,54 @@ namespace HealthCare.Api.Repositories.Implementation
                     Status = a.Status
                 })
                 .ToListAsync();
+        }
+
+        public async Task<List<AppointmentListDto>> GetAppointmentByDoctor(int id)
+        {
+            var today = DateOnly.FromDateTime(DateTime.Today);
+
+            return await _dbSet
+                .Where(a =>
+                    a.DoctorId == id &&
+                    a.ScheduledDate >= today &&
+                    (a.Status == "Pending" || a.Status == "Confirmed"))
+                .OrderBy(a => a.ScheduledDate)
+                .ThenBy(a => a.TimeSlot)
+                .Select(a => new AppointmentListDto
+                {
+                    AppointmentId = a.AppointmentId,
+                    PatientId = a.PatientId,
+                    PatientName = a.Patient.FullName,
+                    DoctorName = a.Doctor.FullName,
+                    ScheduledDate = a.ScheduledDate,
+                    TimeSlot = a.TimeSlot,
+                    Status = a.Status
+                })
+                .ToListAsync();
+        }
+
+        public async Task ConfirmAppointment(int appointmentId)
+        {
+            var appointment = await _dbSet.FindAsync(appointmentId);
+
+            if (appointment == null)
+                throw new Exception("Appointment not found");
+
+            appointment.Status = "Confirmed";
+
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task CancelAppointment(int appointmentId)
+        {
+            var appointment = await _dbSet.FindAsync(appointmentId);
+
+            if (appointment == null)
+                throw new Exception("Appointment not found");
+
+            appointment.Status = "Cancelled";
+
+            await _context.SaveChangesAsync();
+        }
     }
 }

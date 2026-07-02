@@ -16,3 +16,5 @@ coverage.xml
 
 packages
 TestResults
+
+node_modules/

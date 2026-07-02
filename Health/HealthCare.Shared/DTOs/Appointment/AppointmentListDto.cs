@@ -8,5 +8,6 @@
         public DateOnly ScheduledDate { get; set; }
         public string TimeSlot { get; set; } = null!;
         public string Status { get; set; } = null!;
+        public int PatientId { get; set; }
     }
 }

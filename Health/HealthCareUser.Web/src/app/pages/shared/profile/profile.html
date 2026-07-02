@@ -1,101 +1,208 @@
-<div class="profile-container">
+<div class="page">
 
-  <!-- Patient Profile -->
+  <div class="profile-container">
 
-  <div class="profile-card" *ngIf="patient">
+    <!-- PATIENT PROFILE -->
 
-    <div class="profile-header">
+    <div class="profile-card" *ngIf="patient()">
 
-      <h2>Patient Profile</h2>
+      <div class="profile-header">
+        <div class="avatar">
+          <i class="bi bi-person-circle"></i>
+        </div>
+        <h2>{{ patient()?.fullName }}</h2>
+        <p>Patient</p>
 
+        <!-- Edit Button -->
+        <button class="edit-btn" (click)="openEdit()">Edit</button>
+      </div>
+
+      <div class="profile-body">
+
+        <div class="profile-row">
+          <i class="bi bi-hash"></i>
+          <div>
+            <label>ID</label>
+            <span>{{ patient()?.patientId }}</span>
+          </div>
+        </div>
+
+        <div class="profile-row">
+          <i class="bi bi-envelope"></i>
+          <div>
+            <label>Email</label>
+            <span>{{ patient()?.email }}</span>
+          </div>
+        </div>
+
+        <div class="profile-row">
+          <i class="bi bi-telephone"></i>
+          <div>
+            <label>Phone</label>
+            <span>{{ patient()?.phoneNumber }}</span>
+          </div>
+        </div>
+
+        <div class="profile-row">
+          <i class="bi bi-calendar"></i>
+          <div>
+            <label>Date of Birth</label>
+            <span>{{ patient()?.dateOfBirth }}</span>
+          </div>
+        </div>
+
+        <div class="profile-row">
+          <i class="bi bi-gender-ambiguous"></i>
+          <div>
+            <label>Gender</label>
+            <span>{{ patient()?.gender }}</span>
+          </div>
+        </div>
+
+        <div class="profile-row">
+          <i class="bi bi-shield-check"></i>
+          <div>
+            <label>Insurance</label>
+            <span>{{ patient()?.insuranceId }}</span>
+          </div>
+        </div>
+
+      </div>
     </div>
 
-    <div class="profile-body">
 
-      <div class="profile-row">
-        <span class="profile-label">Patient ID</span>
-        <span class="profile-value">{{patient.patientId}}</span>
+
+
+    <!-- DOCTOR PROFILE -->
+    <div class="profile-card" *ngIf="doctor()">
+
+      <div class="profile-header doctor">
+        <div class="avatar">
+          <i class="bi bi-person-badge"></i>
+        </div>
+        <h2>{{ doctor()?.fullName }}</h2>
+        <p>Doctor</p>
       </div>
 
-      <div class="profile-row">
-        <span class="profile-label">Full Name</span>
-        <span class="profile-value">{{patient.fullName}}</span>
-      </div>
+      <div class="profile-body">
 
-      <div class="profile-row">
-        <span class="profile-label">Email</span>
-        <span class="profile-value">{{patient.email}}</span>
-      </div>
+        <div class="profile-row">
+          <i class="bi bi-hash"></i>
+          <div>
+            <label>ID</label>
+            <span>{{ doctor()?.doctorId }}</span>
+          </div>
+        </div>
 
-      <div class="profile-row">
-        <span class="profile-label">Phone Number</span>
-        <span class="profile-value">{{patient.phoneNumber}}</span>
-      </div>
+        <div class="profile-row">
+          <i class="bi bi-envelope"></i>
+          <div>
+            <label>Email</label>
+            <span>{{ doctor()?.email }}</span>
+          </div>
+        </div>
 
-      <div class="profile-row">
-        <span class="profile-label">Date of Birth</span>
-        <span class="profile-value">{{patient.dateOfBirth}}</span>
-      </div>
+        <div class="profile-row">
+          <i class="bi bi-hospital"></i>
+          <div>
+            <label>Specialisation</label>
+            <span>{{ doctor()?.specialisation }}</span>
+          </div>
+        </div>
 
-      <div class="profile-row">
-        <span class="profile-label">Gender</span>
-        <span class="profile-value">{{patient.gender}}</span>
-      </div>
+        <div class="profile-row">
+          <i class="bi bi-award"></i>
+          <div>
+            <label>Experience</label>
+            <span>{{ doctor()?.yearsOfExperience }} Years</span>
+          </div>
+        </div>
 
-      <div class="profile-row">
-        <span class="profile-label">Insurance ID</span>
-        <span class="profile-value">{{patient.insuranceId}}</span>
+        <div class="profile-row">
+          <i class="bi bi-cash"></i>
+          <div>
+            <label>Consultation Fee</label>
+            <span>₹{{ doctor()?.consultationFee }}</span>
+          </div>
+        </div>
+
       </div>
 
     </div>
 
   </div>
 
+<!-- ✅ EDIT DIALOG -->
+<div class="dialog-backdrop" *ngIf="isEditOpen()">
+  <div class="dialog">
 
-  <!-- Doctor Profile -->
+    <h3>Edit Profile</h3>
 
-  <div class="profile-card" *ngIf="doctor">
+    <form #form="ngForm" (ngSubmit)="updateProfile()" novalidate>
 
-    <div class="profile-header">
+      <!-- NAME -->
+      <label>Name</label>
+      <input [(ngModel)]="editData.fullName"
+             name="fullName"
+             required
+             minlength="3"
+             #fullName="ngModel" />
 
-      <h2>Doctor Profile</h2>
+      <small class="error" *ngIf="fullName.invalid && fullName.touched">
+        Name must be at least 3 characters
+      </small>
 
-    </div>
 
-    <div class="profile-body">
+      <!-- PHONE -->
+      <label>Phone</label>
+      <input [(ngModel)]="editData.phoneNumber"
+             name="phoneNumber"
+             pattern="^[0-9]{10}$"
+             #phone="ngModel" />
 
-      <div class="profile-row">
-        <span class="profile-label">Doctor ID</span>
-        <span class="profile-value">{{doctor.doctorId}}</span>
+      <small class="error" *ngIf="phone.invalid && phone.touched">
+        Enter valid 10-digit phone number
+      </small>
+
+
+      <!-- GENDER -->
+      <label>Gender</label>
+      <select [(ngModel)]="editData.gender"
+              name="gender"
+              required
+              #gender="ngModel">
+        <option value="">Select Gender</option>
+        <option>Male</option>
+        <option>Female</option>
+      </select>
+
+      <small class="error" *ngIf="gender.invalid && gender.touched">
+        Gender is required
+      </small>
+
+
+      <!-- INSURANCE -->
+      <label>Insurance</label>
+      <input [(ngModel)]="editData.insuranceId"
+             name="insuranceId"
+             maxlength="20"
+             #insurance="ngModel" />
+
+      <small class="hint">
+        Leave empty if no insurance
+      </small>
+
+
+      <!-- ACTIONS -->
+      <div class="dialog-actions">
+        <button type="button" class="btn cancel" (click)="closeEdit()">Cancel</button>
+        <button type="submit" class="btn save" [disabled]="form.invalid">Save</button>
       </div>
 
-      <div class="profile-row">
-        <span class="profile-label">Full Name</span>
-        <span class="profile-value">{{doctor.fullName}}</span>
-      </div>
-
-      <div class="profile-row">
-        <span class="profile-label">Email</span>
-        <span class="profile-value">{{doctor.email}}</span>
-      </div>
-
-      <div class="profile-row">
-        <span class="profile-label">Specialisation</span>
-        <span class="profile-value">{{doctor.specialisation}}</span>
-      </div>
-
-      <div class="profile-row">
-        <span class="profile-label">Experience</span>
-        <span class="profile-value">{{doctor.yearsOfExperience}} Years</span>
-      </div>
-
-      <div class="profile-row">
-        <span class="profile-label">Consultation Fee</span>
-        <span class="profile-value">₹{{doctor.consultationFee}}</span>
-      </div>
-
-    </div>
+    </form>
 
   </div>
+</div>
 
 </div>
+

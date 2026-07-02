@@ -73,6 +73,14 @@ namespace HealthCare.Api.Services.Implementations
             var record = _mapper.Map<HealthRecord>(dto);
             record.DoctorId = doctorId;
             await _repository.AddAsync(record);
+
+            var appointment = await _context.Appointments
+                    .FirstOrDefaultAsync(a => a.AppointmentId == dto.AppointmentId);
+
+            if (appointment != null)
+            {
+                appointment.Status = "Completed";
+            }
             await _context.SaveChangesAsync();
         }
 
@@ -108,7 +116,7 @@ namespace HealthCare.Api.Services.Implementations
 
         public async Task<List<HealthRecordListDto>> GetHealthRecordByPatient(int id)
         {
-            var records = await _repository.GetHealthRecordByPatient(id);
+            var records = await _repository.GetPatientHealthRecords(id);
             return records.Count == 0 ? new List<HealthRecordListDto>() : records;
         }
 
