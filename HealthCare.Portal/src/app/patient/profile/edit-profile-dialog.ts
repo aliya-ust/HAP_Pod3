@@ -59,61 +59,145 @@ import { UpdatePatientDto } from '../../core/models/patient.models';
     </div>
   `,
   styles: [`
-    .dialog-overlay {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .dialog {
-      background: #fff;
-      border-radius: 8px;
-      padding: 1.5rem;
-      width: 420px;
-      max-width: 90vw;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.15);
-    }
-    .dialog h3 { margin: 0 0 1rem; font-size: 1.1rem; }
-    .form-group { margin-bottom: 1rem; }
-    .form-group label {
-      display: block;
-      margin-bottom: 0.35rem;
-      font-size: 0.85rem;
-      color: #555;
-    }
-    .form-group input, .form-group select {
-      width: 100%;
-      padding: 0.5rem 0.7rem;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      font-size: 0.9rem;
-      box-sizing: border-box;
-    }
-    .form-group input.ng-invalid.ng-touched,
-    .form-group select.ng-invalid.ng-touched {
-      border-color: #d32f2f;
-    }
-    .error {
-      color: #d32f2f;
-      font-size: 0.8rem;
-      margin-top: 0.25rem;
-    }
-    .dialog-actions {
-      display: flex;
-      gap: 0.75rem;
-      justify-content: flex-end;
-      margin-top: 1.5rem;
-    }
-    .btn {
-      padding: 0.5rem 1rem;
-      border: none;
-      border-radius: 4px;
-      font-size: 0.9rem;
-      cursor: pointer;
-    }
-    .btn:disabled { opacity: 0.6; cursor: not-allowed; }
-    .btn-primary { background: #1a73e8; color: #fff; }
-    .btn-secondary { background: #e0e0e0; color: #333; }
-  `],
+  .dialog-overlay {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .dialog {
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 1.75rem;
+
+    width: 420px;
+    max-width: 90vw;
+
+    box-shadow:
+      0 10px 25px rgba(0, 31, 84, 0.12),
+      0 4px 12px rgba(0, 31, 84, 0.08);
+
+    transition: all 0.3s ease;
+  }
+
+  .dialog:hover {
+    transform: translateY(-4px);
+
+    box-shadow:
+      0 18px 35px rgba(0, 31, 84, 0.18),
+      0 8px 18px rgba(0, 31, 84, 0.12);
+  }
+
+  .dialog h3 {
+    margin: 0 0 1.5rem;
+    text-align: center;
+
+    color: #003f88;
+    font-size: 1.4rem;
+    font-weight: 700;
+  }
+
+  .form-group {
+    margin-bottom: 1rem;
+  }
+
+  .form-group label {
+    display: block;
+    margin-bottom: 0.4rem;
+
+    font-size: 0.85rem;
+    font-weight: 600;
+
+    color: #555;
+  }
+
+  .form-group input,
+  .form-group select {
+    width: 100%;
+    padding: 0.75rem 1rem;
+
+    background: #fafcff;
+
+    border: 1px solid #d9e7f5;
+    border-radius: 12px;
+
+    font-size: 0.9rem;
+    box-sizing: border-box;
+
+    transition: all 0.3s ease;
+  }
+
+  .form-group input:focus,
+  .form-group select:focus {
+    outline: none;
+
+    border-color: #90e0ef;
+    box-shadow: 0 0 0 4px rgba(144, 224, 239, 0.25);
+
+    transform: scale(1.02);
+  }
+
+  .form-group input.ng-invalid.ng-touched,
+  .form-group select.ng-invalid.ng-touched {
+    border-color: #d32f2f;
+  }
+
+  .error {
+    color: #d32f2f;
+    font-size: 0.8rem;
+    margin-top: 0.3rem;
+  }
+
+  .dialog-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+
+    margin-top: 1.5rem;
+  }
+
+  .btn {
+    padding: 0.75rem 1.25rem;
+
+    border: none;
+    border-radius: 12px;
+
+    font-size: 0.9rem;
+    font-weight: 600;
+
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  .btn-primary {
+    background: linear-gradient(
+      135deg,
+      #0077b6,
+      #003f88
+    );
+
+    color: white;
+  }
+
+  .btn-primary:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 119, 182, 0.35);
+  }
+
+  .btn-secondary {
+    background: #e9eef5;
+    color: #444;
+  }
+
+  .btn-secondary:hover {
+    background: #dde6f0;
+  }
+`],
 })
 export class EditProfileDialog {
   form: UpdatePatientDto;

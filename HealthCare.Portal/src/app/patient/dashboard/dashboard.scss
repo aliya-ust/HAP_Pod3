@@ -1,24 +1,124 @@
-.page { max-width: 900px; margin: 2rem auto; padding: 0 1rem; }
-h2 { margin-bottom: 1.25rem; }
-.dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
-.card { background: #fff; border-radius: 8px; padding: 1.25rem; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-.card h3 { margin: 0 0 1rem; font-size: 1rem; color: #333; }
-.placeholder { color: #999; font-size: 0.9rem; }
+.page {
+  max-width: 1100px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 2rem;
+  color: #003f88;
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 1.8rem;
+}
+
+.card {
+  background: #ffffff;
+
+  border-radius: 20px;
+  padding: 1.5rem;
+
+  box-shadow:
+    0 10px 25px rgba(0, 31, 84, 0.12),
+    0 4px 12px rgba(0, 31, 84, 0.08);
+
+  transition: all 0.3s ease;
+  border: 1px solid rgba(0, 119, 182, 0.08);
+
+  &:hover {
+    transform: translateY(-8px);
+
+    box-shadow:
+      0 18px 35px rgba(0, 31, 84, 0.18),
+      0 8px 18px rgba(0, 31, 84, 0.12);
+  }
+}
+
+.card h3 {
+  margin: 0 0 1.25rem;
+
+  color: #003f88;
+  font-size: 1.2rem;
+  font-weight: 700;
+
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid #e8f3ff;
+}
+
+.placeholder {
+  text-align: center;
+  padding: 1rem;
+
+  color: #8c8c8c;
+  font-size: 0.9rem;
+}
+
 .dash-item {
   display: flex;
   justify-content: space-between;
-  padding: 0.4rem 0;
-  border-bottom: 1px solid #f5f5f5;
-  font-size: 0.85rem;
+  align-items: center;
+
+  padding: 0.85rem 1rem;
+  margin-bottom: 0.75rem;
+
+  background: #f8fbff;
+  border-radius: 12px;
+
+  border-left: 4px solid #0077b6;
+
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: #edf7ff;
+    transform: translateX(4px);
+  }
 }
-.dash-item:last-child { border-bottom: none; }
-.dash-date { font-weight: 600; color: #333; }
-.dash-detail { color: #666; }
+
+.dash-item:last-child {
+  margin-bottom: 0;
+}
+
+.dash-date {
+  font-weight: 700;
+  color: #003f88;
+  font-size: 0.9rem;
+}
+
+.dash-detail {
+  color: #555;
+  font-size: 0.9rem;
+}
+
 .dash-link {
   display: inline-block;
-  margin-top: 0.75rem;
-  font-size: 0.85rem;
-  color: #1a73e8;
+  margin-top: 1rem;
+
+  color: #0077b6;
   text-decoration: none;
+  font-weight: 600;
+
+  transition: all 0.3s ease;
+
+  &:hover {
+    color: #003f88;
+    transform: translateX(3px);
+  }
 }
-.dash-link:hover { text-decoration: underline; }
+
+@media (max-width: 768px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .dash-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.3rem;
+  }
+}
