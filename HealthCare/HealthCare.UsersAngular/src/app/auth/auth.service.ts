@@ -8,7 +8,7 @@ export class AuthService {
 
   baseUrl = 'https://localhost:7149/api/auth';
 
-  constructor(private http: HttpClient) { }
+  constructor(private readonly http: HttpClient) { }
 
   login(data: any) {
     return this.http.post(`${this.baseUrl}/login`, data);

@@ -10,7 +10,7 @@ import { Router, RouterModule } from '@angular/router';
 })
 export class PatientSidebarComponent {
 
-  constructor(private router: Router) { }
+  constructor(private readonly router: Router) { }
 
   logout() {
 

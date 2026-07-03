@@ -75,11 +75,11 @@ namespace HealthCare.Api.Services.Implementations
                 .FirstOrDefaultAsync(a => a.AppointmentId == dto.AppointmentId);
 
             if (appointment == null)
-                throw new Exception("Appointment not found");
+                throw new KeyNotFoundException("Appointment not found");
 
             // ONLY allow if confirmed
             if (appointment.Status != "Confirmed")
-                throw new Exception("Health record can only be added for confirmed appointments");
+                throw new InvalidOperationException("Health record can only be added for confirmed appointments");
 
             var record = _mapper.Map<HealthRecord>(dto);
 

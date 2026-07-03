@@ -133,23 +133,26 @@
             </h3>
 
             <span class="close"
-                  (click)="closeCancelModal()">
-
+                  tabindex="0"
+                  (click)="closeCancelModal()"
+                  (keydown.enter)="closeCancelModal()"
+                  (keydown.space)="closeCancelModal()">
               ×
-
             </span>
+
 
           </div>
 
           <div class="cancel-body">
 
-            <label>
+            <label for="cancellationReason">
               Cancellation Reason
             </label>
 
-            <textarea [(ngModel)]="cancellationReason"
+            <textarea id="cancellationReason"
+                      [(ngModel)]="cancellationReason"
                       placeholder="Enter cancellation reason">
-</textarea>
+            </textarea>
 
             <div class="error"
                  *ngIf="cancelSubmitted && !cancellationReason.trim()">
@@ -182,7 +185,13 @@
 
           <div class="modal-header">
             <h3>Add Health Record</h3>
-            <span class="close" (click)="closeModal()">×</span>
+            <span class="close"
+                  tabindex="0"
+                  (click)="closeModal()"
+                  (keydown.enter)="closeModal()"
+                  (keydown.space)="closeModal()">
+              ×
+            </span>
           </div>
 
           <div class="form" [formGroup]="recordForm">

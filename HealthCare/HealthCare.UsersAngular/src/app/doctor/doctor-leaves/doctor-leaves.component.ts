@@ -17,7 +17,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 })
 export class DoctorLeavesComponent {
 
-  constructor(private http: HttpClient) { }
+  constructor(private readonly http: HttpClient) { }
 
   leaveDates: string[] = [''];
   todayString = new Date().toISOString().split('T')[0];

@@ -63,12 +63,14 @@
       <!-- REASON -->
       <div class="reason-container">
 
-        <label>
+        <label for="reason">
           <i class="bi bi-chat-left-text"></i>
           Reason (Optional)
         </label>
 
-        <textarea [(ngModel)]="reason"
+        <textarea
+                  id="reason"
+                  [(ngModel)]="reason"
                   placeholder="Enter reason for leave...">
         </textarea>
 

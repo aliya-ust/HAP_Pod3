@@ -154,7 +154,7 @@ namespace HealthCare.Api.Tests
                 AppointmentId = 999
             };
 
-            await Assert.ThrowsAsync<Exception>(() =>
+            await Assert.ThrowsAsync<KeyNotFoundException>(() =>
                 _service.AddAsync(1, dto));
         }
 
@@ -202,7 +202,7 @@ namespace HealthCare.Api.Tests
                 AppointmentId = 1
             };
 
-            await Assert.ThrowsAsync<Exception>(() =>
+            await Assert.ThrowsAsync<InvalidOperationException>(() =>
                 _service.AddAsync(1, dto));
         }
 

@@ -29,9 +29,9 @@ export class PatientRegisterComponent {
   isSuccess = false;
 
   constructor(
-    private http: HttpClient,
-    private router: Router,
-    private fb: FormBuilder
+    private readonly http: HttpClient,
+    private readonly router: Router,
+    private readonly fb: FormBuilder
   ) {
 
     this.registerForm = this.fb.group({

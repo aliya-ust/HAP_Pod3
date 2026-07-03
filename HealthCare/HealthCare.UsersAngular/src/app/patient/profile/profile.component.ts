@@ -1,8 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { PatientSidebarComponent } from '../../shared/patient-sidebar/patient-sidebar.component';
-import { ChangeDetectorRef } from '@angular/core';
 import { PatientEditProfileModalComponent } from '../../shared/patient-edit-profile-modal/patient-edit-profile-modal.component';
 @Component({
   selector: 'app-profile',
@@ -21,7 +20,7 @@ export class ProfileComponent implements OnInit {
   showSuccessModal = false;
   successMessage = '';
 
-  constructor(private http: HttpClient, private cdr: ChangeDetectorRef) { }
+  constructor(private readonly http: HttpClient, private readonly cdr: ChangeDetectorRef) { }
 
   ngOnInit() {
     this.getProfile();

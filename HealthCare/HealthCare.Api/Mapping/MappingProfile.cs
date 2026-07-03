@@ -23,10 +23,12 @@ namespace HealthCare.Api.Mapping
                 opt => opt.MapFrom(src => src.Specialisation.ToString()));
             CreateMap<Doctor, DoctorListDto>()
      .ForMember(dest => dest.DoctorId,
-         opt => opt.MapFrom(src => src.DoctorId)) 
-
-    .ForMember(dest => dest.Email,
-        opt => opt.MapFrom(src => src.User.Email)); 
+         opt => opt.MapFrom(src => src.DoctorId))
+     .ForMember(dest => dest.Email,
+         opt => opt.MapFrom(src =>
+             src.User != null
+                 ? src.User.Email
+                 : string.Empty));
 
             // Appointment DTO mappings
             CreateMap<CreateAppointmentDto, Appointment>();

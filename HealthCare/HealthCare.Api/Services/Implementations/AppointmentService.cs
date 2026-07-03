@@ -25,12 +25,19 @@ namespace HealthCare.Api.Services.Implementations
             _mapper = mapper;
         }
 
+        private const string AppointmentNotFoundMessage = "Appointment not found.";
+
+        private const string PendingStatus = "Pending";
+        private const string ConfirmedStatus = "Confirmed";
+        private const string CancelledStatus = "Cancelled";
+        private const string CompletedStatus = "Completed";
+
         public async Task<AppointmentListDto?> GetByIdAsync(int id)
         {
             var appointment = await _repository.GetByIdAsync(id);
 
             if (appointment is null)
-                throw new InvalidOperationException("Appointment not found.");
+                throw new InvalidOperationException(AppointmentNotFoundMessage);
 
             return _mapper.Map<AppointmentListDto>(appointment);
         }
@@ -100,7 +107,7 @@ namespace HealthCare.Api.Services.Implementations
             var appointment = await _repository.GetByIdAsync(id);
 
             if (appointment is null)
-                throw new InvalidOperationException("Appointment not found.");
+                throw new InvalidOperationException(AppointmentNotFoundMessage);
 
             _mapper.Map(dto, appointment);
             await _repository.UpdateAsync(appointment);
@@ -112,10 +119,16 @@ namespace HealthCare.Api.Services.Implementations
             var appointment = await _repository.GetByIdAsync(id);
 
             if (appointment is null)
-                throw new InvalidOperationException("Appointment not found.");
+                throw new InvalidOperationException(AppointmentNotFoundMessage);
 
             // VALID STATUS LIST
-            var validStatuses = new[] { "Pending", "Confirmed", "Cancelled", "Completed" };
+            var validStatuses = new[]
+             {
+                PendingStatus,
+                ConfirmedStatus,
+                CancelledStatus,
+                CompletedStatus
+            };
 
             // CHECK INVALID STATUS
             if (!validStatuses.Contains(dto.Status, StringComparer.OrdinalIgnoreCase))
@@ -124,16 +137,18 @@ namespace HealthCare.Api.Services.Implementations
             }
 
             // BUSINESS RULE: Cancellation needs reason
-            if (dto.Status == "Cancelled" && string.IsNullOrWhiteSpace(dto.CancellationReason))
+            if (dto.Status == CancelledStatus && string.IsNullOrWhiteSpace(dto.CancellationReason))
             {
                 throw new InvalidOperationException("Cancellation reason is required when status is Cancelled");
             }
 
             // CLEAN ASSIGNMENT
             appointment.Status = dto.Status;
-            appointment.CancellationReason = dto.Status == "Cancelled"
-                ? dto.CancellationReason
-                : null;
+            appointment.CancellationReason =
+                 dto.Status == CancelledStatus
+                     ? dto.CancellationReason
+                     : null;
+
 
             await _repository.UpdateAsync(appointment);
             await _context.SaveChangesAsync();
@@ -145,7 +160,7 @@ namespace HealthCare.Api.Services.Implementations
             var appointment = await _repository.GetByIdAsync(id);
 
             if (appointment is null)
-                throw new InvalidOperationException("Appointment not found.");
+                throw new InvalidOperationException(AppointmentNotFoundMessage);
             try
             {
                 await _repository.DeleteAsync(id);
@@ -209,8 +224,10 @@ namespace HealthCare.Api.Services.Implementations
             var appointments = await _repository.GetAppointmentByPatient(id);
 
             return appointments
-                .Where(a => a.Status == "Pending" || a.Status == "Confirmed")
-                .OrderBy(a => a.ScheduledDate)  // optional (nice UI)
+               .Where(a =>
+                a.Status == PendingStatus ||
+                a.Status == ConfirmedStatus)
+                .OrderBy(a => a.ScheduledDate)  
                 .ToList();
         }
         public async Task<List<AppointmentListDto>> GetAppointmentByDoctor(int id)
@@ -226,8 +243,8 @@ namespace HealthCare.Api.Services.Implementations
                 .Where(a =>
                     a.ScheduledDate >= today &&  
                     (
-                        a.Status.Equals("Pending", StringComparison.OrdinalIgnoreCase) ||
-                        a.Status.Equals("Confirmed", StringComparison.OrdinalIgnoreCase)
+                        a.Status.Equals(PendingStatus, StringComparison.OrdinalIgnoreCase) ||
+                        a.Status.Equals(ConfirmedStatus, StringComparison.OrdinalIgnoreCase)
                     )
                 )
                 .OrderBy(a => a.ScheduledDate)   
@@ -266,13 +283,13 @@ namespace HealthCare.Api.Services.Implementations
                 {
                     Date = g.Key,
 
-                    PendingCount = g.Count(a => a.Status == "Pending"),
-                    ConfirmedCount = g.Count(a => a.Status == "Confirmed"),
-                    CancelledCount = g.Count(a => a.Status == "Cancelled"),
-                    CompletedCount = g.Count(a => a.Status == "Completed"),
+                    PendingCount = g.Count(a => a.Status == PendingStatus),
+                    ConfirmedCount = g.Count(a => a.Status == ConfirmedStatus),
+                    CancelledCount = g.Count(a => a.Status == CancelledStatus),
+                    CompletedCount = g.Count(a => a.Status == CompletedStatus),
 
                     Revenue = g
-                        .Where(a => a.Status == "Completed")
+                        .Where(a => a.Status == CompletedStatus)
                         .Sum(a => (decimal?)a.Doctor.ConsultationFee) ?? 0
                 })
                 .OrderBy(r => r.Date)
@@ -292,13 +309,13 @@ namespace HealthCare.Api.Services.Implementations
                 .GroupBy(a => 1)
                 .Select(g => new AppointmentSummaryDto
                 {
-                    PendingCount = g.Count(a => a.Status == "Pending"),
-                    ConfirmedCount = g.Count(a => a.Status == "Confirmed"),
-                    CancelledCount = g.Count(a => a.Status == "Cancelled"),
-                    CompletedCount = g.Count(a => a.Status == "Completed"),
+                    PendingCount = g.Count(a => a.Status == PendingStatus),
+                    ConfirmedCount = g.Count(a => a.Status == ConfirmedStatus),
+                    CancelledCount = g.Count(a => a.Status == CancelledStatus),
+                    CompletedCount = g.Count(a => a.Status == CompletedStatus),
 
                     TotalRevenue = g
-                        .Where(a => a.Status == "Completed")
+                        .Where(a => a.Status == CompletedStatus)
                         .Sum(a => a.Doctor.ConsultationFee)
                 })
                 .FirstOrDefaultAsync();

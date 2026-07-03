@@ -12,7 +12,7 @@
 }
 
 .table-card {
-  background: white;
+  background: #ffffff;
   border-radius: 15px;
   overflow: hidden;
   box-shadow: 0px 5px 20px rgba(0,0,0,0.1);
@@ -25,7 +25,7 @@ table {
 
 thead {
   background: linear-gradient(to right, #1d3b72, #2f5dc8);
-  color: white;
+  color: #ffffff;
 }
 
 th, td {
@@ -43,26 +43,26 @@ th, td {
 
 .confirm-btn {
   background: green;
-  color: white;
+  color: #ffffff;
   padding: 5px 10px;
   margin: 2px;
 }
 
 .cancel-btn {
   background: red;
-  color: white;
+  color: #ffffff;
   padding: 5px 10px;
 }
 
 .view-btn {
   background: blue;
-  color: white;
+  color: #ffffff;
   padding: 5px 10px;
 }
 
 .add-btn {
   background: purple;
-  color: white;
+  color: #ffffff;
   padding: 5px 10px;
 }
 
@@ -76,7 +76,7 @@ th, td {
   border: none;
   padding: 6px 12px;
   border-radius: 8px;
-  color: white;
+  color: #ffffff;
   font-size: 13px;
   cursor: pointer;
   display: flex;
@@ -141,7 +141,7 @@ th, td {
   justify-content: space-between;
   margin-bottom: 10px;
   background: linear-gradient(to right, #1d3b72, #2f5dc8);
-  color: white;
+  color: #ffffff;
   padding: 10px;
   border-radius: 10px;
 }
@@ -183,18 +183,17 @@ th, td {
 
 .modal-header.success {
   background: linear-gradient(to right, #28a745, #43c463);
-  color: white;
+  color: #ffffff;
   padding: 10px;
   border-radius: 10px 10px 0 0;
 }
 
-.success-body {
-  padding: 20px;
-}
-
 .btn.ok {
-  background-color: #28a745;
-  margin-top: 10px;
+  background: #198754;
+  color: #ffffff;
+  display: block;
+  margin: 15px auto 0;
+  min-width: 90px;
 }
 
   .btn.ok:hover {
@@ -270,11 +269,8 @@ th, td {
 }
 
 .success-body {
+  padding: 20px;
+  color: #333;
   text-align: center;
 }
 
-.btn.ok {
-  display: block;
-  margin: 15px auto 0;
-  min-width: 90px;
-}

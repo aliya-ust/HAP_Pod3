@@ -1,8 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { DoctorSidebarComponent } from '../shared/doctor-sidebar/doctor-sidebar';
-import { ChangeDetectorRef } from '@angular/core';
 
 @Component({
   selector: 'app-doctor-dashboard',
@@ -22,7 +21,7 @@ export class DoctorDashboardComponent implements OnInit {
 
   todaySlots: string[] = [];
 
-  constructor(private http: HttpClient, private cdr: ChangeDetectorRef) { }
+  constructor(private readonly http: HttpClient, private readonly cdr: ChangeDetectorRef) { }
 
   ngOnInit(): void {
     this.loadDashboard();

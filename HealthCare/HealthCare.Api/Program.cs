@@ -88,13 +88,17 @@ builder.Services.AddScoped<IDoctorService, DoctorService>();
 builder.Services.AddScoped<IAppointmentService, AppointmentService>();
 builder.Services.AddScoped<IHealthRecordService, HealthRecordService>();
 
+var allowedOrigins = builder.Configuration
+    .GetSection("Cors:AllowedOrigins")
+    .Get<string[]>();
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAllClients", policy =>
     {
-        policy.WithOrigins("http://localhost:50358", "https://localhost:7206")
-       .AllowAnyHeader()
-       .AllowAnyMethod();
+        policy.WithOrigins(allowedOrigins ?? Array.Empty<string>())
+              .AllowAnyHeader()
+              .AllowAnyMethod();
     });
 });
 builder.Services.AddEndpointsApiExplorer();

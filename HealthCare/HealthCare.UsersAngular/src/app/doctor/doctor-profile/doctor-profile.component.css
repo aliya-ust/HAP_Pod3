@@ -80,7 +80,7 @@
 
 .active {
   background: #d4edda;
-  color: green;
+  color: #155724;
   padding: 4px 10px;
   border-radius: 12px;
   font-size: 12px;
@@ -142,7 +142,7 @@
 
 .edit-btn {
   background: linear-gradient(to right, #4c6ef5, #4361ee);
-  color: white;
+  color: #ffffff;
   border: none;
   padding: 10px 26px;
   border-radius: 12px;

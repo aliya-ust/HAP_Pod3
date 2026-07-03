@@ -1838,7 +1838,112 @@ HealthCare
 ]< =
 ;= >
 } 
-} ∑
+} “
+iC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\Doctor\CreateLeaveResultDto.cs
+	namespace 	
+
+HealthCare
+ 
+. 
+Shared 
+. 
+DTOs  
+.  !
+Doctor! '
+{ 
+public 
+
+class  
+CreateLeaveResultDto %
+{ 
+public 
+List 
+< 
+DateOnly 
+> 
+SkippedDates *
+{+ ,
+get- 0
+;0 1
+set2 5
+;5 6
+}7 8
+=9 :
+new; >
+(> ?
+)? @
+;@ A
+public 
+List 
+< 
+DateOnly 
+> ,
+ CreatedWithCancelledAppointments >
+{? @
+getA D
+;D E
+setF I
+;I J
+}K L
+=M N
+newO R
+(R S
+)S T
+;T U
+} 
+} û
+pC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\Doctor\AvailableDoctorsResponseDto.cs
+	namespace 	
+
+HealthCare
+ 
+. 
+Shared 
+. 
+DTOs  
+.  !
+Response! )
+{ 
+public 
+
+class '
+AvailableDoctorsResponseDto ,
+{ 
+public 
+List 
+< 
+DoctorListDto !
+>! "
+Doctors# *
+{+ ,
+get- 0
+;0 1
+set2 5
+;5 6
+}7 8
+=9 :
+new; >
+(> ?
+)? @
+;@ A
+public 
+string 
+Message 
+{ 
+get  #
+;# $
+set% (
+;( )
+}* +
+=, -
+string. 4
+.4 5
+Empty5 :
+;: ;
+}		 
+}
+
+ ∑
 cC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\Doctor\CreateLeaveDto.cs
 	namespace 	
 
@@ -1903,60 +2008,7 @@ HealthCare
 
 * +
 } 
-} “
-iC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\Doctor\CreateLeaveResultDto.cs
-	namespace 	
-
-HealthCare
- 
-. 
-Shared 
-. 
-DTOs  
-.  !
-Doctor! '
-{ 
-public 
-
-class  
-CreateLeaveResultDto %
-{ 
-public 
-List 
-< 
-DateOnly 
-> 
-SkippedDates *
-{+ ,
-get- 0
-;0 1
-set2 5
-;5 6
-}7 8
-=9 :
-new; >
-(> ?
-)? @
-;@ A
-public 
-List 
-< 
-DateOnly 
-> ,
- CreatedWithCancelledAppointments >
-{? @
-getA D
-;D E
-setF I
-;I J
-}K L
-=M N
-newO R
-(R S
-)S T
-;T U
-} 
-} è 
+} è 
 dC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\Doctor\CreateDoctorDto.cs
 	namespace 	
 
@@ -2217,46 +2269,7 @@ HealthCare
 )'': ;
 ;''; <
 }(( 
-})) Ë
-pC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\Doctor\AvailableDoctorsResponseDto.cs
-public 
-class '
-AvailableDoctorsResponseDto (
-{ 
-public 
-
-List 
-< 
-DoctorListDto 
-> 
-Doctors &
-{' (
-get) ,
-;, -
-set. 1
-;1 2
-}3 4
-=5 6
-new7 :
-(: ;
-); <
-;< =
-public 
-
-string 
-Message 
-{ 
-get 
-;  
-set! $
-;$ %
-}& '
-=( )
-string* 0
-.0 1
-Empty1 6
-;6 7
-} ˝
+})) ˝
 ZC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\AuthResponse.cs
 	namespace 	
 

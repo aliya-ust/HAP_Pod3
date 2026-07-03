@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef} from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../auth.service';
 import { CommonModule } from '@angular/common';
@@ -18,9 +18,10 @@ export class LoginComponent implements OnInit {
   errors: any = {};
 
   constructor(
-    private auth: AuthService,
-    private router: Router,
-    private fb: FormBuilder
+    private readonly auth: AuthService,
+    private readonly router: Router,
+    private readonly fb: FormBuilder,
+    private readonly cdr: ChangeDetectorRef
   ) { }
 
   ngOnInit() {
@@ -75,6 +76,7 @@ export class LoginComponent implements OnInit {
 
         if (err.status === 400 || err.status === 401) {
           this.errors.top = 'Invalid email or password';
+          this.cdr.detectChanges();
         } else {
           this.errors.top = 'Something went wrong. Try again.';
         }

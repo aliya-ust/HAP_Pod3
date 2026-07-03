@@ -27,12 +27,12 @@ export class PatientEditProfileModalComponent implements OnChanges {
   @Input() visible = false;
   @Input() model: any = {};
 
-  @Output() onClose = new EventEmitter<void>();
-  @Output() onSave = new EventEmitter<any>();
+  @Output() Closed = new EventEmitter<void>();
+  @Output() saved = new EventEmitter<any>();
 
   editForm: FormGroup;
 
-  constructor(private fb: FormBuilder) {
+  constructor(private readonly fb: FormBuilder) {
 
     this.editForm = this.fb.group({
 
@@ -87,11 +87,11 @@ export class PatientEditProfileModalComponent implements OnChanges {
       return;
     }
 
-    this.onSave.emit(this.editForm.value);
+    this.saved.emit(this.editForm.value);
   }
 
   close(): void {
-    this.onClose.emit();
+    this.Closed.emit();
   }
 
   get f() {

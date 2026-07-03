@@ -46,6 +46,7 @@ namespace HealthCare.Api.Services.Impl
 
         public async Task<PagedResult<PatientListDto>> GetAllAsync(PatientFilter filter)
         {
+
             Expression<Func<Patient, bool>> predicate = p => true;
 
             if (filter.HasInsurance.HasValue)
@@ -53,16 +54,17 @@ namespace HealthCare.Api.Services.Impl
                 if (filter.HasInsurance.Value)
                 {
                     predicate = p =>
-                        p.InsuranceId != null;
+                        p.InsuranceId != null &&
+                        p.InsuranceId != "";
                 }
                 else
                 {
                     predicate = p =>
-                        p.InsuranceId == null;
+                        p.InsuranceId == null ||
+                        p.InsuranceId == "";
                 }
             }
 
-        
             if (!string.IsNullOrWhiteSpace(filter.FullName))
             {
                 var search = filter.FullName.Trim();
@@ -73,13 +75,14 @@ namespace HealthCare.Api.Services.Impl
                     {
                         predicate = p =>
                             p.InsuranceId != null &&
+                            p.InsuranceId != "" &&
                             p.FullName != null &&
                             EF.Functions.Like(p.FullName, $"%{search}%");
                     }
                     else
                     {
                         predicate = p =>
-                            p.InsuranceId == null &&
+                            (p.InsuranceId == null || p.InsuranceId == "") &&
                             p.FullName != null &&
                             EF.Functions.Like(p.FullName, $"%{search}%");
                     }

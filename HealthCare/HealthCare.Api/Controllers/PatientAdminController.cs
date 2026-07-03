@@ -11,12 +11,10 @@ namespace HealthCare.Api.Controllers
     public class PatientAdminController : ControllerBase
     {
         private readonly IPatientService _patientService;
-        private readonly IAuthService _authService;
 
         public PatientAdminController(IPatientService patientService, IAuthService authService)
         {
             _patientService = patientService;
-            _authService = authService;
         }
 
         [HttpGet("{id}")]

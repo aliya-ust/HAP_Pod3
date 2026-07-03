@@ -1,5 +1,6 @@
 ﻿using HealthCare.Shared.DTOs;
 using HealthCare.Shared.DTOs.Doctor;
+using HealthCare.Shared.DTOs.Response;
 
 namespace HealthCare.Api.Services.Interfaces
 {

@@ -136,15 +136,9 @@
 
     private CreateDoctorDto doctorModel = new();
     private bool showPassword = false;
-    private string apiError = "";
+    private readonly string apiError = "";
     private EditContext? editContext;
     private ValidationMessageStore? messageStore;
-
-    private void ClearEmailError(ChangeEventArgs e)
-    {
-        messageStore!.Clear(() => doctorModel.Email);
-        editContext!.NotifyValidationStateChanged();
-    }
 
     protected override void OnInitialized()
     {
@@ -152,7 +146,7 @@
         messageStore = new ValidationMessageStore(editContext);
     }
 
-    private List<string> slots = new()
+    private readonly List<string> slots = new()
     {
         "9:00","10:00","11:00","12:00",
         "13:00","14:00","15:00","16:00","17:00"

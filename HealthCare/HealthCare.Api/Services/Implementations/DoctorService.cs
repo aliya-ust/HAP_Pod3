@@ -1,10 +1,11 @@
 ﻿using AutoMapper;
 using HealthCare.Api.Data;
-using HealthCare.Shared.DTOs;
-using HealthCare.Shared.DTOs.Doctor;
 using HealthCare.Api.Models;
 using HealthCare.Api.Repositories.Interfaces;
 using HealthCare.Api.Services.Interfaces;
+using HealthCare.Shared.DTOs;
+using HealthCare.Shared.DTOs.Doctor;
+using HealthCare.Shared.DTOs.Response;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
@@ -38,7 +39,7 @@ namespace HealthCare.Api.Services.Implementations
         {
             DoctorId = d.DoctorId,
             FullName = d.FullName,
-            Email = u.Email,
+            Email = u.Email ?? string.Empty,
             Specialisation = d.Specialisation,
             YearsOfExperience = d.YearsOfExperience,
             ConsultationFee = d.ConsultationFee,
@@ -212,7 +213,7 @@ namespace HealthCare.Api.Services.Implementations
                 .Where(d => d.Specialisation == specialisation)
                 .ToListAsync();
 
-            if (!allDoctors.Any())
+            if (allDoctors.Count == 0)
             {
                 return new AvailableDoctorsResponseDto
                 {
@@ -223,7 +224,7 @@ namespace HealthCare.Api.Services.Implementations
 
             var activeDoctors = allDoctors.Where(d => d.IsActive).ToList();
 
-            if (!activeDoctors.Any())
+            if (activeDoctors.Count == 0)
             {
                 return new AvailableDoctorsResponseDto
                 {
@@ -247,7 +248,7 @@ namespace HealthCare.Api.Services.Implementations
                 }
             }
 
-            if (!availableDoctors.Any())
+            if (availableDoctors.Count == 0)
             {
                 return new AvailableDoctorsResponseDto
                 {

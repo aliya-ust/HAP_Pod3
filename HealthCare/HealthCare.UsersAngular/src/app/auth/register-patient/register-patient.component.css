@@ -43,7 +43,7 @@
   justify-content: center;
   align-items: center;
   font-size: 30px;
-  color: white;
+  color: #ffffff;
   box-shadow: 0 0 20px rgba(30,144,255,.5);
 }
 
@@ -66,7 +66,7 @@
   top: 20px;
   background: transparent;
   border: none;
-  color: white;
+  color: #ffffff;
   font-size: 18px;
   cursor: pointer;
 }
@@ -84,7 +84,7 @@ form {
   flex-direction: column;
   width: 100%;
   max-width: 320px;
-  color: white;
+  color: #ffffff;
 }
 
 /* Inputs */
@@ -96,14 +96,14 @@ select {
   border: none;
   border-radius: 16px;
   background: rgba(255,255,255,.08);
-  color: white;
+  color: #ffffff;
   font-size: 14px;
   outline: none;
   transition: .3s;
 }
 
   input::placeholder {
-    color: white;
+    color: #ffffff;
   }
 
   input:focus,
@@ -111,8 +111,8 @@ select {
     border: 2px solid #4fc3f7;
     box-shadow: 0 0 15px rgba(79,195,247,.5);
     transform: scale(1.02);
-    background:black;
-    color: white;
+    background: black;
+    color: #ffffff;
   }
 
   /* Date icon */
@@ -142,7 +142,7 @@ select {
   border: none;
   border-radius: 30px;
   background: linear-gradient(45deg,#1e90ff,#42a5f5);
-  color: white;
+  color: #ffffff;
   font-size: 15px;
   font-weight: 600;
   cursor: pointer;
@@ -219,7 +219,7 @@ select {
   justify-content: center;
   align-items: center;
   font-size: 45px;
-  color: white;
+  color: #ffffff;
 }
 
 .success-icon {
@@ -253,7 +253,7 @@ select {
   border: none;
   border-radius: 30px;
   background: linear-gradient(45deg,#1e90ff,#42a5f5);
-  color: white;
+  color: #ffffff;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;

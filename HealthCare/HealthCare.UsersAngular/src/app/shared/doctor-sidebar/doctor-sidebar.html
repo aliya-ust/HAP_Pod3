@@ -29,7 +29,11 @@
       My Appointments
     </li>
 
-    <li class="logout" (click)="logout()">
+    <li class="logout"
+        tabindex="0"
+        (click)="logout()"
+        (keydown.enter)="logout()"
+        (keydown.space)="logout()">
       <i class="bi bi-box-arrow-right"></i>
       Logout
     </li>

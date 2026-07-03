@@ -41,9 +41,9 @@ export class DoctorAppointmentsComponent implements OnInit {
   recordForm: FormGroup;
 
   constructor(
-    private http: HttpClient,
-    private cd: ChangeDetectorRef,
-    private fb: FormBuilder
+    private readonly http: HttpClient,
+    private readonly cd: ChangeDetectorRef,
+    private readonly fb: FormBuilder
   ) {
 
     this.recordForm = this.fb.group({

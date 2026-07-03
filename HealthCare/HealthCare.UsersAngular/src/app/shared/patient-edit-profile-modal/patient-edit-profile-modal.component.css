@@ -21,7 +21,7 @@
   display: flex;
   justify-content: space-between;
   background: linear-gradient(to right, #1d3b72, #2f5dc8);
-  color: white;
+  color: #ffffff;
   padding: 10px;
   border-radius: 10px;
 }
@@ -29,6 +29,10 @@
 .close {
   cursor: pointer;
   font-size: 20px;
+  background: transparent;
+  border: none;
+  color: inherit;
+  padding: 0;
 }
 
 .form input,
@@ -48,14 +52,14 @@
 
 .save {
   background: #4c6ef5;
-  color: white;
+  color: #ffffff;
   border: none;
   padding: 8px 15px;
 }
 
 .cancel {
   background: #dc3545;
-  color: white;
+  color: #ffffff;
   border: none;
   padding: 8px 15px;
 }
