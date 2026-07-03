@@ -58,7 +58,7 @@
 
     private UpdateDoctorDto updateDto = new();
     private bool isVisible = false;
-    private List<string> specialisations = new();
+    private IReadOnlyList<string> specialisations = new List<string>();
     private int doctorId;
     private bool isSaving = false;
 

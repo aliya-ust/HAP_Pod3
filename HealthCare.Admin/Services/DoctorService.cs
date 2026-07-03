@@ -51,7 +51,7 @@ namespace HealthCare.Admin.Services
             if (!response.IsSuccessStatusCode)
             {
                 var error = await response.Content.ReadFromJsonAsync<ApiResponse>();
-                throw new Exception(error?.Message ?? "Failed to update doctor.");
+                throw new InvalidOperationException(error?.Message ?? "Failed to update doctor.");
             }
         }
 
@@ -61,7 +61,7 @@ namespace HealthCare.Admin.Services
             if (!response.IsSuccessStatusCode)
             {
                 var error = await response.Content.ReadFromJsonAsync<ApiResponse>();
-                throw new Exception(error?.Message ?? "Failed to update status.");
+                throw new InvalidOperationException(error?.Message ?? "Failed to update status.");
             }
         }
 
@@ -71,7 +71,7 @@ namespace HealthCare.Admin.Services
             if (!response.IsSuccessStatusCode)
             {
                 var error = await response.Content.ReadFromJsonAsync<ApiResponse>();
-                throw new Exception(error?.Message ?? "Failed to delete doctor.");
+                throw new InvalidOperationException(error?.Message ?? "Failed to delete doctor.");
             }
         }
 
@@ -81,7 +81,7 @@ namespace HealthCare.Admin.Services
             if (!response.IsSuccessStatusCode)
             {
                 var error = await response.Content.ReadFromJsonAsync<ApiResponse>();
-                throw new Exception(error?.Message ?? "Failed to create doctor.");
+                throw new InvalidOperationException(error?.Message ?? "Failed to create doctor.");
             }
         }
     }

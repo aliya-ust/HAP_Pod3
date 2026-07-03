@@ -91,7 +91,7 @@ namespace HealthCare.Api.Repositories.Implementations
                 {
                     TotalDoctors = g.Count(),
                     ActiveDoctors = g.Count(d => d.IsActive),
-                    InactiveDoctors = g.Count(d => d.IsActive == false)
+                    InactiveDoctors = g.Count(d => !d.IsActive)
                 })
                 .FirstOrDefaultAsync();
 

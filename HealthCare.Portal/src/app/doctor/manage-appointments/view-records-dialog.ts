@@ -1,12 +1,11 @@
 import { Component, Inject } from '@angular/core';
-import { NgFor, NgIf } from '@angular/common';
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { HealthRecordListDto } from '../../core/models/health-record.models';
 
 @Component({
   selector: 'app-view-records-dialog',
   standalone: true,
-  imports: [NgIf, NgFor],
+  imports: [],
   template: `
     <div class="dialog-overlay">
       <div class="dialog" (click)="$event.stopPropagation()">
@@ -15,13 +14,19 @@ import { HealthRecordListDto } from '../../core/models/health-record.models';
           <button class="btn-close" (click)="close()">&times;</button>
         </div>
         <div class="dialog-body">
-          <div *ngIf="records.length === 0" class="empty">No health records found.</div>
-          <div *ngFor="let r of records" class="record-card">
-            <div class="record-meta">Visit: {{ r.visitDate }}</div>
-            <div class="record-field"><label>Diagnosis</label><span>{{ r.diagnosis }}</span></div>
-            <div class="record-field"><label>Prescription</label><span>{{ r.prescription }}</span></div>
-            <div class="record-field" *ngIf="r.notes"><label>Notes</label><span>{{ r.notes }}</span></div>
-          </div>
+          @if (records.length === 0) {
+            <div class="empty">No health records found.</div>
+          }
+          @for (r of records; track r.recordId) {
+            <div class="record-card">
+              <div class="record-meta">Visit: {{ r.visitDate }}</div>
+              <div class="record-field"><label>Diagnosis</label><span>{{ r.diagnosis }}</span></div>
+              <div class="record-field"><label>Prescription</label><span>{{ r.prescription }}</span></div>
+              @if (r.notes) {
+                <div class="record-field"><label>Notes</label><span>{{ r.notes }}</span></div>
+              }
+            </div>
+          }
         </div>
         <div class="dialog-footer">
           <button class="btn btn-primary" (click)="close()">Close</button>

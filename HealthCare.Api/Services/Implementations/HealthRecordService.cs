@@ -111,7 +111,7 @@ namespace HealthCare.Api.Services.Implementations
                 await _repository.DeleteAsync(id);
                 await _context.SaveChangesAsync();
             }
-            catch (DbUpdateException ex)
+            catch (DbUpdateException)
             {
                 throw new DbHandleException("Failed to delete health record.");
             }

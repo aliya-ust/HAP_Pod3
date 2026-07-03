@@ -1,5 +1,4 @@
 import { Component, Inject } from '@angular/core';
-import { NgFor, NgIf } from '@angular/common';
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 
 export interface ConfirmLeaveData {
@@ -9,7 +8,7 @@ export interface ConfirmLeaveData {
 @Component({
   selector: 'app-confirm-leave-dialog',
   standalone: true,
-  imports: [NgIf, NgFor],
+  imports: [],
   template: `
     <div class="dialog-overlay">
       <div class="dialog">
@@ -18,10 +17,14 @@ export interface ConfirmLeaveData {
           Appointments on the following dates will be <strong>auto-cancelled</strong> if they exist.
         </p>
         <div class="date-list">
-          <div *ngFor="let item of data.dates" class="date-item">
-            <span class="date">{{ item.date }}</span>
-            <span class="reason" *ngIf="item.reason">{{ item.reason }}</span>
-          </div>
+          @for (item of data.dates; track item.date) {
+            <div class="date-item">
+              <span class="date">{{ item.date }}</span>
+              @if (item.reason) {
+                <span class="reason">{{ item.reason }}</span>
+              }
+            </div>
+          }
         </div>
         <div class="dialog-actions">
           <button class="btn btn-secondary" (click)="cancel()">Cancel</button>

@@ -28,7 +28,7 @@ namespace HealthCare.Api.Tests
             _mapperMock = new Mock<IMapper>();
 
             _userManagerMock = new Mock<UserManager<User>>(
-                Mock.Of<IUserStore<User>>(), null, null, null, null, null, null, null, null);
+                Mock.Of<IUserStore<User>>(), null!, null!, null!, null!, null!, null!, null!, null!);
 
             var options = new DbContextOptionsBuilder<HealthCareDbContext>()
                 .UseInMemoryDatabase(Guid.NewGuid().ToString())
@@ -93,6 +93,42 @@ namespace HealthCare.Api.Tests
             var result = await _service.GetAllAsync(new PatientFilter());
 
             Assert.NotNull(result);
+            Assert.Equal(1, result.TotalCount);
+        }
+
+        [Fact]
+        public async Task GetAllAsync_ShouldFilterByHasInsurance_True()
+        {
+            _context.Set<Patient>().AddRange(
+                new Patient { FullName = "With Insurance", Gender = "Male", PhoneNumber = "1111111111", InsuranceId = "ABC123" },
+                new Patient { FullName = "No Insurance", Gender = "Female", PhoneNumber = "2222222222", InsuranceId = null }
+            );
+            await _context.SaveChangesAsync();
+
+            _patientRepoMock.Setup(r => r.GetQueryable()).Returns(_context.Set<Patient>());
+            _mapperMock.Setup(m => m.Map<IEnumerable<PatientListDto>>(It.IsAny<IEnumerable<Patient>>()))
+                .Returns(new List<PatientListDto> { new PatientListDto() });
+
+            var result = await _service.GetAllAsync(new PatientFilter { HasInsurance = true });
+
+            Assert.Equal(1, result.TotalCount);
+        }
+
+        [Fact]
+        public async Task GetAllAsync_ShouldFilterByHasInsurance_False()
+        {
+            _context.Set<Patient>().AddRange(
+                new Patient { FullName = "With Insurance", Gender = "Male", PhoneNumber = "1111111111", InsuranceId = "ABC123" },
+                new Patient { FullName = "No Insurance", Gender = "Female", PhoneNumber = "2222222222", InsuranceId = null }
+            );
+            await _context.SaveChangesAsync();
+
+            _patientRepoMock.Setup(r => r.GetQueryable()).Returns(_context.Set<Patient>());
+            _mapperMock.Setup(m => m.Map<IEnumerable<PatientListDto>>(It.IsAny<IEnumerable<Patient>>()))
+                .Returns(new List<PatientListDto> { new PatientListDto() });
+
+            var result = await _service.GetAllAsync(new PatientFilter { HasInsurance = false });
+
             Assert.Equal(1, result.TotalCount);
         }
 

@@ -1,14 +1,16 @@
 <div class="page">
   <h2>My Profile</h2>
 
-  <div class="card" *ngIf="profile">
-    <div class="profile-view">
-      <div class="field"><label>Name</label><span>{{ profile.fullName }}</span></div>
-      <div class="field"><label>Specialisation</label><span>{{ profile.specialisation }}</span></div>
-      <div class="field"><label>Experience</label><span>{{ profile.yearsOfExperience }} years</span></div>
-      <div class="field"><label>Consultation Fee</label><span>&#8377;{{ profile.consultationFee }}</span></div>
+  @if (profile) {
+    <div class="card">
+      <div class="profile-view">
+        <div class="field"><label>Name</label><span>{{ profile.fullName }}</span></div>
+        <div class="field"><label>Specialisation</label><span>{{ profile.specialisation }}</span></div>
+        <div class="field"><label>Experience</label><span>{{ profile.yearsOfExperience }} years</span></div>
+        <div class="field"><label>Consultation Fee</label><span>&#8377;{{ profile.consultationFee }}</span></div>
+      </div>
     </div>
-  </div>
+  }
 
   <div class="card">
     <h3>Apply Leave</h3>
@@ -16,21 +18,29 @@
 
     <form [formGroup]="leaveForm" (ngSubmit)="submitLeaves()">
       <div formArrayName="leaveDates">
-        <div *ngFor="let group of leaveDates.controls; let i = index" class="leave-row" [formGroupName]="i">
-          <div class="form-group">
-            <label [for]="'date-' + i">Date</label>
-            <input [id]="'date-' + i" type="date" formControlName="date" [min]="today()" />
-            <span class="field-error" *ngIf="group.get('date')?.invalid && group.get('date')?.touched">
-              <span *ngIf="group.get('date')?.errors?.['required']">Date is required</span>
-              <span *ngIf="group.get('date')?.errors?.['pastDate']">Must be today or future</span>
-            </span>
+        @for (group of leaveDates.controls; track group; let i = $index) {
+          <div class="leave-row" [formGroupName]="i">
+            <div class="form-group">
+              <label [for]="'date-' + i">Date</label>
+              <input [id]="'date-' + i" type="date" formControlName="date" [min]="today()" />
+              @if (group.get('date')?.invalid && group.get('date')?.touched) {
+                <span class="field-error">
+                  @if (group.get('date')?.errors?.['required']) {
+                    <span>Date is required</span>
+                  }
+                  @if (group.get('date')?.errors?.['pastDate']) {
+                    <span>Must be today or future</span>
+                  }
+                </span>
+              }
+            </div>
+            <div class="form-group">
+              <label [for]="'reason-' + i">Reason (optional)</label>
+              <input [id]="'reason-' + i" type="text" formControlName="reason" maxlength="500" />
+            </div>
+            <button type="button" class="btn btn-danger btn-sm" (click)="removeLeaveDate(i)">Remove</button>
           </div>
-          <div class="form-group">
-            <label [for]="'reason-' + i">Reason (optional)</label>
-            <input [id]="'reason-' + i" type="text" formControlName="reason" maxlength="500" />
-          </div>
-          <button type="button" class="btn btn-danger btn-sm" (click)="removeLeaveDate(i)">Remove</button>
-        </div>
+        }
       </div>
 
       <div class="leave-actions">

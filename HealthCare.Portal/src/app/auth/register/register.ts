@@ -1,6 +1,6 @@
 import { Component, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { NgIf, NgFor } from '@angular/common';
+
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { ToastService } from '../../core/services/toast.service';
@@ -9,7 +9,7 @@ import { extractErrorMessage } from '../../core/utils/error-utils';
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [FormsModule, RouterLink, NgIf, NgFor],
+  imports: [FormsModule, RouterLink],
   templateUrl: './register.html',
   styleUrl: './register.scss',
 })
@@ -24,10 +24,10 @@ export class Register {
   insuranceId = '';
   loading = signal(false);
 
-  readonly passwordPattern = '^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^\\da-zA-Z]).{8,}$';
-  readonly phonePattern = '[6-9][0-9]{9}';
-  readonly namePattern = '[A-Za-z ]+';
-  readonly emailPattern = '[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}';
+  readonly passwordPattern = String.raw`^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,}$`;
+  readonly phonePattern = String.raw`[6-9][0-9]{9}`;
+  readonly namePattern = String.raw`[A-Za-z ]+`;
+  readonly emailPattern = String.raw`[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}`;
 
   get yesterday(): string {
     const d = new Date();

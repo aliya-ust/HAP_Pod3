@@ -1,5 +1,4 @@
 import { Component, ChangeDetectorRef, OnInit } from '@angular/core';
-import { NgIf, NgFor } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { PatientService } from '../../core/services/patient.service';
 import { ToastService } from '../../core/services/toast.service';
@@ -10,7 +9,7 @@ import { extractErrorMessage } from '../../core/utils/error-utils';
 @Component({
   selector: 'app-patient-dashboard',
   standalone: true,
-  imports: [NgIf, NgFor, RouterLink],
+  imports: [RouterLink],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',
 })

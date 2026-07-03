@@ -1,5 +1,4 @@
 import { Component, Inject } from '@angular/core';
-import { NgIf } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { CreateHealthRecordDto } from '../../core/models/health-record.models';
@@ -13,7 +12,7 @@ export interface AddRecordData {
 @Component({
   selector: 'app-add-record-dialog',
   standalone: true,
-  imports: [ReactiveFormsModule, NgIf],
+  imports: [ReactiveFormsModule],
   template: `
     <div class="dialog-overlay">
       <div class="dialog">
@@ -23,18 +22,30 @@ export interface AddRecordData {
           <div class="form-group">
             <label for="diagnosis">Diagnosis</label>
             <input id="diagnosis" type="text" formControlName="diagnosis" maxlength="500" />
-            <span class="field-error" *ngIf="form.get('diagnosis')?.invalid && form.get('diagnosis')?.touched">
-              <span *ngIf="form.get('diagnosis')?.errors?.['required']">Diagnosis is required</span>
-              <span *ngIf="form.get('diagnosis')?.errors?.['pattern']">Only letters and numbers allowed</span>
-            </span>
+            @if (form.get('diagnosis')?.invalid && form.get('diagnosis')?.touched) {
+              <span class="field-error">
+                @if (form.get('diagnosis')?.errors?.['required']) {
+                  <span>Diagnosis is required</span>
+                }
+                @if (form.get('diagnosis')?.errors?.['pattern']) {
+                  <span>Only letters and numbers allowed</span>
+                }
+              </span>
+            }
           </div>
           <div class="form-group">
             <label for="prescription">Prescription</label>
             <input id="prescription" type="text" formControlName="prescription" maxlength="500" />
-            <span class="field-error" *ngIf="form.get('prescription')?.invalid && form.get('prescription')?.touched">
-              <span *ngIf="form.get('prescription')?.errors?.['required']">Prescription is required</span>
-              <span *ngIf="form.get('prescription')?.errors?.['pattern']">Only letters and numbers allowed</span>
-            </span>
+            @if (form.get('prescription')?.invalid && form.get('prescription')?.touched) {
+              <span class="field-error">
+                @if (form.get('prescription')?.errors?.['required']) {
+                  <span>Prescription is required</span>
+                }
+                @if (form.get('prescription')?.errors?.['pattern']) {
+                  <span>Only letters and numbers allowed</span>
+                }
+              </span>
+            }
           </div>
           <div class="form-group">
             <label for="notes">Notes (optional)</label>

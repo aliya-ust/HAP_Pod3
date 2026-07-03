@@ -1,23 +1,33 @@
 <div class="page">
   <h2>My Health Records</h2>
 
-  <div class="card" *ngIf="loading">
-    <p class="placeholder">Loading...</p>
-  </div>
-
-  <div class="card" *ngIf="!loading && records.length === 0">
-    <p class="placeholder">No health records found</p>
-  </div>
-
-  <div *ngIf="!loading && records.length > 0">
-    <div *ngFor="let r of records" class="record-card">
-      <div class="record-meta">
-        <span><strong>Date:</strong> {{ r.visitDate }}</span>
-        <span><strong>Doctor:</strong> {{ r.doctorName }}</span>
-      </div>
-      <div class="record-field"><label>Diagnosis</label><span>{{ r.diagnosis }}</span></div>
-      <div class="record-field"><label>Prescription</label><span>{{ r.prescription }}</span></div>
-      <div class="record-field" *ngIf="r.notes"><label>Notes</label><span>{{ r.notes }}</span></div>
+  @if (loading) {
+    <div class="card">
+      <p class="placeholder">Loading...</p>
     </div>
-  </div>
+  }
+
+  @if (!loading && records.length === 0) {
+    <div class="card">
+      <p class="placeholder">No health records found</p>
+    </div>
+  }
+
+  @if (!loading && records.length > 0) {
+    <div>
+      @for (r of records; track r.recordId) {
+        <div class="record-card">
+          <div class="record-meta">
+            <span><strong>Date:</strong> {{ r.visitDate }}</span>
+            <span><strong>Doctor:</strong> {{ r.doctorName }}</span>
+          </div>
+          <div class="record-field"><label>Diagnosis</label><span>{{ r.diagnosis }}</span></div>
+          <div class="record-field"><label>Prescription</label><span>{{ r.prescription }}</span></div>
+          @if (r.notes) {
+            <div class="record-field"><label>Notes</label><span>{{ r.notes }}</span></div>
+          }
+        </div>
+      }
+    </div>
+  }
 </div>

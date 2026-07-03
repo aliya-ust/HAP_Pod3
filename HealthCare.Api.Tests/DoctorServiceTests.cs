@@ -28,7 +28,7 @@ namespace HealthCare.Api.Tests
             _mapperMock = new Mock<IMapper>();
 
             _userManagerMock = new Mock<UserManager<User>>(
-                Mock.Of<IUserStore<User>>(), null, null, null, null, null, null, null, null);
+                Mock.Of<IUserStore<User>>(), null!, null!, null!, null!, null!, null!, null!, null!);
 
             var options = new DbContextOptionsBuilder<HealthCareDbContext>()
                 .UseInMemoryDatabase(Guid.NewGuid().ToString())
@@ -88,6 +88,160 @@ namespace HealthCare.Api.Tests
             var result = await _service.GetAllAsync(new DoctorFilter());
 
             Assert.Equal(1, result.TotalCount);
+        }
+
+        [Fact]
+        public async Task GetAllAsync_ShouldFilterBySearch()
+        {
+            _context.Set<Doctor>().AddRange(
+                new Doctor { FullName = "Alice", Specialisation = "Cardiology", YearsOfExperience = 5, ConsultationFee = 200 },
+                new Doctor { FullName = "Bob", Specialisation = "Neurology", YearsOfExperience = 10, ConsultationFee = 300 }
+            );
+            await _context.SaveChangesAsync();
+
+            _repoMock.Setup(r => r.GetQueryable()).Returns(_context.Set<Doctor>());
+            _mapperMock.Setup(m => m.Map<IEnumerable<DoctorListDto>>(It.IsAny<IEnumerable<Doctor>>()))
+                .Returns(new List<DoctorListDto> { new DoctorListDto() });
+
+            var result = await _service.GetAllAsync(new DoctorFilter { Search = "Alice" });
+
+            Assert.Equal(1, result.TotalCount);
+        }
+
+        [Fact]
+        public async Task GetAllAsync_ShouldFilterBySpecialisation()
+        {
+            _context.Set<Doctor>().AddRange(
+                new Doctor { FullName = "Alice", Specialisation = "Cardiology", YearsOfExperience = 5, ConsultationFee = 200 },
+                new Doctor { FullName = "Bob", Specialisation = "Neurology", YearsOfExperience = 10, ConsultationFee = 300 }
+            );
+            await _context.SaveChangesAsync();
+
+            _repoMock.Setup(r => r.GetQueryable()).Returns(_context.Set<Doctor>());
+            _mapperMock.Setup(m => m.Map<IEnumerable<DoctorListDto>>(It.IsAny<IEnumerable<Doctor>>()))
+                .Returns(new List<DoctorListDto> { new DoctorListDto() });
+
+            var result = await _service.GetAllAsync(new DoctorFilter { Specialisation = "Cardiology" });
+
+            Assert.Equal(1, result.TotalCount);
+        }
+
+        [Fact]
+        public async Task GetAllAsync_ShouldFilterByIsActive()
+        {
+            _context.Set<Doctor>().AddRange(
+                new Doctor { FullName = "Alice", Specialisation = "Cardiology", YearsOfExperience = 5, ConsultationFee = 200, IsActive = true },
+                new Doctor { FullName = "Bob", Specialisation = "Neurology", YearsOfExperience = 10, ConsultationFee = 300, IsActive = false }
+            );
+            await _context.SaveChangesAsync();
+
+            _repoMock.Setup(r => r.GetQueryable()).Returns(_context.Set<Doctor>());
+            _mapperMock.Setup(m => m.Map<IEnumerable<DoctorListDto>>(It.IsAny<IEnumerable<Doctor>>()))
+                .Returns(new List<DoctorListDto> { new DoctorListDto() });
+
+            var result = await _service.GetAllAsync(new DoctorFilter { IsActive = true });
+
+            Assert.Equal(1, result.TotalCount);
+        }
+
+        [Fact]
+        public async Task GetAllAsync_ShouldSortByExperience_Asc()
+        {
+            _context.Set<Doctor>().AddRange(
+                new Doctor { FullName = "Alice", Specialisation = "Cardiology", YearsOfExperience = 5, ConsultationFee = 200 },
+                new Doctor { FullName = "Bob", Specialisation = "Neurology", YearsOfExperience = 10, ConsultationFee = 300 }
+            );
+            await _context.SaveChangesAsync();
+
+            _repoMock.Setup(r => r.GetQueryable()).Returns(_context.Set<Doctor>());
+            _mapperMock.Setup(m => m.Map<IEnumerable<DoctorListDto>>(It.IsAny<IEnumerable<Doctor>>()))
+                .Returns<IEnumerable<Doctor>>(doctors => doctors.Select(d => new DoctorListDto { FullName = d.FullName, YearsOfExperience = d.YearsOfExperience }).ToList());
+
+            var result = await _service.GetAllAsync(new DoctorFilter { SortBy = "experience", IsDescending = false });
+
+            var items = result.Items.ToList();
+            Assert.Equal(2, items.Count);
+            Assert.Equal("Alice", items[0].FullName);
+        }
+
+        [Fact]
+        public async Task GetAllAsync_ShouldSortByExperience_Desc()
+        {
+            _context.Set<Doctor>().AddRange(
+                new Doctor { FullName = "Alice", Specialisation = "Cardiology", YearsOfExperience = 5, ConsultationFee = 200 },
+                new Doctor { FullName = "Bob", Specialisation = "Neurology", YearsOfExperience = 10, ConsultationFee = 300 }
+            );
+            await _context.SaveChangesAsync();
+
+            _repoMock.Setup(r => r.GetQueryable()).Returns(_context.Set<Doctor>());
+            _mapperMock.Setup(m => m.Map<IEnumerable<DoctorListDto>>(It.IsAny<IEnumerable<Doctor>>()))
+                .Returns<IEnumerable<Doctor>>(doctors => doctors.Select(d => new DoctorListDto { FullName = d.FullName, YearsOfExperience = d.YearsOfExperience }).ToList());
+
+            var result = await _service.GetAllAsync(new DoctorFilter { SortBy = "experience", IsDescending = true });
+
+            var items = result.Items.ToList();
+            Assert.Equal(2, items.Count);
+            Assert.Equal("Bob", items[0].FullName);
+        }
+
+        [Fact]
+        public async Task GetAllAsync_ShouldSortByFee_Asc()
+        {
+            _context.Set<Doctor>().AddRange(
+                new Doctor { FullName = "Alice", Specialisation = "Cardiology", YearsOfExperience = 5, ConsultationFee = 300 },
+                new Doctor { FullName = "Bob", Specialisation = "Neurology", YearsOfExperience = 10, ConsultationFee = 200 }
+            );
+            await _context.SaveChangesAsync();
+
+            _repoMock.Setup(r => r.GetQueryable()).Returns(_context.Set<Doctor>());
+            _mapperMock.Setup(m => m.Map<IEnumerable<DoctorListDto>>(It.IsAny<IEnumerable<Doctor>>()))
+                .Returns<IEnumerable<Doctor>>(doctors => doctors.Select(d => new DoctorListDto { FullName = d.FullName, ConsultationFee = d.ConsultationFee }).ToList());
+
+            var result = await _service.GetAllAsync(new DoctorFilter { SortBy = "fee", IsDescending = false });
+
+            var items = result.Items.ToList();
+            Assert.Equal(2, items.Count);
+            Assert.Equal("Bob", items[0].FullName);
+        }
+
+        [Fact]
+        public async Task GetAllAsync_ShouldSortByFee_Desc()
+        {
+            _context.Set<Doctor>().AddRange(
+                new Doctor { FullName = "Alice", Specialisation = "Cardiology", YearsOfExperience = 5, ConsultationFee = 300 },
+                new Doctor { FullName = "Bob", Specialisation = "Neurology", YearsOfExperience = 10, ConsultationFee = 200 }
+            );
+            await _context.SaveChangesAsync();
+
+            _repoMock.Setup(r => r.GetQueryable()).Returns(_context.Set<Doctor>());
+            _mapperMock.Setup(m => m.Map<IEnumerable<DoctorListDto>>(It.IsAny<IEnumerable<Doctor>>()))
+                .Returns<IEnumerable<Doctor>>(doctors => doctors.Select(d => new DoctorListDto { FullName = d.FullName, ConsultationFee = d.ConsultationFee }).ToList());
+
+            var result = await _service.GetAllAsync(new DoctorFilter { SortBy = "fee", IsDescending = true });
+
+            var items = result.Items.ToList();
+            Assert.Equal(2, items.Count);
+            Assert.Equal("Alice", items[0].FullName);
+        }
+
+        [Fact]
+        public async Task GetAllAsync_ShouldUseDefaultSort()
+        {
+            _context.Set<Doctor>().AddRange(
+                new Doctor { FullName = "Alice", Specialisation = "Cardiology", YearsOfExperience = 5, ConsultationFee = 200 },
+                new Doctor { FullName = "Bob", Specialisation = "Neurology", YearsOfExperience = 10, ConsultationFee = 300 }
+            );
+            await _context.SaveChangesAsync();
+
+            _repoMock.Setup(r => r.GetQueryable()).Returns(_context.Set<Doctor>());
+            _mapperMock.Setup(m => m.Map<IEnumerable<DoctorListDto>>(It.IsAny<IEnumerable<Doctor>>()))
+                .Returns<IEnumerable<Doctor>>(doctors => doctors.Select(d => new DoctorListDto { FullName = d.FullName, YearsOfExperience = d.YearsOfExperience }).ToList());
+
+            var result = await _service.GetAllAsync(new DoctorFilter());
+
+            var items = result.Items.ToList();
+            Assert.Equal(2, items.Count);
+            Assert.Equal("Bob", items[0].FullName);
         }
 
         //  AddAsync

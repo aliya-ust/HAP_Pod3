@@ -90,7 +90,7 @@
 
 @code {
     private List<DoctorListDto> doctors = new();
-    private List<string> specialisations = new();
+    private IReadOnlyList<string> specialisations = new List<string>();
     private bool isLoading = false;
 
     // Component References

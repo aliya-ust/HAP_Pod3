@@ -8,18 +8,21 @@
   </button>
 
   <div class="navbar-menu" [class.open]="menuOpen">
-    <a
-      *ngFor="let link of visibleLinks"
-      [routerLink]="link.route"
-      routerLinkActive="active"
-      (click)="menuOpen = false"
-    >
-      {{ link.label }}
-    </a>
+    @for (link of visibleLinks; track link.label) {
+      <a
+        [routerLink]="link.route"
+        routerLinkActive="active"
+        (click)="menuOpen = false"
+      >
+        {{ link.label }}
+      </a>
+    }
   </div>
 
-  <div class="navbar-actions" *ngIf="tokenService.isLoggedIn()">
+  @if (tokenService.isLoggedIn()) {
+    <div class="navbar-actions">
     <span class="navbar-role">{{ tokenService.getRole() }}</span>
     <button class="btn-logout" (click)="logout()">Logout</button>
-  </div>
+    </div>
+  }
 </nav>

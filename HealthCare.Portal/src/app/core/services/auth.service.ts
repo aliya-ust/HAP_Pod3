@@ -23,7 +23,7 @@ export class AuthService {
             this.tokenService.saveToken(wrapper.data.accessToken);
           }
         }),
-        map(wrapper => wrapper.data as AuthResponse)
+        map(wrapper => wrapper.data)
       );
   }
 

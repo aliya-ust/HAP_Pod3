@@ -95,7 +95,7 @@ namespace HealthCare.Api.Services.Implementations
                 await _repository.AddAsync(appointment);
                 await _context.SaveChangesAsync();
             }
-            catch (DbUpdateException ex)
+            catch (DbUpdateException)
             {
                 throw new DbHandleException("Failed to create appointment.");
             }
@@ -138,7 +138,7 @@ namespace HealthCare.Api.Services.Implementations
                 await _repository.DeleteAsync(id);
                 await _context.SaveChangesAsync();
             }
-            catch (DbUpdateException ex)
+            catch (DbUpdateException)
             {
                 throw new DbHandleException("Failed to delete appointment. It may be referenced by existing health records.");
             }

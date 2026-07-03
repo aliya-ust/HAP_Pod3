@@ -1,5 +1,5 @@
 import { Component, OnInit, signal } from '@angular/core';
-import { NgClass, NgFor, NgIf } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { PatientService } from '../../core/services/patient.service';
 import { ToastService } from '../../core/services/toast.service';
 import { AppointmentListDto } from '../../core/models/appointment.models';
@@ -8,7 +8,7 @@ import { extractErrorMessage } from '../../core/utils/error-utils';
 @Component({
   selector: 'app-my-appointments',
   standalone: true,
-  imports: [NgIf, NgFor, NgClass],
+  imports: [NgClass],
   templateUrl: './my-appointments.html',
   styleUrl: './my-appointments.scss',
 })

@@ -97,7 +97,7 @@
 @code {
     [Parameter] public EventCallback OnSuccess { get; set; }
 
-    private List<string> Specializations => DoctorConstants.Specialisations;
+    private IReadOnlyList<string> Specializations => DoctorConstants.Specialisations;
 
     private CreateDoctorDto createDto = new();
     private bool isVisible = false;

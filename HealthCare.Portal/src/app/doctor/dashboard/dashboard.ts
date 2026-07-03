@@ -1,6 +1,5 @@
 import { Component, ChangeDetectorRef, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { NgFor, NgIf } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs';
 import { environment } from '../../../environments/environment';
@@ -12,7 +11,7 @@ import { extractErrorMessage } from '../../core/utils/error-utils';
 @Component({
   selector: 'app-doctor-dashboard',
   standalone: true,
-  imports: [RouterLink, NgIf, NgFor],
+  imports: [RouterLink],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',
 })

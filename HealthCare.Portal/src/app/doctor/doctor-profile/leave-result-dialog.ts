@@ -1,38 +1,43 @@
 import { Component, Inject } from '@angular/core';
-import { NgFor, NgIf } from '@angular/common';
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { CreateLeaveResultDto } from '../../core/models/doctor.models';
 
 @Component({
   selector: 'app-leave-result-dialog',
   standalone: true,
-  imports: [NgIf, NgFor],
+  imports: [],
   template: `
     <div class="dialog-overlay">
       <div class="dialog">
         <h3>Leave Submitted</h3>
 
-        <div *ngIf="data.createdWithCancelledAppointments?.length" class="section">
-          <h4 class="cancelled-heading">&#9888; Appointments Cancelled</h4>
-          <div class="date-list">
-            <div *ngFor="let d of data.createdWithCancelledAppointments" class="date-item cancelled">
-              {{ d }}
+        @if (data.createdWithCancelledAppointments?.length) {
+          <div class="section">
+            <h4 class="cancelled-heading">&#9888; Appointments Cancelled</h4>
+            <div class="date-list">
+              @for (d of data.createdWithCancelledAppointments; track d) {
+                <div class="date-item cancelled">{{ d }}</div>
+              }
             </div>
           </div>
-        </div>
+        }
 
-        <div *ngIf="data.skippedDates?.length" class="section">
-          <h4 class="skipped-heading">Skipped (already on leave)</h4>
-          <div class="date-list">
-            <div *ngFor="let d of data.skippedDates" class="date-item skipped">
-              {{ d }}
+        @if (data.skippedDates?.length) {
+          <div class="section">
+            <h4 class="skipped-heading">Skipped (already on leave)</h4>
+            <div class="date-list">
+              @for (d of data.skippedDates; track d) {
+                <div class="date-item skipped">{{ d }}</div>
+              }
             </div>
           </div>
-        </div>
+        }
 
-        <div *ngIf="!data.skippedDates?.length && !data.createdWithCancelledAppointments?.length" class="section">
-          <p class="no-issues">All leaves added successfully with no conflicts.</p>
-        </div>
+        @if (!data.skippedDates?.length && !data.createdWithCancelledAppointments?.length) {
+          <div class="section">
+            <p class="no-issues">All leaves added successfully with no conflicts.</p>
+          </div>
+        }
 
         <div class="dialog-actions">
           <button class="btn btn-primary" (click)="close()">OK</button>

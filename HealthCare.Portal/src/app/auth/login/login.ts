@@ -43,7 +43,7 @@ export class Login {
     const role = this.tokenService.getRole();
     if (role === 'Admin') {
       const token = this.tokenService.getToken();
-      window.location.href = `https://localhost:7166/auth-callback?token=${token}`;
+      globalThis.location.href = `https://localhost:7166/auth-callback?token=${token}`;
     } else if (role === 'Patient' || role === 'Doctor') {
       this.router.navigate(['/dashboard']);
     } else {

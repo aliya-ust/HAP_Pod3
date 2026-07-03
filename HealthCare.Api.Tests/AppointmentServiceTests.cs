@@ -66,6 +66,65 @@ namespace HealthCare.Api.Tests
 
         //  AddAsync - success
         [Fact]
+        public async Task GetAllAsync_ShouldReturnPagedResult()
+        {
+            var patient = new Patient { FullName = "John", Gender = "Male", PhoneNumber = "1111111111" };
+            var doctor = new Doctor { FullName = "Dr. Smith", Specialisation = "Cardiology", YearsOfExperience = 10, ConsultationFee = 200 };
+            _context.Set<Patient>().Add(patient);
+            _context.Set<Doctor>().Add(doctor);
+            _context.Set<Appointment>().Add(new Appointment
+            {
+                PatientId = patient.PatientId,
+                DoctorId = doctor.DoctorId,
+                ScheduledDate = DateOnly.FromDateTime(DateTime.Today),
+                TimeSlot = "09:00-10:00",
+                Status = "Pending"
+            });
+            await _context.SaveChangesAsync();
+
+            _repoMock.Setup(r => r.GetQueryable()).Returns(_context.Set<Appointment>());
+
+            var result = await _service.GetAllAsync(new AppointmentFilter());
+
+            Assert.NotNull(result);
+            Assert.Equal(1, result.TotalCount);
+        }
+
+        [Fact]
+        public async Task GetAllAsync_ShouldFilterByStatus()
+        {
+            var patient = new Patient { FullName = "John", Gender = "Male", PhoneNumber = "1111111111" };
+            var doctor = new Doctor { FullName = "Dr. Smith", Specialisation = "Cardiology", YearsOfExperience = 10, ConsultationFee = 200 };
+            _context.Set<Patient>().Add(patient);
+            _context.Set<Doctor>().Add(doctor);
+            _context.Set<Appointment>().AddRange(
+                new Appointment
+                {
+                    PatientId = patient.PatientId,
+                    DoctorId = doctor.DoctorId,
+                    ScheduledDate = DateOnly.FromDateTime(DateTime.Today),
+                    TimeSlot = "09:00-10:00",
+                    Status = "Pending"
+                },
+                new Appointment
+                {
+                    PatientId = patient.PatientId,
+                    DoctorId = doctor.DoctorId,
+                    ScheduledDate = DateOnly.FromDateTime(DateTime.Today),
+                    TimeSlot = "10:00-11:00",
+                    Status = "Confirmed"
+                }
+            );
+            await _context.SaveChangesAsync();
+
+            _repoMock.Setup(r => r.GetQueryable()).Returns(_context.Set<Appointment>());
+
+            var result = await _service.GetAllAsync(new AppointmentFilter { Status = "Pending" });
+
+            Assert.Equal(1, result.TotalCount);
+        }
+
+        [Fact]
         public async Task AddAsync_ShouldCreateAppointment()
         {
             var dto = new CreateAppointmentDto

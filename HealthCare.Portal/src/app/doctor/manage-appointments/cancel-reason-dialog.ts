@@ -1,12 +1,11 @@
 import { Component } from '@angular/core';
-import { NgIf } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DialogRef } from '@angular/cdk/dialog';
 
 @Component({
   selector: 'app-cancel-reason-dialog',
   standalone: true,
-  imports: [ReactiveFormsModule, NgIf],
+  imports: [ReactiveFormsModule],
   template: `
     <div class="dialog-overlay">
       <div class="dialog">
@@ -22,9 +21,9 @@ import { DialogRef } from '@angular/cdk/dialog';
               maxlength="500"
               placeholder="Enter reason..."
             ></textarea>
-            <span class="field-error" *ngIf="form.get('reason')?.invalid && form.get('reason')?.touched">
-              Reason is required
-            </span>
+            @if (form.get('reason')?.invalid && form.get('reason')?.touched) {
+              <span class="field-error">Reason is required</span>
+            }
           </div>
           <div class="dialog-actions">
             <button type="button" class="btn btn-secondary" (click)="cancel()">Go Back</button>

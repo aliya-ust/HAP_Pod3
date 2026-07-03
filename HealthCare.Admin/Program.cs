@@ -3,7 +3,6 @@ using HealthCare.Admin.Services;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
-//using Microsoft.Extensions.Http;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -29,11 +28,11 @@ builder.Services.AddTransient<TestAuthStateProvider>();
 //// 3. Register HttpClient with the Handler
 builder.Services.AddHttpClient("AdminPortalAPI", client =>
 {
-    client.BaseAddress = new Uri(builder.Configuration["ApiBaseUrl"]);
+    client.BaseAddress = new Uri(builder.Configuration["ApiBaseUrl"]!);
 })
 .AddHttpMessageHandler<AuthTokenHandler>()
 .AddHttpMessageHandler<GlobalExceptionHandler>();
 
-builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:7223/") });
+builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.Configuration["ApiBaseUrl"]!) });
 
 await builder.Build().RunAsync();

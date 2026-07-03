@@ -1,4 +1,4 @@
-import { Component, ComponentRef, ViewChild, ViewContainerRef, OnDestroy } from '@angular/core';
+import { Component, ComponentRef, ViewChild, ViewContainerRef, OnInit, OnDestroy } from '@angular/core';
 import { TokenService } from '../core/services/token.service';
 
 @Component({
@@ -6,7 +6,7 @@ import { TokenService } from '../core/services/token.service';
   standalone: true,
   templateUrl: './dashboard.html',
 })
-export class Dashboard implements OnDestroy {
+export class Dashboard implements OnInit, OnDestroy {
   @ViewChild('container', { read: ViewContainerRef, static: true })
   container!: ViewContainerRef;
 
@@ -14,14 +14,16 @@ export class Dashboard implements OnDestroy {
 
   constructor(private readonly tokenService: TokenService) {}
 
-  async ngOnInit(): Promise<void> {
+  ngOnInit(): void {
     const role = this.tokenService.getRole();
     if (role === 'Patient') {
-      const { Dashboard: PatientDash } = await import('../patient/dashboard/dashboard');
-      this.compRef = this.container.createComponent(PatientDash);
+      import('../patient/dashboard/dashboard').then(({ Dashboard: PatientDash }) => {
+        this.compRef = this.container.createComponent(PatientDash);
+      });
     } else if (role === 'Doctor') {
-      const { DoctorDashboard } = await import('../doctor/dashboard/dashboard');
-      this.compRef = this.container.createComponent(DoctorDashboard);
+      import('../doctor/dashboard/dashboard').then(({ DoctorDashboard }) => {
+        this.compRef = this.container.createComponent(DoctorDashboard);
+      });
     }
   }
 

@@ -1,13 +1,12 @@
 import { Component, Inject } from '@angular/core';
-import { FormsModule, NgForm } from '@angular/forms';
-import { NgIf } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { UpdatePatientDto } from '../../core/models/patient.models';
 
 @Component({
   selector: 'app-edit-profile-dialog',
   standalone: true,
-  imports: [FormsModule, NgIf],
+  imports: [FormsModule],
   template: `
     <div class="dialog-overlay">
       <div class="dialog">
@@ -16,18 +15,22 @@ import { UpdatePatientDto } from '../../core/models/patient.models';
           <div class="form-group">
             <label for="fullName">Full Name</label>
             <input id="fullName" name="fullName" type="text" [(ngModel)]="form.fullName" required pattern="[A-Za-z ]+" #fullName="ngModel" />
-            <div class="error" *ngIf="fullName.invalid && fullName.touched">
-              <span *ngIf="fullName.errors?.['required']">Full name is required.</span>
-              <span *ngIf="fullName.errors?.['pattern']">Full name must contain only alphabets.</span>
-            </div>
+            @if (fullName.invalid && fullName.touched) {
+              <div class="error">
+                @if (fullName.errors?.['required']) {<span>Full name is required.</span>}
+                @if (fullName.errors?.['pattern']) {<span>Full name must contain only alphabets.</span>}
+              </div>
+            }
           </div>
           <div class="form-group">
             <label for="phoneNumber">Phone Number</label>
             <input id="phoneNumber" name="phoneNumber" type="tel" [(ngModel)]="form.phoneNumber" required pattern="[6-9][0-9]{9}" #phone="ngModel" />
-            <div class="error" *ngIf="phone.invalid && phone.touched">
-              <span *ngIf="phone.errors?.['required']">Phone number is required.</span>
-              <span *ngIf="phone.errors?.['pattern']">Phone must be 10 digits starting with 6-9.</span>
-            </div>
+            @if (phone.invalid && phone.touched) {
+              <div class="error">
+                @if (phone.errors?.['required']) {<span>Phone number is required.</span>}
+                @if (phone.errors?.['pattern']) {<span>Phone must be 10 digits starting with 6-9.</span>}
+              </div>
+            }
           </div>
           <div class="form-group">
             <label for="gender">Gender</label>
@@ -37,16 +40,20 @@ import { UpdatePatientDto } from '../../core/models/patient.models';
               <option value="Female">Female</option>
               <option value="Other">Other</option>
             </select>
-            <div class="error" *ngIf="gender.invalid && gender.touched">
-              <span>Gender is required.</span>
-            </div>
+            @if (gender.invalid && gender.touched) {
+              <div class="error">
+                <span>Gender is required.</span>
+              </div>
+            }
           </div>
           <div class="form-group">
             <label for="insuranceId">Insurance ID</label>
             <input id="insuranceId" name="insuranceId" type="text" [(ngModel)]="form.insuranceId" pattern="[A-Za-z0-9]+" #insurance="ngModel" />
-            <div class="error" *ngIf="insurance.invalid && insurance.touched">
-              <span *ngIf="insurance.errors?.['pattern']">Insurance ID must be alphanumeric.</span>
-            </div>
+            @if (insurance.invalid && insurance.touched) {
+              <div class="error">
+                @if (insurance.errors?.['pattern']) {<span>Insurance ID must be alphanumeric.</span>}
+              </div>
+            }
           </div>
           <div class="dialog-actions">
             <button type="button" class="btn btn-secondary" (click)="cancel()">Cancel</button>

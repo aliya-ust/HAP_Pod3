@@ -2,7 +2,7 @@
 {
     public static class DoctorConstants
     {
-        public static readonly List<string> Specialisations = new()
+        public static readonly IReadOnlyList<string> Specialisations = new List<string>
         {
             "Cardiology",
             "Dentist",
@@ -13,6 +13,6 @@
             "Psychiatry",
             "Radiology",
             "General Medicine"
-        };
+        }.AsReadOnly();
     }
 }

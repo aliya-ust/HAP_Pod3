@@ -1,6 +1,5 @@
 import { Component, ChangeDetectorRef, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { NgFor, NgIf } from '@angular/common';
 import { Dialog } from '@angular/cdk/dialog';
 import { DoctorService } from '../../core/services/doctor.service';
 import { ToastService } from '../../core/services/toast.service';
@@ -12,7 +11,7 @@ import { LeaveResultDialog } from './leave-result-dialog';
 @Component({
   selector: 'app-doctor-profile',
   standalone: true,
-  imports: [ReactiveFormsModule, NgIf, NgFor],
+  imports: [ReactiveFormsModule],
   templateUrl: './doctor-profile.html',
   styleUrl: './doctor-profile.scss',
 })

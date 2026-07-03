@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.Configuration;
 using System.Net;
 using System.Net.Http;
 using System.Text;
@@ -10,11 +11,13 @@ namespace HealthCare.Admin
     {
         private readonly NavigationManager _navigation;
         private readonly ToastService _toastService;
+        private readonly IConfiguration _configuration;
 
-        public GlobalExceptionHandler(NavigationManager navigation, ToastService toastService)
+        public GlobalExceptionHandler(NavigationManager navigation, ToastService toastService, IConfiguration configuration)
         {
             _navigation = navigation;
             _toastService = toastService;
+            _configuration = configuration;
         }
 
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
@@ -23,7 +26,7 @@ namespace HealthCare.Admin
 
             if (response.StatusCode == HttpStatusCode.Unauthorized)
             {
-                _navigation.NavigateTo("http://localhost:4200/login");
+                _navigation.NavigateTo(_configuration["LoginUrl"]!);
             }
             else if (response.StatusCode == HttpStatusCode.Forbidden)
             {
@@ -31,7 +34,7 @@ namespace HealthCare.Admin
             }
             else if (response.StatusCode == HttpStatusCode.InternalServerError)
             {
-                var body = await response.Content.ReadAsStringAsync();
+                var body = await response.Content.ReadAsStringAsync(cancellationToken);
                 var message = ExtractErrorMessage(body) ?? "An unexpected error occurred. Please try again.";
 
                 _toastService.Show("Error", message, NotificationType.Error);
@@ -43,7 +46,7 @@ namespace HealthCare.Admin
             }
             else if (!response.IsSuccessStatusCode)
             {
-                var body = await response.Content.ReadAsStringAsync();
+                var body = await response.Content.ReadAsStringAsync(cancellationToken);
 
                 if (string.IsNullOrWhiteSpace(body))
                 {
@@ -70,7 +73,7 @@ namespace HealthCare.Admin
                     if (!string.IsNullOrWhiteSpace(msg)) return msg;
                 }
             }
-            catch { }
+            catch { /* Ignore JSON parse errors — fall through to return null */ }
 
             return null;
         }

@@ -1,5 +1,5 @@
 import { Component, ChangeDetectorRef, OnInit } from '@angular/core';
-import { NgFor, NgIf } from '@angular/common';
+
 import { PatientService } from '../../core/services/patient.service';
 import { ToastService } from '../../core/services/toast.service';
 import { HealthRecordListDto } from '../../core/models/health-record.models';
@@ -8,7 +8,7 @@ import { extractErrorMessage } from '../../core/utils/error-utils';
 @Component({
   selector: 'app-my-records',
   standalone: true,
-  imports: [NgIf, NgFor],
+  imports: [],
   templateUrl: './my-records.html',
   styleUrl: './my-records.scss',
 })

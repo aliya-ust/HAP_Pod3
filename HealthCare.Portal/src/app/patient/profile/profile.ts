@@ -1,5 +1,4 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
-import { NgIf } from '@angular/common';
 import { Dialog } from '@angular/cdk/dialog';
 import { PatientService } from '../../core/services/patient.service';
 import { ToastService } from '../../core/services/toast.service';
@@ -10,7 +9,7 @@ import { EditProfileDialog } from './edit-profile-dialog';
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [NgIf],
+  imports: [],
   templateUrl: './profile.html',
   styleUrl: './profile.scss',
 })
