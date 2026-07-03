@@ -7,6 +7,7 @@ using HealthCare.Api.Models;
 using HealthCare.Api.Repositories.Interfaces;
 using HealthCare.Api.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 
 namespace HealthCare.Api.Services.Implementations
 {
@@ -80,6 +81,10 @@ namespace HealthCare.Api.Services.Implementations
             if (dto.ScheduledDate < DateOnly.FromDateTime(DateTime.Today))
                 throw new PastAppointmentException();
 
+            if (dto.ScheduledDate == DateOnly.FromDateTime(DateTime.Today) &&
+                TimeOnly.ParseExact(dto.TimeSlot, "HH:mm", CultureInfo.InvariantCulture) <= TimeOnly.FromDateTime(DateTime.Now))
+                throw new PastAppointmentException("Cannot book an appointment for a time slot that has already passed.");
+
             await IsAvailable(dto.ScheduledDate, dto.DoctorId, dto.TimeSlot);
 
             var appointment = _mapper.Map<Appointment>(dto);
@@ -148,6 +153,14 @@ namespace HealthCare.Api.Services.Implementations
             var bookedSlots = await _repository.BookedTimeSlots(date, doctorId);
 
             var freeSlots = allSlots.Except(bookedSlots).ToList();
+
+            if (date == DateOnly.FromDateTime(DateTime.Today))
+            {
+                var now = DateTime.Now;
+                freeSlots = freeSlots
+                    .Where(s => TimeOnly.ParseExact(s, "HH:mm", CultureInfo.InvariantCulture) > TimeOnly.FromDateTime(now))
+                    .ToList();
+            }
 
             return freeSlots;
         }

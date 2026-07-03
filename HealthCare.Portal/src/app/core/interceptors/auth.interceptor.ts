@@ -24,8 +24,10 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
       const msg = extractErrorMessage(err);
       if (err.status === 401) {
         tokenService.removeToken();
-        toast.error('Session expired. Please login again.');
-        router.navigate(['/login']);
+        if (!req.url.includes('/auth/login')) {
+          toast.error('Session expired. Please login again.');
+          router.navigate(['/login']);
+        }
       } else if (err.status === 403) {
         toast.error(msg || 'Access denied.');
         router.navigate(['/login']);

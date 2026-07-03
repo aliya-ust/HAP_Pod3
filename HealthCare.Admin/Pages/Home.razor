@@ -67,8 +67,6 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        var timeout = Task.Delay(10000).ContinueWith(_ => { _hasError = true; _isLoading = false; StateHasChanged(); });
-
         try
         {
             var doctorTask = DashboardService.GetDoctorSummaryAsync();
@@ -76,6 +74,7 @@ else
             var appointmentTask = DashboardService.GetAppointmentSummaryAsync();
 
             var dataTask = Task.WhenAll(doctorTask, patientTask, appointmentTask);
+            var timeout = Task.Delay(10000);
             var completed = await Task.WhenAny(dataTask, timeout);
 
             if (completed == dataTask)
@@ -83,6 +82,10 @@ else
                 _doctorDto = await doctorTask;
                 _patientDto = await patientTask;
                 _appointmentDto = await appointmentTask;
+            }
+            else
+            {
+                _hasError = true;
             }
         }
         catch

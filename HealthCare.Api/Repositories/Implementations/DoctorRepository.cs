@@ -58,10 +58,14 @@ namespace HealthCare.Api.Repositories.Implementations
 
         public async Task<List<DoctorListDto>> AvailableDoctors(string specialisation, DateOnly date)
         {
+            var today = DateOnly.FromDateTime(DateTime.Today);
+            var nowTimeStr = DateTime.Now.ToString("HH:mm");
+
             return await _dbSet
                 .Where(d => d.Specialisation == specialisation && d.IsActive)
                 .Where(d => !d.Leaves.Any(l => l.LeaveDate == date))
                 .Where(d => d.AvailableSlots
+                    .Where(s => date != today || s.TimeSlot.CompareTo(nowTimeStr) >= 0)
                     .Select(s => s.TimeSlot)
                     .Except(d.Appointments
                         .Where(a => a.ScheduledDate == date && a.Status != AppointmentStatus.Cancelled)

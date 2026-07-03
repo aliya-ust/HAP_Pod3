@@ -79,6 +79,9 @@
             </tr>
         </RowTemplate>
     </AdminTable>
+
+    <Pagination PageNumber="pageNumber" TotalPages="totalPages" TotalCount="totalCount"
+                PageChanged="async (p) => { pageNumber = p; await LoadData(); }" />
 </div>
 
 @* <EditPatientModal @ref="editModal" OnSuccess="LoadData" /> *@
@@ -97,6 +100,7 @@
     private int pageNumber = 1;
     private int pageSize = 10;
     private int totalPages = 1;
+    private int totalCount = 0;
 
     private async Task ApplyFilters()
     {
@@ -146,6 +150,7 @@
 
             patients = result?.Items?.ToList() ?? new List<PatientListDto>();
             totalPages = result?.TotalPages ?? 1;
+            totalCount = result?.TotalCount ?? 0;
         }
         catch (Exception ex)
         {

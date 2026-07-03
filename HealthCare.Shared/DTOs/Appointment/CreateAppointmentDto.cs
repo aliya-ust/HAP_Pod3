@@ -22,9 +22,9 @@ namespace HealthCare.Shared.DTOs.Appointment
         protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
         {
 
-            if (value is DateOnly date && date <= DateOnly.FromDateTime(DateTime.Today))
+            if (value is DateOnly date && date < DateOnly.FromDateTime(DateTime.Today))
             {
-                return new ValidationResult("Scheduled date must be in the future.");
+                return new ValidationResult("Scheduled date must be today or in the future.");
             }
 
             return ValidationResult.Success;

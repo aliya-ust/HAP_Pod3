@@ -13,6 +13,7 @@ namespace HealthCare.Api.Repositories.Implementations
         public async Task<List<HealthRecordListDto>> GetHealthRecordByPatient(int id) =>
             await _dbSet
                 .Where(hr => hr.PatientId == id)
+                .OrderByDescending(hr => hr.VisitDate)
                 .Select(hr => new HealthRecordListDto
                 {
                     RecordId = hr.RecordId,

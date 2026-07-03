@@ -1,0 +1,55 @@
+@if (TotalPages > 1)
+{
+    <div class="d-flex justify-content-between align-items-center mt-3 px-1">
+        <small class="text-muted">
+            Page @PageNumber of @TotalPages
+            @if (TotalCount > 0)
+            {
+                <span>(@TotalCount total records)</span>
+            }
+        </small>
+        <nav>
+            <ul class="pagination pagination-sm mb-0">
+                <li class="page-item @(PageNumber <= 1 ? "disabled" : "")">
+                    <button class="page-link" @onclick="() => PageChanged.InvokeAsync(1)">&laquo;</button>
+                </li>
+                <li class="page-item @(PageNumber <= 1 ? "disabled" : "")">
+                    <button class="page-link" @onclick="() => PageChanged.InvokeAsync(PageNumber - 1)">&lsaquo;</button>
+                </li>
+                @foreach (var p in GetPages())
+                {
+                    <li class="page-item @(p == PageNumber ? "active" : "")">
+                        <button class="page-link" @onclick="() => PageChanged.InvokeAsync(p)">@p</button>
+                    </li>
+                }
+                <li class="page-item @(PageNumber >= TotalPages ? "disabled" : "")">
+                    <button class="page-link" @onclick="() => PageChanged.InvokeAsync(PageNumber + 1)">&rsaquo;</button>
+                </li>
+                <li class="page-item @(PageNumber >= TotalPages ? "disabled" : "")">
+                    <button class="page-link" @onclick="() => PageChanged.InvokeAsync(TotalPages)">&raquo;</button>
+                </li>
+            </ul>
+        </nav>
+    </div>
+}
+
+@code {
+    [Parameter] public int PageNumber { get; set; }
+    [Parameter] public int TotalPages { get; set; }
+    [Parameter] public int TotalCount { get; set; }
+    [Parameter] public EventCallback<int> PageChanged { get; set; }
+
+    private const int MaxVisiblePages = 7;
+
+    private IEnumerable<int> GetPages()
+    {
+        if (TotalPages <= MaxVisiblePages)
+            return Enumerable.Range(1, TotalPages);
+
+        var start = Math.Max(1, PageNumber - 3);
+        var end = Math.Min(TotalPages, start + MaxVisiblePages - 1);
+        start = Math.Max(1, end - MaxVisiblePages + 1);
+
+        return Enumerable.Range(start, end - start + 1);
+    }
+}

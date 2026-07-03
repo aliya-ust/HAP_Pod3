@@ -80,6 +80,9 @@
             </tr>
         </RowTemplate>
     </AdminTable>
+
+    <Pagination PageNumber="pageNumber" TotalPages="totalPages" TotalCount="totalCount"
+                PageChanged="async (p) => { pageNumber = p; await LoadData(); }" />
 </div>
 
 <AddDoctorModal @ref="addModal" OnSuccess="LoadData" />
@@ -102,6 +105,7 @@
     private int pageNumber = 1;
     private int pageSize = 10;
     private int totalPages = 1;
+    private int totalCount = 0;
 
     protected override async Task OnInitializedAsync()
     {
@@ -137,6 +141,7 @@
             var result = await DoctorService.GetAllAsync(filter);
             doctors = result.Items.ToList();
             totalPages = result.TotalPages;
+            totalCount = result.TotalCount;
         }
         catch (Exception)
         {
