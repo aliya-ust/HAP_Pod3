@@ -1,12 +1,15 @@
 ﻿using Microsoft.AspNetCore.Components;
 using System.Net;
+using System.Net.Http;
+using System.Text;
+using System.Text.Json;
 
 namespace HealthCare.Admin
 {
     public class GlobalExceptionHandler : DelegatingHandler
     {
         private readonly NavigationManager _navigation;
-        private readonly ToastService _toastService; // Inject service
+        private readonly ToastService _toastService;
 
         public GlobalExceptionHandler(NavigationManager navigation, ToastService toastService)
         {
@@ -18,7 +21,6 @@ namespace HealthCare.Admin
         {
             var response = await base.SendAsync(request, cancellationToken);
 
-            // Handle specific redirection cases
             if (response.StatusCode == HttpStatusCode.Unauthorized)
             {
                 _navigation.NavigateTo("http://localhost:4200/login");
@@ -27,21 +29,50 @@ namespace HealthCare.Admin
             {
                 _navigation.NavigateTo("/access-denied");
             }
-            // Handle all other errors with a Toast
+            else if (response.StatusCode == HttpStatusCode.InternalServerError)
+            {
+                var body = await response.Content.ReadAsStringAsync();
+                var message = ExtractErrorMessage(body) ?? "An unexpected error occurred. Please try again.";
+
+                _toastService.Show("Error", message, NotificationType.Error);
+
+                return new HttpResponseMessage(HttpStatusCode.OK)
+                {
+                    Content = new StringContent("{\"success\":true}", Encoding.UTF8, "application/json")
+                };
+            }
             else if (!response.IsSuccessStatusCode)
             {
-                var errorMessage = await response.Content.ReadAsStringAsync();
+                var body = await response.Content.ReadAsStringAsync();
 
-                // Fallback if the API returns an empty body
-                if (string.IsNullOrWhiteSpace(errorMessage))
+                if (string.IsNullOrWhiteSpace(body))
                 {
-                    errorMessage = $"Error: {response.StatusCode}";
+                    body = $"Error: {response.StatusCode}";
                 }
 
-                _toastService.Show("Action Failed", errorMessage, NotificationType.Error);
+                _toastService.Show("Action Failed", body, NotificationType.Error);
             }
 
             return response;
+        }
+
+        private static string? ExtractErrorMessage(string json)
+        {
+            if (string.IsNullOrWhiteSpace(json)) return null;
+
+            try
+            {
+                using var doc = JsonDocument.Parse(json);
+
+                if (doc.RootElement.TryGetProperty("message", out var msgProp))
+                {
+                    var msg = msgProp.GetString();
+                    if (!string.IsNullOrWhiteSpace(msg)) return msg;
+                }
+            }
+            catch { }
+
+            return null;
         }
     }
 }
