@@ -1,0 +1,41 @@
+<div class="profile-card" *ngIf="doctorService.profile() as doctor">
+  <div class="profile-header">
+    <h1>Doctor Profile</h1>
+  </div>
+
+  <div class="profile-body">
+    <div class="row">
+      <strong>Doctor ID</strong>
+      <span>{{ doctor.doctorId }}</span>
+    </div>
+
+    <div class="row">
+      <strong>Full Name</strong>
+      <span>{{ doctor.fullName }}</span>
+    </div>
+
+    <div class="row">
+      <strong>Email</strong>
+      <span>{{ doctor.email }}</span>
+    </div>
+
+    <div class="row">
+      <strong>Specialisation</strong>
+      <span>{{ doctor.specialisation }}</span>
+    </div>
+
+    <div class="row">
+      <strong>Experience</strong>
+      <span>{{ doctor.yearsOfExperience }} Years</span>
+    </div>
+
+    <div class="row">
+      <strong>Consultation Fee</strong>
+      <span>₹{{ doctor.consultationFee }}</span>
+    </div>
+  </div>
+</div>
+
+<div class="error-text" *ngIf="!doctorService.profile() && doctorService.errorMessage()">
+  {{ doctorService.errorMessage() }}
+</div>

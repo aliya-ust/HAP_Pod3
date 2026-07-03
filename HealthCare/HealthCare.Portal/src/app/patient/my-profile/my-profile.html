@@ -1,0 +1,107 @@
+<div class="profile-card" *ngIf="patientService.profile() as patient">
+  <div class="profile-header">
+    <h1>Patient Profile</h1>
+
+    <button class="edit-btn" type="button" (click)="openEditDialog()">
+      Edit
+    </button>
+  </div>
+
+  <div class="profile-body">
+    <div class="row">
+      <strong>Patient ID</strong>
+      <span>{{ patient.patientId }}</span>
+    </div>
+
+    <div class="row">
+      <strong>Full Name</strong>
+      <span>{{ patient.fullName }}</span>
+    </div>
+
+    <div class="row">
+      <strong>Email</strong>
+      <span>{{ patient.email || 'N/A' }}</span>
+    </div>
+
+    <div class="row">
+      <strong>Phone Number</strong>
+      <span>{{ patient.phoneNumber || 'N/A' }}</span>
+    </div>
+
+    <div class="row">
+      <strong>Date of Birth</strong>
+      <span>{{ patient.dateOfBirth || 'N/A' }}</span>
+    </div>
+
+    <div class="row">
+      <strong>Gender</strong>
+      <span>{{ patient.gender || 'N/A' }}</span>
+    </div>
+
+    <div class="row">
+      <strong>Insurance</strong>
+      <span>{{ patient.insuranceId || 'N/A' }}</span>
+    </div>
+  </div>
+</div>
+
+<div class="loading-box" *ngIf="patientService.isLoading()">
+  Loading patient profile...
+</div>
+
+<div class="error-box" *ngIf="!patientService.isLoading() && patientService.errorMessage()">
+  {{ patientService.errorMessage() }}
+</div>
+
+<div *ngIf="!patientService.profile() && !patientService.isLoading() && !patientService.errorMessage()">
+  <p>Patient profile not found.</p>
+</div>
+
+<div class="dialog-backdrop" *ngIf="showEditDialog">
+  <div class="dialog-box">
+    <h2>Edit Patient Profile</h2>
+
+    <div class="form-group">
+      <label>Name</label>
+      <input type="text"
+             name="fullName"
+             [(ngModel)]="editProfile.fullName">
+    </div>
+
+    <div class="form-group">
+      <label>Phone</label>
+      <input type="text"
+             name="phoneNumber"
+             [(ngModel)]="editProfile.phoneNumber">
+    </div>
+
+    <div class="form-group">
+      <label>Gender</label>
+      <select name="gender"
+              [(ngModel)]="editProfile.gender">
+        <option value="">Select Gender</option>
+        <option value="Male">Male</option>
+        <option value="Female">Female</option>
+        <option value="Other">Other</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Insurance</label>
+      <input type="text"
+             name="insuranceId"
+             [(ngModel)]="editProfile.insuranceId"
+             placeholder="Enter Insurance ID">
+    </div>
+
+    <div class="dialog-actions">
+      <button class="cancel-btn" type="button" (click)="closeEditDialog()">
+        Cancel
+      </button>
+
+      <button class="save-btn" type="button" (click)="saveProfile()">
+        Save
+      </button>
+    </div>
+  </div>
+</div>

@@ -91,12 +91,13 @@ builder.Services.AddScoped<IJwtService, JwtService>();
  
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowBlazorClient", policy =>
+    options.AddPolicy("AllowClients", policy =>
     {
         policy
-            .WithOrigins("https://localhost:7058")
+            .WithOrigins("https://localhost:7058",
+                           "http://localhost:59971")
             .AllowAnyHeader()
-            .AllowAnyMethod();
+            .AllowAnyMethod(); 
     });
 });
 
@@ -147,7 +148,7 @@ using (var scope = app.Services.CreateScope())
 
     app.UseHttpsRedirection();
     app.UseRouting();
-    app.UseCors("AllowBlazorClient");
+    app.UseCors("AllowClients");
     app.UseAuthentication();
     app.UseAuthorization();
 

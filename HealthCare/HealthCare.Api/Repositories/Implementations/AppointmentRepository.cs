@@ -63,6 +63,7 @@ namespace HealthCare.Api.Repositories.Implementations
                 .Select(a => new AppointmentListDto
                 {
                     AppointmentId = a.AppointmentId,
+                    PatientId = a.PatientId,
                     PatientName = a.Patient.FullName,
                     DoctorName = a.Doctor.FullName,
                     ScheduledDate = a.ScheduledDate,
@@ -77,6 +78,7 @@ namespace HealthCare.Api.Repositories.Implementations
                 .Select(a => new AppointmentListDto
                 {
                     AppointmentId = a.AppointmentId,
+                    PatientId = a.PatientId,
                     PatientName = a.Patient.FullName,
                     DoctorName = a.Doctor.FullName,
                     ScheduledDate = a.ScheduledDate,
@@ -91,6 +93,7 @@ namespace HealthCare.Api.Repositories.Implementations
                 .Select(a => new AppointmentListDto
                 {
                     AppointmentId = a.AppointmentId,
+                    PatientId = a.PatientId,
                     PatientName = a.Patient.FullName,
                     DoctorName = a.Doctor.FullName,
                     ScheduledDate = a.ScheduledDate,
@@ -101,10 +104,11 @@ namespace HealthCare.Api.Repositories.Implementations
 
         public async Task<List<AppointmentListDto>> GetAppointmentByDoctor(int id) =>
             await _dbSet
-                .Where(a => a.DoctorId == id && a.ScheduledDate >= DateOnly.FromDateTime(DateTime.Today))
+                .Where(a => a.DoctorId == id && a.ScheduledDate >= DateOnly.FromDateTime(DateTime.Today) && (a.Status == "Pending" || a.Status == "Confirmed"))
                 .Select(a => new AppointmentListDto
                 {
                     AppointmentId = a.AppointmentId,
+                    PatientId = a.PatientId,
                     PatientName = a.Patient.FullName,
                     DoctorName = a.Doctor.FullName,
                     ScheduledDate = a.ScheduledDate,

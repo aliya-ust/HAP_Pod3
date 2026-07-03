@@ -1,0 +1,11 @@
+.portal-container {
+  min-height: 100vh;
+  display: flex;
+  background: #faf7ff;
+}
+
+.main-content {
+  flex: 1;
+  padding: 55px 70px;
+  overflow-y: auto;
+}

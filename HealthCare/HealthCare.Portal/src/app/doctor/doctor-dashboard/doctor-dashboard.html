@@ -1,0 +1,33 @@
+<div class="dashboard-page">
+  <h1>Dashboard</h1>
+
+  <div class="loading-text" *ngIf="doctorService.isLoading()">
+    Loading dashboard...
+  </div>
+
+  <div class="dashboard-cards" *ngIf="!doctorService.isLoading()">
+    <div class="dashboard-card">
+      <h2>Upcoming Appointments</h2>
+      <p>{{ summary().upcomingAppointments }}</p>
+    </div>
+
+    <div class="dashboard-card">
+      <h2>Completed Appointments</h2>
+      <p>{{ summary().completedAppointments }}</p>
+    </div>
+
+    <div class="dashboard-card">
+      <h2>Upcoming Leaves</h2>
+      <p>{{ summary().upcomingLeaves }}</p>
+    </div>
+
+    <div class="dashboard-card">
+      <h2>Today's Appointments</h2>
+      <p>{{ summary().todaysAppointments }}</p>
+    </div>
+  </div>
+
+  <div class="error-text" *ngIf="doctorService.errorMessage()">
+    {{ doctorService.errorMessage() }}
+  </div>
+</div>

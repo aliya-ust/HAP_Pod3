@@ -53,6 +53,16 @@ namespace HealthCare.Api.Controllers
             return Ok(result);
         }
 
+        [HttpGet("available-slots")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize(Roles = "Patient")]
+        public async Task<IActionResult> GetAvailableTimeSlots([FromQuery] DateOnly date,[FromQuery] int doctorId)
+        {
+            var result = await _appointmentService.AvailableTimeSlots(date, doctorId);
+            return Ok(result);
+        }
+
+
         [HttpGet("patient/schedule")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Authorize(Roles = "Patient")]

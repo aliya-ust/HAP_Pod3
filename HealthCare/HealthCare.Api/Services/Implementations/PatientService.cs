@@ -17,12 +17,14 @@ namespace HealthCare.Api.Services.Implementations
         private readonly IPatientRepository _patientRepository;
         private readonly HealthCareDbContext _context;
         private readonly IMapper _mapper;
-        private IRepository<Patient> object1;
-        private HealthCareDbContext object2;
-        private IMapper object3;
+
         private const string NotFoundExceptionMessage = "Patient not found.";
 
-        public PatientService(IRepository<Patient> repository, IPatientRepository patientRepository, HealthCareDbContext context, IMapper mapper)
+        public PatientService(
+            IRepository<Patient> repository,
+            IPatientRepository patientRepository,
+            HealthCareDbContext context,
+            IMapper mapper)
         {
             _repository = repository;
             _patientRepository = patientRepository;
@@ -32,9 +34,6 @@ namespace HealthCare.Api.Services.Implementations
 
         public PatientService(IRepository<Patient> object1, HealthCareDbContext object2, IMapper object3)
         {
-            this.object1 = object1;
-            this.object2 = object2;
-            this.object3 = object3;
         }
 
         public async Task<PatientListDto> GetByIdAsync(int id)
@@ -47,18 +46,38 @@ namespace HealthCare.Api.Services.Implementations
             return _mapper.Map<PatientListDto>(patient);
         }
 
+        public async Task<PatientProfileDto?> GetMyProfileAsync(int patientId)
+        {
+            var profile = await (
+                from patient in _context.Patients
+                join user in _context.Users
+                    on patient.UserId equals user.Id
+                where patient.PatientId == patientId
+                select new PatientProfileDto
+                {
+                    PatientId = patient.PatientId,
+                    FullName = patient.FullName,
+                    Email = user.Email ?? string.Empty,
+                    PhoneNumber = patient.PhoneNumber,
+                    DateOfBirth = patient.DateOfBirth,
+                    Gender = patient.Gender,
+                    InsuranceId = patient.InsuranceId
+                }
+            ).FirstOrDefaultAsync();
+
+            return profile;
+        }
+
         public async Task<PagedResult<PatientListDto>> GetAllAsync(PatientFilter filter)
         {
-            var query = _patientRepository.GetQueryable(); // Get IQueryable from repo
+            var query = _patientRepository.GetQueryable();
 
-            // Search by name
             if (!string.IsNullOrWhiteSpace(filter.Search))
             {
                 query = query.Where(p =>
                     p.FullName.Contains(filter.Search));
             }
 
-            // Insurance filter
             if (filter.HasInsurance == true)
             {
                 query = query.Where(p => p.InsuranceId != null);
@@ -68,13 +87,11 @@ namespace HealthCare.Api.Services.Implementations
                 query = query.Where(p => p.InsuranceId == null);
             }
 
-            // Active status
             if (filter.IsActive.HasValue)
             {
                 query = query.Where(p => p.IsActive == filter.IsActive.Value);
             }
 
-            // Pagination
             var totalCount = await query.CountAsync();
 
             var items = await query
@@ -82,7 +99,6 @@ namespace HealthCare.Api.Services.Implementations
                 .Take(filter.PageSize)
                 .ToListAsync();
 
-            // Map result
             return new PagedResult<PatientListDto>
             {
                 Items = _mapper.Map<IEnumerable<PatientListDto>>(items),
@@ -92,10 +108,10 @@ namespace HealthCare.Api.Services.Implementations
             };
         }
 
-
         public async Task AddAsync(CreatePatientDto dto)
         {
             var patient = _mapper.Map<Patient>(dto);
+
             await _repository.AddAsync(patient);
             await _context.SaveChangesAsync();
         }
@@ -107,7 +123,7 @@ namespace HealthCare.Api.Services.Implementations
             if (patient is null)
                 throw new InvalidOperationException(NotFoundExceptionMessage);
 
-            _mapper.Map(dto, patient); // maps onto the tracked entity — EF picks up the changes
+            _mapper.Map(dto, patient);
 
             await _repository.UpdateAsync(patient);
             await _context.SaveChangesAsync();
@@ -140,11 +156,15 @@ namespace HealthCare.Api.Services.Implementations
             }
             catch (DbUpdateException ex)
             {
-                throw new InvalidOperationException("Failed to delete patient. It may be referenced by existing appointments or health records.", ex);
+                throw new InvalidOperationException(
+                    "Failed to delete patient. It may be referenced by existing appointments or health records.",
+                    ex);
             }
         }
 
-        public async Task<PatientSummaryDto> GetSummaryAsync() =>
-            await _patientRepository.GetSummaryAsync();
+        public async Task<PatientSummaryDto> GetSummaryAsync()
+        {
+            return await _patientRepository.GetSummaryAsync();
+        }
     }
 }

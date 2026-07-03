@@ -1,142 +1,258 @@
-﻿using Moq;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
-using System.IdentityModel.Tokens.Jwt;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using HealthCare.Api.Models;
 using HealthCare.Api.Services.Implementations;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
+using Moq;
 
-namespace HealthCare.Api.Tests
+namespace HealthCare.Api.Tests;
+
+public class JwtServiceTests
 {
-    public class JwtServiceTests
+    private readonly Mock<IConfiguration> _configMock;
+    private readonly Mock<IConfigurationSection> _jwtSectionMock;
+    private readonly Mock<UserManager<User>> _userManagerMock;
+
+    private readonly JwtService _service;
+
+    public JwtServiceTests()
     {
-        private readonly Mock<UserManager<User>> _userManagerMock;
-        private readonly JwtService _service;
+        _configMock = new Mock<IConfiguration>();
+        _jwtSectionMock = new Mock<IConfigurationSection>();
 
-        public JwtServiceTests()
+        var store = new Mock<IUserStore<User>>();
+
+        _userManagerMock = new Mock<UserManager<User>>(
+            store.Object,
+            null!,
+            null!,
+            null!,
+            null!,
+            null!,
+            null!,
+            null!,
+            null!);
+
+        _configMock
+            .Setup(c => c.GetSection("Jwt"))
+            .Returns(_jwtSectionMock.Object);
+
+        _jwtSectionMock
+            .Setup(s => s["Key"])
+            .Returns("ThisIsAVeryStrongSecretKeyForJwtTesting12345");
+
+        _jwtSectionMock
+            .Setup(s => s["Issuer"])
+            .Returns("TestIssuer");
+
+        _jwtSectionMock
+            .Setup(s => s["Audience"])
+            .Returns("TestAudience");
+
+        _jwtSectionMock
+            .Setup(s => s["AccessTokenExpirationMinutes"])
+            .Returns("60");
+
+        _service = new JwtService(
+            _configMock.Object,
+            _userManagerMock.Object);
+    }
+
+    [Fact]
+    public async Task GenerateToken_ShouldReturnToken()
+    {
+        var user = new User
         {
-            var store = new Mock<IUserStore<User>>();
-            _userManagerMock = new Mock<UserManager<User>>(
-                store.Object, null!, null!, null!, null!, null!, null!, null!, null!
-            );
+            Id = "user1",
+            Email = "test@test.com"
+        };
 
-            var config = new ConfigurationBuilder()
-                .AddInMemoryCollection(new Dictionary<string, string?>
-                {
-                    { "Jwt:Key", "THIS_IS_A_SUPER_SECRET_KEY_123456789" },
-                    { "Jwt:Issuer", "TestIssuer" },
-                    { "Jwt:Audience", "TestAudience" },
-                    { "Jwt:AccessTokenExpirationMinutes", "60" }
-                })
-                .Build();
+        _userManagerMock
+            .Setup(u => u.GetRolesAsync(user))
+            .ReturnsAsync(new List<string>());
 
-            _service = new JwtService(config, _userManagerMock.Object);
-        }
+        var token = await _service.GenerateToken(user);
 
-        //  Basic token generation
-        [Fact]
-        public async Task GenerateToken_ShouldReturnValidToken()
+        Assert.False(string.IsNullOrWhiteSpace(token));
+    }
+
+    [Fact]
+    public async Task GenerateToken_ShouldContainEmailClaim()
+    {
+        var user = new User
         {
-            var user = new User { Id = "1", Email = "test@mail.com" };
+            Id = "user1",
+            Email = "test@test.com"
+        };
 
-            _userManagerMock.Setup(u => u.GetRolesAsync(user))
-                .ReturnsAsync(new List<string> { "Patient" });
+        _userManagerMock
+            .Setup(u => u.GetRolesAsync(user))
+            .ReturnsAsync(new List<string>());
 
-            var token = await _service.GenerateToken(user, patientId: 5);
+        var tokenString = await _service.GenerateToken(user);
 
-            Assert.NotNull(token);
-            Assert.NotEmpty(token);
-        }
+        var handler = new JwtSecurityTokenHandler();
+        var token = handler.ReadJwtToken(tokenString);
 
-        //  Token contains PatientId
-        [Fact]
-        public async Task GenerateToken_ShouldContainPatientIdClaim()
+        Assert.Contains(
+            token.Claims,
+            c => c.Type == JwtRegisteredClaimNames.Email &&
+                 c.Value == "test@test.com");
+    }
+
+    [Fact]
+    public async Task GenerateToken_ShouldContainPatientIdClaim()
+    {
+        var user = new User
         {
-            var user = new User { Id = "1", Email = "test@mail.com" };
+            Id = "user1",
+            Email = "test@test.com"
+        };
 
-            _userManagerMock.Setup(u => u.GetRolesAsync(user))
-                .ReturnsAsync(new List<string> { "Patient" });
+        _userManagerMock
+            .Setup(u => u.GetRolesAsync(user))
+            .ReturnsAsync(new List<string>());
 
-            var token = await _service.GenerateToken(user, patientId: 5);
+        var tokenString = await _service.GenerateToken(
+            user,
+            patientId: 10);
 
-            var handler = new JwtSecurityTokenHandler();
-            var jwt = handler.ReadJwtToken(token);
+        var token = new JwtSecurityTokenHandler()
+            .ReadJwtToken(tokenString);
 
-            var claim = jwt.Claims.FirstOrDefault(c => c.Type == "PatientId");
+        Assert.Contains(
+            token.Claims,
+            c => c.Type == "PatientId" &&
+                 c.Value == "10");
+    }
 
-            Assert.NotNull(claim);
-            Assert.Equal("5", claim.Value);
-        }
-
-        //  Token contains DoctorId
-        [Fact]
-        public async Task GenerateToken_ShouldContainDoctorIdClaim()
+    [Fact]
+    public async Task GenerateToken_ShouldContainDoctorIdClaim()
+    {
+        var user = new User
         {
-            var user = new User { Id = "1", Email = "doc@mail.com" };
+            Id = "user1",
+            Email = "test@test.com"
+        };
 
-            _userManagerMock.Setup(u => u.GetRolesAsync(user))
-                .ReturnsAsync(new List<string> { "Doctor" });
+        _userManagerMock
+            .Setup(u => u.GetRolesAsync(user))
+            .ReturnsAsync(new List<string>());
 
-            var token = await _service.GenerateToken(user, doctorId: 10);
+        var tokenString = await _service.GenerateToken(
+            user,
+            doctorId: 20);
 
-            var jwt = new JwtSecurityTokenHandler().ReadJwtToken(token);
+        var token = new JwtSecurityTokenHandler()
+            .ReadJwtToken(tokenString);
 
-            var claim = jwt.Claims.FirstOrDefault(c => c.Type == "DoctorId");
+        Assert.Contains(
+            token.Claims,
+            c => c.Type == "DoctorId" &&
+                 c.Value == "20");
+    }
 
-            Assert.NotNull(claim);
-            Assert.Equal("10", claim.Value);
-        }
-
-        //  Token contains roles
-        [Fact]
-        public async Task GenerateToken_ShouldContainRoleClaim()
+    [Fact]
+    public async Task GenerateToken_ShouldContainRoleClaims()
+    {
+        var user = new User
         {
-            var user = new User { Id = "1", Email = "test@mail.com" };
+            Id = "user1",
+            Email = "test@test.com"
+        };
 
-            _userManagerMock.Setup(u => u.GetRolesAsync(user))
-                .ReturnsAsync(new List<string> { "Admin" });
+        _userManagerMock
+            .Setup(u => u.GetRolesAsync(user))
+            .ReturnsAsync(new List<string>
+            {
+                "Admin",
+                "Doctor"
+            });
 
-            var token = await _service.GenerateToken(user);
+        var tokenString = await _service.GenerateToken(user);
 
-            var jwt = new JwtSecurityTokenHandler().ReadJwtToken(token);
+        var token = new JwtSecurityTokenHandler()
+            .ReadJwtToken(tokenString);
 
-            var roleClaim = jwt.Claims.FirstOrDefault(c =>
-                c.Type.Contains("role"));
+        Assert.Contains(
+            token.Claims,
+            c => c.Type == ClaimTypes.Role &&
+                 c.Value == "Admin");
 
-            Assert.NotNull(roleClaim);
-            Assert.Equal("Admin", roleClaim.Value);
-        }
+        Assert.Contains(
+            token.Claims,
+            c => c.Type == ClaimTypes.Role &&
+                 c.Value == "Doctor");
+    }
 
-        //  Token contains email + sub
-        [Fact]
-        public async Task GenerateToken_ShouldContainStandardClaims()
+    [Fact]
+    public async Task GenerateToken_ShouldContainNameIdentifier()
+    {
+        var user = new User
         {
-            var user = new User { Id = "123", Email = "user@mail.com" };
+            Id = "user1",
+            Email = "test@test.com"
+        };
 
-            _userManagerMock.Setup(u => u.GetRolesAsync(user))
-                .ReturnsAsync(new List<string>());
+        _userManagerMock
+            .Setup(u => u.GetRolesAsync(user))
+            .ReturnsAsync(new List<string>());
 
-            var token = await _service.GenerateToken(user);
+        var tokenString = await _service.GenerateToken(user);
 
-            var jwt = new JwtSecurityTokenHandler().ReadJwtToken(token);
+        var token = new JwtSecurityTokenHandler()
+            .ReadJwtToken(tokenString);
 
-            Assert.Contains(jwt.Claims, c => c.Type == JwtRegisteredClaimNames.Sub && c.Value == "123");
-            Assert.Contains(jwt.Claims, c => c.Type == JwtRegisteredClaimNames.Email && c.Value == "user@mail.com");
-        }
+        Assert.Contains(
+            token.Claims,
+            c => c.Type == ClaimTypes.NameIdentifier &&
+                 c.Value == "user1");
+    }
 
-        //  Token expiration exists
-        [Fact]
-        public async Task GenerateToken_ShouldSetExpiration()
+    [Fact]
+    public async Task GenerateToken_ShouldContainSubClaim()
+    {
+        var user = new User
         {
-            var user = new User { Id = "1", Email = "test@mail.com" };
+            Id = "user1",
+            Email = "test@test.com"
+        };
 
-            _userManagerMock.Setup(u => u.GetRolesAsync(user))
-                .ReturnsAsync(new List<string>());
+        _userManagerMock
+            .Setup(u => u.GetRolesAsync(user))
+            .ReturnsAsync(new List<string>());
 
-            var token = await _service.GenerateToken(user);
+        var tokenString = await _service.GenerateToken(user);
 
-            var jwt = new JwtSecurityTokenHandler().ReadJwtToken(token);
+        var token = new JwtSecurityTokenHandler()
+            .ReadJwtToken(tokenString);
 
-            Assert.NotEqual(default, jwt.ValidTo); // expiration exists
-        }
+        Assert.Contains(
+            token.Claims,
+            c => c.Type == JwtRegisteredClaimNames.Sub &&
+                 c.Value == "user1");
+    }
+
+    [Fact]
+    public async Task GenerateToken_ShouldContainExpiration()
+    {
+        var user = new User
+        {
+            Id = "user1",
+            Email = "test@test.com"
+        };
+
+        _userManagerMock
+            .Setup(u => u.GetRolesAsync(user))
+            .ReturnsAsync(new List<string>());
+
+        var tokenString = await _service.GenerateToken(user);
+
+        var token = new JwtSecurityTokenHandler()
+            .ReadJwtToken(tokenString);
+
+        Assert.NotNull(token.ValidTo);
+        Assert.True(token.ValidTo > DateTime.UtcNow);
     }
 }

@@ -8,12 +8,6 @@ namespace HealthCare.Api.DTOs.HealthRecord
         public int AppointmentId { get; set; }
 
         [Required]
-        public int PatientId { get; set; }
-
-        [Required]
-        public int DoctorId { get; set; }
-
-        [Required]
         [PastOrTodayDateValidationAttribute]
         public DateTime VisitDate { get; set; }
 
@@ -46,4 +40,3 @@ namespace HealthCare.Api.DTOs.HealthRecord
         }
     }
 }
- 

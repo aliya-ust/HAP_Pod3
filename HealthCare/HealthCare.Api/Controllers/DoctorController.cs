@@ -23,9 +23,16 @@ namespace HealthCare.Api.Controllers
         public async Task<IActionResult> GetMyProfile()
         {
             var doctorId = GetDoctorIdFromClaims();
-            var result = await _doctorService.GetByIdAsync(doctorId);
+
+            var result = await _doctorService.GetMyProfileAsync(doctorId);
+
+            if (result == null)
+            {
+                return NotFound("Doctor profile not found.");
+            }
+
             return Ok(result);
-        }
+        } 
 
         [HttpPut("profile")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
@@ -62,12 +69,32 @@ namespace HealthCare.Api.Controllers
             return Ok(result);
         }
 
+        [HttpGet("summary")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize(Roles = "Doctor")]
+        public async Task<IActionResult> GetDoctorSummary()
+        {
+            var result = await _doctorService.GetSummaryAsync();
+            return Ok(result);
+        }
+
         private int GetDoctorIdFromClaims()
         {
             var claim = User.FindFirst("DoctorId")
                 ?? throw new InvalidOperationException("DoctorId claim not found in token.");
 
             return int.Parse(claim.Value);
+        }
+        [HttpGet("dashboard-summary")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize(Roles = "Doctor")]
+        public async Task<IActionResult> GetDashboardSummary()
+        {
+            var doctorId = GetDoctorIdFromClaims();
+
+            var result = await _doctorService.GetDashboardSummaryAsync(doctorId);
+
+            return Ok(result); 
         }
     }
 }

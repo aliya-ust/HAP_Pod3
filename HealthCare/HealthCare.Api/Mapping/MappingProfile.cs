@@ -31,11 +31,15 @@ namespace HealthCare.Api.Mapping
             CreateMap<CreateAppointmentDto, Appointment>();
             CreateMap<UpdateAppointmentDto, Appointment>();
             CreateMap<AppointmentListDto, Appointment>();
+            CreateMap<Appointment, AppointmentListDto>()
+                  .ForMember(dest => dest.PatientId,
+                             opt => opt.MapFrom(src => src.PatientId));
 
             // Health Record DTO mappings
             CreateMap<CreateHealthRecordDto, HealthRecord>();
             CreateMap<UpdateHealthRecordDto, HealthRecord>();
             CreateMap<HealthRecordListDto, HealthRecord>();
+            CreateMap<HealthRecord, HealthRecordListDto>();
         }
     }
 }

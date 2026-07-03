@@ -30,4 +30,5 @@ public class HealthRecord
     
     [ForeignKey(nameof(DoctorId))]
     public Doctor Doctor { get; set; } = null!;
+    public int HealthRecordId { get; set; }
 }

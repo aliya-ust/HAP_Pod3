@@ -1,0 +1,41 @@
+<div class="records-page">
+  <h1>My Health Records</h1>
+
+  <div class="loading-box" *ngIf="isLoading">
+    Loading health records...
+  </div>
+
+  <div class="error-box" *ngIf="!isLoading && errorMessage">
+    {{ errorMessage }}
+  </div>
+
+  <div class="records-grid" *ngIf="!isLoading && records.length > 0">
+    <div class="record-card" *ngFor="let record of records">
+      <h2>{{ record.diagnosis }}</h2>
+
+      <p>
+        <strong>Doctor:</strong>
+        {{ record.doctorName }}
+      </p>
+
+      <p>
+        <strong>Visit Date:</strong>
+        {{ record.visitDate | date: 'yyyy-MM-dd' }}
+      </p>
+
+      <p>
+        <strong>Prescription:</strong>
+        {{ record.prescription }}
+      </p>
+
+      <p>
+        <strong>Notes:</strong>
+        {{ record.notes || 'N/A' }}
+      </p>
+    </div>
+  </div>
+
+  <p class="empty" *ngIf="!isLoading && records.length === 0 && !errorMessage">
+    No health records found.
+  </p>
+</div>

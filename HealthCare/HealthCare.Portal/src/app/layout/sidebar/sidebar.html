@@ -1,0 +1,52 @@
+<aside class="sidebar">
+  <div class="sidebar-header">
+    <h1>HealthCare</h1>
+
+    <p *ngIf="role === 'PATIENT'">Patient Portal</p>
+    <p *ngIf="role === 'DOCTOR'">Doctor Portal</p>
+  </div>
+
+  <nav class="sidebar-menu" *ngIf="role === 'PATIENT'">
+    <a routerLink="/patient/dashboard" routerLinkActive="active" class="menu-link">
+      Dashboard
+    </a>
+
+    <a routerLink="/patient/profile" routerLinkActive="active" class="menu-link">
+      My Profile
+    </a>
+
+    <a routerLink="/patient/book-appointment" routerLinkActive="active" class="menu-link">
+      Book Appointment
+    </a>
+
+    <a routerLink="/patient/appointments" routerLinkActive="active" class="menu-link">
+      Appointments
+    </a>
+
+    <a routerLink="/patient/health-records" routerLinkActive="active" class="menu-link">
+      Health Records
+    </a>
+  </nav>
+
+  <nav class="sidebar-menu" *ngIf="role === 'DOCTOR'">
+    <a routerLink="/doctor/dashboard" routerLinkActive="active" class="menu-link">
+      Dashboard
+    </a>
+
+    <a routerLink="/doctor/profile" routerLinkActive="active" class="menu-link">
+      My Profile
+    </a>
+
+    <a routerLink="/doctor/add-leaves" routerLinkActive="active" class="menu-link">
+      Add Leaves
+    </a>
+
+    <a routerLink="/doctor/appointments" routerLinkActive="active" class="menu-link">
+      Appointments
+    </a>
+  </nav>
+
+  <button class="logout-btn" (click)="logout()">
+    Logout
+  </button>
+</aside>

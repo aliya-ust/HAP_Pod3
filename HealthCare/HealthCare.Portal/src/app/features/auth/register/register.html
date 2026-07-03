@@ -1,0 +1,165 @@
+<div class="auth-page">
+  <div class="auth-card">
+
+    <div class="auth-header">
+      <h1>Patient Registration</h1>
+      <p>Create your HealthCare account</p>
+    </div>
+
+    <form [formGroup]="registerForm" (ngSubmit)="register()">
+
+      <div class="form-group">
+        <label>Full Name</label>
+
+        <input type="text"
+               class="form-control"
+               formControlName="fullName"
+               placeholder="Enter your full name" />
+
+        <small *ngIf="isInvalid('fullName')" class="error-text">
+          Full Name is required.
+        </small>
+      </div>
+
+      <div class="form-group">
+        <label>Date of Birth</label>
+
+        <input type="date"
+               class="form-control"
+               formControlName="dateOfBirth" />
+
+        <small *ngIf="isInvalid('dateOfBirth')" class="error-text">
+          Date of Birth is required.
+        </small>
+      </div>
+
+      <div class="form-group">
+        <label>Gender</label>
+
+        <select class="form-control"
+                formControlName="gender">
+
+          <option value="">Select Gender</option>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+          <option value="Other">Other</option>
+
+        </select>
+
+        <small *ngIf="isInvalid('gender')" class="error-text">
+          Gender is required.
+        </small>
+      </div>
+
+      <div class="form-group">
+        <label>Phone Number</label>
+
+        <input type="text"
+               class="form-control"
+               formControlName="phoneNumber"
+               placeholder="Enter phone number" />
+
+        <small *ngIf="isInvalid('phoneNumber')" class="error-text">
+          Phone Number is required.
+        </small>
+      </div>
+
+      <div class="form-group">
+        <label>Email Address</label>
+
+        <input type="email"
+               class="form-control"
+               formControlName="email"
+               placeholder="Enter email address" />
+
+        <small *ngIf="isInvalid('email')" class="error-text">
+          Please enter a valid email address.
+        </small>
+      </div>
+
+      <div class="form-group">
+        <label>Password</label>
+
+        <input type="password"
+               class="form-control"
+               formControlName="password"
+               placeholder="Enter password" />
+
+        <small *ngIf="isInvalid('password')" class="error-text">
+          Password must be at least 8 characters.
+        </small>
+      </div>
+
+      <div class="form-group">
+        <label>Confirm Password</label>
+
+        <input type="password"
+               class="form-control"
+               formControlName="confirmPassword"
+               placeholder="Confirm password" />
+
+        <small *ngIf="hasPasswordMismatch()" class="error-text">
+          Passwords do not match.
+        </small>
+      </div>
+
+      <div class="form-group">
+        <label>Insurance ID (Optional)</label>
+
+        <input type="text"
+               class="form-control"
+               formControlName="insuranceId"
+               placeholder="Enter insurance ID" />
+      </div>
+
+      <div *ngIf="errorMessage" class="alert-danger">
+        {{ errorMessage }}
+      </div>
+
+      <button type="submit"
+              class="auth-btn"
+              [disabled]="isLoading">
+
+        {{ isLoading ? 'Registering...' : 'Register' }}
+
+      </button>
+
+      <div class="auth-footer">
+        <a routerLink="/login">Back to Login</a>
+      </div>
+
+    </form>
+
+  </div>
+</div>
+
+<!-- Success Dialog -->
+<div *ngIf="showSuccessDialog" class="dialog-overlay">
+
+  <div class="success-dialog">
+
+    <h2>✅ Registration Successful</h2>
+
+    <p>
+      Patient registered successfully.
+    </p>
+
+    <div class="dialog-actions">
+
+      <button type="button"
+              class="close-btn"
+              (click)="closeDialog()">
+        Close
+      </button>
+
+      <button type="button"
+              class="login-btn"
+              (click)="goToLogin()">
+        Login
+      </button>
+
+    </div>
+
+  </div>
+
+</div>

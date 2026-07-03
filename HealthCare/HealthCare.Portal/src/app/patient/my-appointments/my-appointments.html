@@ -1,0 +1,29 @@
+<div class="table-card">
+  <h1>My Appointments</h1>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Doctor Name</th>
+        <th>Scheduled Date</th>
+        <th>Time Slot</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let item of appointmentService.patientAppointments()">
+        <td>{{ item.doctorName }}</td>
+        <td>{{ item.scheduledDate }}</td>
+        <td>{{ item.timeSlot }}</td>
+        <td>
+          <span class="status">{{ item.status }}</span>
+        </td>
+      </tr>
+
+      <tr *ngIf="appointmentService.patientAppointments().length === 0">
+        <td colspan="4" class="empty">No appointments found.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

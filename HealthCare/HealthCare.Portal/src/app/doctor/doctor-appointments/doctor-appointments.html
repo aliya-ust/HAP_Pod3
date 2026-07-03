@@ -1,0 +1,191 @@
+<div class="appointments-card">
+  <h1>Appointments</h1>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Patient Name</th>
+        <th>Scheduled Date</th>
+        <th>Time Slot</th>
+        <th>Status</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let appointment of appointmentService.doctorAppointments()">
+        <td>{{ appointment.patientName }}</td>
+        <td>{{ appointment.scheduledDate }}</td>
+        <td>{{ appointment.timeSlot }}</td>
+
+        <td>
+          <span class="status-badge"
+                [ngClass]="{
+                  'status-confirmed': appointment.status === 'Confirmed',
+                  'status-completed': appointment.status === 'Completed',
+                  'status-cancelled': appointment.status === 'Cancelled',
+                  'status-pending':
+                    appointment.status !== 'Confirmed' &&
+                    appointment.status !== 'Completed' &&
+                    appointment.status !== 'Cancelled'
+                }">
+            {{ appointment.status }}
+          </span>
+        </td>
+
+        <td>
+          <div class="action-buttons">
+
+            <ng-container *ngIf="appointment.status !== 'Confirmed' &&
+                                 appointment.status !== 'Completed' &&
+                                 appointment.status !== 'Cancelled'">
+
+              <button class="btn-action btn-confirm"
+                      type="button"
+                      (click)="updateStatus(appointment.appointmentId, 'Confirmed')">
+                Confirm
+              </button>
+
+              <button class="btn-action btn-cancel"
+                      type="button"
+                      (click)="updateStatus(appointment.appointmentId, 'Cancelled')">
+                Cancel
+              </button>
+
+            </ng-container>
+
+            <ng-container *ngIf="appointment.status === 'Confirmed'">
+
+              <button class="btn-action btn-view"
+                      type="button"
+                      (click)="viewRecord(appointment.patientId)">
+                View Record
+              </button>
+
+              <button class="btn-action btn-add"
+                      type="button"
+                      (click)="openAddRecordDialog(appointment.appointmentId)">
+                Add Record
+              </button>
+
+            </ng-container>
+
+            <ng-container *ngIf="appointment.status === 'Cancelled'">
+              <span class="no-action">No actions</span>
+            </ng-container>
+
+          </div>
+        </td>
+      </tr>
+
+      <tr *ngIf="appointmentService.doctorAppointments().length === 0">
+        <td colspan="5" class="empty">
+          No appointments found.
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ================= VIEW RECORD DIALOG ================= -->
+
+<div class="dialog-backdrop" *ngIf="showViewRecordDialog()">
+  <div class="dialog-box">
+
+    <h2>Health Records</h2>
+
+    <div *ngIf="selectedRecords().length > 0; else noRecords">
+
+      <div *ngFor="let record of selectedRecords()" class="record-card">
+
+        <div class="record-row">
+          <strong>Visit Date</strong>
+          <span>{{ record.visitDate | date:'yyyy-MM-dd' }}</span>
+        </div>
+
+        <div class="record-row">
+          <strong>Diagnosis</strong>
+          <span>{{ record.diagnosis }}</span>
+        </div>
+
+        <div class="record-row">
+          <strong>Prescription</strong>
+          <span>{{ record.prescription }}</span>
+        </div>
+
+        <div class="record-row">
+          <strong>Notes</strong>
+          <span>{{ record.notes || 'N/A' }}</span>
+        </div>
+
+        <hr />
+
+      </div>
+
+    </div>
+
+    <ng-template #noRecords>
+      <p class="empty">No record details available.</p>
+    </ng-template>
+
+    <div class="dialog-actions">
+      <button class="cancel-dialog-btn"
+              type="button"
+              (click)="closeViewRecordDialog()">
+        Close
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<!-- ================= ADD RECORD DIALOG ================= -->
+
+<div class="dialog-backdrop" *ngIf="showAddRecordDialog()">
+  <div class="dialog-box">
+
+    <h2>Add Health Record</h2>
+
+    <form (ngSubmit)="saveHealthRecord()">
+
+      <div class="form-group">
+        <label>Visit Date</label>
+        <input type="date"
+               [(ngModel)]="addRecordForm.visitDate"
+               name="visitDate" />
+      </div>
+
+      <div class="form-group">
+        <label>Diagnosis</label>
+        <textarea [(ngModel)]="addRecordForm.diagnosis"
+                  name="diagnosis"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>Prescription</label>
+        <textarea [(ngModel)]="addRecordForm.prescription"
+                  name="prescription"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>Notes</label>
+        <textarea [(ngModel)]="addRecordForm.notes"
+                  name="notes"></textarea>
+      </div>
+
+      <div class="dialog-actions">
+        <button type="submit" class="save-dialog-btn">
+          Save
+        </button>
+
+        <button type="button"
+                class="cancel-dialog-btn"
+                (click)="closeAddRecordDialog()">
+          Cancel
+        </button>
+      </div>
+
+    </form>
+
+  </div>
+</div>

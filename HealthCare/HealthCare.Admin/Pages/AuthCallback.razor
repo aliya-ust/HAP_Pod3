@@ -1,0 +1,55 @@
+﻿@page "/auth-callback"
+@inject IJSRuntime JS
+@inject NavigationManager Navigation
+
+<p>Redirecting...</p>
+
+@code {
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender)
+            return;
+
+        var currentUrl = Navigation.Uri;
+        var uri = new Uri(currentUrl);
+
+        var token = GetQueryParameter(uri.Query, "token");
+        var role = GetQueryParameter(uri.Query, "role");
+
+        if (!string.IsNullOrWhiteSpace(token))
+        {
+            await JS.InvokeVoidAsync("localStorage.setItem", "accesstoken", token);
+        }
+
+        if (!string.IsNullOrWhiteSpace(role))
+        {
+            await JS.InvokeVoidAsync("localStorage.setItem", "role", role);
+        }
+
+        Navigation.NavigateTo("/Home", true);
+    }
+
+    private string GetQueryParameter(string queryString, string key)
+    {
+        if (string.IsNullOrWhiteSpace(queryString))
+            return string.Empty;
+
+        if (queryString.StartsWith("?"))
+            queryString = queryString.Substring(1);
+
+        var pairs = queryString.Split('&', StringSplitOptions.RemoveEmptyEntries);
+
+        foreach (var pair in pairs)
+        {
+            var parts = pair.Split('=', 2);
+
+            if (parts.Length == 2 &&
+                string.Equals(parts[0], key, StringComparison.OrdinalIgnoreCase))
+            {
+                return Uri.UnescapeDataString(parts[1]);
+            }
+        }
+
+        return string.Empty;
+    }
+} 

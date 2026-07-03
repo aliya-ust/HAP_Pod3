@@ -222,5 +222,65 @@ namespace HealthCare.Api.Services.Implementations
 
         public async Task<DoctorSummaryDto> GetSummaryAsync() =>
             await _repository.GetSummaryAsync();
+
+        public async Task<DoctorDashboardSummaryDto> GetDashboardSummaryAsync(int doctorId)
+        {
+            var today = DateOnly.FromDateTime(DateTime.Today);
+
+            var upcomingAppointments = await _context.Appointments
+                .CountAsync(a =>
+                    a.DoctorId == doctorId &&
+                    a.ScheduledDate > today &&
+                    a.Status != "Cancelled");
+
+            var completedAppointments = await _context.Appointments
+                .CountAsync(a =>
+                    a.DoctorId == doctorId &&
+                    (
+                        a.Status == "Completed" ||
+                        (a.ScheduledDate < today && a.Status == "Confirmed")
+                    ));
+
+            var todaysAppointments = await _context.Appointments
+                .CountAsync(a =>
+                    a.DoctorId == doctorId &&
+                    a.ScheduledDate == today &&
+                    a.Status != "Cancelled");
+
+            var leaves = await _repository.GetLeavesByDoctorId(doctorId);
+
+            var upcomingLeaves = leaves.Count(l => l.LeaveDate >= today);
+
+            return new DoctorDashboardSummaryDto
+            {
+                UpcomingAppointments = upcomingAppointments,
+                CompletedAppointments = completedAppointments,
+                UpcomingLeaves = upcomingLeaves,
+                TodaysAppointments = todaysAppointments
+            };
+        }
+
+        public async Task<DoctorProfileDto?> GetMyProfileAsync(int doctorId)
+        {
+            var profile = await (
+                from doctor in _context.Doctors
+                join user in _context.Users
+                    on doctor.UserId equals user.Id
+                where doctor.DoctorId == doctorId
+                select new DoctorProfileDto
+                {
+                    DoctorId = doctor.DoctorId,
+                    FullName = doctor.FullName,
+                    Email = user.Email ?? string.Empty,
+                    Specialisation = doctor.Specialisation,
+                    YearsOfExperience = doctor.YearsOfExperience,
+                    ConsultationFee = doctor.ConsultationFee
+                }
+            ).FirstOrDefaultAsync();
+
+            return profile;
+        }
+
+
     }
 }

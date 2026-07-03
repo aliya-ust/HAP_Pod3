@@ -33,7 +33,16 @@ namespace HealthCare.Api.Services.Implementations
             if (appointment is null)
                 throw new InvalidOperationException("Appointment not found.");
 
-            return _mapper.Map<AppointmentListDto>(appointment);
+            return new AppointmentListDto
+            {
+                AppointmentId = appointment.AppointmentId,
+                PatientId = appointment.PatientId,
+                PatientName = appointment.Patient.FullName,
+                DoctorName = appointment.Doctor.FullName,
+                ScheduledDate = appointment.ScheduledDate,
+                TimeSlot = appointment.TimeSlot,
+                Status = appointment.Status
+            };
         }
 
         public async Task<PagedResult<AppointmentListDto>> GetAllAsync(AppointmentFilter filter)
@@ -74,6 +83,7 @@ namespace HealthCare.Api.Services.Implementations
                 .Select(a => new AppointmentListDto
                 {
                     AppointmentId = a.AppointmentId,
+                    PatientId = a.PatientId,
                     PatientName = a.Patient.FullName,
                     DoctorName = a.Doctor.FullName,
                     ScheduledDate = a.ScheduledDate,

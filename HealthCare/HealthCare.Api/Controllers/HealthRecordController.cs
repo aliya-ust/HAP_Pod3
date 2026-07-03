@@ -30,12 +30,12 @@ namespace HealthCare.Api.Controllers
             return Ok();
         }
 
-        [HttpGet("by-appointment/{id}")]
+        [HttpGet("by-patient/{patientId}")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Authorize(Roles = "Doctor")]
-        public async Task<IActionResult> GetHealthRecordByAppointment(int id)
+        public async Task<IActionResult> GetHealthRecordOfPatient(int patientId)
         {
-            var result = await _healthRecordService.GetHealthRecordByAppointment(id);
+            var result = await _healthRecordService.GetHealthRecordByPatient(patientId);
             return Ok(result);
         }
 

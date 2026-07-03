@@ -43,11 +43,11 @@
 </div>
 
 @code {
-    private async Task Logout()
-    {
-        await JS.InvokeVoidAsync("localStorage.removeItem", "accesstoken");
-        await JS.InvokeVoidAsync("localStorage.removeItem", "role");
+   private async Task Logout()
+{
+    await JS.InvokeVoidAsync("localStorage.removeItem", "accesstoken");
+    await JS.InvokeVoidAsync("localStorage.removeItem", "role");
 
-        Navigation.NavigateTo("/", true);
-    }
+        Navigation.NavigateTo("http://localhost:59971/login", true);//Angular login page port
+} 
 } 
