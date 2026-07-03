@@ -39,7 +39,8 @@ export class DoctorLeaveComponent {
       return;
     }
 
-    const updated = [...this.leaveDates(), this.selectedDate()].sort();
+    const updated = [...this.leaveDates(), this.selectedDate()]
+      .sort((a, b) => a.localeCompare(b));
     this.leaveDates.set(updated);
 
     this.selectedDate.set('');

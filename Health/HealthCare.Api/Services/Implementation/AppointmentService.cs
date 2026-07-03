@@ -2,6 +2,7 @@
 using HealthCare.Api.Data;
 using HealthCare.Api.DTOs;
 using HealthCare.Api.DTOs.Appointment;
+using HealthCare.Api.DTOs.Doctor;
 using HealthCare.Api.Models;
 using HealthCare.Api.Repositories.Interfaces;
 using HealthCare.Api.Services.Interfaces;
@@ -225,7 +226,7 @@ namespace HealthCare.Api.Services.Implementations
             {
                 var slots = await GetAvailableSlotsAsync(doctor.DoctorId, date);
 
-                if (slots.Any())
+                if (slots.Count > 0)
                 {
                     result.Add(new DoctorDropdownDto
                     {

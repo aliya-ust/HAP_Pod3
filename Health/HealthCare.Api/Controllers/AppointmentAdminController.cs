@@ -40,7 +40,7 @@ namespace HealthCare.Api.Controllers
             var query = await _appointmentService
                 .GetDailyReport(startDate, endDate);
 
-            var totalCount = query.Count();
+            var totalCount = query.Count;
 
             var items = query
                 .Skip((pageNumber - 1) * pageSize)

@@ -6,10 +6,12 @@
 
     <!-- Date Section -->
     <div class="form-group">
-      <label><i class="bi bi-calendar-date"></i> Select Leave Date</label>
+      <label for="leaveDate"><i class="bi bi-calendar-date"></i> Select Leave Date</label>
 
       <div class="date-row">
-        <input type="date"
+        <input
+               id="leaveDate"
+               type="date"
                [ngModel]="selectedDate()"
                (ngModelChange)="selectedDate.set($event)">
 
@@ -39,9 +41,11 @@
 
     <!-- Reason -->
     <div class="form-group">
-      <label><i class="bi bi-chat-left-text"></i> Reason</label>
+      <label for="reason"><i class="bi bi-chat-left-text"></i> Reason</label>
 
-      <textarea rows="4"
+      <textarea
+                id="reason"
+                rows="4"
                 [ngModel]="reason()"
                 (ngModelChange)="reason.set($event)"
                 placeholder="Optional reason for leave...">

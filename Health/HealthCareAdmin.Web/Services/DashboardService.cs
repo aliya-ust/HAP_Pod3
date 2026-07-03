@@ -2,6 +2,8 @@
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 
+namespace HealthCareAdmin.Web.Services;
+
 public class DashboardService
 {
     private readonly HttpClient _http;

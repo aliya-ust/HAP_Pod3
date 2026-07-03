@@ -8,9 +8,8 @@ import { Appointment, DoctorDropdownDto, CreateAppointmentDto } from '../models/
 })
 export class AppointmentService {
 
-  private apiUrl = 'https://localhost:7171/api/Appointment';
+  private readonly apiUrl = 'https://localhost:7171/api/Appointment';
 
-  // BOOKING FLOW STATE
   date: string = '';
   specialization: string = '';
   selectedDoctorId: number | null = null;
@@ -19,13 +18,12 @@ export class AppointmentService {
   doctors: DoctorDropdownDto[] = [];
   timeSlots: string[] = [];
 
-  // APPOINTMENT LIST CACHE
   patientAppointments: Appointment[] = [];
   doctorAppointments: Appointment[] = [];
 
   constructor(private http: HttpClient) { }
 
-  // PATIENT APPOINTMENTS (WITH CACHE)
+  // PATIENT APPOINTMENTS
   getPatientAppointments(): Observable<Appointment[]> {
     return this.http.get<Appointment[]>(`${this.apiUrl}/patient`)
       .pipe(
@@ -33,7 +31,7 @@ export class AppointmentService {
       );
   }
 
-  // DOCTOR APPOINTMENTS (WITH CACHE)
+  // DOCTOR APPOINTMENTS
   getDoctorAppointments(): Observable<Appointment[]> {
     return this.http.get<Appointment[]>(`${this.apiUrl}/doctor`)
       .pipe(

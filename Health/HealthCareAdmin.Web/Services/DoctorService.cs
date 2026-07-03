@@ -5,6 +5,8 @@ using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 
+namespace HealthCareAdmin.Web.Services;
+
 public class DoctorService
 {
     private readonly HttpClient _http;

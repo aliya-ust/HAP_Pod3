@@ -1,4 +1,6 @@
-﻿public class DoctorDropdownDto
+﻿namespace HealthCare.Api.DTOs.Doctor;
+
+public class DoctorDropdownDto
 {
     public int DoctorId { get; set; }
 

@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
+namespace HealthCare.Api.Controllers;
+
 [ApiController]
 [Route("api/dashboard")]
 public class DashboardController : ControllerBase

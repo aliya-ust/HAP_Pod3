@@ -122,7 +122,7 @@
 
 @code {
 
-    private DoctorFilter filter = new()
+    private readonly DoctorFilter filter = new()
     {
         PageNumber = 1,
         PageSize = 10
@@ -130,7 +130,7 @@
 
     private PagedResult<DoctorListDto>? doctors;
 
-    private List<string> specialisations = new()
+    private readonly List<string> specialisations = new()
 {
     "GeneralMedicine",
     "Cardiology",
@@ -150,11 +150,9 @@
     "Nephrology"
 };
 
-    private DoctorListDto? selectedDoctor;
     
     private async Task OpenStatusDialog(DoctorListDto doctor)
     {
-        selectedDoctor = doctor;
 
         var confirm = await JS.InvokeAsync<bool>("confirm",
             $"Change status for Dr. {doctor.FullName}?");

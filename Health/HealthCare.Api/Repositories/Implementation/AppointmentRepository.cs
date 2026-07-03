@@ -149,7 +149,7 @@ namespace HealthCare.Api.Repositories.Implementation
             var appointment = await _dbSet.FindAsync(appointmentId);
 
             if (appointment == null)
-                throw new Exception("Appointment not found");
+                throw new InvalidOperationException("Appointment not found");
 
             appointment.Status = "Confirmed";
 
@@ -161,7 +161,7 @@ namespace HealthCare.Api.Repositories.Implementation
             var appointment = await _dbSet.FindAsync(appointmentId);
 
             if (appointment == null)
-                throw new Exception("Appointment not found");
+                throw new InvalidOperationException("Appointment not found");
 
             appointment.Status = "Cancelled";
 

@@ -15,11 +15,6 @@ namespace HealthCare.Api.DTOs.Patient
         [RegularExpression(@"^[6-9]\d{9}$", ErrorMessage = "Phone number must be 10 digits and start with 6, 7, 8, or 9.")]
         public string PhoneNumber { get; set; } = null!;
 
-        //[Required]
-        //[MaxLength(100)]
-        //[EmailAddress]
-        //public string Email { get; set; } = null!;
-
         [Required]
         [MaxLength(10)]
         [RegularExpression(@"^(Male|Female|Other)$", ErrorMessage = "Gender must be Male, Female, or Other.")]

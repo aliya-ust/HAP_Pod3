@@ -31,14 +31,14 @@ namespace HealthCare.Tests.Services
 
             _userManager = new Mock<UserManager<User>>(
                 store.Object,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null);
+                null!,
+                null!,
+                null!,
+                null!,
+                null!,
+                null!,
+                null!,
+                null!);
 
             _mapper = new Mock<IMapper>();
             _patientRepo = new Mock<IPatientRepository>();
@@ -65,7 +65,7 @@ namespace HealthCare.Tests.Services
         {
             var dto = new CreatePatientDto { Email = "a@test.com", Password = "Password@123" };
 
-            _userManager.Setup(x => x.FindByEmailAsync(dto.Email)).ReturnsAsync((User)null);
+            _userManager.Setup(x => x.FindByEmailAsync(dto.Email)).ReturnsAsync((User)null!);
             _userManager.Setup(x => x.CreateAsync(It.IsAny<User>(), dto.Password)).ReturnsAsync(IdentityResult.Success);
             _userManager.Setup(x => x.AddToRoleAsync(It.IsAny<User>(), "Patient")).ReturnsAsync(IdentityResult.Success);
             _mapper.Setup(x => x.Map<Patient>(dto)).Returns(new Patient());
@@ -91,7 +91,7 @@ namespace HealthCare.Tests.Services
         {
             var dto = new CreateDoctorDto { Email = "doctor@test.com", Password = "Password@123", TimeSlots = new List<string>() };
 
-            _userManager.Setup(x => x.FindByEmailAsync(dto.Email)).ReturnsAsync((User)null);
+            _userManager.Setup(x => x.FindByEmailAsync(dto.Email)).ReturnsAsync((User)null!);
             _userManager.Setup(x => x.CreateAsync(It.IsAny<User>(), dto.Password)).ReturnsAsync(IdentityResult.Success);
             _userManager.Setup(x => x.AddToRoleAsync(It.IsAny<User>(), "Doctor")).ReturnsAsync(IdentityResult.Success);
 
@@ -184,7 +184,7 @@ namespace HealthCare.Tests.Services
             var dto = new LoginDto { Email = "abc@test.com", Password = "123" };
 
             _userManager.Setup(x => x.FindByEmailAsync(dto.Email))
-                .ReturnsAsync((User)null);
+                .ReturnsAsync((User)null!);
 
             await Assert.ThrowsAsync<UnauthorizedAccessException>(() => _service.LoginAsync(dto));
         }
@@ -230,7 +230,7 @@ namespace HealthCare.Tests.Services
             _userManager.Setup(x => x.GetRolesAsync(user)).ReturnsAsync(new List<string> { "Patient" });
 
             _patientRepo.Setup(x => x.GetByUserIdAsync("1"))
-                .ReturnsAsync((Patient)null);
+                .ReturnsAsync((Patient)null!);
 
             await Assert.ThrowsAsync<InvalidOperationException>(() => _service.LoginAsync(new LoginDto()));
         }
@@ -245,7 +245,7 @@ namespace HealthCare.Tests.Services
             _userManager.Setup(x => x.GetRolesAsync(user)).ReturnsAsync(new List<string> { "Doctor" });
 
             _doctorRepo.Setup(x => x.GetByUserIdAsync("2"))
-                .ReturnsAsync((Doctor)null);
+                .ReturnsAsync((Doctor)null!);
 
             await Assert.ThrowsAsync<InvalidOperationException>(() => _service.LoginAsync(new LoginDto()));
         }
@@ -275,7 +275,7 @@ namespace HealthCare.Tests.Services
         public async Task ChangePasswordAsync_ShouldThrow_WhenUserNotFound()
         {
             _userManager.Setup(x => x.FindByIdAsync("1"))
-                .ReturnsAsync((User)null);
+                .ReturnsAsync((User)null!);
 
             await Assert.ThrowsAsync<InvalidOperationException>(() =>
                 _service.ChangePasswordAsync("1", new ChangePasswordDto()));

@@ -1,4 +1,5 @@
 using HealthCareAdmin.Web;
+using HealthCareAdmin.Web.Services;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;

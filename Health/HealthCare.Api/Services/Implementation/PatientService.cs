@@ -38,7 +38,7 @@ namespace HealthCare.Api.Services.Implementations
                 {
                     PatientId = p.PatientId,
                     FullName = p.FullName,
-                    Email = u.Email,
+                    Email = u.Email!,
                     PhoneNumber = p.PhoneNumber,
                     DateOfBirth = p.DateOfBirth,
                     Gender = p.Gender,

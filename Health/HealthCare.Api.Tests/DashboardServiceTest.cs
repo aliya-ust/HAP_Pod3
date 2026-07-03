@@ -8,7 +8,7 @@ namespace HealthCare.Tests.Services
 {
     public class DashboardServiceTests
     {
-        private HealthCareDbContext GetDbContext()
+        private static HealthCareDbContext GetDbContext()
         {
             var options = new DbContextOptionsBuilder<HealthCareDbContext>()
                 .UseInMemoryDatabase(Guid.NewGuid().ToString())
@@ -17,7 +17,7 @@ namespace HealthCare.Tests.Services
             return new HealthCareDbContext(options);
         }
 
-        private Doctor CreateDoctor(int id = 1, bool active = true, int fee = 500)
+        private static Doctor CreateDoctor(int id = 1, bool active = true, int fee = 500)
         {
             return new Doctor
             {
@@ -30,7 +30,7 @@ namespace HealthCare.Tests.Services
             };
         }
 
-        private Patient CreatePatient(int id = 1)
+        private static Patient CreatePatient(int id = 1)
         {
             return new Patient
             {
@@ -44,7 +44,7 @@ namespace HealthCare.Tests.Services
             };
         }
 
-        private Appointment CreateAppointment(
+        private static Appointment CreateAppointment(
             int patientId,
             int doctorId,
             string status,

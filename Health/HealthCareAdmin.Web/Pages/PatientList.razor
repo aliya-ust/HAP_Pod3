@@ -185,7 +185,7 @@
 
     private int pageNumber = 1;
 
-    private int pageSize = 10; 
+    private readonly int pageSize = 10; 
 
     private int totalPages;
 
@@ -229,12 +229,12 @@
         if (!string.IsNullOrWhiteSpace(searchName))
         {
             if (!System.Text.RegularExpressions.Regex.IsMatch(
-                searchName,
-                @"^[A-Za-z\s]*$"))
+                     searchName,
+                     @"^[A-Za-z\s]*$",
+                     System.Text.RegularExpressions.RegexOptions.None,
+                     TimeSpan.FromSeconds(1)))
             {
-                validationMessage =
-                    "Search name must contain alphabets only.";
-
+                validationMessage = "Search name must contain alphabets only.";
                 return;
             }
         }

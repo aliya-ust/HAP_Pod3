@@ -94,7 +94,7 @@ namespace HealthCare.Api.Services.Implementations
                     {
                         DoctorId = d.DoctorId,
                         FullName = d.FullName,
-                        Email = u.Email,
+                        Email = u.Email!,
                         Specialisation = d.Specialisation,
                         YearsOfExperience = d.YearsOfExperience,
                         ConsultationFee = d.ConsultationFee

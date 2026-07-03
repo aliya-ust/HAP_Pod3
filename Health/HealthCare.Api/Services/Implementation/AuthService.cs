@@ -115,7 +115,7 @@ namespace HealthCare.Api.Services.Implementation
             if (roles.Count == 0)
                 throw new InvalidOperationException("No role assigned.");
 
-            var role = roles.First();
+            var role = roles[0];
             string token;
 
             switch (role)

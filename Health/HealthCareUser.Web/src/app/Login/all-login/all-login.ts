@@ -23,8 +23,8 @@ export class AllLoginComponent {
   errorMessage = '';
 
   constructor(
-    private authService: AuthService,
-    private router: Router
+    private readonly authService: AuthService,
+    private readonly router: Router
   ) { }
 
   login() {

@@ -99,7 +99,7 @@
     private DateOnly? startDate;
     private DateOnly? endDate;
     private int CurrentPage = 1;
-    private int PageSize = 6;
+    private readonly int PageSize = 6;
     private int TotalCount;
     private int TotalPages =>
         (int)Math.Ceiling((double)TotalCount / PageSize);

@@ -92,14 +92,14 @@
 
 @code {
 
-    private CreateDoctorDto model = new();
+    private readonly CreateDoctorDto model = new();
 
     protected override void OnInitialized()
     {
         model.TimeSlots = new List<string>();
     }
 
-    private List<string> specialisations = new()
+    private readonly List<string> specialisations = new()
     {
         "GeneralMedicine",
         "Cardiology",
@@ -119,7 +119,7 @@
         "Nephrology"
     };
 
-    private List<string> allTimeSlots = new()
+    private readonly List<string> allTimeSlots = new()
     {
         "09:00 AM","10:00 AM","11:00 AM","12:00 PM",
         "01:00 PM","02:00 PM","03:00 PM","04:00 PM","05:00 PM"
@@ -127,7 +127,7 @@
 
     private void OnSlotChanged(ChangeEventArgs e, string slot)
     {
-        var isChecked = (bool)e.Value;
+        var isChecked = (bool)e.Value!;
 
         if (isChecked)
         {

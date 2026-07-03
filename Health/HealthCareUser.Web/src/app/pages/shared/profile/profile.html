@@ -22,7 +22,7 @@
         <div class="profile-row">
           <i class="bi bi-hash"></i>
           <div>
-            <label>ID</label>
+            <span class="field-title">ID</span>
             <span>{{ patient()?.patientId }}</span>
           </div>
         </div>
@@ -30,7 +30,7 @@
         <div class="profile-row">
           <i class="bi bi-envelope"></i>
           <div>
-            <label>Email</label>
+            <span class="field-title">Email</span>
             <span>{{ patient()?.email }}</span>
           </div>
         </div>
@@ -38,7 +38,7 @@
         <div class="profile-row">
           <i class="bi bi-telephone"></i>
           <div>
-            <label>Phone</label>
+            <span class="field-title">Phone</span>
             <span>{{ patient()?.phoneNumber }}</span>
           </div>
         </div>
@@ -46,7 +46,7 @@
         <div class="profile-row">
           <i class="bi bi-calendar"></i>
           <div>
-            <label>Date of Birth</label>
+            <span class="field-title">Date of Birth</span>
             <span>{{ patient()?.dateOfBirth }}</span>
           </div>
         </div>
@@ -54,7 +54,7 @@
         <div class="profile-row">
           <i class="bi bi-gender-ambiguous"></i>
           <div>
-            <label>Gender</label>
+            <span class="field-title">Gender</span>
             <span>{{ patient()?.gender }}</span>
           </div>
         </div>
@@ -62,7 +62,7 @@
         <div class="profile-row">
           <i class="bi bi-shield-check"></i>
           <div>
-            <label>Insurance</label>
+            <span class="field-title">Insurance</span>
             <span>{{ patient()?.insuranceId }}</span>
           </div>
         </div>
@@ -89,7 +89,7 @@
         <div class="profile-row">
           <i class="bi bi-hash"></i>
           <div>
-            <label>ID</label>
+            <span class="field-title">ID</span>
             <span>{{ doctor()?.doctorId }}</span>
           </div>
         </div>
@@ -97,7 +97,7 @@
         <div class="profile-row">
           <i class="bi bi-envelope"></i>
           <div>
-            <label>Email</label>
+            <span class="field-title">Email</span>
             <span>{{ doctor()?.email }}</span>
           </div>
         </div>
@@ -105,7 +105,7 @@
         <div class="profile-row">
           <i class="bi bi-hospital"></i>
           <div>
-            <label>Specialisation</label>
+            <span class="field-title">Specialisation</span>
             <span>{{ doctor()?.specialisation }}</span>
           </div>
         </div>
@@ -113,7 +113,7 @@
         <div class="profile-row">
           <i class="bi bi-award"></i>
           <div>
-            <label>Experience</label>
+            <span class="field-title">Experience</span>
             <span>{{ doctor()?.yearsOfExperience }} Years</span>
           </div>
         </div>
@@ -121,7 +121,7 @@
         <div class="profile-row">
           <i class="bi bi-cash"></i>
           <div>
-            <label>Consultation Fee</label>
+            <span class="field-title">Consultation Fee</span>
             <span>₹{{ doctor()?.consultationFee }}</span>
           </div>
         </div>
@@ -132,7 +132,7 @@
 
   </div>
 
-<!-- ✅ EDIT DIALOG -->
+<!-- EDIT DIALOG -->
 <div class="dialog-backdrop" *ngIf="isEditOpen()">
   <div class="dialog">
 
@@ -141,8 +141,10 @@
     <form #form="ngForm" (ngSubmit)="updateProfile()" novalidate>
 
       <!-- NAME -->
-      <label>Name</label>
-      <input [(ngModel)]="editData.fullName"
+      <label for="name">Name</label>
+      <input
+             id="name"
+             [(ngModel)]="editData.fullName"
              name="fullName"
              required
              minlength="3"
@@ -154,8 +156,10 @@
 
 
       <!-- PHONE -->
-      <label>Phone</label>
-      <input [(ngModel)]="editData.phoneNumber"
+      <label for="phone">Phone</label>
+      <input
+             id="phone"
+             [(ngModel)]="editData.phoneNumber"
              name="phoneNumber"
              pattern="^[0-9]{10}$"
              #phone="ngModel" />
@@ -166,8 +170,10 @@
 
 
       <!-- GENDER -->
-      <label>Gender</label>
-      <select [(ngModel)]="editData.gender"
+      <label for="gender">Gender</label>
+      <select
+              id="gender"
+              [(ngModel)]="editData.gender"
               name="gender"
               required
               #gender="ngModel">
@@ -182,8 +188,10 @@
 
 
       <!-- INSURANCE -->
-      <label>Insurance</label>
-      <input [(ngModel)]="editData.insuranceId"
+      <label for="insurance">Insurance</label>
+      <input
+             id="insurance"
+             [(ngModel)]="editData.insuranceId"
              name="insuranceId"
              maxlength="20"
              #insurance="ngModel" />

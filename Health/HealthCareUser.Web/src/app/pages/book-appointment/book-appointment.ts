@@ -11,7 +11,7 @@ import { DoctorDropdownDto, CreateAppointmentDto } from '../../cores/models/Appo
   templateUrl: './book-appointment.html',
   styleUrls: ['./book-appointment.css']
 })
-export class BookAppointmentComponent implements OnInit {
+export class BookAppointmentComponent {
 
   date = signal('');
   specialization = signal('');
@@ -35,7 +35,7 @@ export class BookAppointmentComponent implements OnInit {
 
   constructor(private appointmentService: AppointmentService) { }
 
-  ngOnInit(): void { }
+  //ngOnInit(): void { }
 
   get minDate(): string {
     return new Date().toISOString().split('T')[0];

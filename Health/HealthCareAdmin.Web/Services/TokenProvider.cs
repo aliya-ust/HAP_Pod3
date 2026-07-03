@@ -1,5 +1,7 @@
 ﻿using Microsoft.JSInterop;
 
+namespace HealthCareAdmin.Web.Services;
+
 public class TokenProvider
 {
     private readonly IJSRuntime _js;

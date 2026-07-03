@@ -23,14 +23,14 @@ namespace HealthCare.Tests.Services
 
             _userManager = new Mock<UserManager<User>>(
                 store.Object,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null);
+                null!,
+                null!,
+                null!,
+                null!,
+                null!,
+                null!,
+                null!,
+                null!);
 
             var settings = new Dictionary<string, string>
             {

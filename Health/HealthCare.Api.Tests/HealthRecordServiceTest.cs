@@ -55,7 +55,7 @@ namespace HealthCare.Tests.Services
         public async Task GetByIdAsync_Should_Throw_When_NotFound()
         {
             _repository.Setup(x => x.GetByIdAsync(1))
-                .ReturnsAsync((HealthRecord)null);
+                .ReturnsAsync((HealthRecord)null!);
 
             await Assert.ThrowsAsync<InvalidOperationException>(
                 () => _service.GetByIdAsync(1));
@@ -115,7 +115,7 @@ namespace HealthCare.Tests.Services
         public async Task UpdateAsync_Should_Throw_When_NotFound()
         {
             _repository.Setup(x => x.GetByIdAsync(1))
-                .ReturnsAsync((HealthRecord)null);
+                .ReturnsAsync((HealthRecord)null!);
 
             await Assert.ThrowsAsync<InvalidOperationException>(
                 () => _service.UpdateAsync(1, new UpdateHealthRecordDto()));
@@ -136,7 +136,7 @@ namespace HealthCare.Tests.Services
         public async Task DeleteAsync_Should_Throw_When_Record_NotFound()
         {
             _repository.Setup(x => x.GetByIdAsync(1))
-                .ReturnsAsync((HealthRecord)null);
+                .ReturnsAsync((HealthRecord)null!);
 
             await Assert.ThrowsAsync<InvalidOperationException>(
                 () => _service.DeleteAsync(1));

@@ -23,7 +23,7 @@ export interface DoctorDropdownDto {
 
 export interface CreateAppointmentDto {
   doctorId: number;
-  scheduledDate: string; // ISO string
+  scheduledDate: string;
   timeSlot: string;
   reason?: string;
 }

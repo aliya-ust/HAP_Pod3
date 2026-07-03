@@ -1,5 +1,7 @@
 ﻿using System.Net.Http.Headers;
 
+namespace HealthCareAdmin.Web.Services;
+
 public class AuthMessageHandler : DelegatingHandler
 {
     private readonly TokenProvider _tokenProvider;

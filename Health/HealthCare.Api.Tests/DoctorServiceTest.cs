@@ -70,13 +70,13 @@ namespace HealthCare.Tests.Services
         }
 
         [Fact]
-        public async Task UpdateAsync_Should_Throw_When_Doctor_NotFound()
+        public async Task UpdateStatusAsync_Should_Throw_When_Doctor_NotFound()
         {
             _doctorRepo.Setup(x => x.GetByIdAsync(1))
-                .ReturnsAsync((Doctor)null);
+                .ReturnsAsync((Doctor)null!);
 
-            await Assert.ThrowsAsync<InvalidOperationException>(
-                () => _service.UpdateAsync(1, new UpdateDoctorDto()));
+            await Assert.ThrowsAsync<InvalidOperationException>(() =>
+                _service.UpdateStatusAsync(1, true));
         }
 
 
@@ -111,7 +111,7 @@ namespace HealthCare.Tests.Services
         public async Task DeleteAsync_Should_Throw_When_Doctor_NotFound()
         {
             _doctorRepo.Setup(x => x.GetByIdAsync(1))
-                .ReturnsAsync((Doctor)null);
+                .ReturnsAsync((Doctor)null!);
 
             await Assert.ThrowsAsync<InvalidOperationException>(
                 () => _service.DeleteAsync(1));
@@ -192,6 +192,270 @@ namespace HealthCare.Tests.Services
 
             Assert.Single(result);
             Assert.Equal("John", result[0].FullName);
+        }
+
+        [Fact]
+        public async Task GetByIdAsync_Should_Throw_When_NotFound()
+        {
+            await Assert.ThrowsAsync<InvalidOperationException>(() =>
+                _service.GetByIdAsync(100));
+        }
+
+        [Fact]
+        public async Task GetAllAsync_Should_Return_All_Doctors()
+        {
+            _context.Doctors.AddRange(
+                new Doctor
+                {
+                    DoctorId = 1,
+                    FullName = "John",
+                    Specialisation = "Cardiology",
+                    YearsOfExperience = 5
+                },
+                new Doctor
+                {
+                    DoctorId = 2,
+                    FullName = "David",
+                    Specialisation = "Neurology",
+                    YearsOfExperience = 8
+                });
+
+            await _context.SaveChangesAsync();
+
+            _mapper.Setup(x =>
+                x.Map<IEnumerable<DoctorListDto>>(It.IsAny<IEnumerable<Doctor>>()))
+                .Returns(new List<DoctorListDto>
+                {
+            new(),
+            new()
+                });
+
+            var result = await _service.GetAllAsync(new DoctorFilter());
+
+            Assert.Equal(2, result.TotalCount);
+        }
+
+        [Fact]
+        public async Task GetAllAsync_Should_Filter_By_Name()
+        {
+            _context.Doctors.Add(new Doctor
+            {
+                DoctorId = 1,
+                FullName = "John",
+                Specialisation = "Cardiology"
+            });
+
+            await _context.SaveChangesAsync();
+
+            _mapper.Setup(x =>
+                x.Map<IEnumerable<DoctorListDto>>(It.IsAny<IEnumerable<Doctor>>()))
+                .Returns(new List<DoctorListDto>
+                {
+            new()
+                });
+
+            var result = await _service.GetAllAsync(new DoctorFilter
+            {
+                FullName = "John"
+            });
+
+            Assert.Single(result.Items);
+        }
+
+        [Fact]
+        public async Task GetAllAsync_Should_Filter_By_Specialisation()
+        {
+            _context.Doctors.Add(new Doctor
+            {
+                DoctorId = 1,
+                FullName = "John",
+                Specialisation = "Cardiology"
+            });
+
+            await _context.SaveChangesAsync();
+
+            _mapper.Setup(x =>
+                x.Map<IEnumerable<DoctorListDto>>(It.IsAny<IEnumerable<Doctor>>()))
+                .Returns(new List<DoctorListDto>
+                {
+            new()
+                });
+
+            var result = await _service.GetAllAsync(new DoctorFilter
+            {
+                Specialisation = "Cardiology"
+            });
+
+            Assert.Single(result.Items);
+        }
+
+        [Fact]
+        public async Task GetAllAsync_Should_Filter_Active_Doctors()
+        {
+            _context.Doctors.Add(new Doctor
+            {
+                DoctorId = 1,
+                FullName = "John",
+                IsActive = true
+            });
+
+            await _context.SaveChangesAsync();
+
+            _mapper.Setup(x =>
+                x.Map<IEnumerable<DoctorListDto>>(It.IsAny<IEnumerable<Doctor>>()))
+                .Returns(new List<DoctorListDto>
+                {
+            new()
+                });
+
+            var result = await _service.GetAllAsync(new DoctorFilter
+            {
+                Status = "Active"
+            });
+
+            Assert.Single(result.Items);
+        }
+
+        [Fact]
+        public async Task CreateSlots_Should_Call_Repository()
+        {
+            var slots = new List<string>
+               {
+            "09:00",
+            "09:30"
+               };
+
+            await _service.CreateSlots(1, slots);
+
+            _doctorRepo.Verify(x =>
+                x.CreateSlots(1, slots),
+                Times.Once);
+        }
+
+        [Fact]
+        public async Task CreateLeave_Should_Skip_Existing_Date()
+        {
+            var date = DateOnly.FromDateTime(DateTime.Today);
+
+            _doctorRepo.Setup(x =>
+                x.GetLeavesByDoctorId(1))
+                .ReturnsAsync(new List<DoctorLeaves>
+                {
+            new()
+            {
+                LeaveDate = date
+            }
+                });
+
+            var result = await _service.CreateLeave(1,
+                new List<CreateLeaveDto>
+                {
+            new()
+            {
+                LeaveDate = date
+            }
+                });
+
+            Assert.Single(result.SkippedDates);
+        }
+
+        [Fact]
+        public async Task CreateLeave_Should_Cancel_Appointments()
+        {
+            var date = DateOnly.FromDateTime(DateTime.Today);
+
+            _doctorRepo.Setup(x => x.GetLeavesByDoctorId(1))
+                .ReturnsAsync(new List<DoctorLeaves>());
+
+            _doctorRepo.Setup(x => x.GetSlots(1))
+                .ReturnsAsync(new List<string>
+                {
+            "09:00",
+            "10:00"
+                });
+
+            _appointmentRepo.Setup(x =>
+                x.BookedTimeSlots(date, 1))
+                .ReturnsAsync(new List<string>
+                {
+            "09:00"
+                });
+
+            var leaves = new List<CreateLeaveDto>
+             {
+                new()
+              {
+            LeaveDate = date
+              }
+            };
+
+            var result = await _service.CreateLeave(1, leaves);
+
+            _appointmentRepo.Verify(x =>
+                x.CancelAppointmentsByDoctorDate(1, date),
+                Times.Once);
+        }
+
+        [Fact]
+        public async Task CreateLeave_Should_Create_Leave_When_No_Appointments()
+        {
+            var date = DateOnly.FromDateTime(DateTime.Today);
+
+            _doctorRepo.Setup(x => x.GetLeavesByDoctorId(1))
+                .ReturnsAsync(new List<DoctorLeaves>());
+
+            _doctorRepo.Setup(x => x.GetSlots(1))
+                .ReturnsAsync(new List<string>
+                {
+            "09:00"
+                });
+
+            _appointmentRepo.Setup(x =>
+                x.BookedTimeSlots(date, 1))
+                .ReturnsAsync(new List<string>());
+
+            var leaves = new List<CreateLeaveDto>
+               {
+                  new()
+                 {
+                   LeaveDate = date
+                  }
+               };
+
+            await _service.CreateLeave(1, leaves);
+
+            _doctorRepo.Verify(x =>
+                x.CreateLeaves(1, It.IsAny<List<CreateLeaveDto>>()),
+                Times.Once);
+        }
+
+        [Fact]
+        public async Task CreateLeave_Should_Not_Create_When_All_Dates_Exist()
+        {
+            var date = DateOnly.FromDateTime(DateTime.Today);
+
+            _doctorRepo.Setup(x => x.GetLeavesByDoctorId(1))
+                .ReturnsAsync(new List<DoctorLeaves>
+                {
+            new()
+            {
+                LeaveDate = date
+            }
+                });
+
+            await _service.CreateLeave(1,
+                new List<CreateLeaveDto>
+                {
+            new()
+            {
+                LeaveDate = date
+            }
+                });
+
+            _doctorRepo.Verify(x =>
+                x.CreateLeaves(It.IsAny<int>(),
+                It.IsAny<List<CreateLeaveDto>>()),
+                Times.Never);
         }
     }
 }

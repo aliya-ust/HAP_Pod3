@@ -11,7 +11,7 @@ dotnet sonarscanner begin ^
   /d:sonar.host.url="%SONAR_URL%" ^
   /d:sonar.login="%SONAR_TOKEN%" ^
   /d:sonar.exclusions="**/bin/**,**/obj/**,**/Migrations/**" ^
-  /d:sonar.coverage.exclusions="**/bin/**,**/obj/**,**/Migrations/**,**/Controllers/**,**/Data/**,**/DTOs/**,**/Mappings/**,**/Models/**,**/Properties/**,**/Repositories/**,**/Program.cs,**/Exceptions/**,**/Middleware/**" ^
+  /d:sonar.coverage.exclusions="**/bin/**,**/obj/**,**/Migrations/**,**/Controllers/**,**/Exceptions/**,**/Data/**,**/DTOs/**,**/Mappings/**,**/Models/**,**/Properties/**,**/Repositories/**,**/HealthCare.Shared/**,**/HealthCareAdmin.Web/**,**/HealthCareUser.Web/**,**/Middlware/**,**/Program.cs" ^
   /d:sonar.cs.opencover.reportsPaths="TestResults/**/coverage.opencover.xml"
 
 IF %ERRORLEVEL% NEQ 0 (
@@ -41,3 +41,6 @@ IF %ERRORLEVEL% NEQ 0 (
   echo Sonar end failed!
   exit /b %ERRORLEVEL%
 )
+
+echo Sonar scan completed successfully!
+pause

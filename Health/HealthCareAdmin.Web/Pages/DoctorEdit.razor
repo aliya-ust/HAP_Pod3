@@ -65,7 +65,7 @@ else
 
     private UpdateDoctorDto? model;
 
-    private List<string> specialisations = new()
+    private readonly List<string> specialisations = new()
     {
         "GeneralMedicine","Cardiology","Dermatology","Neurology",
         "Orthopedics","Pediatrics","Gynecology","Psychiatry",
@@ -80,7 +80,7 @@ else
 
     private async Task HandleUpdate()
     {
-        var error = await DoctorService.UpdateDoctorAsync(id,model);
+        var error = await DoctorService.UpdateDoctorAsync(id,model!);
 
         if (!string.IsNullOrEmpty(error))
         {

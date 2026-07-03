@@ -1,8 +1,9 @@
 ﻿using HealthCare.Api.Data;
-//using HealthCare.Api.DTOs.Dashboard;
 using HealthCare.Api.Services.Interfaces;
 using HealthCare.Shared.DTOs;
 using Microsoft.EntityFrameworkCore;
+
+namespace HealthCare.Api.Services.Implementation;
 
 public class DashboardService : IDashboardService
 {

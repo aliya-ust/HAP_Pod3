@@ -13,21 +13,21 @@ import { AuthService } from '../../cores/services/auth.services';
 })
 export class RegisterComponent {
 
-  // ✅ Signals
+  // Signals
   submitted = signal(false);
   showSuccessDialog = signal(false);
   loading = signal(false);
   errorMessage = signal('');
 
-  registerForm!: FormGroup; // ✅ declare first
+  registerForm!: FormGroup; // declare first
 
   constructor(
-    private fb: FormBuilder,
-    private authService: AuthService,
-    private router: Router
+    private readonly fb: FormBuilder,
+    private readonly authService: AuthService,
+    private readonly router: Router
   ) {
 
-    // ✅ Initialize inside constructor
+    // Initialize inside constructor
     this.registerForm = this.fb.group({
       fullName: ['', [
         Validators.required,
@@ -51,8 +51,9 @@ export class RegisterComponent {
         Validators.required,
         Validators.minLength(8),
         Validators.pattern(
-          /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&^#()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/
+          /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\w\s]).{8,}$/
         )
+
       ]],
       insuranceId: ['', [
         Validators.pattern(/^[A-Za-z0-9]*$/)

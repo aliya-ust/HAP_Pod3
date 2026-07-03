@@ -24,10 +24,10 @@ namespace HealthCare.Api.Models
 
         [Required]
         [MaxLength(50)]
-        public string Specialisation { get; set; }
+        public string Specialisation { get; set; } = string.Empty;
 
         [ForeignKey(nameof(UserId))]
-        public User User { get; set; }
+        public User User { get; set; } = null!;
 
         public ICollection<Appointment> Appointments { get; set; } = [];
         public ICollection<HealthRecord> HealthRecords { get; set; } = [];

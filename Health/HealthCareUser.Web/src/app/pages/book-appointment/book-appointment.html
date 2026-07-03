@@ -6,8 +6,12 @@
 
     <!-- Date -->
     <div class="form-group">
-      <label><i class="bi bi-calendar-date"></i> Select Date</label>
-      <input type="date"
+      <label for="appointmentDate">
+        <i class="bi bi-calendar-date"></i> Select Date
+      </label>
+
+      <input id="appointmentDate"
+             type="date"
              [min]="minDate"
              [ngModel]="date()"
              (ngModelChange)="date.set($event); onDateOrSpecializationChange()" />
@@ -15,8 +19,12 @@
 
     <!-- Specialization -->
     <div class="form-group">
-      <label><i class="bi bi-hospital"></i> Specialization</label>
-      <select [ngModel]="specialization()"
+      <label for="specialization">
+        <i class="bi bi-hospital"></i> Specialization
+      </label>
+
+      <select id="specialization"
+              [ngModel]="specialization()"
               (ngModelChange)="specialization.set($event); onDateOrSpecializationChange()">
 
         <option value="">-- Select --</option>
@@ -30,8 +38,12 @@
 
     <!-- Doctor -->
     <div class="form-group" *ngIf="doctors().length > 0">
-      <label><i class="bi bi-person-badge"></i> Doctor</label>
-      <select [ngModel]="selectedDoctorId()"
+      <label for="doctor">
+        <i class="bi bi-person-badge"></i> Doctor
+      </label>
+
+      <select id="doctor"
+              [ngModel]="selectedDoctorId()"
               (ngModelChange)="selectedDoctorId.set($event); onDoctorChange()">
 
         <option value="">-- Select Doctor --</option>
@@ -45,8 +57,12 @@
 
     <!-- Time Slots -->
     <div class="form-group" *ngIf="timeSlots().length > 0">
-      <label><i class="bi bi-clock"></i> Time Slot</label>
-      <select [ngModel]="selectedSlot()"
+      <label for="timeSlot">
+        <i class="bi bi-clock"></i> Time Slot
+      </label>
+
+      <select id="timeSlot"
+              [ngModel]="selectedSlot()"
               (ngModelChange)="selectedSlot.set($event)">
 
         <option value="">-- Select Slot --</option>

@@ -4,6 +4,8 @@ using Microsoft.JSInterop;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 
+namespace HealthCareAdmin.Web.Services;
+
 public class AppointmentService
 {
     private readonly HttpClient _httpClient;

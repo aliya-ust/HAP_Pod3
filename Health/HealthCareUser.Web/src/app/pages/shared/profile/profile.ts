@@ -21,10 +21,10 @@ export class ProfileComponent implements OnInit {
   patient = signal<PatientProfile | null>(null);
   doctor = signal<DoctorProfile | null>(null);
 
-  // ✅ dialog control
+  // dialog control
   isEditOpen = signal(false);
 
-  // ✅ editable data (no email & DOB)
+  // editable data (no email & DOB)
   editData: any = {
     fullName: '',
     phoneNumber: '',
@@ -54,7 +54,7 @@ export class ProfileComponent implements OnInit {
     }
   }
 
-  // ✅ load profile
+  // load profile
   loadPatient() {
     this.patientService.getProfile().subscribe({
       next: (data) => this.patient.set(data),
@@ -62,7 +62,7 @@ export class ProfileComponent implements OnInit {
     });
   }
 
-  // ✅ open dialog
+  // open dialog
   openEdit() {
     const p = this.patient();
 
@@ -78,7 +78,7 @@ export class ProfileComponent implements OnInit {
     this.isEditOpen.set(true);
   }
 
-  // ✅ close dialog
+  // close dialog
   closeEdit() {
     this.isEditOpen.set(false);
   }

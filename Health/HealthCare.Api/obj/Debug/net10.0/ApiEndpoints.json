@@ -525,7 +525,7 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "DashboardController",
+    "ContainingType": "HealthCare.Api.Controllers.DashboardController",
     "Method": "GetDashboard",
     "RelativePath": "api/dashboard",
     "HttpMethod": "GET",
@@ -535,7 +535,7 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "DashboardController",
+    "ContainingType": "HealthCare.Api.Controllers.DashboardController",
     "Method": "GetDoctorDashboard",
     "RelativePath": "api/dashboard/doctor",
     "HttpMethod": "GET",
@@ -545,7 +545,7 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "DashboardController",
+    "ContainingType": "HealthCare.Api.Controllers.DashboardController",
     "Method": "GetPatientDashboard",
     "RelativePath": "api/dashboard/patient",
     "HttpMethod": "GET",
