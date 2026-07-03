@@ -1,9 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { PatientSidebarComponent } from '../../shared/patient-sidebar/patient-sidebar.component';
-import { Router, NavigationEnd } from '@angular/router';
-import { ChangeDetectorRef } from '@angular/core';
+import { Router} from '@angular/router';
+
 
 
 @Component({
@@ -18,7 +18,7 @@ export class MyAppointmentsComponent implements OnInit {
   appointments: any[] = [];
   loading: boolean = true;
 
-  constructor(private http: HttpClient, private router: Router, private cd: ChangeDetectorRef) { }
+  constructor(private readonly http: HttpClient, private readonly router: Router, private readonly cd: ChangeDetectorRef) { }
 
   ngOnInit() {
     this.getAppointments();

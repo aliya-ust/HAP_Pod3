@@ -1,9 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { PatientSidebarComponent } from '../../shared/patient-sidebar/patient-sidebar.component';
-import { ChangeDetectorRef } from '@angular/core';
 
 @Component({
   selector: 'app-book-appointment',
@@ -37,7 +36,7 @@ export class BookAppointmentComponent implements OnInit {
     "Endocrinology", "Gastroenterology", "Pulmonology", "Nephrology"
   ];
 
-  constructor(private http: HttpClient, private cdr: ChangeDetectorRef) { }
+  constructor(private readonly http: HttpClient, private readonly cdr: ChangeDetectorRef) { }
 
   ngOnInit() {
     this.minDate = new Date().toISOString().split('T')[0];

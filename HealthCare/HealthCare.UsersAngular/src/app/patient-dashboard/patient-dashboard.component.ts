@@ -1,7 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { ChangeDetectorRef } from '@angular/core';
 
 import { PatientSidebarComponent }
   from '../shared/patient-sidebar/patient-sidebar.component';
@@ -23,7 +22,7 @@ export class PatientDashboardComponent implements OnInit {
     latestRecordsCount: 0
   };
 
-  constructor(private http: HttpClient, private cdr: ChangeDetectorRef) { }
+  constructor(private readonly http: HttpClient, private readonly cdr: ChangeDetectorRef) { }
 
   ngOnInit() {
     this.getDashboardData();

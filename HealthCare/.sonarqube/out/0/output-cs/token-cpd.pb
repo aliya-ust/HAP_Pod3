@@ -208,7 +208,48 @@ HealthCare
 ;- .
 }/ 0
 } 
-} Š
+} ù
+cC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\Patient\PatientFilter.cs
+	namespace 	
+
+HealthCare
+ 
+. 
+Shared 
+. 
+DTOs  
+.  !
+Patient! (
+{ 
+public 
+
+class 
+PatientFilter 
+:  
+PaginationParams! 1
+{ 
+public 
+bool 
+? 
+HasInsurance !
+{" #
+get$ '
+;' (
+set) ,
+;, -
+}. /
+public 
+string 
+? 
+FullName 
+{  !
+get" %
+;% &
+set' *
+;* +
+}, -
+} 
+} Š
 dC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\Patient\PatientListDto.cs
 	namespace 	
 
@@ -380,48 +421,7 @@ HealthCare
 )J K
 ;K L
 } 
-} ù
-cC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\Patient\PatientFilter.cs
-	namespace 	
-
-HealthCare
- 
-. 
-Shared 
-. 
-DTOs  
-.  !
-Patient! (
-{ 
-public 
-
-class 
-PatientFilter 
-:  
-PaginationParams! 1
-{ 
-public 
-bool 
-? 
-HasInsurance !
-{" #
-get$ '
-;' (
-set) ,
-;, -
-}. /
-public 
-string 
-? 
-FullName 
-{  !
-get" %
-;% &
-set' *
-;* +
-}, -
-} 
-} Í
+} Í
 iC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\Patient\PatientDashboardDto.cs
 	namespace 	
 
@@ -1891,59 +1891,7 @@ HealthCare
 )S T
 ;T U
 } 
-} ž
-pC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\Doctor\AvailableDoctorsResponseDto.cs
-	namespace 	
-
-HealthCare
- 
-. 
-Shared 
-. 
-DTOs  
-.  !
-Response! )
-{ 
-public 
-
-class '
-AvailableDoctorsResponseDto ,
-{ 
-public 
-List 
-< 
-DoctorListDto !
->! "
-Doctors# *
-{+ ,
-get- 0
-;0 1
-set2 5
-;5 6
-}7 8
-=9 :
-new; >
-(> ?
-)? @
-;@ A
-public 
-string 
-Message 
-{ 
-get  #
-;# $
-set% (
-;( )
-}* +
-=, -
-string. 4
-.4 5
-Empty5 :
-;: ;
-}		 
-}
-
- ·
+} ·
 cC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\Doctor\CreateLeaveDto.cs
 	namespace 	
 
@@ -2269,7 +2217,59 @@ HealthCare
 )'': ;
 ;''; <
 }(( 
-})) ý
+})) ž
+pC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\Doctor\AvailableDoctorsResponseDto.cs
+	namespace 	
+
+HealthCare
+ 
+. 
+Shared 
+. 
+DTOs  
+.  !
+Response! )
+{ 
+public 
+
+class '
+AvailableDoctorsResponseDto ,
+{ 
+public 
+List 
+< 
+DoctorListDto !
+>! "
+Doctors# *
+{+ ,
+get- 0
+;0 1
+set2 5
+;5 6
+}7 8
+=9 :
+new; >
+(> ?
+)? @
+;@ A
+public 
+string 
+Message 
+{ 
+get  #
+;# $
+set% (
+;( )
+}* +
+=, -
+string. 4
+.4 5
+Empty5 :
+;: ;
+}		 
+}
+
+ ý
 ZC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\AuthResponse.cs
 	namespace 	
 

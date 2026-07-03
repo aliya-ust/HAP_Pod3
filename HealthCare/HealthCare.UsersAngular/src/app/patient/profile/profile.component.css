@@ -73,7 +73,7 @@
 }
 
   .avatar i {
-    color: white;
+    color: #ffffff;
     font-size: 28px;
   }
 
@@ -89,7 +89,7 @@
 
 .active {
   background: #d4edda;
-  color: green;
+  color: #008000;
   padding: 4px 10px;
   border-radius: 10px;
   font-size: 12px;
@@ -152,7 +152,7 @@
   border: none;
   border-radius: 10px;
   background: linear-gradient(to right,#4c6ef5,#4361ee);
-  color: white;
+  color: #ffffff;
   cursor: pointer;
   font-size: 15px;
   transition: 0.3s;
@@ -182,7 +182,7 @@
 
 .success-box {
   width: 380px;
-  background: white;
+  background: #ffffff;
   border-radius: 18px;
   overflow: hidden;
   box-shadow: 0 15px 40px rgba(0,0,0,0.3);
@@ -193,7 +193,7 @@
   background: linear-gradient(135deg, #0b1b3a, #1f6feb, #4fc3f7);
   padding: 25px;
   text-align: center;
-  color: white;
+  color: #ffffff;
 }
 
   .success-header h3 {
@@ -226,7 +226,7 @@
   border: none;
   border-radius: 30px;
   background: linear-gradient(135deg, #0b1b3a, #1f6feb);
-  color: white;
+  color: #ffffff;
   font-size: 16px;
   cursor: pointer;
   transition: 0.3s;

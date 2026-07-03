@@ -38,21 +38,21 @@ dC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\Pati
 
  
 
-  â
-cC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\Patient\PatientFilter.cs
-
- 
-
- !
-
- è
+  è
 iC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\Patient\PatientDashboardDto.cs
 
  $
 
  ,
 
- %¢
+ %â
+cC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\Patient\PatientFilter.cs
+
+ 
+
+ !
+
+ ¢
 fC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\Patient\CreatePatientDto.cs
 
  !
@@ -87,12 +87,19 @@ fC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\Pati
 
  
 
- á
-mC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\HealthRecord\HealthRecordFilter.cs
+ Õ
+YC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\PagedResult.cs
 
- #
+ 
+  
 
- "¢
+ #
+
+ 
+ 		H P
+ 		3 =
+
+		 ¢
 pC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\HealthRecord\UpdateHealthRecordDto.cs
 
  &
@@ -122,43 +129,12 @@ nC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\Heal
 
  "
 
- ü
-aC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\Doctor\DoctorFilter.cs
+ á
+mC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\HealthRecord\HealthRecordFilter.cs
 
- 
+ #
 
- 
-
- %
-
- 
-
-		 &Õ
-YC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\PagedResult.cs
-
- 
-  
-
- #
-
- 
- 		H P
- 		3 =
-
-		 ®
-^C:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\ErrorResponseDto.cs
-
- 
-
- 
-
- 
-
- 
-
- !
-
-		 ñ
+ "ñ
 dC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\Doctor\UpdateDoctorDto.cs
 
 		  
@@ -167,54 +143,7 @@ dC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\Doct
 
 $ 2
 
- %ñ
-dC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\Doctor\DoctoSummaryDto.cs
-
- !
-
- 
-
-  
-
-		 "∆
-dC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\Doctor\CreateDoctorDto.cs
-
-  
-
-
-
- 
-
- $
-
- 
-
- 
-
- %
-
-## '
-
-'' %ƒ
-bC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\Doctor\DoctorListDto.cs
-
- 
-
- 
-
- 
-
- $
-
- $
-
-		 &
-
-
-
- 
-
- ˛
+ %˛
 pC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\HealthRecord\CreateHealthRecordDto.cs
 
  &
@@ -233,7 +162,70 @@ pC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\Heal
 = B 
 
 V g
-" +/ 8è
+" +/ 8®
+^C:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\ErrorResponseDto.cs
+
+ 
+
+ 
+
+ 
+
+ 
+
+ !
+
+		 ƒ
+bC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\Doctor\DoctorListDto.cs
+
+ 
+
+ 
+
+ 
+
+ $
+
+ $
+
+		 &
+
+
+
+ 
+
+ ñ
+dC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\Doctor\DoctoSummaryDto.cs
+
+ !
+
+ 
+
+  
+
+		 "ü
+aC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\Doctor\DoctorFilter.cs
+
+ 
+
+ 
+
+ %
+
+ 
+
+		 &•
+gC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\Doctor\DoctorDashboardDto.cs
+
+ #
+
+ '
+
+ "
+
+		 !
+
+ *è
 iC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\Doctor\CreateLeaveResultDto.cs
 
  %
@@ -249,32 +241,33 @@ cC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\Doct
 
 
 
- ñ
+ ∆
+dC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\Doctor\CreateDoctorDto.cs
+
+  
+
+
+
+ 
+
+ $
+
+ 
+
+ 
+
+ %
+
+## '
+
+'' %ñ
 pC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\Doctor\AvailableDoctorsResponseDto.cs
 
  ,
 
 # *
 
- •
-gC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\Doctor\DoctorDashboardDto.cs
-
- #
-
- '
-
- "
-
-		 !
-
- *î
-nC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\Authentication\ChangePasswordDto.cs
-
- "
-
- %
-
- !å
+ å
 ZC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\AuthResponse.cs
 
  
@@ -283,7 +276,36 @@ ZC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\Auth
 
  
 
- î
+ ã
+eC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\Authentication\LoginDto.cs
+
+ 
+
+ 
+
+ î
+nC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\Authentication\ChangePasswordDto.cs
+
+ "
+
+ %
+
+ !¬
+lC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\Authentication\AuthResponseDto.cs
+
+  
+
+ !
+
+ 
+
+ 
+
+ 
+
+		 
+
+ î
 nC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\Appointment\UpdateAppointmentDto.cs
 
  %
@@ -308,29 +330,7 @@ nC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\Appo
 = B 
 
 V g
-" &* .¬
-lC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\Authentication\AuthResponseDto.cs
-
-  
-
- !
-
- 
-
- 
-
- 
-
-		 
-
- ã
-eC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\Authentication\LoginDto.cs
-
- 
-
- 
-
- π
+" &* .π
 oC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\Appointment\AppointmentSummaryDto.cs
 
  &

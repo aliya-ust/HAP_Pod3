@@ -142,27 +142,6 @@
         {
           "ruleId": "S1144",
           "level": "warning",
-          "message": "Remove the unused private method 'RedirectToLogin'.",
-          "locations": [
-            {
-              "resultFile": {
-                "uri": "file:///C:/Users/310055/source/repos/UST-Live-01/HealthCare/HealthCare.AdminBlazor/Components/Layout/MainLayout.razor",
-                "region": {
-                  "startLine": 92,
-                  "startColumn": 24,
-                  "endLine": 92,
-                  "endColumn": 39
-                }
-              }
-            }
-          ],
-          "properties": {
-            "warningLevel": 1
-          }
-        },
-        {
-          "ruleId": "S1144",
-          "level": "warning",
           "message": "Remove the unused private method 'CloseEditModal'.",
           "locations": [
             {
@@ -299,6 +278,27 @@
                   "startColumn": 18,
                   "endLine": 101,
                   "endColumn": 35
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "S1144",
+          "level": "warning",
+          "message": "Remove the unused private method 'RedirectToLogin'.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///C:/Users/310055/source/repos/UST-Live-01/HealthCare/HealthCare.AdminBlazor/Components/Layout/MainLayout.razor",
+                "region": {
+                  "startLine": 92,
+                  "startColumn": 24,
+                  "endLine": 92,
+                  "endColumn": 39
                 }
               }
             }

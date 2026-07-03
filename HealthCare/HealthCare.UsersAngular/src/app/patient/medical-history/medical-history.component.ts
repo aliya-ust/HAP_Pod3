@@ -1,8 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { PatientSidebarComponent } from '../../shared/patient-sidebar/patient-sidebar.component';
-import { ChangeDetectorRef } from '@angular/core';
 
 
 @Component({
@@ -17,7 +16,7 @@ export class MedicalHistoryComponent implements OnInit {
   records: any[] = [];
   loading: boolean = true;
 
-  constructor(private http: HttpClient, private cd: ChangeDetectorRef) { }
+  constructor(private readonly http: HttpClient, private readonly cd: ChangeDetectorRef) { }
 
   ngOnInit() {
     this.loadMedicalHistory();

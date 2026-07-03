@@ -44,7 +44,7 @@ export class LoginComponent implements OnInit {
 
       next: (res: any) => {
 
-        if (!res || !res.accessToken) {
+        if (!res?.accessToken) {
           this.errors.top = 'Invalid email or password';
           return;
         }
@@ -54,7 +54,7 @@ export class LoginComponent implements OnInit {
 
         if (res.role === 'Admin') {
 
-          window.location.href =
+          globalThis.location.href =
             'https://localhost:7206/dashboard?token=' + res.accessToken;
 
         } else if (res.role === 'Patient') {

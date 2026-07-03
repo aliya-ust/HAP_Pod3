@@ -12,22 +12,22 @@ rC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\Comp
 pC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\Components\Patient\PatientTable.razor 8r8 #$)*014678;=AHIJKNOPS]^`acdfgijlmnoqrsuvwyz{xÇ #$)*04;ANnsuwyô
 vC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\Components\Patient\DeletePatientModal.razor 8
 r#')+-./02345xÇ/4É
-jC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\Components\Layout\NavMenu.razor 8r	%-./01Ç/0Ÿ
-mC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\Components\Layout\MainLayout.razor 8rC "#$%&'(*+-/1235689;<=?@BCEFGHIJLMNPQRSTUVWXYZ\]^_`bcdexÇ&*+-13569;@CEGHILNPRS^b|
+jC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\Components\Layout\NavMenu.razor 8r	%-./01Ç/0ç
+vC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\Components\Doctor\RegisterDoctorModal.razor# 8%r∏ ')*+,.658ABDKRT[_ijmnpruÇÖÜáâäãåçèêëíìïñóòôõúùü†¢£•¶ß©´¨≠ÆØ∞≤≥∂∏π∫ªºæø¿¬ƒ≈∆» ÀÃÕœ–—“‘’◊⁄›ﬁﬂ‡„‰ÂÊÁxÇO ')+.58ABKRT[_imnpuëíùü†¢ß©´≠Æ≤ªºæø∆» ÃÕ“‘◊⁄›ÂÊ|
 nC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\Components\Layout\EmptyLayout.razor8rÇÇ
-tC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\Components\Doctor\UpdateDoctorModal.razor 8r]	&(/23459@BHW[\^_abdegijklmnopqrstuvxyz{}ÄÅÉÑÖÜàäãåçéèêëìîïñxÇ"	&(/249@BkmoqrvxÅÖÜàäãèïç
-vC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\Components\Doctor\RegisterDoctorModal.razor# 8%r∏ ')*+,.658ABDKRT[_ijmnpruÇÖÜáâäãåçèêëíìïñóòôõúùü†¢£•¶ß©´¨≠ÆØ∞≤≥∂∏π∫ªºæø¿¬ƒ≈∆» ÀÃÕœ–—“‘’◊⁄›ﬁﬂ‡„‰ÂÊÁxÇO ')+.58ABKRT[_imnpuëíùü†¢ß©´≠Æ≤ªºæø∆» ÃÕ“‘◊⁄›ÂÊ—
+tC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\Components\Doctor\UpdateDoctorModal.razor 8r]	&(/23459@BHW[\^_abdegijklmnopqrstuvxyz{}ÄÅÉÑÖÜàäãåçéèêëìîïñxÇ"	&(/249@BkmoqrvxÅÖÜàäãèïŸ
+mC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\Components\Layout\MainLayout.razor 8rC "#$%&'(*+-/1235689;<=?@BCEFGHIJLMNPQRSTUVWXYZ\]^_`bcdexÇ&*+-13569;@CEGHILNPRS^bˆ
+yC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\Components\Appointment\AppointmentReport.razor  
+8jîr¢ 89:<=>?@ABCEFGLMNOPVbchlmvxz|}ÅÇÖÜáàâãåçéèíìîñóòôöúùü†°¢§¶ß®©™¨≠∞±≤≥¥∂∑∏π∫ºΩæ¿¡¬√ƒ∆«»… ÃÕŒxÇG8<>?@ABCEFLhmxzáàçéîñóòú°¢§¶ß®¨≤¥∂∑∏º¬ƒ∆«»Ãí
+tC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\Components\Doctor\DeleteDoctorModal.razor 8
+r	%)*+-.xÇ-.—
 pC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\Components\Doctor\DoctorToolbar.razor 8r=
 	"(01346789:<=>@ABCDEFGIJLMOPRSTUVWXZ[^_`abcefx
 Ç>@BFIOPTUVWZ`abceƒ
-nC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\Components\Doctor\DoctorTable.razor 8r1!#&'046<BCDEHKUVXY[\^_abdefhijlmnoqrsuvwxÇ!#&'046<Hfhinsuví
-tC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\Components\Doctor\DeleteDoctorModal.razor 8
-r	%)*+-.xÇ-.ˆ
-yC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\Components\Appointment\AppointmentReport.razor  
-8jîr¢ 89:<=>?@ABCEFGLMNOPVbchlmvxz|}ÅÇÖÜáàâãåçéèíìîñóòôöúùü†°¢§¶ß®©™¨≠∞±≤≥¥∂∑∏π∫ºΩæ¿¡¬√ƒ∆«»… ÃÕŒxÇG8<>?@ABCEFLhmxzáàçéîñóòú°¢§¶ß®¨≤¥∂∑∏º¬ƒ∆«»Ãd
-TC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\App.razor8rÇõ
+nC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\Components\Doctor\DoctorTable.razor 8r1!#&'046<BCDEHKUVXY[\^_abdefhijlmnoqrsuvwxÇ!#&'046<Hfhinsuvõ
 aC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\Services\JwtService.cs 8r!
- "#$%&'xÇ$%ø
+ "#$%&'xÇ$%d
+TC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\App.razor8rÇø
 jC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\Services\PatientAdminService.cs 8
 r0	
 !#$&')+-.012346789:<=>?@AxÇ#$&')+-2389>?‹
