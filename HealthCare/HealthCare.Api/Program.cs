@@ -1,7 +1,10 @@
+
 using HealthCare.Api.Data;
 using HealthCare.Api.Mapping;
+using HealthCare.Api.Messaging;
 using HealthCare.Api.Middleware;
 using HealthCare.Api.Models;
+using HealthCare.Api.Options;
 using HealthCare.Api.Repositories.Implementations;
 using HealthCare.Api.Repositories.Interfaces;
 using HealthCare.Api.Services.Implementations;
@@ -86,9 +89,11 @@ builder.Services.AddScoped<IDoctorService, DoctorService>();
 builder.Services.AddScoped<IAppointmentService, AppointmentService>();
 builder.Services.AddScoped<IHealthRecordService, HealthRecordService>();
 builder.Services.AddScoped<IJwtService, JwtService>();
+builder.Services.AddSingleton<RabbitMQPublisher>();
+builder.Services.AddHostedService<AppointmentBookedEventConsumer>();
 
 
- 
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowClients", policy =>

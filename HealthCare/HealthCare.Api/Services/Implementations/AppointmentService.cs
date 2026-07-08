@@ -2,12 +2,16 @@
 using HealthCare.Api.Data;
 using HealthCare.Api.DTOs;
 using HealthCare.Api.DTOs.Appointment;
+using HealthCare.Api.Events;
+using HealthCare.Api.Messaging;
 using HealthCare.Api.Models;
 using HealthCare.Api.Repositories.Interfaces;
 using HealthCare.Api.Services.Interfaces;
 using HealthCare.Shared.DTOs;
 using HealthCare.Shared.DTOs.Appointment;
 using Microsoft.EntityFrameworkCore;
+using HealthCare.Api.Events;
+using HealthCare.Api.Messaging;
 
 namespace HealthCare.Api.Services.Implementations
 {
@@ -17,13 +21,20 @@ namespace HealthCare.Api.Services.Implementations
         private readonly IDoctorService _doctorService;
         private readonly HealthCareDbContext _context;
         private readonly IMapper _mapper;
+        private readonly RabbitMQPublisher _publisher;
 
-        public AppointmentService(IAppointmentRepository repository, IDoctorService doctorService, HealthCareDbContext context, IMapper mapper)
+        public AppointmentService(
+    IAppointmentRepository repository,
+    IDoctorService doctorService,
+    HealthCareDbContext context,
+    IMapper mapper,
+    RabbitMQPublisher publisher)
         {
             _repository = repository;
             _doctorService = doctorService;
             _context = context;
             _mapper = mapper;
+            _publisher = publisher;
         }
 
         public async Task<AppointmentListDto?> GetByIdAsync(int id)
@@ -115,10 +126,26 @@ namespace HealthCare.Api.Services.Implementations
             {
                 await _repository.AddAsync(appointment);
                 await _context.SaveChangesAsync();
+
+                var patient = await _context.Patients
+                    .FirstOrDefaultAsync(p => p.PatientId == patientId);
+
+                await _publisher.PublishAsync(
+                    new AppointmentBookedEvent
+                    {
+                        AppointmentId = appointment.AppointmentId,
+                        PatientName = patient?.FullName ?? "Unknown",
+                        DoctorId = appointment.DoctorId,
+                        ScheduledDate = appointment.ScheduledDate,
+                        TimeSlot = appointment.TimeSlot,
+                        OccurredAt = DateTime.UtcNow
+                    });
             }
             catch (DbUpdateException ex)
             {
-                throw new InvalidOperationException("Failed to book the appointment.", ex);
+                throw new InvalidOperationException(
+                    "Failed to book the appointment.",
+                    ex);
             }
         }
 
@@ -171,9 +198,15 @@ namespace HealthCare.Api.Services.Implementations
                 throw new InvalidOperationException("Cannot check availability for a past date.");
 
             var allSlots = await _doctorService.GetSlots(doctorId);
+
+            if (allSlots == null || allSlots.Count == 0)
+                return new List<string>();
+
             var bookedSlots = await _repository.BookedTimeSlots(date, doctorId);
 
-            var freeSlots = allSlots.Except(bookedSlots).ToList();
+            var freeSlots = allSlots
+                .Except(bookedSlots)
+                .ToList();
 
             return freeSlots;
         }

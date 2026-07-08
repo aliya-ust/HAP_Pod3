@@ -160,10 +160,10 @@ namespace HealthCare.Api.Services.Implementations
         {
             var slots = await _repository.GetSlots(doctorId);
 
-            if (slots.Count == 0)
-                throw new InvalidOperationException("No available slots found for this doctor.");
+            //if (slots.Count == 0)
+            //    throw new InvalidOperationException("No available slots found for this doctor.");
 
-            return slots;
+            return slots ?? new List<string>(); 
         }
 
         public async Task CreateSlots(int id, List<string> timeslots)
