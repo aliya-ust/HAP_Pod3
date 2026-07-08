@@ -326,5 +326,357 @@ namespace HealthCare.Api.Tests
             Assert.NotEmpty(result.Doctors);
             Assert.Equal(string.Empty, result.Message);
         }
+
+        [Fact]
+        public async Task GetDashboardAsync_ShouldReturnDashboardData()
+        {
+            var today = DateOnly.FromDateTime(DateTime.Today);
+
+            _context.Appointments.AddRange(
+                new Appointment
+                {
+                    PatientId = 1,
+                    DoctorId = 1,
+                    ScheduledDate = today,
+                    TimeSlot = "09:00-10:00",
+                    Status = "Confirmed"
+                },
+                new Appointment
+                {
+                    PatientId = 2,
+                    DoctorId = 1,
+                    ScheduledDate = today.AddDays(1),
+                    TimeSlot = "10:00-11:00",
+                    Status = "Pending"
+                },
+                new Appointment
+                {
+                    PatientId = 3,
+                    DoctorId = 1,
+                    ScheduledDate = today,
+                    TimeSlot = "11:00-12:00",
+                    Status = "Completed"
+                }
+            );
+
+            _context.DoctorLeaves.Add(
+                new DoctorLeaves
+                {
+                    DoctorId = 1,
+                    LeaveDate = today.AddDays(2)
+                });
+
+            await _context.SaveChangesAsync();
+
+            var result = await _service.GetDashboardAsync(1);
+
+            Assert.Equal(3, result.UpcomingAppointments);
+            Assert.Equal(1, result.PatientsTreated);
+            Assert.Equal(1, result.UpcomingLeaves);
+            Assert.Equal(2, result.TodaysSchedule.Count);
+        }
+
+        [Fact]
+        public async Task GetDashboardAsync_ShouldReturnEmptyDashboard()
+        {
+            var result = await _service.GetDashboardAsync(1);
+
+            Assert.NotNull(result);
+            Assert.Equal(0, result.UpcomingAppointments);
+            Assert.Equal(0, result.PatientsTreated);
+            Assert.Equal(0, result.UpcomingLeaves);
+            Assert.Empty(result.TodaysSchedule);
+        }
+
+        [Fact]
+        public async Task GetDashboardAsync_ShouldExcludeCancelledAppointments()
+        {
+            var today = DateOnly.FromDateTime(DateTime.Today);
+
+            _context.Appointments.AddRange(
+                new Appointment
+                {
+                    PatientId = 1,
+                    DoctorId = 1,
+                    ScheduledDate = today,
+                    TimeSlot = "09:00-10:00",
+                    Status = "Cancelled"
+                },
+                new Appointment
+                {
+                    PatientId = 2,
+                    DoctorId = 1,
+                    ScheduledDate = today,
+                    TimeSlot = "10:00-11:00",
+                    Status = "Confirmed"
+                }
+            );
+
+            await _context.SaveChangesAsync();
+
+            var result = await _service.GetDashboardAsync(1);
+
+            Assert.Equal(1, result.UpcomingAppointments);
+            Assert.Single(result.TodaysSchedule);
+            Assert.Equal("10:00-11:00", result.TodaysSchedule[0]);
+        }
+
+        [Fact]
+        public async Task AvailableDoctors_ShouldReturnMessage_WhenNoDoctorsFound()
+        {
+            var result = await _service.AvailableDoctors(
+                "Cardiology",
+                DateOnly.FromDateTime(DateTime.Today));
+
+            Assert.Empty(result.Doctors);
+            Assert.Equal(
+                "No doctors available for this specialization",
+                result.Message);
+        }
+
+        [Fact]
+        public async Task AvailableDoctors_ShouldReturnMessage_WhenDoctorInactive()
+        {
+            _context.Doctors.Add(
+                new Doctor
+                {
+                    DoctorId = 1,
+                    FullName = "Doctor",
+                    Specialisation = "Cardiology",
+                    YearsOfExperience = 5,
+                    ConsultationFee = 500,
+                    IsActive = false
+                });
+
+            await _context.SaveChangesAsync();
+
+            var result = await _service.AvailableDoctors(
+                "Cardiology",
+                DateOnly.FromDateTime(DateTime.Today));
+
+            Assert.Empty(result.Doctors);
+            Assert.Equal("Doctor is not active", result.Message);
+        }
+
+        [Fact]
+        public async Task AvailableDoctors_ShouldReturnMessage_WhenDoctorOnLeave()
+        {
+            var date = DateOnly.FromDateTime(DateTime.Today);
+
+            _context.Doctors.Add(
+                new Doctor
+                {
+                    DoctorId = 1,
+                    FullName = "Doctor",
+                    Specialisation = "Cardiology",
+                    YearsOfExperience = 5,
+                    ConsultationFee = 500,
+                    IsActive = true
+                });
+
+            _context.DoctorLeaves.Add(
+                new DoctorLeaves
+                {
+                    DoctorId = 1,
+                    LeaveDate = date
+                });
+
+            await _context.SaveChangesAsync();
+
+            var result = await _service.AvailableDoctors(
+                "Cardiology",
+                date);
+
+            Assert.Empty(result.Doctors);
+            Assert.Equal("Doctor is on leave", result.Message);
+        }
+
+        [Fact]
+        public async Task GetSummaryAsync_ShouldReturnDoctorSummary()
+        {
+            _context.Doctors.AddRange(
+                new Doctor
+                {
+                    DoctorId = 1,
+                    FullName = "Doctor1",
+                    Specialisation = "Cardiology",
+                    YearsOfExperience = 5,
+                    ConsultationFee = 500,
+                    IsActive = true,
+                    CreatedDate = DateTimeOffset.UtcNow
+                },
+                new Doctor
+                {
+                    DoctorId = 2,
+                    FullName = "Doctor2",
+                    Specialisation = "Dental",
+                    YearsOfExperience = 8,
+                    ConsultationFee = 700,
+                    IsActive = false,
+                    CreatedDate = DateTimeOffset.UtcNow
+                });
+
+            await _context.SaveChangesAsync();
+
+            var result = await _service.GetSummaryAsync();
+
+            Assert.Equal(2, result.TotalDoctors);
+            Assert.Equal(1, result.ActiveDoctors);
+            Assert.Equal(1, result.InactiveDoctors);
+        }
+
+        [Fact]
+        public async Task GetSummaryAsync_ShouldReturnEmptySummary_WhenNoDoctorsExist()
+        {
+            var result = await _service.GetSummaryAsync();
+
+            Assert.NotNull(result);
+            Assert.Equal(0, result.TotalDoctors);
+            Assert.Equal(0, result.ActiveDoctors);
+            Assert.Equal(0, result.InactiveDoctors);
+        }
+
+        [Fact]
+        public async Task GetAllAsync_ShouldHandleAscendingExperienceOrder()
+        {
+            var filter = new DoctorFilter
+            {
+                ExperienceOrder = "asc"
+            };
+
+            _repoMock.Setup(r => r.GetAllAsync(
+                It.IsAny<int>(),
+                It.IsAny<int>(),
+                It.IsAny<Expression<Func<Doctor, bool>>>(),
+                It.IsAny<Func<IQueryable<Doctor>, IOrderedQueryable<Doctor>>>()))
+                .ReturnsAsync(new PagedResult<Doctor>
+                {
+                    Items = new List<Doctor>(),
+                    PageNumber = 1,
+                    PageSize = 10,
+                    TotalCount = 0
+                });
+
+            var result = await _service.GetAllAsync(filter);
+
+            Assert.NotNull(result);
+        }
+
+        [Fact]
+        public async Task GetAllAsync_ShouldHandleDescendingExperienceOrder()
+        {
+            var filter = new DoctorFilter
+            {
+                ExperienceOrder = "desc"
+            };
+
+            _repoMock.Setup(r => r.GetAllAsync(
+                It.IsAny<int>(),
+                It.IsAny<int>(),
+                It.IsAny<Expression<Func<Doctor, bool>>>(),
+                It.IsAny<Func<IQueryable<Doctor>, IOrderedQueryable<Doctor>>>()))
+                .ReturnsAsync(new PagedResult<Doctor>
+                {
+                    Items = new List<Doctor>(),
+                    PageNumber = 1,
+                    PageSize = 10,
+                    TotalCount = 0
+                });
+
+            var result = await _service.GetAllAsync(filter);
+
+            Assert.NotNull(result);
+        }
+
+        [Fact]
+        public async Task UpdateStatusAsync_ShouldThrow_WhenDoctorNotFound()
+        {
+            _repoMock.Setup(r => r.GetByIdAsync(1))
+                .ReturnsAsync((Doctor?)null);
+
+            await Assert.ThrowsAsync<InvalidOperationException>(() =>
+                _service.UpdateStatusAsync(1, true));
+        }
+
+        [Fact]
+        public async Task CreateLeave_ShouldCreateLeaves()
+        {
+            _repoMock.Setup(r => r.GetLeavesByDoctorId(1))
+                .ReturnsAsync(new List<DoctorLeaves>());
+
+            _repoMock.Setup(r => r.GetSlots(1))
+                .ReturnsAsync(new List<string> { "09:00-10:00" });
+
+            _appointmentRepoMock.Setup(r =>
+                r.BookedTimeSlots(It.IsAny<DateOnly>(), 1))
+                .ReturnsAsync(new List<string>());
+
+            var leaves = new List<CreateLeaveDto>
+    {
+        new()
+        {
+            LeaveDate = DateOnly.FromDateTime(DateTime.Today.AddDays(5))
+        }
+    };
+
+            await _service.CreateLeave(1, leaves);
+
+            _repoMock.Verify(r =>
+                r.CreateLeaves(1, It.IsAny<List<CreateLeaveDto>>()),
+                Times.Once);
+        }
+
+        [Fact]
+        public async Task GetByIdAsync_ShouldReturnEmptyEmail_WhenUserEmailNull()
+        {
+            var user = new IdentityUser
+            {
+                Id = "u1",
+                Email = null
+            };
+
+            var doctor = new Doctor
+            {
+                DoctorId = 1,
+                UserId = "u1",
+                FullName = "Doctor",
+                Specialisation = "Cardiology",
+                YearsOfExperience = 5,
+                ConsultationFee = 500
+            };
+
+            _context.Users.Add(user);
+            _context.Doctors.Add(doctor);
+
+            await _context.SaveChangesAsync();
+
+            var result = await _service.GetByIdAsync(1);
+
+            Assert.Equal(string.Empty, result!.Email);
+        }
+
+        [Fact]
+        public async Task DeleteAsync_ShouldThrowFriendlyMessage_WhenDbFails()
+        {
+            var doctor = new Doctor();
+
+            _repoMock.Setup(r => r.GetByIdAsync(1))
+                .ReturnsAsync(doctor);
+
+            _repoMock.Setup(r => r.DeleteAsync(1))
+                .ThrowsAsync(new DbUpdateException());
+
+            var ex = await Assert.ThrowsAsync<InvalidOperationException>(() =>
+                _service.DeleteAsync(1));
+
+            Assert.Equal(
+                "Failed to delete Doctor. It may be referenced by existing appointments or health records.",
+                ex.Message);
+
+            Assert.IsType<DbUpdateException>(ex.InnerException);
+        }
+
+
+
     }
 }

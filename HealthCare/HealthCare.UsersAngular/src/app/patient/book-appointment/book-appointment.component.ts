@@ -1,33 +1,37 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Component, OnInit, signal } from '@angular/core';
 import { PatientSidebarComponent } from '../../shared/patient-sidebar/patient-sidebar.component';
+
 
 @Component({
   selector: 'app-book-appointment',
   standalone: true,
-  imports: [CommonModule, FormsModule, PatientSidebarComponent],
+  imports: [CommonModule,PatientSidebarComponent],
   templateUrl: './book-appointment.component.html',
   styleUrls: ['./book-appointment.component.css']
 })
 export class BookAppointmentComponent implements OnInit {
 
   minDate: string = '';
-  selectedDate: string = '';
 
-  selectedSpecialization: string = '';
-  selectedDoctor: any = null;
-  selectedSlot: string = '';
-  noDoctorsMessage: string = '';
-  hasSearched: boolean = false;
-  showSuccessModal: boolean = false;
-  showErrorModal: boolean = false;
-  errorMessage: string = '';
-  isBooking = false;
+  // Signals for form inputs
+  selectedDate = signal<string>('');
+  selectedSpecialization = signal<string>('');
+  selectedDoctor = signal<any>(null);
+  selectedSlot = signal<string>('');
 
-  doctors: any[] = [];
-  timeSlots: string[] = [];
+  // Signals for UI state
+  hasSearched = signal<boolean>(false);
+  showSuccessModal = signal<boolean>(false);
+  showErrorModal = signal<boolean>(false);
+  errorMessage = signal<string>('');
+  noDoctorsMessage = signal<string>('');
+  isBooking = signal<boolean>(false);
+
+  // Signals for data
+  doctors = signal<any[]>([]);
+  timeSlots = signal<string[]>([]);
 
   specializations = [
     "GeneralMedicine", "Cardiology", "Dermatology", "Neurology",
@@ -36,35 +40,32 @@ export class BookAppointmentComponent implements OnInit {
     "Endocrinology", "Gastroenterology", "Pulmonology", "Nephrology"
   ];
 
-  constructor(private readonly http: HttpClient, private readonly cdr: ChangeDetectorRef) { }
+  constructor(private readonly http: HttpClient) { }
 
   ngOnInit() {
     this.minDate = new Date().toISOString().split('T')[0];
   }
 
-
   getDoctors() {
 
-    if (!this.selectedDate || !this.selectedSpecialization) {
-      this.hasSearched = false;
-
-      this.doctors = [];
-      this.timeSlots = [];
-      this.selectedDoctor = null;
-      this.selectedSlot = '';
-      this.noDoctorsMessage = '';
-
+    if (!this.selectedDate() || !this.selectedSpecialization()) {
+      this.hasSearched.set(false);
+      this.doctors.set([]);
+      this.timeSlots.set([]);
+      this.selectedDoctor.set(null);
+      this.selectedSlot.set('');
+      this.noDoctorsMessage.set('');
       return;
     }
 
     // Reset immediately
-    this.doctors = [];
-    this.timeSlots = [];
-    this.selectedDoctor = null;
-    this.selectedSlot = '';
-    this.noDoctorsMessage = '';
+    this.doctors.set([]);
+    this.timeSlots.set([]);
+    this.selectedDoctor.set(null);
+    this.selectedSlot.set('');
+    this.noDoctorsMessage.set('');
 
-    this.hasSearched = true;
+    this.hasSearched.set(true);
 
     const token = localStorage.getItem('token');
 
@@ -77,8 +78,8 @@ export class BookAppointmentComponent implements OnInit {
       {
         headers,
         params: {
-          specialisation: this.selectedSpecialization,
-          date: this.selectedDate
+          specialisation: this.selectedSpecialization(),
+          date: this.selectedDate()
         }
       }
     )
@@ -87,14 +88,13 @@ export class BookAppointmentComponent implements OnInit {
 
           console.log('Doctor API response', res);
 
-          this.doctors = res.doctors || [];
+          this.doctors.set(res.doctors || []);
 
-          if (this.doctors.length === 0) {
-            this.noDoctorsMessage =
-              res.message || 'Doctor is not available';
+          if (this.doctors().length === 0) {
+            this.noDoctorsMessage.set(
+              res.message || 'Doctor is not available'
+            );
           }
-
-          this.cdr.detectChanges();
         },
         error: (err) => {
           console.error(err);
@@ -106,10 +106,10 @@ export class BookAppointmentComponent implements OnInit {
 
   onDoctorChange() {
 
-    this.selectedSlot = '';
-    this.timeSlots = [];
+    this.selectedSlot.set('');
+    this.timeSlots.set([]);
 
-    if (!this.selectedDoctor || !this.selectedDate) return;
+    if (!this.selectedDoctor() || !this.selectedDate()) return;
 
     const token = localStorage.getItem('token');
 
@@ -122,41 +122,87 @@ export class BookAppointmentComponent implements OnInit {
       {
         headers,
         params: {
-          date: this.selectedDate,
-          doctorId: this.selectedDoctor.doctorId
+          date: this.selectedDate(),
+          doctorId: this.selectedDoctor().doctorId
         }
       }
     ).subscribe(res => {
       console.log("Slots:", res);
-      this.timeSlots = [...res];
-      this.cdr.detectChanges();
+      this.timeSlots.set([...res]);
     });
   }
 
   closeSuccessModal() {
-    this.showSuccessModal = false;
+    this.showSuccessModal.set(false);
+    this.showErrorModal.set(false);
 
-    // Optional reset
-    this.selectedDoctor = null;
-    this.selectedSlot = '';
+    // Reset form for new booking
+    this.selectedDate.set('');
+    this.selectedSpecialization.set('');
+    this.selectedDoctor.set(null);
+    this.selectedSlot.set('');
+    this.doctors.set([]);
+    this.timeSlots.set([]);
+    this.hasSearched.set(false);
+    this.errorMessage.set('');
+    this.noDoctorsMessage.set('');
   }
 
+  closeErrorModal() {
+    this.showErrorModal.set(false);
+    this.errorMessage.set('');
+  }
 
+  onDateChange(event: Event) {
+    const value = (event.target as HTMLInputElement).value;
+
+    this.selectedDate.set(value);
+
+    this.getDoctors();
+  }
+
+  onSpecializationChange(event: Event) {
+    const value = (event.target as HTMLSelectElement).value;
+
+    this.selectedSpecialization.set(value);
+
+    this.getDoctors();
+  }
+
+  onDoctorSelectChange(event: Event) {
+    const doctorId = Number(
+      (event.target as HTMLSelectElement).value
+    );
+
+    const doctor = this.doctors()
+      .find(d => d.doctorId === doctorId);
+
+    this.selectedDoctor.set(doctor ?? null);
+
+    this.onDoctorChange();
+  }
+
+  onSlotChange(event: Event) {
+    const value =
+      (event.target as HTMLSelectElement).value;
+
+    this.selectedSlot.set(value);
+  }
 
   bookAppointment() {
 
-    if (this.isBooking) return;
+    if (this.isBooking()) return;
 
-    if (!this.selectedDate ||
-      !this.selectedSpecialization ||
-      !this.selectedDoctor ||
-      !this.selectedSlot) {
+    if (!this.selectedDate() ||
+      !this.selectedSpecialization() ||
+      !this.selectedDoctor() ||
+      !this.selectedSlot()) {
 
       alert("Please select all fields before booking");
       return;
     }
 
-    this.isBooking = true;
+    this.isBooking.set(true);
 
     const token = localStorage.getItem('token');
 
@@ -165,9 +211,9 @@ export class BookAppointmentComponent implements OnInit {
     });
 
     const body = {
-      doctorId: this.selectedDoctor.doctorId,
-      scheduledDate: this.selectedDate,
-      timeSlot: this.selectedSlot
+      doctorId: this.selectedDoctor().doctorId,
+      scheduledDate: this.selectedDate(),
+      timeSlot: this.selectedSlot()
     };
 
     this.http.post(
@@ -176,18 +222,19 @@ export class BookAppointmentComponent implements OnInit {
       { headers }
     ).subscribe({
       next: () => {
-        this.showSuccessModal = true;
-        this.showErrorModal = false;
-        this.isBooking = false;
+        this.showSuccessModal.set(true);
+        this.showErrorModal.set(false);
+        this.isBooking.set(false);
       },
       error: (err) => {
-        this.errorMessage =
-          err.error?.message || "Unable to book appointment";
+        this.errorMessage.set(
+          err.error?.message || "Unable to book appointment"
+        );
 
-        this.showErrorModal = true;
-        this.showSuccessModal = false;
-        this.isBooking = false;
+        this.showErrorModal.set(true);
+        this.showSuccessModal.set(false);
+        this.isBooking.set(false);
       }
     });
   }
-}
+} 

@@ -8,6 +8,8 @@ using HealthCare.Shared.DTOs.Doctor;
 using HealthCare.Shared.DTOs.Response;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using Microsoft.Extensions.Caching.Distributed;
+using System.Text.Json;
 
 namespace HealthCare.Api.Services.Implementations
 {
@@ -17,14 +19,18 @@ namespace HealthCare.Api.Services.Implementations
         private readonly IAppointmentRepository _appointmentRepository;
         private readonly HealthCareDbContext _context;
         private readonly IMapper _mapper;
+        private readonly IDistributedCache _cache;
+        private readonly ILogger<DoctorService> _logger;
         private const string NotFoundExceptionMessage = "Doctor not found.";
 
-        public DoctorService(IDoctorRepository repository, IAppointmentRepository appointmentRepository, HealthCareDbContext context, IMapper mapper)
+        public DoctorService(IDoctorRepository repository, IAppointmentRepository appointmentRepository, HealthCareDbContext context, IMapper mapper, IDistributedCache cache, ILogger<DoctorService> logger)
         {
             _repository = repository;
             _appointmentRepository = appointmentRepository;
             _context = context;
             _mapper = mapper;
+            _cache = cache;
+            _logger = logger;
         }
 
         public async Task<DoctorListDto?> GetByIdAsync(int id)
@@ -202,13 +208,48 @@ namespace HealthCare.Api.Services.Implementations
             {
                 await _repository.CreateLeaves(id, leavesToCreate);
                 await _context.SaveChangesAsync();
+
+                    var doctor = await _context.Doctors
+                           .FirstAsync(d => d.DoctorId == id);
+
+                    foreach (var leave in leavesToCreate)
+                {
+
+                    var cacheKey =
+                        $"doctors:{doctor.Specialisation}:availability:{leave.LeaveDate}";
+
+                    await _cache.RemoveAsync(cacheKey);
+                }
             }
 
             return result;
         }
 
-        public async Task<AvailableDoctorsResponseDto> AvailableDoctors(string specialisation, DateOnly date)
+        public async Task<AvailableDoctorsResponseDto> AvailableDoctors(
+     string specialisation,
+     DateOnly date)
         {
+            var cacheKey =
+                $"doctors:{specialisation}:availability:{date}";
+
+            var cachedData =
+    await _cache.GetStringAsync(cacheKey);
+
+            if (!string.IsNullOrEmpty(cachedData))
+            {
+                _logger.LogInformation(
+                    "Doctor availability cache HIT. Key={Key}",
+                    cacheKey);
+
+                return JsonSerializer.Deserialize<
+                    AvailableDoctorsResponseDto>(
+                        cachedData)!;
+            }
+
+            _logger.LogInformation(
+                "Doctor availability cache MISS. Key={Key}",
+                cacheKey);
+
             var allDoctors = await _context.Doctors
                 .Where(d => d.Specialisation == specialisation)
                 .ToListAsync();
@@ -218,11 +259,13 @@ namespace HealthCare.Api.Services.Implementations
                 return new AvailableDoctorsResponseDto
                 {
                     Doctors = new List<DoctorListDto>(),
-                    Message = "No doctors available for this specialization"
+                    Message =
+                        "No doctors available for this specialization"
                 };
             }
 
-            var activeDoctors = allDoctors.Where(d => d.IsActive).ToList();
+            var activeDoctors =
+                allDoctors.Where(d => d.IsActive).ToList();
 
             if (activeDoctors.Count == 0)
             {
@@ -233,14 +276,17 @@ namespace HealthCare.Api.Services.Implementations
                 };
             }
 
-            var availableDoctors = new List<Doctor>();
+            var availableDoctors =
+                new List<Doctor>();
 
             foreach (var doctor in activeDoctors)
             {
-                var isOnLeave = await _context.DoctorLeaves
-                    .AnyAsync(l =>
-                        l.DoctorId == doctor.DoctorId &&
-                        l.LeaveDate == date);
+                var isOnLeave =
+                    await _context.DoctorLeaves
+                        .AnyAsync(l =>
+                            l.DoctorId ==
+                                doctor.DoctorId &&
+                            l.LeaveDate == date);
 
                 if (!isOnLeave)
                 {
@@ -248,22 +294,34 @@ namespace HealthCare.Api.Services.Implementations
                 }
             }
 
-            if (availableDoctors.Count == 0)
-            {
-                return new AvailableDoctorsResponseDto
+            var result =
+                _mapper.Map<List<DoctorListDto>>(
+                    availableDoctors);
+
+            var response =
+                new AvailableDoctorsResponseDto
                 {
-                    Doctors = new List<DoctorListDto>(),
-                    Message = "Doctor is on leave"
+                    Doctors = result,
+                    Message = result.Count == 0
+                        ? "Doctor is on leave"
+                        : ""
                 };
-            }
 
-            var result = _mapper.Map<List<DoctorListDto>>(availableDoctors);
 
-            return new AvailableDoctorsResponseDto
-            {
-                Doctors = result,
-                Message = ""
-            };
+            _logger.LogInformation(
+                "Caching doctor availability. Key={Key}, TTL=5 minutes",
+                cacheKey);
+
+            await _cache.SetStringAsync(
+                cacheKey,
+                JsonSerializer.Serialize(response),
+                new DistributedCacheEntryOptions
+                {
+                    AbsoluteExpirationRelativeToNow =
+                        TimeSpan.FromMinutes(5)
+                });
+
+            return response;
         }
 
         public async Task<DoctorSummaryDto> GetSummaryAsync()

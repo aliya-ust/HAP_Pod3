@@ -53,6 +53,123 @@ namespace HealthCare.Api.Tests
         }
 
         [Fact]
+        public async Task LoginAsync_ShouldThrow_WhenRoleNotAssigned()
+        {
+            var user = new IdentityUser
+            {
+                Id = "1",
+                Email = "test@test.com"
+            };
+
+            _userManagerMock.Setup(x =>
+                x.FindByEmailAsync(user.Email!))
+                .ReturnsAsync(user);
+
+            _userManagerMock.Setup(x =>
+                x.CheckPasswordAsync(user, It.IsAny<string>()))
+                .ReturnsAsync(true);
+
+            _userManagerMock.Setup(x =>
+                x.GetRolesAsync(user))
+                .ReturnsAsync(new List<string>());
+
+            await Assert.ThrowsAsync<InvalidOperationException>(() =>
+                _service.LoginAsync(new LoginDto
+                {
+                    Email = user.Email!,
+                    Password = "Password"
+                }));
+        }
+
+        [Fact]
+        public async Task LoginAsync_ShouldThrow_WhenPatientNotFound()
+        {
+            var user = new IdentityUser
+            {
+                Id = "1",
+                Email = "patient@test.com"
+            };
+
+            _userManagerMock.Setup(x => x.FindByEmailAsync(user.Email!))
+                .ReturnsAsync(user);
+
+            _userManagerMock.Setup(x => x.CheckPasswordAsync(user, It.IsAny<string>()))
+                .ReturnsAsync(true);
+
+            _userManagerMock.Setup(x => x.GetRolesAsync(user))
+                .ReturnsAsync(new List<string> { "Patient" });
+
+            _patientRepoMock.Setup(x =>
+                x.GetByUserIdAsync(user.Id))
+                .ReturnsAsync((Patient)null!);
+
+            await Assert.ThrowsAsync<InvalidOperationException>(() =>
+                _service.LoginAsync(new LoginDto
+                {
+                    Email = user.Email!,
+                    Password = "Password"
+                }));
+        }
+
+        [Fact]
+        public async Task LoginAsync_ShouldThrow_WhenDoctorNotFound()
+        {
+            var user = new IdentityUser
+            {
+                Id = "1",
+                Email = "doctor@test.com"
+            };
+
+            _userManagerMock.Setup(x => x.FindByEmailAsync(user.Email!))
+                .ReturnsAsync(user);
+
+            _userManagerMock.Setup(x => x.CheckPasswordAsync(user, It.IsAny<string>()))
+                .ReturnsAsync(true);
+
+            _userManagerMock.Setup(x => x.GetRolesAsync(user))
+                .ReturnsAsync(new List<string> { "Doctor" });
+
+            _doctorRepoMock.Setup(x =>
+                x.GetByUserIdAsync(user.Id))
+                .ReturnsAsync((Doctor)null!);
+
+            await Assert.ThrowsAsync<InvalidOperationException>(() =>
+                _service.LoginAsync(new LoginDto
+                {
+                    Email = user.Email!,
+                    Password = "Password"
+                }));
+        }
+
+        [Fact]
+        public async Task LoginAsync_ShouldThrow_WhenRoleInvalid()
+        {
+            var user = new IdentityUser
+            {
+                Id = "1",
+                Email = "user@test.com"
+            };
+
+            _userManagerMock.Setup(x => x.FindByEmailAsync(user.Email!))
+                .ReturnsAsync(user);
+
+            _userManagerMock.Setup(x => x.CheckPasswordAsync(user, It.IsAny<string>()))
+                .ReturnsAsync(true);
+
+            _userManagerMock.Setup(x => x.GetRolesAsync(user))
+                .ReturnsAsync(new List<string> { "Manager" });
+
+            await Assert.ThrowsAsync<InvalidOperationException>(() =>
+                _service.LoginAsync(new LoginDto
+                {
+                    Email = user.Email!,
+                    Password = "Password"
+                }));
+        }
+
+
+
+        [Fact]
         public async Task RegisterPatientAsync_ShouldCreateUserAndPatient()
         {
             // Arrange
@@ -194,6 +311,113 @@ namespace HealthCare.Api.Tests
                         NewPassword = "new"
                     }));
         }
+
+        [Fact]
+        public async Task ChangePasswordAsync_ShouldThrow_WhenChangeFails()
+        {
+            var user = new IdentityUser
+            {
+                Id = "1"
+            };
+
+            _userManagerMock.Setup(x =>
+                x.FindByIdAsync("1"))
+                .ReturnsAsync(user);
+
+            _userManagerMock.Setup(x =>
+                x.ChangePasswordAsync(
+                    user,
+                    It.IsAny<string>(),
+                    It.IsAny<string>()))
+                .ReturnsAsync(
+                    IdentityResult.Failed(
+                        new IdentityError
+                        {
+                            Description = "Password error"
+                        }));
+
+            await Assert.ThrowsAsync<InvalidOperationException>(() =>
+                _service.ChangePasswordAsync("1",
+                    new ChangePasswordDto
+                    {
+                        CurrentPassword = "Old",
+                        NewPassword = "New"
+                    }));
+        }
+
+        [Fact]
+        public async Task UpdatePatientEmailAsync_ShouldThrow_WhenUserNotFound()
+        {
+            _userManagerMock.Setup(x =>
+                x.FindByIdAsync("1"))
+                .ReturnsAsync((IdentityUser)null!);
+
+            await Assert.ThrowsAsync<InvalidOperationException>(() =>
+                _service.UpdatePatientEmailAsync(
+                    "1",
+                    "new@test.com"));
+        }
+
+        [Fact]
+        public async Task UpdatePatientEmailAsync_ShouldThrow_WhenEmailExists()
+        {
+            var user = new IdentityUser
+            {
+                Id = "1"
+            };
+
+            var existing = new IdentityUser
+            {
+                Id = "2",
+                Email = "new@test.com"
+            };
+
+            _userManagerMock.Setup(x =>
+                x.FindByIdAsync("1"))
+                .ReturnsAsync(user);
+
+            _userManagerMock.Setup(x =>
+                x.FindByEmailAsync("new@test.com"))
+                .ReturnsAsync(existing);
+
+            await Assert.ThrowsAsync<InvalidOperationException>(() =>
+                _service.UpdatePatientEmailAsync(
+                    "1",
+                    "new@test.com"));
+        }
+
+        [Fact]
+        public async Task UpdatePatientEmailAsync_ShouldThrow_WhenUpdateFails()
+        {
+            var user = new IdentityUser
+            {
+                Id = "1"
+            };
+
+            _userManagerMock.Setup(x =>
+                x.FindByIdAsync("1"))
+                .ReturnsAsync(user);
+
+            _userManagerMock.Setup(x =>
+                x.FindByEmailAsync("new@test.com"))
+                .ReturnsAsync((IdentityUser)null!);
+
+            _userManagerMock.Setup(x =>
+                x.UpdateAsync(user))
+                .ReturnsAsync(
+                    IdentityResult.Failed(
+                        new IdentityError
+                        {
+                            Description = "Update failed"
+                        }));
+
+            await Assert.ThrowsAsync<InvalidOperationException>(() =>
+                _service.UpdatePatientEmailAsync(
+                    "1",
+                    "new@test.com"));
+        }
+
+
 
 
         //  Login - patient

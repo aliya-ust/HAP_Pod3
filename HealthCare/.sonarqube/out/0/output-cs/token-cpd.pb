@@ -208,48 +208,7 @@ HealthCare
 ;- .
 }/ 0
 } 
-} ù
-cC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\Patient\PatientFilter.cs
-	namespace 	
-
-HealthCare
- 
-. 
-Shared 
-. 
-DTOs  
-.  !
-Patient! (
-{ 
-public 
-
-class 
-PatientFilter 
-:  
-PaginationParams! 1
-{ 
-public 
-bool 
-? 
-HasInsurance !
-{" #
-get$ '
-;' (
-set) ,
-;, -
-}. /
-public 
-string 
-? 
-FullName 
-{  !
-get" %
-;% &
-set' *
-;* +
-}, -
-} 
-} Š
+} Š
 dC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\Patient\PatientListDto.cs
 	namespace 	
 
@@ -421,7 +380,48 @@ HealthCare
 )J K
 ;K L
 } 
-} Í
+} ù
+cC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\Patient\PatientFilter.cs
+	namespace 	
+
+HealthCare
+ 
+. 
+Shared 
+. 
+DTOs  
+.  !
+Patient! (
+{ 
+public 
+
+class 
+PatientFilter 
+:  
+PaginationParams! 1
+{ 
+public 
+bool 
+? 
+HasInsurance !
+{" #
+get$ '
+;' (
+set) ,
+;, -
+}. /
+public 
+string 
+? 
+FullName 
+{  !
+get" %
+;% &
+set' *
+;* +
+}, -
+} 
+} Í
 iC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\Patient\PatientDashboardDto.cs
 	namespace 	
 

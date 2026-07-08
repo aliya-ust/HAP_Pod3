@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
 using HealthCare.Api.Data;
-using HealthCare.Shared.DTOs;
-using HealthCare.Shared.DTOs.Appointment;
+using HealthCare.Api.Events;
+using HealthCare.Api.Messaging;
 using HealthCare.Api.Models;
 using HealthCare.Api.Repositories.Interfaces;
 using HealthCare.Api.Services.Interfaces;
+using HealthCare.Shared.DTOs;
+using HealthCare.Shared.DTOs.Appointment;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
@@ -16,13 +18,17 @@ namespace HealthCare.Api.Services.Implementations
         private readonly IDoctorService _doctorService;
         private readonly HealthCareDbContext _context;
         private readonly IMapper _mapper;
+        private readonly IRabbitMqPublisher _publisher;
+        private readonly ILogger<AppointmentService> _logger;
 
-        public AppointmentService(IAppointmentRepository repository, IDoctorService doctorService, HealthCareDbContext context, IMapper mapper)
+        public AppointmentService(IAppointmentRepository repository, IDoctorService doctorService, HealthCareDbContext context, IMapper mapper, IRabbitMqPublisher publisher, ILogger<AppointmentService> logger)
         {
             _repository = repository;
             _doctorService = doctorService;
             _context = context;
             _mapper = mapper;
+            _publisher = publisher;
+            _logger = logger;
         }
 
         private const string AppointmentNotFoundMessage = "Appointment not found.";
@@ -95,6 +101,29 @@ namespace HealthCare.Api.Services.Implementations
             {
                 await _repository.AddAsync(appointment);
                 await _context.SaveChangesAsync();
+
+                _logger.LogInformation(
+                    "Appointment booked successfully. AppointmentId={AppointmentId}, PatientId={PatientId}, DoctorId={DoctorId}",
+                    appointment.AppointmentId,
+                    patientId,
+                    appointment.DoctorId);
+
+                var patient = await _context.Patients
+                    .FirstAsync(p => p.PatientId == patientId);
+
+                var appointmentEvent = new AppointmentBookedEvent
+                {
+                    AppointmentId = appointment.AppointmentId,
+                    PatientName = patient.FullName,
+                    DoctorId = appointment.DoctorId,
+                    ScheduledDate = appointment.ScheduledDate,
+                    TimeSlot = appointment.TimeSlot
+                };
+
+                _logger.LogInformation(
+                    "Publishing AppointmentBookedEvent. AppointmentId={AppointmentId}",
+                    appointment.AppointmentId);
+                await _publisher.PublishAsync(appointmentEvent);
             }
             catch (DbUpdateException ex)
             {
@@ -197,8 +226,11 @@ namespace HealthCare.Api.Services.Implementations
 
             var normalized = timeSlot.Trim().ToLower();
 
-            var exists = bookedSlots.Any(b =>
-                b.Trim().ToLower().StartsWith(normalized.Substring(0, 4))
+            var exists = bookedSlots.Any(b =>string.Equals(
+            b.Trim(),
+            timeSlot.Trim(),
+            StringComparison.OrdinalIgnoreCase)
+
             );
 
             if (exists)

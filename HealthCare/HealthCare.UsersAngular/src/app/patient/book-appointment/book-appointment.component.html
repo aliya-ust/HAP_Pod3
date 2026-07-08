@@ -22,9 +22,9 @@
 
           <input id="appointmentDate"
                  type="date"
-                 [(ngModel)]="selectedDate"
-                 [min]="minDate"
-                 (ngModelChange)="getDoctors()" />
+                 [value]="selectedDate()"
+                 (change)="onDateChange($event)"
+                 [min]="minDate" />
         </div>
       </div>
 
@@ -36,8 +36,8 @@
           <label for="specialization">Specialization</label>
 
           <select id="specialization"
-                  [(ngModel)]="selectedSpecialization"
-                  (ngModelChange)="getDoctors()">
+                  [value]="selectedSpecialization()"
+                  (change)="onSpecializationChange($event)">
 
             <option value="">Select Specialization</option>
 
@@ -56,29 +56,29 @@
           <label for="doctor">Doctor</label>
 
           <!-- BEFORE SEARCH → EMPTY FIELD -->
-          <select *ngIf="!hasSearched">
+          <select *ngIf="!hasSearched()">
             <option>Select Doctor</option>
           </select>
 
           <!-- AFTER SEARCH + DOCTORS EXIST -->
 
           <select id="doctor"
-                  *ngIf="hasSearched && doctors.length > 0"
-                  [(ngModel)]="selectedDoctor"
-                  (ngModelChange)="onDoctorChange()">
+                  *ngIf="hasSearched() && doctors().length > 0"
+                  [value]="selectedDoctor() ? selectedDoctor().doctorId : ''"
+                  (change)="onDoctorSelectChange($event)">
 
             <option value="">Select Doctor</option>
 
-            <option *ngFor="let d of doctors" [ngValue]="d">
+            <option *ngFor="let d of doctors()" [value]="d.doctorId">
               {{ d.fullName }}
             </option>
 
           </select>
 
           <!-- AFTER SEARCH + NO DOCTORS -->
-          <div *ngIf="hasSearched && doctors.length === 0" class="no-doctor-box">
+          <div *ngIf="hasSearched() && doctors().length === 0" class="no-doctor-box">
             <i class="bi bi-info-circle"></i>
-            {{ noDoctorsMessage }}
+            {{ noDoctorsMessage() }}
           </div>
 
         </div>
@@ -91,19 +91,18 @@
         <div class="input-container">
           <label for="timeSlot">Time Slot</label>
 
-
           <select id="timeSlot"
-                  [(ngModel)]="selectedSlot"
-                  [disabled]="!selectedDoctor || doctors.length === 0">
+                  [value]="selectedSlot()"
+                  (change)="onSlotChange($event)"
+                  [disabled]="!selectedDoctor() || doctors().length === 0">
 
             <option value="">Select Time Slot</option>
 
-            <option *ngFor="let s of timeSlots" [value]="s">
+            <option *ngFor="let s of timeSlots()" [value]="s">
               {{ s }}
             </option>
 
           </select>
-
 
         </div>
       </div>
@@ -126,11 +125,21 @@
 <div class="card modal-parent">
 
   <!-- SUCCESS MODAL -->
-  <div *ngIf="showSuccessModal" class="modal-overlay">
+  <div *ngIf="showSuccessModal()" class="modal-overlay">
     <div class="modal-card">
       <div class="check-icon">✔</div>
       <h2>Appointment Booked Successfully</h2>
       <button (click)="closeSuccessModal()">OK</button>
+    </div>
+  </div>
+
+  <!-- ERROR MODAL -->
+  <div *ngIf="showErrorModal()" class="modal-overlay">
+    <div class="modal-card error-modal">
+      <div class="error-icon">✕</div>
+      <h2>Booking Failed</h2>
+      <p>{{ errorMessage() }}</p>
+      <button (click)="closeErrorModal()">Close</button>
     </div>
   </div>
 

@@ -1,14 +1,16 @@
 ﻿using AutoMapper;
 using HealthCare.Api.Data;
-using HealthCare.Shared.DTOs;
-using HealthCare.Shared.DTOs.Appointment;
+using HealthCare.Api.Messaging;
 using HealthCare.Api.Models;
 using HealthCare.Api.Repositories.Interfaces;
 using HealthCare.Api.Services.Implementations;
 using HealthCare.Api.Services.Interfaces;
+using HealthCare.Shared.DTOs;
+using HealthCare.Shared.DTOs.Appointment;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 using System.Linq.Expressions;
+using Microsoft.Extensions.Logging;
 
 namespace HealthCare.Api.Tests
 {
@@ -19,12 +21,16 @@ namespace HealthCare.Api.Tests
         private readonly Mock<IMapper> _mapperMock;
         private readonly HealthCareDbContext _context;
         private readonly AppointmentService _service;
+        private readonly Mock<IRabbitMqPublisher> _publisherMock;
+        private readonly Mock<ILogger<AppointmentService>> _loggerMock;
 
         public AppointmentServiceTests()
         {
             _repoMock = new Mock<IAppointmentRepository>();
             _doctorServiceMock = new Mock<IDoctorService>();
             _mapperMock = new Mock<IMapper>();
+            _publisherMock = new Mock<IRabbitMqPublisher>();
+            _loggerMock = new Mock<ILogger<AppointmentService>>();
 
             var options = new DbContextOptionsBuilder<HealthCareDbContext>()
                 .UseInMemoryDatabase(Guid.NewGuid().ToString())
@@ -36,7 +42,9 @@ namespace HealthCare.Api.Tests
                 _repoMock.Object,
                 _doctorServiceMock.Object,
                 _context,
-                _mapperMock.Object
+                _mapperMock.Object,
+                _publisherMock.Object,
+                _loggerMock.Object
             );
         }
 
@@ -54,6 +62,165 @@ namespace HealthCare.Api.Tests
 
             Assert.NotNull(result);
         }
+
+        [Fact]
+        public async Task UpdateStatusAsync_ShouldThrow_WhenAppointmentNotFound()
+        {
+            _repoMock.Setup(r => r.GetByIdAsync(1))
+                .ReturnsAsync((Appointment?)null);
+
+            await Assert.ThrowsAsync<InvalidOperationException>(() =>
+                _service.UpdateStatusAsync(1,
+                    new UpdateAppointmentDto
+                    {
+                        Status = "Confirmed"
+                    }));
+        }
+
+        [Fact]
+        public async Task AvailableTimeSlots_ShouldReturnEmpty_WhenAllSlotsBooked()
+        {
+            var date = DateOnly.FromDateTime(DateTime.Today.AddDays(1));
+
+            _doctorServiceMock.Setup(d => d.GetSlots(1))
+                .ReturnsAsync(new List<string>
+                {
+            "09:00",
+            "10:00"
+                });
+
+            _repoMock.Setup(r => r.BookedTimeSlots(date, 1))
+                .ReturnsAsync(new List<string>
+                {
+            "09:00",
+            "10:00"
+                });
+
+            var result = await _service.AvailableTimeSlots(date, 1);
+
+            Assert.Empty(result);
+        }
+
+        [Fact]
+        public async Task GetDoctorSchedule_ShouldReturnSchedule()
+        {
+            var schedule = new List<AppointmentListDto>
+    {
+        new AppointmentListDto()
+    };
+
+            _repoMock.Setup(r =>
+                r.GetDoctorSchedule(It.IsAny<DateOnly>(), 1))
+                .ReturnsAsync(schedule);
+
+            var result = await _service.GetDoctorSchedule(
+                DateOnly.FromDateTime(DateTime.Today),
+                1);
+
+            Assert.Single(result);
+        }
+
+        [Fact]
+        public async Task GetPatientSchedule_ShouldReturnSchedule()
+        {
+            var schedule = new List<AppointmentListDto>
+    {
+        new AppointmentListDto()
+    };
+
+            _repoMock.Setup(r =>
+                r.GetPatientSchedule(It.IsAny<DateOnly>(), 1))
+                .ReturnsAsync(schedule);
+
+            var result = await _service.GetPatientSchedule(
+                DateOnly.FromDateTime(DateTime.Today),
+                1);
+
+            Assert.Single(result);
+        }
+
+        [Fact]
+        public async Task GetDailyReport_ShouldReturnReport()
+        {
+            var reports = new List<AppointmentReportDto>
+    {
+        new AppointmentReportDto()
+    };
+
+            _repoMock.Setup(r => r.GetDailyReport())
+                .ReturnsAsync(reports);
+
+            var result = await _service.GetDailyReport();
+
+            Assert.Single(result);
+        }
+
+        [Fact]
+        public async Task GetSummaryAsync_ShouldReturnEmptySummary_WhenNoAppointments()
+        {
+            var result = await _service.GetSummaryAsync();
+
+            Assert.NotNull(result);
+            Assert.Equal(0, result.PendingCount);
+            Assert.Equal(0, result.ConfirmedCount);
+            Assert.Equal(0, result.CancelledCount);
+            Assert.Equal(0, result.CompletedCount);
+            Assert.Equal(0, result.TotalRevenue);
+        }
+
+        [Fact]
+        public async Task AddAsync_ShouldThrow_WhenRepositoryFails()
+        {
+            var dto = new CreateAppointmentDto
+            {
+                ScheduledDate = DateOnly.FromDateTime(DateTime.Today.AddDays(1)),
+                DoctorId = 1,
+                TimeSlot = "09:00-10:00"
+            };
+
+            var appointment = new Appointment();
+
+            _repoMock.Setup(r =>
+                r.BookedTimeSlots(dto.ScheduledDate, 1))
+                .ReturnsAsync(new List<string>());
+
+            _mapperMock.Setup(m =>
+                m.Map<Appointment>(dto))
+                .Returns(appointment);
+
+            _repoMock.Setup(r =>
+                r.AddAsync(It.IsAny<Appointment>()))
+                .ThrowsAsync(new DbUpdateException());
+            var ex = await Assert.ThrowsAsync<InvalidOperationException>(() =>
+                _service.AddAsync(dto, 1));
+
+            Assert.Equal("Failed to book the appointment.", ex.Message);
+            Assert.IsType<DbUpdateException>(ex.InnerException);
+        }
+
+        [Fact]
+        public async Task DeleteAsync_ShouldThrow_WhenDeleteFails()
+        {
+            var appointment = new Appointment();
+
+            _repoMock.Setup(r =>
+                r.GetByIdAsync(1))
+                .ReturnsAsync(appointment);
+
+            _repoMock.Setup(r =>
+                r.DeleteAsync(1))
+                .ThrowsAsync(new DbUpdateException());
+
+            var ex = await Assert.ThrowsAsync<InvalidOperationException>(() =>
+    _service.DeleteAsync(1));
+
+            Assert.Equal(
+                "Failed to delete appointment. It may be referenced by existing health records.",
+                ex.Message);
+
+            Assert.IsType<DbUpdateException>(ex.InnerException);
+        }
+
 
         [Fact]
         public async Task GetByIdAsync_ShouldThrow_WhenNotFound()
@@ -452,6 +619,185 @@ namespace HealthCare.Api.Tests
             var result = await _service.GetAllAsync(filter);
 
             Assert.NotNull(result);
+        }
+
+        [Fact]
+        public async Task GetAppointmentByDoctor_ShouldReturnOnlyFuturePendingAndConfirmedAppointments()
+        {
+            var today = DateOnly.FromDateTime(DateTime.Today);
+
+            var appointments = new List<AppointmentListDto>
+    {
+        new()
+        {
+            ScheduledDate = today.AddDays(1),
+            Status = "Pending",
+            TimeSlot = "09:00"
+        },
+        new()
+        {
+            ScheduledDate = today.AddDays(1),
+            Status = "Confirmed",
+            TimeSlot = "10:00"
+        },
+        new()
+        {
+            ScheduledDate = today.AddDays(1),
+            Status = "Cancelled",
+            TimeSlot = "11:00"
+        },
+        new()
+        {
+            ScheduledDate = today.AddDays(-1),
+            Status = "Pending",
+            TimeSlot = "12:00"
+        }
+    };
+
+            _repoMock.Setup(r => r.GetAppointmentByDoctor(1))
+                .ReturnsAsync(appointments);
+
+            var result = await _service.GetAppointmentByDoctor(1);
+
+            Assert.Equal(2, result.Count);
+
+            Assert.All(result, a =>
+                Assert.True(
+                    a.Status == "Pending" ||
+                    a.Status == "Confirmed"));
+        }
+
+        [Fact]
+        public async Task GetAppointmentByPatient_ShouldReturnOnlyPendingAndConfirmedAppointments()
+        {
+            var appointments = new List<AppointmentListDto>
+    {
+        new()
+        {
+            Status = "Pending",
+            ScheduledDate = DateOnly.FromDateTime(DateTime.Today)
+        },
+        new()
+        {
+            Status = "Confirmed",
+            ScheduledDate = DateOnly.FromDateTime(DateTime.Today)
+        },
+        new()
+        {
+            Status = "Cancelled",
+            ScheduledDate = DateOnly.FromDateTime(DateTime.Today)
+        }
+    };
+
+            _repoMock.Setup(r => r.GetAppointmentByPatient(1))
+                .ReturnsAsync(appointments);
+
+            var result = await _service.GetAppointmentByPatient(1);
+
+            Assert.Equal(2, result.Count);
+        }
+
+        [Fact]
+        public async Task GetReportByDateRange_ShouldReturnReport()
+        {
+            var doctor = new Doctor
+            {
+                DoctorId = 1,
+                FullName = "Dr Test",
+                Specialisation = "Cardiology",
+                YearsOfExperience = 10,
+                ConsultationFee = 500
+            };
+
+            _context.Doctors.Add(doctor);
+
+            _context.Appointments.AddRange(
+                new Appointment
+                {
+                    PatientId = 1,
+                    DoctorId = doctor.DoctorId,
+                    Doctor = doctor,
+                    ScheduledDate = DateOnly.FromDateTime(DateTime.Today),
+                    TimeSlot = "09:00-10:00",
+                    Status = "Pending"
+                },
+                new Appointment
+                {
+                    PatientId = 2,
+                    DoctorId = doctor.DoctorId,
+                    Doctor = doctor,
+                    ScheduledDate = DateOnly.FromDateTime(DateTime.Today),
+                    TimeSlot = "10:00-11:00",
+                    Status = "Completed"
+                }
+            );
+
+            await _context.SaveChangesAsync();
+
+            var result = await _service.GetReportByDateRange(
+                DateOnly.FromDateTime(DateTime.Today.AddDays(-1)),
+                DateOnly.FromDateTime(DateTime.Today.AddDays(1)));
+
+            Assert.Single(result);
+            Assert.Equal(1, result[0].PendingCount);
+            Assert.Equal(1, result[0].CompletedCount);
+            Assert.Equal(500, result[0].Revenue);
+        }
+
+        [Fact]
+        public async Task GetSummaryAsync_ShouldReturnSummary()
+        {
+            var doctor = new Doctor
+            {
+                DoctorId = 1,
+                FullName = "Dr Smith",
+                Specialisation = "Neurology",
+                YearsOfExperience = 8,
+                ConsultationFee = 600
+            };
+
+            _context.Doctors.Add(doctor);
+
+            _context.Appointments.AddRange(
+                new Appointment
+                {
+                    PatientId = 1,
+                    DoctorId = doctor.DoctorId,
+                    Doctor = doctor,
+                    ScheduledDate = DateOnly.FromDateTime(DateTime.Today),
+                    TimeSlot = "09:00-10:00",
+                    Status = "Pending"
+                },
+                new Appointment
+                {
+                    PatientId = 2,
+                    DoctorId = doctor.DoctorId,
+                    Doctor = doctor,
+                    ScheduledDate = DateOnly.FromDateTime(DateTime.Today),
+                    TimeSlot = "10:00-11:00",
+                    Status = "Confirmed"
+                },
+                new Appointment
+                {
+                    PatientId = 3,
+                    DoctorId = doctor.DoctorId,
+                    Doctor = doctor,
+                    ScheduledDate = DateOnly.FromDateTime(DateTime.Today),
+                    TimeSlot = "11:00-12:00",
+                    Status = "Completed"
+                }
+            );
+
+            await _context.SaveChangesAsync();
+
+            var result = await _service.GetSummaryAsync();
+
+            Assert.NotNull(result);
+            Assert.Equal(1, result.PendingCount);
+            Assert.Equal(1, result.ConfirmedCount);
+            Assert.Equal(0, result.CancelledCount);
+            Assert.Equal(1, result.CompletedCount);
+            Assert.Equal(600, result.TotalRevenue);
         }
 
 
