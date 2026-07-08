@@ -13,7 +13,7 @@ namespace HealthCare.Api.Controllers
     {
         private readonly IAppointmentService _appointmentService;
 
-        public AppointmentController(IAppointmentService appointmentService)
+        public AppointmentController(IAppointmentService appointmentService, IDoctorService doctorService)
         {
             _appointmentService = appointmentService;
         }
@@ -56,10 +56,22 @@ namespace HealthCare.Api.Controllers
         [HttpGet("available-slots")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Authorize(Roles = "Patient")]
-        public async Task<IActionResult> GetAvailableTimeSlots([FromQuery] DateOnly date,[FromQuery] int doctorId)
+        public async Task<IActionResult> GetAvailableTimeSlots(
+     [FromQuery] DateOnly date,
+     [FromQuery] int doctorId)
         {
-            var result = await _appointmentService.AvailableTimeSlots(date, doctorId);
-            return Ok(result);
+            try
+            {
+                var result = await _appointmentService.AvailableTimeSlots(date, doctorId);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    message = ex.Message
+                });
+            }
         }
 
 
@@ -98,6 +110,12 @@ namespace HealthCare.Api.Controllers
             var claim = User.FindFirst("PatientId")
                 ?? throw new InvalidOperationException("PatientId claim not found in token.");
 
+            if (claim == null)
+            {
+                throw new UnauthorizedAccessException("PatientId claim not found in token.");
+            }
+
+
             return int.Parse(claim.Value);
         }
 
@@ -105,6 +123,13 @@ namespace HealthCare.Api.Controllers
         {
             var claim = User.FindFirst("DoctorId")
                 ?? throw new InvalidOperationException("DoctorId claim not found in token.");
+
+
+            if (claim == null)
+            {
+                throw new UnauthorizedAccessException("DoctorId claim not found in token.");
+            }
+
 
             return int.Parse(claim.Value);
         }

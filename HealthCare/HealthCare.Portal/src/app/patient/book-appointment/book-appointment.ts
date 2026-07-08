@@ -24,7 +24,8 @@ export class BookAppointment {
     'Cardiologist',
     'Psychiatrist',
     'Orthopedic',
-    'General Medicine'
+    'Dermatologist'
+    
   ];
 
   constructor(
@@ -61,13 +62,14 @@ export class BookAppointment {
   onDoctorChange(): void {
     this.selectedTimeSlot = '';
     this.doctorService.availableSlots.set([]);
+    this.doctorService.slotsLoaded.set(false);
 
     if (!this.selectedDoctorId || !this.selectedDate) {
       return;
     }
 
     this.doctorService.loadAvailableSlots(
-      this.selectedDoctorId,
+      Number(this.selectedDoctorId),
       this.selectedDate
     );
   }

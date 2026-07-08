@@ -30,10 +30,10 @@ namespace HealthCare.Api.Messaging
 
             var factory = new ConnectionFactory
             {
-                HostName = rabbitConfig["HostName"],
+                HostName = rabbitConfig["HostName"]!,
                 Port = int.Parse(rabbitConfig["Port"]!),
-                UserName = rabbitConfig["UserName"],
-                Password = rabbitConfig["Password"],
+                UserName = rabbitConfig["UserName"]!,
+                Password = rabbitConfig["Password"]!,
                 VirtualHost = rabbitConfig["VirtualHost"]!
             };
 

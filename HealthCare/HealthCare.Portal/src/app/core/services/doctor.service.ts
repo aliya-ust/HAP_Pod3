@@ -18,6 +18,7 @@ export class DoctorService {
   profile = signal<DoctorProfile | null>(null);
   availableDoctors = signal<DoctorList[]>([]);
   availableSlots = signal<string[]>([]);
+  slotsLoaded = signal(false);
 
   dashboardSummary = signal<DoctorDashboardSummary>({
     upcomingAppointments: 0,
@@ -53,6 +54,9 @@ export class DoctorService {
   loadAvailableDoctors(specialisation: string, date: string): void {
     this.isLoading.set(true);
     this.errorMessage.set('');
+    this.availableDoctors.set([]);
+    this.availableSlots.set([]);
+    this.slotsLoaded.set(false);
 
     const params = new HttpParams()
       .set('specialisation', specialisation.trim())
@@ -76,7 +80,8 @@ export class DoctorService {
   }
 
   loadAvailableSlots(doctorId: number, date: string): void {
-    this.isLoading.set(true);
+    this.availableSlots.set([]);
+    this.slotsLoaded.set(false);
     this.errorMessage.set('');
 
     const params = new HttpParams()
@@ -89,13 +94,15 @@ export class DoctorService {
     ).subscribe({
       next: (res) => {
         this.availableSlots.set(res || []);
-        this.isLoading.set(false);
+        this.slotsLoaded.set(true);
       },
       error: (error) => {
         console.error('Failed to load available slots:', error);
         this.availableSlots.set([]);
-        this.errorMessage.set('Failed to load available slots.');
-        this.isLoading.set(false);
+        this.slotsLoaded.set(true);
+        this.errorMessage.set(
+          error?.error?.message || 'Failed to load available slots.'
+        );
       }
     });
   }
@@ -146,6 +153,7 @@ export class DoctorService {
 
   clearAvailableSlots(): void {
     this.availableSlots.set([]);
+    this.slotsLoaded.set(false);
   }
 
   clearDashboardSummary(): void {

@@ -21,20 +21,21 @@ namespace HealthCare.Api.Services.Implementations
         private readonly IDoctorService _doctorService;
         private readonly HealthCareDbContext _context;
         private readonly IMapper _mapper;
-        private readonly RabbitMQPublisher _publisher;
+       // private readonly RabbitMQPublisher _publisher;
 
         public AppointmentService(
     IAppointmentRepository repository,
     IDoctorService doctorService,
     HealthCareDbContext context,
-    IMapper mapper,
-    RabbitMQPublisher publisher)
+    IMapper mapper
+   // RabbitMQPublisher publisher
+   )
         {
             _repository = repository;
             _doctorService = doctorService;
             _context = context;
             _mapper = mapper;
-            _publisher = publisher;
+            //_publisher = publisher;
         }
 
         public async Task<AppointmentListDto?> GetByIdAsync(int id)
@@ -130,16 +131,16 @@ namespace HealthCare.Api.Services.Implementations
                 var patient = await _context.Patients
                     .FirstOrDefaultAsync(p => p.PatientId == patientId);
 
-                await _publisher.PublishAsync(
-                    new AppointmentBookedEvent
-                    {
-                        AppointmentId = appointment.AppointmentId,
-                        PatientName = patient?.FullName ?? "Unknown",
-                        DoctorId = appointment.DoctorId,
-                        ScheduledDate = appointment.ScheduledDate,
-                        TimeSlot = appointment.TimeSlot,
-                        OccurredAt = DateTime.UtcNow
-                    });
+                //await _publisher.PublishAsync(
+                //    new AppointmentBookedEvent
+                //    {
+                //        AppointmentId = appointment.AppointmentId,
+                //        PatientName = patient?.FullName ?? "Unknown",
+                //        DoctorId = appointment.DoctorId,
+                //        ScheduledDate = appointment.ScheduledDate,
+                //        TimeSlot = appointment.TimeSlot,
+                //        OccurredAt = DateTime.UtcNow
+                //    });
             }
             catch (DbUpdateException ex)
             {

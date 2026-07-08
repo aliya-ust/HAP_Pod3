@@ -8,7 +8,6 @@ using HealthCare.Api.Services.Interfaces;
 using HealthCare.Shared.DTOs;
 using HealthCare.Shared.DTOs.Doctor;
 using Microsoft.EntityFrameworkCore;
-using System.Linq.Expressions;
 
 namespace HealthCare.Api.Services.Implementations
 {
@@ -18,9 +17,14 @@ namespace HealthCare.Api.Services.Implementations
         private readonly IAppointmentRepository _appointmentRepository;
         private readonly HealthCareDbContext _context;
         private readonly IMapper _mapper;
+
         private const string NotFoundExceptionMessage = "Doctor not found.";
 
-        public DoctorService(IDoctorRepository repository, IAppointmentRepository appointmentRepository, HealthCareDbContext context, IMapper mapper)
+        public DoctorService(
+            IDoctorRepository repository,
+            IAppointmentRepository appointmentRepository,
+            HealthCareDbContext context,
+            IMapper mapper)
         {
             _repository = repository;
             _appointmentRepository = appointmentRepository;
@@ -38,30 +42,46 @@ namespace HealthCare.Api.Services.Implementations
             return _mapper.Map<DoctorListDto>(doctor);
         }
 
+        public async Task<DoctorProfileDto?> GetMyProfileAsync(int doctorId)
+        {
+            var profile = await (
+                from doctor in _context.Doctors
+                join user in _context.Users
+                    on doctor.UserId equals user.Id
+                where doctor.DoctorId == doctorId
+                select new DoctorProfileDto
+                {
+                    DoctorId = doctor.DoctorId,
+                    FullName = doctor.FullName,
+                    Email = user.Email ?? string.Empty,
+                    Specialisation = doctor.Specialisation,
+                    YearsOfExperience = doctor.YearsOfExperience,
+                    ConsultationFee = doctor.ConsultationFee
+                }
+            ).FirstOrDefaultAsync();
+
+            return profile;
+        }
+
         public async Task<PagedResult<DoctorListDto>> GetAllAsync(DoctorFilter filter)
         {
             var query = _repository.GetQueryable();
 
-            // Search by name
             if (!string.IsNullOrWhiteSpace(filter.Search))
             {
-                query = query.Where(d =>
-                    d.FullName.Contains(filter.Search));
+                query = query.Where(d => d.FullName.Contains(filter.Search));
             }
 
-            // Filter by specialisation
             if (!string.IsNullOrWhiteSpace(filter.Specialisation))
             {
                 query = query.Where(d => d.Specialisation == filter.Specialisation);
             }
 
-            // Filter by active status
             if (filter.IsActive.HasValue)
             {
                 query = query.Where(d => d.IsActive == filter.IsActive.Value);
             }
 
-            // Sorting
             if (!string.IsNullOrWhiteSpace(filter.SortBy))
             {
                 query = filter.SortBy.ToLower() switch
@@ -79,20 +99,16 @@ namespace HealthCare.Api.Services.Implementations
             }
             else
             {
-                // Default sort
                 query = query.OrderByDescending(d => d.YearsOfExperience);
             }
 
-            // Total count
             var totalCount = await query.CountAsync();
 
-            // Pagination
             var items = await query
                 .Skip((filter.PageNumber - 1) * filter.PageSize)
                 .Take(filter.PageSize)
                 .ToListAsync();
 
-            // Map result
             return new PagedResult<DoctorListDto>
             {
                 Items = _mapper.Map<IEnumerable<DoctorListDto>>(items),
@@ -105,8 +121,8 @@ namespace HealthCare.Api.Services.Implementations
         public async Task AddAsync(CreateDoctorDto dto)
         {
             var doctor = _mapper.Map<Doctor>(dto);
-            await _repository.AddAsync(doctor);
 
+            await _repository.AddAsync(doctor);
             await _repository.CreateSlots(doctor.DoctorId, dto.TimeSlots);
 
             await _context.SaveChangesAsync();
@@ -119,7 +135,7 @@ namespace HealthCare.Api.Services.Implementations
             if (doctor is null)
                 throw new InvalidOperationException(NotFoundExceptionMessage);
 
-            _mapper.Map(dto, doctor); // maps onto the tracked entity — EF picks up the changes
+            _mapper.Map(dto, doctor);
 
             await _repository.UpdateAsync(doctor);
             await _context.SaveChangesAsync();
@@ -152,7 +168,9 @@ namespace HealthCare.Api.Services.Implementations
             }
             catch (DbUpdateException ex)
             {
-                throw new InvalidOperationException("Failed to delete Doctor. It may be referenced by existing appointments or health records.", ex);
+                throw new InvalidOperationException(
+                    "Failed to delete Doctor. It may be referenced by existing appointments or health records.",
+                    ex);
             }
         }
 
@@ -160,10 +178,7 @@ namespace HealthCare.Api.Services.Implementations
         {
             var slots = await _repository.GetSlots(doctorId);
 
-            //if (slots.Count == 0)
-            //    throw new InvalidOperationException("No available slots found for this doctor.");
-
-            return slots ?? new List<string>(); 
+            return slots ?? new List<string>();
         }
 
         public async Task CreateSlots(int id, List<string> timeslots)
@@ -175,20 +190,35 @@ namespace HealthCare.Api.Services.Implementations
         private async Task<List<string>> AvailableTimeSlotsCheck(DateOnly date, int doctorId)
         {
             var allSlots = await _repository.GetSlots(doctorId);
+
+            if (allSlots == null || allSlots.Count == 0)
+                return new List<string>();
+
             var bookedSlots = await _appointmentRepository.BookedTimeSlots(date, doctorId);
-            return allSlots.Except(bookedSlots).ToList();
+
+            return allSlots
+                .Except(bookedSlots)
+                .ToList();
         }
 
         public async Task<CreateLeaveResultDto> CreateLeave(int id, List<CreateLeaveDto> leaves)
         {
             var result = new CreateLeaveResultDto();
+
             var existingLeaves = await _repository.GetLeavesByDoctorId(id);
-            var existingLeaveDates = existingLeaves.Select(l => l.LeaveDate).ToHashSet();
+            var existingLeaveDates = existingLeaves
+                .Select(l => l.LeaveDate)
+                .ToHashSet();
 
             var leavesToCreate = new List<CreateLeaveDto>();
 
             foreach (var leave in leaves)
             {
+                if (leave.LeaveDate < DateOnly.FromDateTime(DateTime.Today))
+                {
+                    throw new InvalidOperationException("Cannot create leave for a past date.");
+                }
+
                 if (existingLeaveDates.Contains(leave.LeaveDate))
                 {
                     result.SkippedDates.Add(leave.LeaveDate);
@@ -200,7 +230,6 @@ namespace HealthCare.Api.Services.Implementations
 
                 if (availableSlots.Count != allSlots.Count)
                 {
-                    // Doctor has confirmed/pending appointments that day — cancel them and proceed
                     await _appointmentRepository.CancelAppointmentsByDoctorDate(id, leave.LeaveDate);
                     result.CreatedWithCancelledAppointments.Add(leave.LeaveDate);
                 }
@@ -217,11 +246,15 @@ namespace HealthCare.Api.Services.Implementations
             return result;
         }
 
-        public async Task<List<DoctorListDto>> AvailableDoctors(string specialisation, DateOnly date) =>
-            await _repository.AvailableDoctors(specialisation, date);
+        public async Task<List<DoctorListDto>> AvailableDoctors(string specialisation, DateOnly date)
+        {
+            return await _repository.AvailableDoctors(specialisation, date);
+        }
 
-        public async Task<DoctorSummaryDto> GetSummaryAsync() =>
-            await _repository.GetSummaryAsync();
+        public async Task<DoctorSummaryDto> GetSummaryAsync()
+        {
+            return await _repository.GetSummaryAsync();
+        }
 
         public async Task<DoctorDashboardSummaryDto> GetDashboardSummaryAsync(int doctorId)
         {
@@ -259,28 +292,5 @@ namespace HealthCare.Api.Services.Implementations
                 TodaysAppointments = todaysAppointments
             };
         }
-
-        public async Task<DoctorProfileDto?> GetMyProfileAsync(int doctorId)
-        {
-            var profile = await (
-                from doctor in _context.Doctors
-                join user in _context.Users
-                    on doctor.UserId equals user.Id
-                where doctor.DoctorId == doctorId
-                select new DoctorProfileDto
-                {
-                    DoctorId = doctor.DoctorId,
-                    FullName = doctor.FullName,
-                    Email = user.Email ?? string.Empty,
-                    Specialisation = doctor.Specialisation,
-                    YearsOfExperience = doctor.YearsOfExperience,
-                    ConsultationFee = doctor.ConsultationFee
-                }
-            ).FirstOrDefaultAsync();
-
-            return profile;
-        }
-
-
     }
 }

@@ -20,7 +20,6 @@ namespace HealthCare.Api.Services.Interfaces
         Task<List<DoctorListDto>> AvailableDoctors(string specialisation, DateOnly date);
         Task<DoctorSummaryDto> GetSummaryAsync();
         Task<DoctorProfileDto?> GetMyProfileAsync(int doctorId);
-
         Task<DoctorDashboardSummaryDto> GetDashboardSummaryAsync(int doctorId);
 
     }

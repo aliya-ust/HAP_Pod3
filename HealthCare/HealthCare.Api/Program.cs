@@ -156,7 +156,6 @@ using (var scope = app.Services.CreateScope())
     app.UseCors("AllowClients");
     app.UseAuthentication();
     app.UseAuthorization();
-
     app.MapControllers();
 
     await app.RunAsync();
