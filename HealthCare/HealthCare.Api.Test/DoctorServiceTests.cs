@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 using System.Linq.Expressions;
+using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Logging;
 
 namespace HealthCare.Api.Tests
 {
@@ -19,12 +21,16 @@ namespace HealthCare.Api.Tests
         private readonly Mock<IMapper> _mapperMock;
         private readonly HealthCareDbContext _context;
         private readonly DoctorService _service;
+        private readonly Mock<IDistributedCache> _cacheMock;
+        private readonly Mock<ILogger<DoctorService>> _loggerMock;
 
         public DoctorServiceTests()
         {
             _repoMock = new Mock<IDoctorRepository>();
             _appointmentRepoMock = new Mock<IAppointmentRepository>();
             _mapperMock = new Mock<IMapper>();
+            _cacheMock = new Mock<IDistributedCache>();
+            _loggerMock = new Mock<ILogger<DoctorService>>();
 
             var options = new DbContextOptionsBuilder<HealthCareDbContext>()
                 .UseInMemoryDatabase(Guid.NewGuid().ToString())
@@ -36,7 +42,10 @@ namespace HealthCare.Api.Tests
                 _repoMock.Object,
                 _appointmentRepoMock.Object,
                 _context,
-                _mapperMock.Object
+                _mapperMock.Object,
+                _cacheMock.Object,
+                _loggerMock.Object
+
             );
         }
 

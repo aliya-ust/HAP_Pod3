@@ -14,7 +14,8 @@ using Microsoft.OpenApi;
 using System.Security.Claims;
 using System.Text;
 using Serilog;
-using HealthCare.Api.Messaging;
+using MassTransit;
+using HealthCare.Api.Consumers;
 using HealthCare.Api.Options;
 
 
@@ -98,8 +99,35 @@ builder.Services.AddScoped<IPatientService, PatientService>();
 builder.Services.AddScoped<IDoctorService, DoctorService>();
 builder.Services.AddScoped<IAppointmentService, AppointmentService>();
 builder.Services.AddScoped<IHealthRecordService, HealthRecordService>();
-builder.Services.AddSingleton<IRabbitMqPublisher, RabbitMqPublisher>();
-builder.Services.AddHostedService<RabbitMqConsumer>();
+builder.Services.AddMassTransit(x =>
+{
+    x.AddConsumer<AppointmentBookedConsumer>();
+
+    x.UsingRabbitMq((context, cfg) =>
+    {
+        cfg.Host(
+            builder.Configuration["RabbitMq:HostName"],
+            ushort.Parse(builder.Configuration["RabbitMq:Port"]!),
+            builder.Configuration["RabbitMq:VirtualHost"],
+            h =>
+            {
+                h.Username(
+                    builder.Configuration["RabbitMq:UserName"]!);
+
+                h.Password(
+                    builder.Configuration["RabbitMq:Password"]!);
+            });
+
+        cfg.ReceiveEndpoint(
+            builder.Configuration["RabbitMq:HealthCareQueue"]!,
+            e =>
+            {
+                e.ConfigureConsumer<
+                    AppointmentBookedConsumer>(
+                        context);
+            });
+    });
+});
 builder.Services.Configure<GarnetOptions>(builder.Configuration.GetSection("Garnet"));
 builder.Services.AddStackExchangeRedisCache(option =>
 {

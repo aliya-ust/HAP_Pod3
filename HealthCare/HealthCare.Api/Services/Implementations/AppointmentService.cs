@@ -1,13 +1,14 @@
 ﻿using AutoMapper;
 using HealthCare.Api.Data;
 using HealthCare.Api.Events;
-using HealthCare.Api.Messaging;
 using HealthCare.Api.Models;
 using HealthCare.Api.Repositories.Interfaces;
 using HealthCare.Api.Services.Interfaces;
 using HealthCare.Shared.DTOs;
 using HealthCare.Shared.DTOs.Appointment;
+using MassTransit;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Distributed;
 using System.Linq.Expressions;
 
 namespace HealthCare.Api.Services.Implementations
@@ -18,17 +19,19 @@ namespace HealthCare.Api.Services.Implementations
         private readonly IDoctorService _doctorService;
         private readonly HealthCareDbContext _context;
         private readonly IMapper _mapper;
-        private readonly IRabbitMqPublisher _publisher;
+        private readonly IPublishEndpoint _publishEndpoint;
         private readonly ILogger<AppointmentService> _logger;
+        private readonly IDistributedCache _cache;
 
-        public AppointmentService(IAppointmentRepository repository, IDoctorService doctorService, HealthCareDbContext context, IMapper mapper, IRabbitMqPublisher publisher, ILogger<AppointmentService> logger)
+        public AppointmentService(IAppointmentRepository repository, IDoctorService doctorService, HealthCareDbContext context, IMapper mapper, IPublishEndpoint publishEndpoint, ILogger<AppointmentService> logger, IDistributedCache cache)
         {
             _repository = repository;
             _doctorService = doctorService;
             _context = context;
             _mapper = mapper;
-            _publisher = publisher;
+            _publishEndpoint = publishEndpoint;
             _logger = logger;
+            _cache = cache;
         }
 
         private const string AppointmentNotFoundMessage = "Appointment not found.";
@@ -102,6 +105,10 @@ namespace HealthCare.Api.Services.Implementations
                 await _repository.AddAsync(appointment);
                 await _context.SaveChangesAsync();
 
+                await InvalidateDoctorAvailabilityCache(
+                    appointment.DoctorId,
+                    appointment.ScheduledDate);
+
                 _logger.LogInformation(
                     "Appointment booked successfully. AppointmentId={AppointmentId}, PatientId={PatientId}, DoctorId={DoctorId}",
                     appointment.AppointmentId,
@@ -123,7 +130,7 @@ namespace HealthCare.Api.Services.Implementations
                 _logger.LogInformation(
                     "Publishing AppointmentBookedEvent. AppointmentId={AppointmentId}",
                     appointment.AppointmentId);
-                await _publisher.PublishAsync(appointmentEvent);
+                await _publishEndpoint.Publish(appointmentEvent);
             }
             catch (DbUpdateException ex)
             {
@@ -181,6 +188,10 @@ namespace HealthCare.Api.Services.Implementations
 
             await _repository.UpdateAsync(appointment);
             await _context.SaveChangesAsync();
+
+            await InvalidateDoctorAvailabilityCache(
+                    appointment.DoctorId,
+                    appointment.ScheduledDate);
         }
 
 
@@ -226,12 +237,11 @@ namespace HealthCare.Api.Services.Implementations
 
             var normalized = timeSlot.Trim().ToLower();
 
-            var exists = bookedSlots.Any(b =>string.Equals(
-            b.Trim(),
-            timeSlot.Trim(),
-            StringComparison.OrdinalIgnoreCase)
-
-            );
+            var exists = bookedSlots.Any(b =>
+                 string.Equals(
+                     b.Trim(),
+                     timeSlot.Trim(),
+                     StringComparison.OrdinalIgnoreCase));
 
             if (exists)
                 throw new InvalidOperationException("This time slot is already booked.");
@@ -353,6 +363,26 @@ namespace HealthCare.Api.Services.Implementations
                 .FirstOrDefaultAsync();
 
             return result ?? new AppointmentSummaryDto();
+        }
+
+        private async Task InvalidateDoctorAvailabilityCache(
+    int doctorId,
+    DateOnly date)
+        {
+            var doctor = await _context.Doctors
+                .FirstOrDefaultAsync(d => d.DoctorId == doctorId);
+
+            if (doctor is null)
+                return;
+
+            var cacheKey =
+                $"doctors:{doctor.Specialisation}:availability:{date}";
+
+            _logger.LogInformation(
+                "Removing cache key {Key}",
+                cacheKey);
+
+            await _cache.RemoveAsync(cacheKey);
         }
     }
 }

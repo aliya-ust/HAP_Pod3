@@ -107,6 +107,9 @@ namespace HealthCare.Api.Services.Implementations
             await _repository.CreateSlots(doctor.DoctorId, dto.TimeSlots);
 
             await _context.SaveChangesAsync();
+
+            await InvalidateAvailabilityCacheBySpecialisation(
+                    doctor.Specialisation);
         }
 
         public async Task UpdateAsync(int id, UpdateDoctorDto dto)
@@ -133,6 +136,10 @@ namespace HealthCare.Api.Services.Implementations
 
             await _repository.UpdateAsync(doctor);
             await _context.SaveChangesAsync();
+
+            await InvalidateAvailabilityCacheBySpecialisation(
+                   doctor.Specialisation);
+
         }
 
         public async Task DeleteAsync(int id)
@@ -218,6 +225,9 @@ namespace HealthCare.Api.Services.Implementations
                     var cacheKey =
                         $"doctors:{doctor.Specialisation}:availability:{leave.LeaveDate}";
 
+                    _logger.LogInformation(
+                        "Removing cache key {Key}",
+                        cacheKey);
                     await _cache.RemoveAsync(cacheKey);
                 }
             }
@@ -322,6 +332,26 @@ namespace HealthCare.Api.Services.Implementations
                 });
 
             return response;
+        }
+
+        private async Task InvalidateAvailabilityCacheBySpecialisation(
+    string specialisation)
+        {
+            var today = DateOnly.FromDateTime(DateTime.Today);
+
+            for (int i = 0; i < 30; i++)
+            {
+                var date = today.AddDays(i);
+
+                var cacheKey =
+                    $"doctors:{specialisation}:availability:{date}";
+
+                _logger.LogInformation(
+                    "Removing cache key {Key}",
+                    cacheKey);
+
+                await _cache.RemoveAsync(cacheKey);
+            }
         }
 
         public async Task<DoctorSummaryDto> GetSummaryAsync()

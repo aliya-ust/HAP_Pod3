@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using HealthCare.Api.Data;
-using HealthCare.Api.Messaging;
+using MassTransit;
 using HealthCare.Api.Models;
 using HealthCare.Api.Repositories.Interfaces;
 using HealthCare.Api.Services.Implementations;
@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using Moq;
 using System.Linq.Expressions;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Caching.Distributed;
 
 namespace HealthCare.Api.Tests
 {
@@ -21,16 +22,19 @@ namespace HealthCare.Api.Tests
         private readonly Mock<IMapper> _mapperMock;
         private readonly HealthCareDbContext _context;
         private readonly AppointmentService _service;
-        private readonly Mock<IRabbitMqPublisher> _publisherMock;
+        private readonly Mock<IPublishEndpoint> _publishEndpointMock;
         private readonly Mock<ILogger<AppointmentService>> _loggerMock;
+        private readonly Mock<IDistributedCache> _cacheMock;
 
         public AppointmentServiceTests()
         {
             _repoMock = new Mock<IAppointmentRepository>();
             _doctorServiceMock = new Mock<IDoctorService>();
             _mapperMock = new Mock<IMapper>();
-            _publisherMock = new Mock<IRabbitMqPublisher>();
+            _publishEndpointMock = new Mock<IPublishEndpoint>();
             _loggerMock = new Mock<ILogger<AppointmentService>>();
+            _cacheMock = new Mock<IDistributedCache>();
+
 
             var options = new DbContextOptionsBuilder<HealthCareDbContext>()
                 .UseInMemoryDatabase(Guid.NewGuid().ToString())
@@ -43,8 +47,9 @@ namespace HealthCare.Api.Tests
                 _doctorServiceMock.Object,
                 _context,
                 _mapperMock.Object,
-                _publisherMock.Object,
-                _loggerMock.Object
+                _publishEndpointMock.Object,
+                _loggerMock.Object,
+                _cacheMock.Object
             );
         }
 
