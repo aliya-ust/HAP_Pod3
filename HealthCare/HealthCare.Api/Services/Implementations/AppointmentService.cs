@@ -3,15 +3,16 @@ using HealthCare.Api.Data;
 using HealthCare.Api.DTOs;
 using HealthCare.Api.DTOs.Appointment;
 using HealthCare.Api.Events;
-using HealthCare.Api.Messaging;
+
 using HealthCare.Api.Models;
 using HealthCare.Api.Repositories.Interfaces;
 using HealthCare.Api.Services.Interfaces;
 using HealthCare.Shared.DTOs;
 using HealthCare.Shared.DTOs.Appointment;
+using MassTransit;
 using Microsoft.EntityFrameworkCore;
-using HealthCare.Api.Events;
-using HealthCare.Api.Messaging;
+using Serilog;
+
 
 namespace HealthCare.Api.Services.Implementations
 {
@@ -21,23 +22,21 @@ namespace HealthCare.Api.Services.Implementations
         private readonly IDoctorService _doctorService;
         private readonly HealthCareDbContext _context;
         private readonly IMapper _mapper;
-       // private readonly RabbitMQPublisher _publisher;
-
+        private readonly IBus _bus;
         public AppointmentService(
     IAppointmentRepository repository,
     IDoctorService doctorService,
     HealthCareDbContext context,
-    IMapper mapper
-   // RabbitMQPublisher publisher
-   )
+    IMapper mapper, IBus bus)
         {
             _repository = repository;
             _doctorService = doctorService;
             _context = context;
             _mapper = mapper;
-            //_publisher = publisher;
+            _bus = bus;
         }
 
+     
         public async Task<AppointmentListDto?> GetByIdAsync(int id)
         {
             var appointment = await _repository.GetByIdAsync(id);
@@ -122,31 +121,37 @@ namespace HealthCare.Api.Services.Implementations
 
             var appointment = _mapper.Map<Appointment>(dto);
             appointment.PatientId = patientId;
+            appointment.Status = "Pending";
+            appointment.CreatedDate = DateTimeOffset.UtcNow;
 
             try
             {
                 await _repository.AddAsync(appointment);
                 await _context.SaveChangesAsync();
 
+                Log.Information(
+                    "Appointment booked: AppointmentId {AppointmentId}",
+                    appointment.AppointmentId
+                );
+
                 var patient = await _context.Patients
                     .FirstOrDefaultAsync(p => p.PatientId == patientId);
 
-                //await _publisher.PublishAsync(
-                //    new AppointmentBookedEvent
-                //    {
-                //        AppointmentId = appointment.AppointmentId,
-                //        PatientName = patient?.FullName ?? "Unknown",
-                //        DoctorId = appointment.DoctorId,
-                //        ScheduledDate = appointment.ScheduledDate,
-                //        TimeSlot = appointment.TimeSlot,
-                //        OccurredAt = DateTime.UtcNow
-                //    });
+                await _bus.Publish(new AppointmentBookedEvent
+                {
+                    AppointmentId = appointment.AppointmentId,
+                    PatientName = patient?.FullName ?? "Unknown",
+                    DoctorId = appointment.DoctorId,
+                    ScheduledDate = appointment.ScheduledDate,
+                    TimeSlot = appointment.TimeSlot
+                });
             }
             catch (DbUpdateException ex)
             {
                 throw new InvalidOperationException(
                     "Failed to book the appointment.",
-                    ex);
+                    ex
+                );
             }
         }
 

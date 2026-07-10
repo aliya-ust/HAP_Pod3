@@ -1,6 +1,5 @@
 ﻿using HealthCare.Api.DTOs;
 using HealthCare.Api.Exceptions;
-using HealthCare.Api.Models;
 using HealthCare.Shared.DTOs;
 using Microsoft.AspNetCore.Diagnostics;
 
@@ -8,16 +7,24 @@ namespace HealthCare.Api.Middleware
 {
     public class GlobalExceptionHandler : IExceptionHandler
     {
-        private ILogger<GlobalExceptionHandler> _logger;
+        private readonly ILogger<GlobalExceptionHandler> _logger;
 
         public GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger)
         {
             _logger = logger;
         }
-        public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception, CancellationToken cancellationToken)
-        {
-            _logger.LogError(exception, "An Unexpected Error Occured:{Message}", exception.Message);
 
+        public async ValueTask<bool> TryHandleAsync(
+            HttpContext httpContext,
+            Exception exception,
+            CancellationToken cancellationToken)
+        {
+            _logger.LogError(
+                exception,
+                "Exception occurred while processing {Method} {Path}",
+                httpContext.Request.Method,
+                httpContext.Request.Path
+            );
 
             var (statusCode, message) = exception switch
             {
@@ -27,14 +34,10 @@ namespace HealthCare.Api.Middleware
                 HealthRecordNotFoundException => (StatusCodes.Status404NotFound, exception.Message),
 
                 InvalidOperationException => (StatusCodes.Status400BadRequest, exception.Message),
+                UnauthorizedAccessException => (StatusCodes.Status401Unauthorized, exception.Message),
 
-                // Default fallback
                 _ => (StatusCodes.Status500InternalServerError, "Internal server error")
             };
-
-            //InvalidDataException => (StatusCodes.Status400BadRequest, exception.Message),
-
-            
 
             var response = new ErrorResponseDto
             {
@@ -45,11 +48,11 @@ namespace HealthCare.Api.Middleware
             };
 
             httpContext.Response.StatusCode = statusCode;
+            httpContext.Response.ContentType = "application/json";
 
-            await httpContext.Response.WriteAsJsonAsync(response);
+            await httpContext.Response.WriteAsJsonAsync(response, cancellationToken);
 
             return true;
         }
-
     }
 }

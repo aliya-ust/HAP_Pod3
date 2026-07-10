@@ -97,12 +97,11 @@ namespace HealthCare.Api.Services.Implementations
             // Find user
             var user = await _userManager.FindByEmailAsync(dto.Email);
             if (user == null)
-                throw new InvalidOperationException("Email already in use");
-
+                throw new UnauthorizedAccessException("Invalid email or password");
             // Verify password
             var isValid = await _userManager.CheckPasswordAsync(user, dto.Password);
             if (!isValid)
-                throw new UnauthorizedAccessException("Invalid credentials");
+                throw new UnauthorizedAccessException("Invalid email or password");
 
             // Get roles
             var roles = await _userManager.GetRolesAsync(user);

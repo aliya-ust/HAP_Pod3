@@ -585,7 +585,7 @@
 //        Assert.Equal("Cancelled", appointment.Status);
 //        Assert.Equal("Patient Request", appointment.CancellationReason);
 //    }
-    
+
 //    [Fact]
 //    public async Task AddAsync_ShouldSetPatientId()
 //    {

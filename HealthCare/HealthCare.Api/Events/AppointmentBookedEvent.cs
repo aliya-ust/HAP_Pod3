@@ -11,7 +11,5 @@
         public DateOnly ScheduledDate { get; set; }
 
         public string TimeSlot { get; set; } = string.Empty;
-
-        public DateTime OccurredAt { get; set; }
     }
 }

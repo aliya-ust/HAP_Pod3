@@ -9,7 +9,7 @@ namespace HealthCare.Api.Data
     {
         public HealthCareDbContext(DbContextOptions<HealthCareDbContext> options) : base(options) { }
 
-        
+        public DbSet<Notification> Notifications { get; set; }
         public DbSet<Patient> Patients => Set<Patient>();
         public DbSet<Doctor> Doctors => Set<Doctor>();
         public DbSet<Appointment> Appointments => Set<Appointment>();
