@@ -6,6 +6,7 @@ using HealthCare.Api.Models;
 using HealthCare.Api.Repositories.Interfaces;
 using HealthCare.Api.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System.Linq.Expressions;
 
 namespace HealthCare.Api.Services.Implementations
@@ -15,17 +16,27 @@ namespace HealthCare.Api.Services.Implementations
         private readonly IRepository<Patient> _repository;
         private readonly HealthCareDbContext _context;
         private readonly IMapper _mapper;
+        private readonly ILogger<PatientService> _logger;
         private const string NotFoundExceptionMessage = "Patient not found.";
 
-        public PatientService(IRepository<Patient> repository, HealthCareDbContext context, IMapper mapper)
+        public PatientService(
+            IRepository<Patient> repository,
+            HealthCareDbContext context,
+            IMapper mapper,
+            ILogger<PatientService> logger)
         {
             _repository = repository;
             _context = context;
             _mapper = mapper;
+            _logger = logger;
         }
 
         public async Task<PatientProfileDto> GetByIdAsync(int id)
         {
+            _logger.LogInformation(
+                "Fetching patient profile for Patient {PatientId}",
+                id);
+
             var patient = await
             (
                 from p in _context.Patients
@@ -47,31 +58,48 @@ namespace HealthCare.Api.Services.Implementations
             ).FirstOrDefaultAsync();
 
             if (patient == null)
-                throw new InvalidOperationException("Patient not found.");
+            {
+                _logger.LogWarning(
+                    "Patient {PatientId} not found",
+                    id);
+
+                throw new InvalidOperationException(NotFoundExceptionMessage);
+            }
+
+            _logger.LogInformation(
+                "Patient profile fetched successfully for Patient {PatientId}",
+                id);
 
             return patient;
         }
 
         public async Task<PagedResult<PatientListDto>> GetAllAsync(PatientFilter filter)
         {
+            _logger.LogInformation(
+                "Fetching patients. Page: {PageNumber}, PageSize: {PageSize}",
+                filter.PageNumber,
+                filter.PageSize);
+
             Expression<Func<Patient, bool>> predicate = p =>
 
-                // Search by name
                 (string.IsNullOrWhiteSpace(filter.SearchTerm)
                     || p.FullName.Contains(filter.SearchTerm))
 
-                // Filter by insurance
                 &&
 
                 (filter.HasInsurance == null
-                   || (filter.HasInsurance.Value
-                   ? !string.IsNullOrWhiteSpace(p.InsuranceId)
-                   : string.IsNullOrWhiteSpace(p.InsuranceId)));
+                    || (filter.HasInsurance.Value
+                        ? !string.IsNullOrWhiteSpace(p.InsuranceId)
+                        : string.IsNullOrWhiteSpace(p.InsuranceId)));
 
             var pagedResult = await _repository.GetAllAsync(
                 filter.PageNumber,
                 filter.PageSize,
                 predicate);
+
+            _logger.LogInformation(
+                "{PatientCount} patients fetched successfully",
+                pagedResult.TotalCount);
 
             return new PagedResult<PatientListDto>
             {
@@ -84,52 +112,111 @@ namespace HealthCare.Api.Services.Implementations
 
         public async Task AddAsync(CreatePatientDto dto)
         {
+            _logger.LogInformation(
+                "Creating patient {PatientName}",
+                dto.FullName);
+
             var patient = _mapper.Map<Patient>(dto);
+
             await _repository.AddAsync(patient);
             await _context.SaveChangesAsync();
+
+            _logger.LogInformation(
+                "Patient created successfully with ID {PatientId}",
+                patient.PatientId);
         }
 
         public async Task UpdateAsync(int id, UpdatePatientDto dto)
         {
+            _logger.LogInformation(
+                "Updating patient {PatientId}",
+                id);
+
             var patient = await _repository.GetByIdAsync(id);
 
             if (patient is null)
-                throw new InvalidOperationException(NotFoundExceptionMessage);
+            {
+                _logger.LogWarning(
+                    "Patient {PatientId} not found",
+                    id);
 
-            _mapper.Map(dto, patient); // maps onto the tracked entity — EF picks up the changes
+                throw new InvalidOperationException(NotFoundExceptionMessage);
+            }
+
+            _mapper.Map(dto, patient);
 
             await _repository.UpdateAsync(patient);
             await _context.SaveChangesAsync();
+
+            _logger.LogInformation(
+                "Patient {PatientId} updated successfully",
+                id);
         }
 
         public async Task UpdateStatusAsync(int id, bool isActive)
         {
+            _logger.LogInformation(
+                "Updating Patient {PatientId} status to {Status}",
+                id,
+                isActive);
+
             var patient = await _repository.GetByIdAsync(id);
 
             if (patient is null)
+            {
+                _logger.LogWarning(
+                    "Patient {PatientId} not found",
+                    id);
+
                 throw new InvalidOperationException(NotFoundExceptionMessage);
+            }
 
             patient.IsActive = isActive;
 
             await _repository.UpdateAsync(patient);
             await _context.SaveChangesAsync();
+
+            _logger.LogInformation(
+                "Patient {PatientId} status updated successfully",
+                id);
         }
 
         public async Task DeleteAsync(int id)
         {
+            _logger.LogInformation(
+                "Deleting patient {PatientId}",
+                id);
+
             var patient = await _repository.GetByIdAsync(id);
 
             if (patient is null)
+            {
+                _logger.LogWarning(
+                    "Patient {PatientId} not found",
+                    id);
+
                 throw new InvalidOperationException(NotFoundExceptionMessage);
+            }
 
             try
             {
                 await _repository.DeleteAsync(id);
                 await _context.SaveChangesAsync();
+
+                _logger.LogInformation(
+                    "Patient {PatientId} deleted successfully",
+                    id);
             }
             catch (DbUpdateException ex)
             {
-                throw new InvalidOperationException("Failed to delete patient. It may be referenced by existing appointments or health records.", ex);
+                _logger.LogError(
+                    ex,
+                    "Failed to delete Patient {PatientId}",
+                    id);
+
+                throw new InvalidOperationException(
+                    "Failed to delete patient. It may be referenced by existing appointments or health records.",
+                    ex);
             }
         }
     }

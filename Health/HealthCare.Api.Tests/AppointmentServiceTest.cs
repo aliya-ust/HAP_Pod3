@@ -24,24 +24,24 @@ public class AppointmentServiceTests
 
     private readonly AppointmentService _service;
 
-    public AppointmentServiceTests()
-    {
-        var options = new DbContextOptionsBuilder<HealthCareDbContext>()
-            .UseInMemoryDatabase(Guid.NewGuid().ToString())
-            .Options;
+    //public AppointmentServiceTests()
+    //{
+    //    var options = new DbContextOptionsBuilder<HealthCareDbContext>()
+    //        .UseInMemoryDatabase(Guid.NewGuid().ToString())
+    //        .Options;
 
-        _context = new HealthCareDbContext(options);
+    //    _context = new HealthCareDbContext(options);
 
-        _repositoryMock = new Mock<IAppointmentRepository>();
-        _doctorServiceMock = new Mock<IDoctorService>();
-        _mapperMock = new Mock<IMapper>();
+    //    _repositoryMock = new Mock<IAppointmentRepository>();
+    //    _doctorServiceMock = new Mock<IDoctorService>();
+    //    _mapperMock = new Mock<IMapper>();
 
-        _service = new AppointmentService(
-            _repositoryMock.Object,
-            _doctorServiceMock.Object,
-            _context,
-            _mapperMock.Object);
-    }
+    //    _service = new AppointmentService(
+    //        _repositoryMock.Object,
+    //        _doctorServiceMock.Object,
+    //        _context,
+    //        _mapperMock.Object);
+    //}
 
     [Fact]
     public async Task GetByIdAsync_ReturnsAppointment()

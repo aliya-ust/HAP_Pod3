@@ -1,11 +1,14 @@
 using AutoMapper;
 using HealthCare.Api.Data;
 using HealthCare.Api.Mappings;
+using HealthCare.Api.Messaging;
 using HealthCare.Api.Middleware;
 using HealthCare.Api.Models;
+using HealthCare.Api.Options;
 using HealthCare.Api.Repositories.Implementation;
 using HealthCare.Api.Repositories.Implementations;
 using HealthCare.Api.Repositories.Interfaces;
+using HealthCare.Api.Services;
 using HealthCare.Api.Services.Implementation;
 using HealthCare.Api.Services.Implementations;
 using HealthCare.Api.Services.Interfaces;
@@ -15,9 +18,21 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.IdentityModel.Tokens.Experimental;
 using Microsoft.OpenApi;
+using Serilog;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
+using MassTransit;
+
+
+Log.Logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(new ConfigurationBuilder()
+        .AddJsonFile("appsettings.json")
+        .Build())
+    .Enrich.FromLogContext()
+    .Enrich.WithMachineName()
+    .Enrich.WithThreadId()
+    .CreateLogger();
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,7 +50,7 @@ builder.Services.AddSwaggerGen(options =>
         Scheme = "bearer",
         BearerFormat = "JWT",
         Description = "Enter JWT token only. Do not type Bearer."
-    });
+    }); 
 
     options.AddSecurityRequirement(document => new OpenApiSecurityRequirement
     {
@@ -45,6 +60,8 @@ builder.Services.AddSwaggerGen(options =>
 
 builder.Services.AddProblemDetails();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+
+builder.Host.UseSerilog();
 
 
 // Add services to the container.
@@ -69,6 +86,7 @@ builder.Services.AddIdentity<User, IdentityRole>(options =>
     options.Password.RequireNonAlphanumeric = true;
     options.Password.RequiredLength = 8;
 }).AddEntityFrameworkStores<HealthCareDbContext>().AddDefaultTokenProviders();
+
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -82,7 +100,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateIssuerSigningKey = true,
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwt["Key"]!)),
             ClockSkew = TimeSpan.Zero,
-            RoleClaimType = ClaimTypes.Role,   // ✅ ADD THIS
+            RoleClaimType = ClaimTypes.Role,   // ADD THIS
             NameClaimType = ClaimTypes.NameIdentifier
 
         };
@@ -101,6 +119,14 @@ builder.Services.AddScoped<IAppointmentService, AppointmentService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
+builder.Services.AddScoped<IDoctorAvailabilityCacheService,DoctorAvailabilityCacheService>();
+builder.Services.Configure<GarnetOptions>(builder.Configuration.GetSection("Garnet"));
+builder.Services.AddStackExchangeRedisCache(options =>
+{
+    var garnetOptions = builder.Configuration.GetSection("Garnet").Get<GarnetOptions>() ?? new GarnetOptions();
+    options.Configuration = garnetOptions.ConnectionString;
+    options.InstanceName = garnetOptions.InstanceName;
+});
 
 builder.Services.AddAutoMapper(cfg =>
 {
@@ -118,6 +144,23 @@ builder.Services.AddCors(options =>
             )
             .AllowAnyHeader()
             .AllowAnyMethod();
+    });
+});
+
+// rabbit mq
+builder.Services.AddMassTransit(x =>
+{
+    x.AddConsumer<AppointmentBookedConsumer>();
+
+    x.UsingRabbitMq((context, cfg) =>
+    {
+        cfg.Host("localhost", "/", h =>
+        {
+            h.Username("guest");
+            h.Password("guest");
+        });
+
+        cfg.ConfigureEndpoints(context);
     });
 });
 

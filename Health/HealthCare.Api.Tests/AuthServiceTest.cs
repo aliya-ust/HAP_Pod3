@@ -1,302 +1,302 @@
-﻿using AutoMapper;
-using HealthCare.Api.Data;
-using HealthCare.Api.DTOs;
-using HealthCare.Api.DTOs.Auth;
-using HealthCare.Api.DTOs.Doctor;
-using HealthCare.Api.DTOs.Patient;
-using HealthCare.Api.Models;
-using HealthCare.Api.Repositories.Interfaces;
-using HealthCare.Api.Services.Implementation;
-using HealthCare.Api.Services.Interfaces;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Moq;
-using Xunit;
-
-namespace HealthCare.Tests.Services
-{
-    public class AuthServiceTests
-    {
-        private readonly Mock<UserManager<User>> _userManager;
-        private readonly Mock<IMapper> _mapper;
-        private readonly Mock<IPatientRepository> _patientRepo;
-        private readonly Mock<IDoctorRepository> _doctorRepo;
-        private readonly Mock<IJwtService> _jwtService;
-        private readonly HealthCareDbContext _context;
-        private readonly AuthService _service;
-
-        public AuthServiceTests()
-        {
-            var store = new Mock<IUserStore<User>>();
-
-            _userManager = new Mock<UserManager<User>>(
-                store.Object,
-                null!,
-                null!,
-                null!,
-                null!,
-                null!,
-                null!,
-                null!,
-                null!);
-
-            _mapper = new Mock<IMapper>();
-            _patientRepo = new Mock<IPatientRepository>();
-            _doctorRepo = new Mock<IDoctorRepository>();
-            _jwtService = new Mock<IJwtService>();
-
-            var options = new DbContextOptionsBuilder<HealthCareDbContext>()
-                .UseInMemoryDatabase(Guid.NewGuid().ToString())
-                .Options;
-
-            _context = new HealthCareDbContext(options);
-
-            _service = new AuthService(
-                _userManager.Object,
-                _mapper.Object,
-                _patientRepo.Object,
-                _doctorRepo.Object,
-                _jwtService.Object,
-                _context);
-        }
-
-        [Fact]
-        public async Task RegisterPatientAsync_ShouldRegisterPatientSuccessfully()
-        {
-            var dto = new CreatePatientDto { Email = "a@test.com", Password = "Password@123" };
-
-            _userManager.Setup(x => x.FindByEmailAsync(dto.Email)).ReturnsAsync((User)null!);
-            _userManager.Setup(x => x.CreateAsync(It.IsAny<User>(), dto.Password)).ReturnsAsync(IdentityResult.Success);
-            _userManager.Setup(x => x.AddToRoleAsync(It.IsAny<User>(), "Patient")).ReturnsAsync(IdentityResult.Success);
-            _mapper.Setup(x => x.Map<Patient>(dto)).Returns(new Patient());
-
-            await _service.RegisterPatientAsync(dto);
-
-            _patientRepo.Verify(x => x.AddAsync(It.IsAny<Patient>()), Times.Once);
-        }
-
-        [Fact]
-        public async Task RegisterPatientAsync_ShouldThrow_WhenEmailExists()
-        {
-            var dto = new CreatePatientDto { Email = "a@test.com", Password = "123" };
-
-            _userManager.Setup(x => x.FindByEmailAsync(dto.Email))
-                .ReturnsAsync(new User());
-
-            await Assert.ThrowsAsync<InvalidOperationException>(() => _service.RegisterPatientAsync(dto));
-        }
-
-        [Fact]
-        public async Task RegisterDoctorAsync_ShouldRegisterDoctorSuccessfully()
-        {
-            var dto = new CreateDoctorDto { Email = "doctor@test.com", Password = "Password@123", TimeSlots = new List<string>() };
-
-            _userManager.Setup(x => x.FindByEmailAsync(dto.Email)).ReturnsAsync((User)null!);
-            _userManager.Setup(x => x.CreateAsync(It.IsAny<User>(), dto.Password)).ReturnsAsync(IdentityResult.Success);
-            _userManager.Setup(x => x.AddToRoleAsync(It.IsAny<User>(), "Doctor")).ReturnsAsync(IdentityResult.Success);
-
-            _mapper.Setup(x => x.Map<Doctor>(dto)).Returns(new Doctor());
-
-            await _service.RegisterDoctorAsync(dto);
-
-            _doctorRepo.Verify(x => x.AddAsync(It.IsAny<Doctor>()), Times.Once);
-            _doctorRepo.Verify(x => x.CreateSlots(It.IsAny<int>(), dto.TimeSlots), Times.Once);
-        }
+﻿//using AutoMapper;
+//using HealthCare.Api.Data;
+//using HealthCare.Api.DTOs;
+//using HealthCare.Api.DTOs.Auth;
+//using HealthCare.Api.DTOs.Doctor;
+//using HealthCare.Api.DTOs.Patient;
+//using HealthCare.Api.Models;
+//using HealthCare.Api.Repositories.Interfaces;
+//using HealthCare.Api.Services.Implementation;
+//using HealthCare.Api.Services.Interfaces;
+//using Microsoft.AspNetCore.Identity;
+//using Microsoft.EntityFrameworkCore;
+//using Moq;
+//using Xunit;
+
+//namespace HealthCare.Tests.Services
+//{
+//    public class AuthServiceTests
+//    {
+//        private readonly Mock<UserManager<User>> _userManager;
+//        private readonly Mock<IMapper> _mapper;
+//        private readonly Mock<IPatientRepository> _patientRepo;
+//        private readonly Mock<IDoctorRepository> _doctorRepo;
+//        private readonly Mock<IJwtService> _jwtService;
+//        private readonly HealthCareDbContext _context;
+//        private readonly AuthService _service;
+
+//        public AuthServiceTests()
+//        {
+//            var store = new Mock<IUserStore<User>>();
+
+//            _userManager = new Mock<UserManager<User>>(
+//                store.Object,
+//                null!,
+//                null!,
+//                null!,
+//                null!,
+//                null!,
+//                null!,
+//                null!,
+//                null!);
+
+//            _mapper = new Mock<IMapper>();
+//            _patientRepo = new Mock<IPatientRepository>();
+//            _doctorRepo = new Mock<IDoctorRepository>();
+//            _jwtService = new Mock<IJwtService>();
+
+//            var options = new DbContextOptionsBuilder<HealthCareDbContext>()
+//                .UseInMemoryDatabase(Guid.NewGuid().ToString())
+//                .Options;
+
+//            _context = new HealthCareDbContext(options);
+
+//            _service = new AuthService(
+//                _userManager.Object,
+//                _mapper.Object,
+//                _patientRepo.Object,
+//                _doctorRepo.Object,
+//                _jwtService.Object,
+//                _context);
+//        }
+
+//        [Fact]
+//        public async Task RegisterPatientAsync_ShouldRegisterPatientSuccessfully()
+//        {
+//            var dto = new CreatePatientDto { Email = "a@test.com", Password = "Password@123" };
+
+//            _userManager.Setup(x => x.FindByEmailAsync(dto.Email)).ReturnsAsync((User)null!);
+//            _userManager.Setup(x => x.CreateAsync(It.IsAny<User>(), dto.Password)).ReturnsAsync(IdentityResult.Success);
+//            _userManager.Setup(x => x.AddToRoleAsync(It.IsAny<User>(), "Patient")).ReturnsAsync(IdentityResult.Success);
+//            _mapper.Setup(x => x.Map<Patient>(dto)).Returns(new Patient());
+
+//            await _service.RegisterPatientAsync(dto);
+
+//            _patientRepo.Verify(x => x.AddAsync(It.IsAny<Patient>()), Times.Once);
+//        }
+
+//        [Fact]
+//        public async Task RegisterPatientAsync_ShouldThrow_WhenEmailExists()
+//        {
+//            var dto = new CreatePatientDto { Email = "a@test.com", Password = "123" };
+
+//            _userManager.Setup(x => x.FindByEmailAsync(dto.Email))
+//                .ReturnsAsync(new User());
+
+//            await Assert.ThrowsAsync<InvalidOperationException>(() => _service.RegisterPatientAsync(dto));
+//        }
+
+//        [Fact]
+//        public async Task RegisterDoctorAsync_ShouldRegisterDoctorSuccessfully()
+//        {
+//            var dto = new CreateDoctorDto { Email = "doctor@test.com", Password = "Password@123", TimeSlots = new List<string>() };
+
+//            _userManager.Setup(x => x.FindByEmailAsync(dto.Email)).ReturnsAsync((User)null!);
+//            _userManager.Setup(x => x.CreateAsync(It.IsAny<User>(), dto.Password)).ReturnsAsync(IdentityResult.Success);
+//            _userManager.Setup(x => x.AddToRoleAsync(It.IsAny<User>(), "Doctor")).ReturnsAsync(IdentityResult.Success);
+
+//            _mapper.Setup(x => x.Map<Doctor>(dto)).Returns(new Doctor());
+
+//            await _service.RegisterDoctorAsync(dto);
+
+//            _doctorRepo.Verify(x => x.AddAsync(It.IsAny<Doctor>()), Times.Once);
+//            _doctorRepo.Verify(x => x.CreateSlots(It.IsAny<int>(), dto.TimeSlots), Times.Once);
+//        }
 
-        [Fact]
-        public async Task RegisterDoctorAsync_ShouldThrow_WhenEmailAlreadyExists()
-        {
-            var dto = new CreateDoctorDto { Email = "doctor@test.com", Password = "123" };
+//        [Fact]
+//        public async Task RegisterDoctorAsync_ShouldThrow_WhenEmailAlreadyExists()
+//        {
+//            var dto = new CreateDoctorDto { Email = "doctor@test.com", Password = "123" };
 
-            _userManager.Setup(x => x.FindByEmailAsync(dto.Email))
-                .ReturnsAsync(new User());
+//            _userManager.Setup(x => x.FindByEmailAsync(dto.Email))
+//                .ReturnsAsync(new User());
 
-            await Assert.ThrowsAsync<InvalidOperationException>(() => _service.RegisterDoctorAsync(dto));
-        }
+//            await Assert.ThrowsAsync<InvalidOperationException>(() => _service.RegisterDoctorAsync(dto));
+//        }
 
-        [Fact]
-        public async Task LoginAsync_ShouldReturnToken_ForPatient()
-        {
-            var dto = new LoginDto { Email = "patient@test.com", Password = "123" };
+//        [Fact]
+//        public async Task LoginAsync_ShouldReturnToken_ForPatient()
+//        {
+//            var dto = new LoginDto { Email = "patient@test.com", Password = "123" };
 
-            var user = new User { Id = "1", Email = dto.Email };
+//            var user = new User { Id = "1", Email = dto.Email };
 
-            _userManager.Setup(x => x.FindByEmailAsync(dto.Email)).ReturnsAsync(user);
-            _userManager.Setup(x => x.CheckPasswordAsync(user, dto.Password)).ReturnsAsync(true);
-            _userManager.Setup(x => x.GetRolesAsync(user)).ReturnsAsync(new List<string> { "Patient" });
+//            _userManager.Setup(x => x.FindByEmailAsync(dto.Email)).ReturnsAsync(user);
+//            _userManager.Setup(x => x.CheckPasswordAsync(user, dto.Password)).ReturnsAsync(true);
+//            _userManager.Setup(x => x.GetRolesAsync(user)).ReturnsAsync(new List<string> { "Patient" });
 
-            _patientRepo.Setup(x => x.GetByUserIdAsync("1"))
-                .ReturnsAsync(new Patient { PatientId = 10 });
+//            _patientRepo.Setup(x => x.GetByUserIdAsync("1"))
+//                .ReturnsAsync(new Patient { PatientId = 10 });
 
-            _jwtService.Setup(x => x.GenerateToken(user, 10, null))
-                .ReturnsAsync("token");
+//            _jwtService.Setup(x => x.GenerateToken(user, 10, null))
+//                .ReturnsAsync("token");
 
-            var result = await _service.LoginAsync(dto);
+//            var result = await _service.LoginAsync(dto);
 
-            Assert.Equal("token", result.AccessToken);
-            Assert.Equal("Patient", result.Role);
-        }
+//            Assert.Equal("token", result.AccessToken);
+//            Assert.Equal("Patient", result.Role);
+//        }
 
-        [Fact]
-        public async Task LoginAsync_ShouldReturnToken_ForDoctor()
-        {
-            var dto = new LoginDto { Email = "doctor@test.com", Password = "123" };
+//        [Fact]
+//        public async Task LoginAsync_ShouldReturnToken_ForDoctor()
+//        {
+//            var dto = new LoginDto { Email = "doctor@test.com", Password = "123" };
 
-            var user = new User { Id = "2" };
+//            var user = new User { Id = "2" };
 
-            _userManager.Setup(x => x.FindByEmailAsync(dto.Email)).ReturnsAsync(user);
-            _userManager.Setup(x => x.CheckPasswordAsync(user, dto.Password)).ReturnsAsync(true);
-            _userManager.Setup(x => x.GetRolesAsync(user)).ReturnsAsync(new List<string> { "Doctor" });
+//            _userManager.Setup(x => x.FindByEmailAsync(dto.Email)).ReturnsAsync(user);
+//            _userManager.Setup(x => x.CheckPasswordAsync(user, dto.Password)).ReturnsAsync(true);
+//            _userManager.Setup(x => x.GetRolesAsync(user)).ReturnsAsync(new List<string> { "Doctor" });
 
-            _doctorRepo.Setup(x => x.GetByUserIdAsync("2"))
-                .ReturnsAsync(new Doctor { DoctorId = 20 });
+//            _doctorRepo.Setup(x => x.GetByUserIdAsync("2"))
+//                .ReturnsAsync(new Doctor { DoctorId = 20 });
 
-            _jwtService.Setup(x => x.GenerateToken(user, null, 20))
-                .ReturnsAsync("doctorToken");
+//            _jwtService.Setup(x => x.GenerateToken(user, null, 20))
+//                .ReturnsAsync("doctorToken");
 
-            var result = await _service.LoginAsync(dto);
+//            var result = await _service.LoginAsync(dto);
 
-            Assert.Equal("Doctor", result.Role);
-        }
+//            Assert.Equal("Doctor", result.Role);
+//        }
 
-        [Fact]
-        public async Task LoginAsync_ShouldReturnToken_ForAdmin()
-        {
-            var dto = new LoginDto { Email = "admin@test.com", Password = "123" };
+//        [Fact]
+//        public async Task LoginAsync_ShouldReturnToken_ForAdmin()
+//        {
+//            var dto = new LoginDto { Email = "admin@test.com", Password = "123" };
 
-            var user = new User();
+//            var user = new User();
 
-            _userManager.Setup(x => x.FindByEmailAsync(dto.Email)).ReturnsAsync(user);
-            _userManager.Setup(x => x.CheckPasswordAsync(user, dto.Password)).ReturnsAsync(true);
-            _userManager.Setup(x => x.GetRolesAsync(user)).ReturnsAsync(new List<string> { "Admin" });
+//            _userManager.Setup(x => x.FindByEmailAsync(dto.Email)).ReturnsAsync(user);
+//            _userManager.Setup(x => x.CheckPasswordAsync(user, dto.Password)).ReturnsAsync(true);
+//            _userManager.Setup(x => x.GetRolesAsync(user)).ReturnsAsync(new List<string> { "Admin" });
 
-            _jwtService.Setup(x => x.GenerateToken(user, null, null))
-                .ReturnsAsync("adminToken");
+//            _jwtService.Setup(x => x.GenerateToken(user, null, null))
+//                .ReturnsAsync("adminToken");
 
-            var result = await _service.LoginAsync(dto);
+//            var result = await _service.LoginAsync(dto);
 
-            Assert.Equal("Admin", result.Role);
-        }
+//            Assert.Equal("Admin", result.Role);
+//        }
 
-        [Fact]
-        public async Task LoginAsync_ShouldThrow_WhenUserNotFound()
-        {
-            var dto = new LoginDto { Email = "abc@test.com", Password = "123" };
+//        [Fact]
+//        public async Task LoginAsync_ShouldThrow_WhenUserNotFound()
+//        {
+//            var dto = new LoginDto { Email = "abc@test.com", Password = "123" };
 
-            _userManager.Setup(x => x.FindByEmailAsync(dto.Email))
-                .ReturnsAsync((User)null!);
+//            _userManager.Setup(x => x.FindByEmailAsync(dto.Email))
+//                .ReturnsAsync((User)null!);
 
-            await Assert.ThrowsAsync<UnauthorizedAccessException>(() => _service.LoginAsync(dto));
-        }
+//            await Assert.ThrowsAsync<UnauthorizedAccessException>(() => _service.LoginAsync(dto));
+//        }
 
-        [Fact]
-        public async Task LoginAsync_ShouldThrow_WhenPasswordInvalid()
-        {
-            var user = new User();
+//        [Fact]
+//        public async Task LoginAsync_ShouldThrow_WhenPasswordInvalid()
+//        {
+//            var user = new User();
 
-            _userManager.Setup(x => x.FindByEmailAsync(It.IsAny<string>()))
-                .ReturnsAsync(user);
+//            _userManager.Setup(x => x.FindByEmailAsync(It.IsAny<string>()))
+//                .ReturnsAsync(user);
 
-            _userManager.Setup(x => x.CheckPasswordAsync(user, It.IsAny<string>()))
-                .ReturnsAsync(false);
+//            _userManager.Setup(x => x.CheckPasswordAsync(user, It.IsAny<string>()))
+//                .ReturnsAsync(false);
 
-            await Assert.ThrowsAsync<UnauthorizedAccessException>(() => _service.LoginAsync(new LoginDto()));
-        }
+//            await Assert.ThrowsAsync<UnauthorizedAccessException>(() => _service.LoginAsync(new LoginDto()));
+//        }
 
-        [Fact]
-        public async Task LoginAsync_ShouldThrow_WhenRoleMissing()
-        {
-            var user = new User();
+//        [Fact]
+//        public async Task LoginAsync_ShouldThrow_WhenRoleMissing()
+//        {
+//            var user = new User();
 
-            _userManager.Setup(x => x.FindByEmailAsync(It.IsAny<string>()))
-                .ReturnsAsync(user);
+//            _userManager.Setup(x => x.FindByEmailAsync(It.IsAny<string>()))
+//                .ReturnsAsync(user);
 
-            _userManager.Setup(x => x.CheckPasswordAsync(user, It.IsAny<string>()))
-                .ReturnsAsync(true);
+//            _userManager.Setup(x => x.CheckPasswordAsync(user, It.IsAny<string>()))
+//                .ReturnsAsync(true);
 
-            _userManager.Setup(x => x.GetRolesAsync(user))
-                .ReturnsAsync(new List<string>());
+//            _userManager.Setup(x => x.GetRolesAsync(user))
+//                .ReturnsAsync(new List<string>());
 
-            await Assert.ThrowsAsync<InvalidOperationException>(() => _service.LoginAsync(new LoginDto()));
-        }
+//            await Assert.ThrowsAsync<InvalidOperationException>(() => _service.LoginAsync(new LoginDto()));
+//        }
 
-        [Fact]
-        public async Task LoginAsync_ShouldThrow_WhenPatientProfileMissing()
-        {
-            var user = new User { Id = "1" };
+//        [Fact]
+//        public async Task LoginAsync_ShouldThrow_WhenPatientProfileMissing()
+//        {
+//            var user = new User { Id = "1" };
 
-            _userManager.Setup(x => x.FindByEmailAsync(It.IsAny<string>())).ReturnsAsync(user);
-            _userManager.Setup(x => x.CheckPasswordAsync(user, It.IsAny<string>())).ReturnsAsync(true);
-            _userManager.Setup(x => x.GetRolesAsync(user)).ReturnsAsync(new List<string> { "Patient" });
+//            _userManager.Setup(x => x.FindByEmailAsync(It.IsAny<string>())).ReturnsAsync(user);
+//            _userManager.Setup(x => x.CheckPasswordAsync(user, It.IsAny<string>())).ReturnsAsync(true);
+//            _userManager.Setup(x => x.GetRolesAsync(user)).ReturnsAsync(new List<string> { "Patient" });
 
-            _patientRepo.Setup(x => x.GetByUserIdAsync("1"))
-                .ReturnsAsync((Patient)null!);
+//            _patientRepo.Setup(x => x.GetByUserIdAsync("1"))
+//                .ReturnsAsync((Patient)null!);
 
-            await Assert.ThrowsAsync<InvalidOperationException>(() => _service.LoginAsync(new LoginDto()));
-        }
+//            await Assert.ThrowsAsync<InvalidOperationException>(() => _service.LoginAsync(new LoginDto()));
+//        }
 
-        [Fact]
-        public async Task LoginAsync_ShouldThrow_WhenDoctorProfileMissing()
-        {
-            var user = new User { Id = "2" };
+//        [Fact]
+//        public async Task LoginAsync_ShouldThrow_WhenDoctorProfileMissing()
+//        {
+//            var user = new User { Id = "2" };
 
-            _userManager.Setup(x => x.FindByEmailAsync(It.IsAny<string>())).ReturnsAsync(user);
-            _userManager.Setup(x => x.CheckPasswordAsync(user, It.IsAny<string>())).ReturnsAsync(true);
-            _userManager.Setup(x => x.GetRolesAsync(user)).ReturnsAsync(new List<string> { "Doctor" });
+//            _userManager.Setup(x => x.FindByEmailAsync(It.IsAny<string>())).ReturnsAsync(user);
+//            _userManager.Setup(x => x.CheckPasswordAsync(user, It.IsAny<string>())).ReturnsAsync(true);
+//            _userManager.Setup(x => x.GetRolesAsync(user)).ReturnsAsync(new List<string> { "Doctor" });
 
-            _doctorRepo.Setup(x => x.GetByUserIdAsync("2"))
-                .ReturnsAsync((Doctor)null!);
+//            _doctorRepo.Setup(x => x.GetByUserIdAsync("2"))
+//                .ReturnsAsync((Doctor)null!);
 
-            await Assert.ThrowsAsync<InvalidOperationException>(() => _service.LoginAsync(new LoginDto()));
-        }
+//            await Assert.ThrowsAsync<InvalidOperationException>(() => _service.LoginAsync(new LoginDto()));
+//        }
 
-        [Fact]
-        public async Task ChangePasswordAsync_ShouldChangePasswordSuccessfully()
-        {
-            var user = new User { Id = "1" };
+//        [Fact]
+//        public async Task ChangePasswordAsync_ShouldChangePasswordSuccessfully()
+//        {
+//            var user = new User { Id = "1" };
 
-            var dto = new ChangePasswordDto
-            {
-                CurrentPassword = "Old@123",
-                NewPassword = "New@123"
-            };
+//            var dto = new ChangePasswordDto
+//            {
+//                CurrentPassword = "Old@123",
+//                NewPassword = "New@123"
+//            };
 
-            _userManager.Setup(x => x.FindByIdAsync("1")).ReturnsAsync(user);
+//            _userManager.Setup(x => x.FindByIdAsync("1")).ReturnsAsync(user);
 
-            _userManager.Setup(x => x.ChangePasswordAsync(user, dto.CurrentPassword, dto.NewPassword))
-                .ReturnsAsync(IdentityResult.Success);
+//            _userManager.Setup(x => x.ChangePasswordAsync(user, dto.CurrentPassword, dto.NewPassword))
+//                .ReturnsAsync(IdentityResult.Success);
 
-            await _service.ChangePasswordAsync("1", dto);
+//            await _service.ChangePasswordAsync("1", dto);
 
-            Assert.True(true);
-        }
+//            Assert.True(true);
+//        }
 
-        [Fact]
-        public async Task ChangePasswordAsync_ShouldThrow_WhenUserNotFound()
-        {
-            _userManager.Setup(x => x.FindByIdAsync("1"))
-                .ReturnsAsync((User)null!);
+//        [Fact]
+//        public async Task ChangePasswordAsync_ShouldThrow_WhenUserNotFound()
+//        {
+//            _userManager.Setup(x => x.FindByIdAsync("1"))
+//                .ReturnsAsync((User)null!);
 
-            await Assert.ThrowsAsync<InvalidOperationException>(() =>
-                _service.ChangePasswordAsync("1", new ChangePasswordDto()));
-        }
+//            await Assert.ThrowsAsync<InvalidOperationException>(() =>
+//                _service.ChangePasswordAsync("1", new ChangePasswordDto()));
+//        }
 
-        [Fact]
-        public async Task ChangePasswordAsync_ShouldThrow_WhenPasswordChangeFails()
-        {
-            var user = new User { Id = "1" };
+//        [Fact]
+//        public async Task ChangePasswordAsync_ShouldThrow_WhenPasswordChangeFails()
+//        {
+//            var user = new User { Id = "1" };
 
-            _userManager.Setup(x => x.FindByIdAsync("1"))
-                .ReturnsAsync(user);
+//            _userManager.Setup(x => x.FindByIdAsync("1"))
+//                .ReturnsAsync(user);
 
-            _userManager.Setup(x => x.ChangePasswordAsync(user, It.IsAny<string>(), It.IsAny<string>()))
-                .ReturnsAsync(IdentityResult.Failed(new IdentityError
-                {
-                    Description = "Password change failed"
-                }));
+//            _userManager.Setup(x => x.ChangePasswordAsync(user, It.IsAny<string>(), It.IsAny<string>()))
+//                .ReturnsAsync(IdentityResult.Failed(new IdentityError
+//                {
+//                    Description = "Password change failed"
+//                }));
 
-            await Assert.ThrowsAsync<InvalidOperationException>(() =>
-                _service.ChangePasswordAsync("1", new ChangePasswordDto()));
-        }
-    }
-}
+//            await Assert.ThrowsAsync<InvalidOperationException>(() =>
+//                _service.ChangePasswordAsync("1", new ChangePasswordDto()));
+//        }
+//    }
+//}

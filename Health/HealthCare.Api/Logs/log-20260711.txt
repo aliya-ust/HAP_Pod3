@@ -1,0 +1,211 @@
+2026-07-11 12:23:08.182 +05:30 [INF] Configured endpoint AppointmentBooked, Consumer: HealthCare.Api.Messaging.AppointmentBookedConsumer
+2026-07-11 12:23:08.819 +05:30 [INF] Bus started: "rabbitmq://localhost/"
+2026-07-11 12:23:24.175 +05:30 [WRN] You do not have a valid license key for the Lucky Penny software AutoMapper. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.
+2026-07-11 12:23:24.351 +05:30 [INF] Login attempt for email ananya.menon@example.com
+2026-07-11 12:23:24.668 +05:30 [INF] Generating JWT token for User b9effe45-f711-4d74-a495-ec4a1add3e10
+2026-07-11 12:23:24.689 +05:30 [INF] JWT token generated successfully for User b9effe45-f711-4d74-a495-ec4a1add3e10
+2026-07-11 12:23:24.740 +05:30 [INF] User ananya.menon@example.com logged in successfully as Patient
+2026-07-11 12:23:25.192 +05:30 [INF] Fetching dashboard summary for Patient 5
+2026-07-11 12:23:25.295 +05:30 [INF] Patient dashboard generated successfully for Patient 5
+2026-07-11 12:23:33.698 +05:30 [INF] Fetching available doctors for Specialisation Neurology on "2026-07-30"
+2026-07-11 12:23:33.978 +05:30 [INF] Cache miss for Specialisation Neurology on "2026-07-30". Loading from database.
+2026-07-11 12:23:34.141 +05:30 [INF] Doctor availability cached.
+2026-07-11 12:23:34.143 +05:30 [INF] 1 doctor(s) loaded from database and cached for Specialisation Neurology on "2026-07-30"
+2026-07-11 12:24:05.691 +05:30 [INF] Login attempt for email latham@gmail.com
+2026-07-11 12:24:05.776 +05:30 [INF] Generating JWT token for User 8c29040f-434b-4ab7-8091-423887b017eb
+2026-07-11 12:24:05.779 +05:30 [INF] JWT token generated successfully for User 8c29040f-434b-4ab7-8091-423887b017eb
+2026-07-11 12:24:05.780 +05:30 [INF] User latham@gmail.com logged in successfully as Patient
+2026-07-11 12:24:05.797 +05:30 [INF] Fetching dashboard summary for Patient 12
+2026-07-11 12:24:05.802 +05:30 [INF] Patient dashboard generated successfully for Patient 12
+2026-07-11 12:24:14.260 +05:30 [INF] Fetching available doctors for Specialisation Neurology on "2026-07-30"
+2026-07-11 12:24:14.275 +05:30 [INF] Doctor availability served from cache.
+2026-07-11 12:24:14.278 +05:30 [INF] Cache hit for Specialisation Neurology on "2026-07-30"
+2026-07-11 12:25:45.676 +05:30 [INF] Fetching available doctors for Specialisation Neurology on "2026-07-21"
+2026-07-11 12:25:45.680 +05:30 [INF] Cache miss for Specialisation Neurology on "2026-07-21". Loading from database.
+2026-07-11 12:25:45.699 +05:30 [INF] Doctor availability cached.
+2026-07-11 12:25:45.700 +05:30 [INF] 1 doctor(s) loaded from database and cached for Specialisation Neurology on "2026-07-21"
+2026-07-11 12:25:47.699 +05:30 [INF] Fetching available doctors for Specialisation Dermatology on "2026-07-21"
+2026-07-11 12:25:47.702 +05:30 [INF] Cache miss for Specialisation Dermatology on "2026-07-21". Loading from database.
+2026-07-11 12:25:47.706 +05:30 [INF] Doctor availability cached.
+2026-07-11 12:25:47.708 +05:30 [INF] 4 doctor(s) loaded from database and cached for Specialisation Dermatology on "2026-07-21"
+2026-07-11 12:25:49.895 +05:30 [INF] Fetching available slots for Doctor 20 on "2026-07-21"
+2026-07-11 12:25:49.898 +05:30 [INF] Checking available slots for Doctor 20 on "2026-07-21"
+2026-07-11 12:25:49.920 +05:30 [INF] 3 slots available for Doctor 20
+2026-07-11 12:25:49.928 +05:30 [INF] Doctor 20 has 3 available slots on "2026-07-21"
+2026-07-11 12:25:51.638 +05:30 [INF] Fetching available slots for Doctor 12 on "2026-07-21"
+2026-07-11 12:25:51.640 +05:30 [INF] Checking available slots for Doctor 12 on "2026-07-21"
+2026-07-11 12:25:51.644 +05:30 [INF] 1 slots available for Doctor 12
+2026-07-11 12:25:51.646 +05:30 [INF] Doctor 12 has 0 available slots on "2026-07-21"
+2026-07-11 12:26:05.013 +05:30 [INF] Fetching available slots for Doctor 20 on "2026-07-21"
+2026-07-11 12:26:05.014 +05:30 [INF] Checking available slots for Doctor 20 on "2026-07-21"
+2026-07-11 12:26:05.019 +05:30 [INF] 3 slots available for Doctor 20
+2026-07-11 12:26:05.021 +05:30 [INF] Doctor 20 has 3 available slots on "2026-07-21"
+2026-07-11 12:26:07.979 +05:30 [INF] Fetching available slots for Doctor 12 on "2026-07-21"
+2026-07-11 12:26:07.981 +05:30 [INF] Checking available slots for Doctor 12 on "2026-07-21"
+2026-07-11 12:26:07.984 +05:30 [INF] 1 slots available for Doctor 12
+2026-07-11 12:26:07.986 +05:30 [INF] Doctor 12 has 0 available slots on "2026-07-21"
+2026-07-11 12:26:18.312 +05:30 [INF] Fetching available slots for Doctor 20 on "2026-07-21"
+2026-07-11 12:26:18.314 +05:30 [INF] Checking available slots for Doctor 20 on "2026-07-21"
+2026-07-11 12:26:18.318 +05:30 [INF] 3 slots available for Doctor 20
+2026-07-11 12:26:18.320 +05:30 [INF] Doctor 20 has 3 available slots on "2026-07-21"
+2026-07-11 15:02:16.076 +05:30 [INF] Login attempt for email ananya.menon@example.com
+2026-07-11 15:02:16.490 +05:30 [INF] Generating JWT token for User b9effe45-f711-4d74-a495-ec4a1add3e10
+2026-07-11 15:02:16.493 +05:30 [INF] JWT token generated successfully for User b9effe45-f711-4d74-a495-ec4a1add3e10
+2026-07-11 15:02:16.495 +05:30 [INF] User ananya.menon@example.com logged in successfully as Patient
+2026-07-11 15:02:16.516 +05:30 [INF] Fetching dashboard summary for Patient 5
+2026-07-11 15:02:16.537 +05:30 [INF] Patient dashboard generated successfully for Patient 5
+2026-07-11 15:03:48.421 +05:30 [INF] Fetching available doctors for Specialisation Dermatology on "2026-07-21"
+2026-07-11 15:03:48.427 +05:30 [INF] Cache miss for Specialisation Dermatology on "2026-07-21". Loading from database.
+2026-07-11 15:03:48.455 +05:30 [INF] Doctor availability cached.
+2026-07-11 15:03:48.456 +05:30 [INF] 4 doctor(s) loaded from database and cached for Specialisation Dermatology on "2026-07-21"
+2026-07-11 15:03:50.386 +05:30 [INF] Fetching available slots for Doctor 12 on "2026-07-21"
+2026-07-11 15:03:50.388 +05:30 [INF] Checking available slots for Doctor 12 on "2026-07-21"
+2026-07-11 15:03:50.397 +05:30 [INF] 1 slots available for Doctor 12
+2026-07-11 15:03:50.403 +05:30 [INF] Doctor 12 has 0 available slots on "2026-07-21"
+2026-07-11 16:04:28.374 +05:30 [INF] Configured endpoint AppointmentBooked, Consumer: HealthCare.Api.Messaging.AppointmentBookedConsumer
+2026-07-11 16:04:29.129 +05:30 [INF] Bus started: "rabbitmq://localhost/"
+2026-07-11 16:04:43.306 +05:30 [WRN] You do not have a valid license key for the Lucky Penny software AutoMapper. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.
+2026-07-11 16:04:43.416 +05:30 [INF] Login attempt for email ananya.menon@example.com
+2026-07-11 16:04:43.709 +05:30 [INF] Generating JWT token for User b9effe45-f711-4d74-a495-ec4a1add3e10
+2026-07-11 16:04:43.732 +05:30 [INF] JWT token generated successfully for User b9effe45-f711-4d74-a495-ec4a1add3e10
+2026-07-11 16:04:43.780 +05:30 [INF] User ananya.menon@example.com logged in successfully as Patient
+2026-07-11 16:04:44.251 +05:30 [INF] Fetching dashboard summary for Patient 5
+2026-07-11 16:04:44.355 +05:30 [INF] Patient dashboard generated successfully for Patient 5
+2026-07-11 16:04:53.805 +05:30 [INF] Fetching available doctors for Specialisation Neurology on "2026-07-16"
+2026-07-11 16:04:54.135 +05:30 [INF] Cache miss for Specialisation Neurology on "2026-07-16". Loading from database.
+2026-07-11 16:04:54.272 +05:30 [INF] Doctor availability cached.
+2026-07-11 16:04:54.275 +05:30 [INF] 1 doctor(s) loaded from database and cached for Specialisation Neurology on "2026-07-16"
+2026-07-11 16:04:55.587 +05:30 [INF] Fetching available slots for Doctor 18 on "2026-07-16"
+2026-07-11 16:04:55.591 +05:30 [INF] Checking available slots for Doctor 18 on "2026-07-16"
+2026-07-11 16:04:55.607 +05:30 [INF] 11 slots available for Doctor 18
+2026-07-11 16:04:55.614 +05:30 [INF] Doctor 18 has 11 available slots on "2026-07-16"
+2026-07-11 16:05:06.267 +05:30 [INF] Fetching available doctors for Specialisation Cardiology on "2026-07-16"
+2026-07-11 16:05:06.271 +05:30 [INF] Cache miss for Specialisation Cardiology on "2026-07-16". Loading from database.
+2026-07-11 16:05:06.276 +05:30 [INF] Doctor availability cached.
+2026-07-11 16:05:06.277 +05:30 [INF] 1 doctor(s) loaded from database and cached for Specialisation Cardiology on "2026-07-16"
+2026-07-11 16:05:09.459 +05:30 [INF] Fetching available slots for Doctor 21 on "2026-07-16"
+2026-07-11 16:05:09.460 +05:30 [INF] Checking available slots for Doctor 21 on "2026-07-16"
+2026-07-11 16:05:09.465 +05:30 [INF] 11 slots available for Doctor 21
+2026-07-11 16:05:09.468 +05:30 [INF] Doctor 21 has 11 available slots on "2026-07-16"
+2026-07-11 16:17:58.627 +05:30 [INF] Login attempt for email admin@healthcare.com
+2026-07-11 16:17:58.959 +05:30 [INF] Generating JWT token for User ab4f145e-c021-4d1c-8504-8766b4b339ae
+2026-07-11 16:17:58.962 +05:30 [INF] JWT token generated successfully for User ab4f145e-c021-4d1c-8504-8766b4b339ae
+2026-07-11 16:17:58.963 +05:30 [INF] User admin@healthcare.com logged in successfully as Admin
+2026-07-11 16:18:01.929 +05:30 [INF] Fetching admin dashboard summary.
+2026-07-11 16:18:02.007 +05:30 [INF] Dashboard summary generated successfully. Doctors: 14, Patients: 8, Appointments: 16
+2026-07-11 16:18:02.641 +05:30 [INF] Fetching doctors. Page: 1, PageSize: 10
+2026-07-11 16:18:02.693 +05:30 [INF] 14 doctors fetched successfully
+2026-07-11 16:19:43.211 +05:30 [INF] Registering doctor with email allen@gmail.com
+2026-07-11 16:19:43.215 +05:30 [INF] Creating new user with email allen@gmail.com and role Doctor
+2026-07-11 16:19:43.863 +05:30 [INF] User allen@gmail.com created successfully with role Doctor
+2026-07-11 16:19:44.099 +05:30 [INF] Cache removed for Cardiology on "2026-07-11"
+2026-07-11 16:19:44.101 +05:30 [INF] Cache removed for Cardiology on "2026-07-12"
+2026-07-11 16:19:44.104 +05:30 [INF] Cache removed for Cardiology on "2026-07-13"
+2026-07-11 16:19:44.106 +05:30 [INF] Cache removed for Cardiology on "2026-07-14"
+2026-07-11 16:19:44.109 +05:30 [INF] Cache removed for Cardiology on "2026-07-15"
+2026-07-11 16:19:44.121 +05:30 [INF] Cache removed for Cardiology on "2026-07-16"
+2026-07-11 16:19:44.123 +05:30 [INF] Cache removed for Cardiology on "2026-07-17"
+2026-07-11 16:19:44.126 +05:30 [INF] Cache removed for Cardiology on "2026-07-18"
+2026-07-11 16:19:44.131 +05:30 [INF] Cache removed for Cardiology on "2026-07-19"
+2026-07-11 16:19:44.134 +05:30 [INF] Cache removed for Cardiology on "2026-07-20"
+2026-07-11 16:19:44.136 +05:30 [INF] Cache removed for Cardiology on "2026-07-21"
+2026-07-11 16:19:44.139 +05:30 [INF] Cache removed for Cardiology on "2026-07-22"
+2026-07-11 16:19:44.142 +05:30 [INF] Cache removed for Cardiology on "2026-07-23"
+2026-07-11 16:19:44.147 +05:30 [INF] Cache removed for Cardiology on "2026-07-24"
+2026-07-11 16:19:44.150 +05:30 [INF] Cache removed for Cardiology on "2026-07-25"
+2026-07-11 16:19:44.153 +05:30 [INF] Cache removed for Cardiology on "2026-07-26"
+2026-07-11 16:19:44.154 +05:30 [INF] Cache removed for Cardiology on "2026-07-27"
+2026-07-11 16:19:44.155 +05:30 [INF] Cache removed for Cardiology on "2026-07-28"
+2026-07-11 16:19:44.157 +05:30 [INF] Cache removed for Cardiology on "2026-07-29"
+2026-07-11 16:19:44.160 +05:30 [INF] Cache removed for Cardiology on "2026-07-30"
+2026-07-11 16:19:44.162 +05:30 [INF] Cache removed for Cardiology on "2026-07-31"
+2026-07-11 16:19:44.164 +05:30 [INF] Cache removed for Cardiology on "2026-08-01"
+2026-07-11 16:19:44.165 +05:30 [INF] Cache removed for Cardiology on "2026-08-02"
+2026-07-11 16:19:44.166 +05:30 [INF] Cache removed for Cardiology on "2026-08-03"
+2026-07-11 16:19:44.167 +05:30 [INF] Cache removed for Cardiology on "2026-08-04"
+2026-07-11 16:19:44.169 +05:30 [INF] Cache removed for Cardiology on "2026-08-05"
+2026-07-11 16:19:44.170 +05:30 [INF] Cache removed for Cardiology on "2026-08-06"
+2026-07-11 16:19:44.171 +05:30 [INF] Cache removed for Cardiology on "2026-08-07"
+2026-07-11 16:19:44.172 +05:30 [INF] Cache removed for Cardiology on "2026-08-08"
+2026-07-11 16:19:44.174 +05:30 [INF] Cache removed for Cardiology on "2026-08-09"
+2026-07-11 16:19:44.174 +05:30 [INF] Availability cache refreshed for specialization Cardiology
+2026-07-11 16:19:44.175 +05:30 [INF] Doctor registered successfully. DoctorId: 24
+2026-07-11 16:19:45.517 +05:30 [INF] Fetching doctors. Page: 1, PageSize: 10
+2026-07-11 16:19:45.525 +05:30 [INF] 15 doctors fetched successfully
+2026-07-11 16:19:51.709 +05:30 [INF] Fetching doctors. Page: 1, PageSize: 10
+2026-07-11 16:19:51.748 +05:30 [INF] 1 doctors fetched successfully
+2026-07-11 16:20:03.842 +05:30 [INF] Login attempt for email ananya.menon@example.com
+2026-07-11 16:20:03.962 +05:30 [INF] Generating JWT token for User b9effe45-f711-4d74-a495-ec4a1add3e10
+2026-07-11 16:20:03.965 +05:30 [INF] JWT token generated successfully for User b9effe45-f711-4d74-a495-ec4a1add3e10
+2026-07-11 16:20:03.966 +05:30 [INF] User ananya.menon@example.com logged in successfully as Patient
+2026-07-11 16:20:03.997 +05:30 [INF] Fetching dashboard summary for Patient 5
+2026-07-11 16:20:04.018 +05:30 [INF] Patient dashboard generated successfully for Patient 5
+2026-07-11 16:20:12.280 +05:30 [INF] Fetching available doctors for Specialisation Cardiology on "2026-07-18"
+2026-07-11 16:20:12.283 +05:30 [INF] Cache miss for Specialisation Cardiology on "2026-07-18". Loading from database.
+2026-07-11 16:20:12.302 +05:30 [INF] Doctor availability cached.
+2026-07-11 16:20:12.303 +05:30 [INF] 2 doctor(s) loaded from database and cached for Specialisation Cardiology on "2026-07-18"
+2026-07-11 16:20:14.469 +05:30 [INF] Fetching available slots for Doctor 24 on "2026-07-18"
+2026-07-11 16:20:14.471 +05:30 [INF] Checking available slots for Doctor 24 on "2026-07-18"
+2026-07-11 16:20:14.479 +05:30 [INF] 11 slots available for Doctor 24
+2026-07-11 16:20:14.485 +05:30 [INF] Doctor 24 has 11 available slots on "2026-07-18"
+2026-07-11 16:20:48.877 +05:30 [INF] Configured endpoint AppointmentBooked, Consumer: HealthCare.Api.Messaging.AppointmentBookedConsumer
+2026-07-11 16:20:49.447 +05:30 [INF] Bus started: "rabbitmq://localhost/"
+2026-07-11 16:21:13.602 +05:30 [WRN] You do not have a valid license key for the Lucky Penny software AutoMapper. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.
+2026-07-11 16:21:13.626 +05:30 [INF] Fetching available doctors for Specialisation Cardiology on "2026-07-18"
+2026-07-11 16:21:13.869 +05:30 [INF] Doctor availability served from cache.
+2026-07-11 16:21:13.891 +05:30 [INF] Cache hit for Specialisation Cardiology on "2026-07-18"
+2026-07-11 16:21:20.002 +05:30 [INF] Fetching available slots for Doctor 24 on "2026-07-18"
+2026-07-11 16:21:20.007 +05:30 [INF] Checking available slots for Doctor 24 on "2026-07-18"
+2026-07-11 16:21:20.059 +05:30 [INF] 2 slots available for Doctor 24
+2026-07-11 16:21:20.072 +05:30 [INF] Doctor 24 has 2 available slots on "2026-07-18"
+2026-07-11 16:21:24.781 +05:30 [INF] Booking appointment for Patient 5 with Doctor 24 on "2026-07-18" at 09:00 AM
+2026-07-11 16:21:24.785 +05:30 [INF] Validating availability for Doctor 24 on "2026-07-18"
+2026-07-11 16:21:24.864 +05:30 [INF] Doctor 24 is available on "2026-07-18"
+2026-07-11 16:21:24.868 +05:30 [INF] Checking availability of Doctor 24 for slot 09:00 AM on "2026-07-18"
+2026-07-11 16:21:24.879 +05:30 [INF] Time slot 09:00 AM is available for Doctor 24
+2026-07-11 16:21:25.381 +05:30 [INF] Appointment booked and event published. AppointmentId 19
+2026-07-11 16:21:30.762 +05:30 [INF] Fetching available doctors for Specialisation Cardiology on "2026-07-18"
+2026-07-11 16:21:30.765 +05:30 [INF] Doctor availability served from cache.
+2026-07-11 16:21:30.766 +05:30 [INF] Cache hit for Specialisation Cardiology on "2026-07-18"
+2026-07-11 16:21:32.765 +05:30 [INF] Fetching available slots for Doctor 24 on "2026-07-18"
+2026-07-11 16:21:32.767 +05:30 [INF] Checking available slots for Doctor 24 on "2026-07-18"
+2026-07-11 16:21:32.776 +05:30 [INF] 1 slots available for Doctor 24
+2026-07-11 16:21:32.781 +05:30 [INF] Doctor 24 has 1 available slots on "2026-07-18"
+2026-07-11 16:21:34.631 +05:30 [INF] Booking appointment for Patient 5 with Doctor 24 on "2026-07-18" at 10:00 AM
+2026-07-11 16:21:34.635 +05:30 [INF] Validating availability for Doctor 24 on "2026-07-18"
+2026-07-11 16:21:34.642 +05:30 [INF] Doctor 24 is available on "2026-07-18"
+2026-07-11 16:21:34.644 +05:30 [INF] Checking availability of Doctor 24 for slot 10:00 AM on "2026-07-18"
+2026-07-11 16:21:34.648 +05:30 [INF] Time slot 10:00 AM is available for Doctor 24
+2026-07-11 16:21:34.664 +05:30 [INF] Appointment booked and event published. AppointmentId 20
+2026-07-11 16:21:54.037 +05:30 [INF] Login attempt for email allen@gmail.com
+2026-07-11 16:21:54.242 +05:30 [INF] Generating JWT token for User 08b928ea-923e-42ba-a35d-3025f819e6c2
+2026-07-11 16:21:54.252 +05:30 [INF] JWT token generated successfully for User 08b928ea-923e-42ba-a35d-3025f819e6c2
+2026-07-11 16:21:54.261 +05:30 [INF] User allen@gmail.com logged in successfully as Doctor
+2026-07-11 16:21:54.303 +05:30 [INF] Fetching dashboard summary for Doctor 24
+2026-07-11 16:21:54.385 +05:30 [INF] Doctor dashboard generated successfully for Doctor 24. Today's appointments: 0
+2026-07-11 16:21:55.745 +05:30 [INF] Fetching appointments for Doctor 24
+2026-07-11 16:21:59.264 +05:30 [INF] Cancelling appointment 19
+2026-07-11 16:21:59.324 +05:30 [INF] Cache removed for Cardiology on "2026-07-18"
+2026-07-11 16:21:59.327 +05:30 [INF] Appointment 19 cancelled successfully
+2026-07-11 16:21:59.335 +05:30 [INF] Fetching appointments for Doctor 24
+2026-07-11 16:22:13.312 +05:30 [INF] Login attempt for email ananya.menon@example.com
+2026-07-11 16:22:13.406 +05:30 [INF] Generating JWT token for User b9effe45-f711-4d74-a495-ec4a1add3e10
+2026-07-11 16:22:13.408 +05:30 [INF] JWT token generated successfully for User b9effe45-f711-4d74-a495-ec4a1add3e10
+2026-07-11 16:22:13.409 +05:30 [INF] User ananya.menon@example.com logged in successfully as Patient
+2026-07-11 16:22:13.432 +05:30 [INF] Fetching dashboard summary for Patient 5
+2026-07-11 16:22:13.453 +05:30 [INF] Patient dashboard generated successfully for Patient 5
+2026-07-11 16:22:19.234 +05:30 [INF] Fetching available doctors for Specialisation Cardiology on "2026-07-18"
+2026-07-11 16:22:19.237 +05:30 [INF] Cache miss for Specialisation Cardiology on "2026-07-18". Loading from database.
+2026-07-11 16:22:19.291 +05:30 [INF] Doctor availability cached.
+2026-07-11 16:22:19.293 +05:30 [INF] 2 doctor(s) loaded from database and cached for Specialisation Cardiology on "2026-07-18"
+2026-07-11 16:22:21.191 +05:30 [INF] Fetching available slots for Doctor 24 on "2026-07-18"
+2026-07-11 16:22:21.193 +05:30 [INF] Checking available slots for Doctor 24 on "2026-07-18"
+2026-07-11 16:22:21.202 +05:30 [INF] 1 slots available for Doctor 24
+2026-07-11 16:22:21.207 +05:30 [INF] Doctor 24 has 0 available slots on "2026-07-18"
+2026-07-11 16:22:36.908 +05:30 [INF] Fetching available doctors for Specialisation Cardiology on "2026-07-18"
+2026-07-11 16:22:36.911 +05:30 [INF] Doctor availability served from cache.
+2026-07-11 16:22:36.912 +05:30 [INF] Cache hit for Specialisation Cardiology on "2026-07-18"
+2026-07-11 16:22:38.740 +05:30 [INF] Fetching available slots for Doctor 24 on "2026-07-18"
+2026-07-11 16:22:38.741 +05:30 [INF] Checking available slots for Doctor 24 on "2026-07-18"
+2026-07-11 16:22:38.754 +05:30 [INF] 1 slots available for Doctor 24
+2026-07-11 16:22:38.758 +05:30 [INF] Doctor 24 has 0 available slots on "2026-07-18"
