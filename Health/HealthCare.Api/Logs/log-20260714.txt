@@ -1,2 +1,47 @@
 2026-07-14 06:49:04.454 +05:30 [INF] HTTP OPTIONS /api/patient/profile responded 204 in 68.9951 ms
 2026-07-14 06:49:11.399 +05:30 [INF] HTTP GET /api/patient/profile responded 401 in 762.7266 ms
+2026-07-14 09:59:33.082 +05:30 [INF] Configured endpoint AppointmentBooked, Consumer: HealthCare.Api.Messaging.AppointmentBookedConsumer
+2026-07-14 09:59:35.339 +05:30 [INF] Bus started: "rabbitmq://localhost/"
+2026-07-14 10:00:17.596 +05:30 [INF] HTTP OPTIONS /api/auth/login responded 204 in 17.1484 ms
+2026-07-14 10:00:17.888 +05:30 [WRN] You do not have a valid license key for the Lucky Penny software AutoMapper. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.
+2026-07-14 10:00:18.092 +05:30 [INF] Login attempt for email ananya.menon@example.com
+2026-07-14 10:00:18.591 +05:30 [INF] Generating JWT token for User b9effe45-f711-4d74-a495-ec4a1add3e10
+2026-07-14 10:00:18.685 +05:30 [INF] JWT token generated successfully for User b9effe45-f711-4d74-a495-ec4a1add3e10
+2026-07-14 10:00:18.737 +05:30 [INF] User ananya.menon@example.com logged in successfully as Patient
+2026-07-14 10:00:18.779 +05:30 [INF] HTTP POST /api/auth/login responded 200 in 1149.0951 ms
+2026-07-14 10:00:19.152 +05:30 [INF] HTTP OPTIONS /api/dashboard/patient responded 204 in 1.0199 ms
+2026-07-14 10:00:19.314 +05:30 [INF] Fetching dashboard summary for Patient 5
+2026-07-14 10:00:19.558 +05:30 [INF] Patient dashboard generated successfully for Patient 5
+2026-07-14 10:00:19.567 +05:30 [INF] HTTP GET /api/dashboard/patient responded 200 in 407.8674 ms
+2026-07-14 10:00:21.741 +05:30 [INF] HTTP OPTIONS /api/Appointment/patient responded 204 in 0.2052 ms
+2026-07-14 10:00:21.782 +05:30 [INF] Fetching appointments for Patient 5
+2026-07-14 10:00:21.895 +05:30 [INF] HTTP GET /api/Appointment/patient responded 200 in 145.0400 ms
+2026-07-14 10:00:24.621 +05:30 [INF] HTTP OPTIONS /api/HealthRecord/patient responded 204 in 0.1463 ms
+2026-07-14 10:00:24.645 +05:30 [INF] Fetching health records for Patient 5
+2026-07-14 10:00:24.666 +05:30 [INF] 3 health records found for Patient 5
+2026-07-14 10:00:24.677 +05:30 [INF] HTTP GET /api/HealthRecord/patient responded 200 in 49.6792 ms
+2026-07-14 10:00:30.676 +05:30 [INF] HTTP OPTIONS /api/dashboard/patient responded 204 in 0.2375 ms
+2026-07-14 10:00:30.694 +05:30 [INF] Fetching dashboard summary for Patient 5
+2026-07-14 10:00:30.709 +05:30 [INF] Patient dashboard generated successfully for Patient 5
+2026-07-14 10:00:30.710 +05:30 [INF] HTTP GET /api/dashboard/patient responded 200 in 18.2807 ms
+2026-07-14 10:07:45.112 +05:30 [INF] HTTP OPTIONS /api/auth/login responded 204 in 0.4708 ms
+2026-07-14 10:07:45.132 +05:30 [INF] Login attempt for email arun555@example.com
+2026-07-14 10:07:45.869 +05:30 [INF] Generating JWT token for User 424c5193-b5e8-4342-8e46-9917cb7e28b5
+2026-07-14 10:07:45.874 +05:30 [INF] JWT token generated successfully for User 424c5193-b5e8-4342-8e46-9917cb7e28b5
+2026-07-14 10:07:45.876 +05:30 [INF] User arun555@example.com logged in successfully as Doctor
+2026-07-14 10:07:45.879 +05:30 [INF] HTTP POST /api/auth/login responded 200 in 754.5271 ms
+2026-07-14 10:07:45.897 +05:30 [INF] HTTP OPTIONS /api/dashboard/doctor responded 204 in 0.0955 ms
+2026-07-14 10:07:45.917 +05:30 [INF] Fetching dashboard summary for Doctor 12
+2026-07-14 10:07:45.965 +05:30 [INF] Doctor dashboard generated successfully for Doctor 12. Today's appointments: 0
+2026-07-14 10:07:45.972 +05:30 [INF] HTTP GET /api/dashboard/doctor responded 200 in 70.2839 ms
+2026-07-14 10:07:48.498 +05:30 [INF] HTTP OPTIONS /api/doctor/profile responded 204 in 0.1509 ms
+2026-07-14 10:07:48.519 +05:30 [INF] Fetching doctor profile for Doctor 12
+2026-07-14 10:07:48.543 +05:30 [INF] Doctor profile fetched successfully for Doctor 12
+2026-07-14 10:07:48.556 +05:30 [INF] HTTP GET /api/doctor/profile responded 200 in 48.6340 ms
+2026-07-14 10:07:49.738 +05:30 [INF] HTTP OPTIONS /api/Appointment/doctor responded 204 in 0.1520 ms
+2026-07-14 10:07:49.760 +05:30 [INF] Fetching appointments for Doctor 12
+2026-07-14 10:07:49.784 +05:30 [INF] HTTP GET /api/Appointment/doctor responded 200 in 39.4430 ms
+2026-07-14 10:07:54.537 +05:30 [INF] HTTP OPTIONS /api/HealthRecord/patient/5 responded 204 in 0.1282 ms
+2026-07-14 10:07:54.561 +05:30 [INF] Fetching health records for Patient 5
+2026-07-14 10:07:54.570 +05:30 [INF] 3 health records found for Patient 5
+2026-07-14 10:07:54.573 +05:30 [INF] HTTP GET /api/HealthRecord/patient/5 responded 200 in 28.6456 ms
