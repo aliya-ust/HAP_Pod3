@@ -1,15 +1,18 @@
 ﻿using AutoMapper;
-using Moq;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using HealthCare.Api.Data;
 using HealthCare.Api.Models;
-using HealthCare.Shared.DTOs.Authentication;
-using HealthCare.Shared.DTOs.Patient;
-using HealthCare.Shared.DTOs.Doctor;
 using HealthCare.Api.Repositories.Interfaces;
 using HealthCare.Api.Services.Implementations;
 using HealthCare.Api.Services.Interfaces;
+using HealthCare.Shared.DTOs.Authentication;
+using HealthCare.Shared.DTOs.Doctor;
+using HealthCare.Shared.DTOs.Patient;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Logging;
+using Moq;
+
 
 
 namespace HealthCare.Api.Tests
@@ -23,6 +26,8 @@ namespace HealthCare.Api.Tests
         private readonly Mock<IJwtService> _jwtServiceMock;
         private readonly HealthCareDbContext _context;
         private readonly AuthService _service;
+        private readonly Mock<ILogger<AuthService>> _loggerMock;
+        private readonly Mock<IDistributedCache> _cacheMock;
 
         public AuthServiceTests()
         {
@@ -35,6 +40,8 @@ namespace HealthCare.Api.Tests
             _patientRepoMock = new Mock<IPatientRepository>();
             _doctorRepoMock = new Mock<IDoctorRepository>();
             _jwtServiceMock = new Mock<IJwtService>();
+            _loggerMock = new Mock<ILogger<AuthService>>();
+            _cacheMock = new Mock<IDistributedCache>();
 
             var options = new DbContextOptionsBuilder<HealthCareDbContext>()
                 .UseInMemoryDatabase(Guid.NewGuid().ToString())
@@ -43,13 +50,15 @@ namespace HealthCare.Api.Tests
             _context = new HealthCareDbContext(options);
 
             _service = new AuthService(
-                _userManagerMock.Object,
-                _mapperMock.Object,
-                _patientRepoMock.Object,
-                _doctorRepoMock.Object,
-                _jwtServiceMock.Object,
-                _context
-            );
+            _userManagerMock.Object,
+            _mapperMock.Object,
+            _patientRepoMock.Object,
+            _doctorRepoMock.Object,
+            _jwtServiceMock.Object,
+            _loggerMock.Object,
+            _cacheMock.Object,
+            _context
+        );
         }
 
         [Fact]

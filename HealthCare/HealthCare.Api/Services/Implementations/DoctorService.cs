@@ -107,9 +107,6 @@ namespace HealthCare.Api.Services.Implementations
             await _repository.CreateSlots(doctor.DoctorId, dto.TimeSlots);
 
             await _context.SaveChangesAsync();
-
-            await InvalidateAvailabilityCacheBySpecialisation(
-                    doctor.Specialisation);
         }
 
         public async Task UpdateAsync(int id, UpdateDoctorDto dto)
@@ -225,9 +222,12 @@ namespace HealthCare.Api.Services.Implementations
                     var cacheKey =
                         $"doctors:{doctor.Specialisation}:availability:{leave.LeaveDate}";
 
-                    _logger.LogInformation(
-                        "Removing cache key {Key}",
-                        cacheKey);
+                    if (_logger.IsEnabled(LogLevel.Information))
+                    {
+                        _logger.LogInformation(
+                            "Removing cache key {Key}",
+                            cacheKey);
+                    }
                     await _cache.RemoveAsync(cacheKey);
                 }
             }
@@ -247,18 +247,24 @@ namespace HealthCare.Api.Services.Implementations
 
             if (!string.IsNullOrEmpty(cachedData))
             {
-                _logger.LogInformation(
-                    "Doctor availability cache HIT. Key={Key}",
-                    cacheKey);
+                if (_logger.IsEnabled(LogLevel.Information))
+                {
+                    _logger.LogInformation(
+                        "Doctor availability cache HIT. Key={Key}",
+                        cacheKey);
+                }
 
                 return JsonSerializer.Deserialize<
                     AvailableDoctorsResponseDto>(
                         cachedData)!;
             }
 
-            _logger.LogInformation(
-                "Doctor availability cache MISS. Key={Key}",
-                cacheKey);
+            if (_logger.IsEnabled(LogLevel.Information))
+            {
+                _logger.LogInformation(
+                    "Doctor availability cache MISS. Key={Key}",
+                    cacheKey);
+            }
 
             var allDoctors = await _context.Doctors
                 .Where(d => d.Specialisation == specialisation)
@@ -318,9 +324,12 @@ namespace HealthCare.Api.Services.Implementations
                 };
 
 
-            _logger.LogInformation(
-                "Caching doctor availability. Key={Key}, TTL=5 minutes",
-                cacheKey);
+            if (_logger.IsEnabled(LogLevel.Information))
+            {
+                _logger.LogInformation(
+                    "Caching doctor availability. Key={Key}, TTL=5 minutes",
+                    cacheKey);
+            }
 
             await _cache.SetStringAsync(
                 cacheKey,
@@ -346,9 +355,12 @@ namespace HealthCare.Api.Services.Implementations
                 var cacheKey =
                     $"doctors:{specialisation}:availability:{date}";
 
-                _logger.LogInformation(
+                if (_logger.IsEnabled(LogLevel.Information))
+                {
+                    _logger.LogInformation(
                     "Removing cache key {Key}",
                     cacheKey);
+                }
 
                 await _cache.RemoveAsync(cacheKey);
             }

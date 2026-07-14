@@ -7,7 +7,7 @@ namespace HealthCare.Api.Models
         [Key]
         public int NotificationId { get; set; }
 
-        public int UserId { get; set; }
+        public int DoctorId { get; set; }
 
         [Required]
         public string Message { get; set; } = string.Empty;

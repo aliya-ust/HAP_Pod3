@@ -77,10 +77,12 @@ namespace HealthCare.Api.Tests
             };
 
             _repoMock.Setup(r => r.GetAllAsync(
-                It.IsAny<int>(),
-                It.IsAny<int>(),
-                It.IsAny<Expression<Func<Patient, bool>>?>()))
-                .ReturnsAsync(paged);
+     It.IsAny<int>(),
+     It.IsAny<int>(),
+     It.IsAny<Expression<Func<Patient, bool>>>(),
+     It.IsAny<Func<IQueryable<Patient>,
+         IOrderedQueryable<Patient>>>()))
+     .ReturnsAsync(paged);
 
             _mapperMock.Setup(m => m.Map<IEnumerable<PatientListDto>>(patients))
                 .Returns(new List<PatientListDto> { new PatientListDto() });
@@ -206,10 +208,12 @@ namespace HealthCare.Api.Tests
             };
 
             _repoMock.Setup(r => r.GetAllAsync(
-                It.IsAny<int>(),
-                It.IsAny<int>(),
-                It.IsAny<Expression<Func<Patient, bool>>>()))
-                .ReturnsAsync(paged);
+     It.IsAny<int>(),
+     It.IsAny<int>(),
+     It.IsAny<Expression<Func<Patient, bool>>>(),
+     It.IsAny<Func<IQueryable<Patient>,
+         IOrderedQueryable<Patient>>>()))
+     .ReturnsAsync(paged);
 
             _mapperMock.Setup(m => m.Map<IEnumerable<PatientListDto>>(patients))
                 .Returns(new List<PatientListDto> { new PatientListDto() });
@@ -240,10 +244,12 @@ namespace HealthCare.Api.Tests
             };
 
             _repoMock.Setup(r => r.GetAllAsync(
-                It.IsAny<int>(),
-                It.IsAny<int>(),
-                It.IsAny<Expression<Func<Patient, bool>>>()))
-                .ReturnsAsync(paged);
+    It.IsAny<int>(),
+    It.IsAny<int>(),
+    It.IsAny<Expression<Func<Patient, bool>>>(),
+    It.IsAny<Func<IQueryable<Patient>,
+        IOrderedQueryable<Patient>>>()))
+    .ReturnsAsync(paged);
 
             _mapperMock.Setup(m => m.Map<IEnumerable<PatientListDto>>(patients))
                 .Returns(new List<PatientListDto> { new PatientListDto() });
@@ -332,10 +338,12 @@ namespace HealthCare.Api.Tests
             };
 
             _repoMock.Setup(r => r.GetAllAsync(
-                It.IsAny<int>(),
-                It.IsAny<int>(),
-                It.IsAny<Expression<Func<Patient, bool>>>()))
-                .ReturnsAsync(paged);
+    It.IsAny<int>(),
+    It.IsAny<int>(),
+    It.IsAny<Expression<Func<Patient, bool>>>(),
+    It.IsAny<Func<IQueryable<Patient>,
+        IOrderedQueryable<Patient>>>()))
+    .ReturnsAsync(paged);
 
             _mapperMock.Setup(m =>
                 m.Map<IEnumerable<PatientListDto>>(patients))
@@ -403,10 +411,12 @@ namespace HealthCare.Api.Tests
             };
 
             _repoMock.Setup(r => r.GetAllAsync(
-                It.IsAny<int>(),
-                It.IsAny<int>(),
-                It.IsAny<Expression<Func<Patient, bool>>>()))
-                .ReturnsAsync(paged);
+     It.IsAny<int>(),
+     It.IsAny<int>(),
+     It.IsAny<Expression<Func<Patient, bool>>>(),
+     It.IsAny<Func<IQueryable<Patient>,
+         IOrderedQueryable<Patient>>>()))
+     .ReturnsAsync(paged);
 
             _mapperMock.Setup(m => m.Map<IEnumerable<PatientListDto>>(patients))
                 .Returns(new List<PatientListDto> { new PatientListDto() });

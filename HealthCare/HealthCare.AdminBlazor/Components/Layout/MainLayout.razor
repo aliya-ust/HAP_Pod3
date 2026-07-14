@@ -1,8 +1,5 @@
 ﻿@inherits LayoutComponentBase
 
-@inject IJSRuntime JS
-@inject NavigationManager Navigation
-
 <div class="page">
 
     <aside class="sidebar-container">
@@ -14,92 +11,6 @@
     </main>
 
 </div>
-
-<SessionExpiredModal
-    Visible="@showSessionExpiredModal"
-    OnOk="RedirectToLogin" />
-
-@code {
-
-    private bool showSessionExpiredModal;
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            await StartSessionExpiryTimer();
-        }
-    }
-
-    private async Task StartSessionExpiryTimer()
-    {
-        try
-        {
-            var token = await JS.InvokeAsync<string>(
-                "localStorage.getItem",
-                "token");
-
-            if (string.IsNullOrWhiteSpace(token))
-                return;
-
-            var parts = token.Split('.');
-
-            var payload = parts[1];
-
-            payload += new string(
-                '=',
-                (4 - payload.Length % 4) % 4);
-
-            var payloadJson = System.Text.Encoding.UTF8.GetString(
-                Convert.FromBase64String(payload));
-
-            using var doc =
-                System.Text.Json.JsonDocument.Parse(payloadJson);
-
-            var exp = doc.RootElement
-                .GetProperty("exp")
-                .GetInt64();
-
-            var expiryTime =
-                DateTimeOffset.FromUnixTimeSeconds(exp);
-
-            var remainingTime =
-                expiryTime - DateTimeOffset.UtcNow;
-
-            if (remainingTime <= TimeSpan.Zero)
-            {
-                showSessionExpiredModal = true;
-                StateHasChanged();
-                return;
-            }
-
-            _ = Task.Run(async () =>
-            {
-                await Task.Delay(remainingTime);
-
-                await InvokeAsync(() =>
-                {
-                    showSessionExpiredModal = true;
-                    StateHasChanged();
-                });
-            });
-        }
-        catch
-        {
-        }
-    }
-
-    private async Task RedirectToLogin()
-    {
-        await JS.InvokeVoidAsync(
-            "localStorage.removeItem",
-            "token");
-
-        Navigation.NavigateTo(
-            "http://localhost:4200",
-            true);
-    }
-}
 
 <style>
 

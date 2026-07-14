@@ -33,13 +33,14 @@
       <i class="bi bi-file-earmark-medical"></i> Medical History
     </li>
 
-    <li class="logout"
-        tabindex="0"
-        (click)="logout()"
-        (keydown.enter)="logout()"
-        (keydown.space)="logout()">
-      <i class="bi bi-box-arrow-right"></i>
-      Logout
+    <li class="logout">
+      <button type="button"
+              class="logout-btn"
+              (click)="logout()">
+
+        <i class="bi bi-box-arrow-right"></i>
+        Logout
+      </button>
     </li>
 
   </ul>

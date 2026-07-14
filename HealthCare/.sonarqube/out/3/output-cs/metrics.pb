@@ -1,43 +1,117 @@
-u
-YC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\_Imports.razor8r	
-Ê
-hC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\Pages\PatientManagement.razor< 8rÅ	
-#"'()*+016:;NOPTVXZ\^`adefhjkmnoprstuwxyz{}ÅÇÑÖÜáâãåéêëìîïñóôöúùûü†°¢£•¶ß©™´¨≠Ø∞≤≥¥µ∂∑∏πªºΩ¿¡¬√ƒ∆«»…ÀÃÕŒ–—“”’÷◊ÿŸ€‹›ﬁﬂ·‚„ÂÁÈÍÏÌÓÚÛˆ˜¯˙¸˝ˇÄÅÉÖáâãåx	Çm	"6;otuw}ÅÜáâãåéêïóôöúû¢•´≠Ø∞≤¥∏ª¬√»Õ“◊ÿ›ﬁ„ÂÁÈÓÚ¯˙¸ÅÉÖáâãﬁ
-gC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\Pages\DoctorManagement.razor8 8rÉ	
-&%)*+,-127;<FGHIKLMOPQUVWYZ]_`bcefgijklnoprtuwxy{|}~ÅÉÖÜàâäãåéèêëíîñóòõúùûü°¢£§•ß©™´ÆØ∞≤≥µ∑π∫ºΩæø¿¬√ƒ≈«»… ÃÕŒœ—“”‘’◊ÿŸ⁄€›ﬁﬂ·„‰ÊÁÈÍÎÏÓÚÛıˆ¯˘˙˚¸˛ˇÅÇÉÖáàxÇd	%7<kprtyÅÉÖäåîñùüß©∞≤≥µ∑πæøƒ…Œ”‘Ÿ⁄ﬂ·„‰ÊÎÏÓÚÛı˙˚¸˛ÉÖá´
-`C:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\Pages\Dashboard.razor 8
-r%!)2345>FNV^fghjklmnoqstuwyz{}~xÇ!)2345>FNV^lnosuyz{}ø
-rC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\Components\Patient\PatientToolbar.razor 8r.
- ()+,-/01345689;<=>@ABCDFGHIJLMOPQRSTxÇ13468=>BGILQRSÃ
-pC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\Components\Patient\PatientTable.razor 8r8 #$)*014678;=AHIJKNOPS]^`acdfgijlmnoqrsuvwyz{xÇ #$)*04;ANnsuwyô
-vC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\Components\Patient\DeletePatientModal.razor 8
-r#')+-./02345xÇ/4É
-jC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\Components\Layout\NavMenu.razor 8r	%-./01Ç/0Ÿ
-mC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\Components\Layout\MainLayout.razor 8rC "#$%&'(*+-/1235689;<=?@BCEFGHIJLMNPQRSTUVWXYZ\]^_`bcdexÇ&*+-13569;@CEGHILNPRS^b|
-nC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\Components\Layout\EmptyLayout.razor8rÇÇ
-tC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\Components\Doctor\UpdateDoctorModal.razor 8r]	&(/23459@BHW[\^_abdegijklmnopqrstuvxyz{}ÄÅÉÑÖÜàäãåçéèêëìîïñxÇ"	&(/249@BkmoqrvxÅÖÜàäãèïç
-vC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\Components\Doctor\RegisterDoctorModal.razor# 8%r∏ ')*+,.658ABDKRT[_ijmnpruÇÖÜáâäãåçèêëíìïñóòôõúùü†¢£•¶ß©´¨≠ÆØ∞≤≥∂∏π∫ªºæø¿¬ƒ≈∆» ÀÃÕœ–—“‘’◊⁄›ﬁﬂ‡„‰ÂÊÁxÇO ')+.58ABKRT[_imnpuëíùü†¢ß©´≠Æ≤ªºæø∆» ÃÕ“‘◊⁄›ÂÊ—
-pC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\Components\Doctor\DoctorToolbar.razor 8r=
-	"(01346789:<=>@ABCDEFGIJLMOPRSTUVWXZ[^_`abcefx
-Ç>@BFIOPTUVWZ`abceˆ
-yC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\Components\Appointment\AppointmentReport.razor  
-8jîr¢ 89:<=>?@ABCEFGLMNOPVbchlmvxz|}ÅÇÖÜáàâãåçéèíìîñóòôöúùü†°¢§¶ß®©™¨≠∞±≤≥¥∂∑∏π∫ºΩæ¿¡¬√ƒ∆«»… ÃÕŒxÇG8<>?@ABCEFLhmxzáàçéîñóòú°¢§¶ß®¨≤¥∂∑∏º¬ƒ∆«»Ãƒ
-nC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\Components\Doctor\DoctorTable.razor 8r1!#&'046<BCDEHKUVXY[\^_abdefhijlmnoqrsuvwxÇ!#&'046<Hfhinsuví
-tC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\Components\Doctor\DeleteDoctorModal.razor 8
-r	%)*+-.xÇ-.d
-TC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\App.razor8rÇø
-jC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\Services\PatientAdminService.cs 8
-r0	
-!#$&')+-.012346789:<=>?@AxÇ#$&')+-2389>?õ
-aC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\Services\JwtService.cs 8r!
- "#$%&'xÇ$%‹
-iC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\Services\DoctorAdminService.cs  8rC	
- !#%&()+,-./12345789:;=>?@ACDEGIJLMOPRSUWYZ[xÇ!#%&(-.349:?@EIJLMOPRSUWY£
-gC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\Services\DashboardService.cs
- 8r#	
-!"$%'()+,-.Ç
-!$)+æ
-nC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\Services\AppointmentAdminService.cs 8r3	
-!"#$%&'()*,-.02345789:;<=>?xÇ!#,027y
-UC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\Program.csr	Ç
-	
+
+iC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Api\Services\Interfaces\IPatientService.csr	
+s
+eC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Api\Services\Interfaces\IJwtService.csr	É
+nC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Api\Services\Interfaces\IHealthRecordService.csr	
+É
+hC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Api\Services\Interfaces\IDoctorservice.csr	
+z
+fC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Api\Services\Interfaces\IAuthService.csr	
+ã
+mC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Api\Services\Interfaces\IAppointmentService.csr	
+∆
+mC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Api\Services\Implementations\PatientService.cs& 	8rÜ	 !#$()*+,-/013456789:;=>?@ACDEFGHIJLMNPQSUVWYZ[]^`bcdfghjkmnopqrstuvxyz|}~ÄÅÇÉÑÖÜàâãåçéèêíìxÇA !#*+,1345679:;=>?ACEFGHNPQSUV[]^`bchjkoptz|}ÇÉÑÖÜàâã√
+iC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Api\Services\Implementations\JwtService.cs 8r6	
+ !"$%&')*+,./0135789:;>@ABCxÇ !$&)+.03:@∑
+rC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Api\Services\Implementations\HealthRecordService.cs, 8j&+,15=IPru	!"$%')*+,./236789:;>?@ABCDEGHJKMNQRTVWXZ\^_abcefhijkmnoqrtuvwxyz{|}ÄÅÇÉÖÜáàâäãx
+Ç5!)+,.3678>@ABCJKMNQRTVWXZ\^cefhijoqrvw{ÅÇáà‚
+lC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Api\Services\Implementations\DoctorService.cst 86rÕ	
+ !"$%&'()*,-./012345689;<=>?@BCEFHIKLMNPQSTVWXYZ[]^_`abcdfghikmnpqrtuwyz{}~ÅÇÑÜáâäåéèêíìïñóòôöõúùû†°¢§•ß®™´¨≠Æ∞±≤≥¥µ∑∏π∫ªΩø¿¡¬√ƒ≈«» ÀÃÕŒ–—”‘’÷ÿŸ€‹ﬁﬂ·‚„‰ÂÊÁËÈÎÏÓÔÒÚÛıˆ¯˘˙˚¸˝˛ˇÅÇÉÑÜáàâäãçéèëíìîïñóòôõúûü†°¢£§•ß®™´¨≠ÆØ∞±≥¥µ∂∑π∫ªΩæø¿¡¬√ƒ«»… ÀÃŒœ–—“”‘’◊ÿ⁄€‹›ﬂ‡·„‰ÊÁËÈÍÎÌÓÔÒÚÛÙˆ˜¯˘˙˚¸˝˛ˇÅÇÑÖÜàâäãåéèêëìîïñòôöõúùûü°¢£§•¶ß®©™x.Çñ !&'()*./012348=>?@BCEFHKMNPSVWX]_`abhikmrtuwyzÅÇÑÜáâäêíìóòú¢§•ß¨≠≤≥¥∫ªø¡√ƒ«» ÃÕ–”’÷ÿŸ€ﬂ·„ÁÎˆ¯˙¸ÅÜàçéëìúû†™≠ÆØ∞±≥µ∫¡«…Œ–‘◊›ﬂ·ÊËÌÛÙˆ˜¯˘˚¸˝ÅÜàâäãåéèêëìîïñòôöõúùû°π
+jC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Api\Services\Implementations\AuthService.csR 8j8@Pamòù¢©≥Ω¬ÓÙrù	
+ !"#$%&'()*+,-./0345679;<=>ABCDEGIJKLMNQSTUVWXZ[]^_bcefgijknoqsuwyz{}~ÄÇÉÑÜáäãåçéèíìîñóôöõûü†£§•¶ß™´¨≠Æ∞±¥µ∂∑∏∫ªæø¿¡√ƒ≈∆«»ÀÃÕŒœ—“‘’÷ÿŸ€‹›ﬁﬂ·‚„‰ÂÁËÈÎÏÔÒÚıˆ¯˙˚¸˝˛ˇÄÇÉxÇÜ()*+,-./9;=GIKLQSUVZ_bcefknoqsuwyzÄÇÑäåíôöõûü†£§¶¨Æ∞±¥∂∏∫ªæ¿√«—÷ÿŸ€›ﬁ·‚„ÈÎÏÔÒÚıˆ¯˙¸˝¿
+qC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Api\Services\Implementations\AppointmentService.csf 80j¶Øµªrî	
+ !"#%'()*,-.0134679;<=>?@ABCDEFGHJKMNOPQRTUVWXYZ[]^_`bdeghijlmnpqrstuvwyz|}~ÄÅÇÉÖÜáàâäãåçéèêëìîïóòöõúùü†°£§ß®©™´¨≠∞±≤≥∂∑∏πºΩæø¿√ƒ∆«»…ÃÕŒ–—“”‘’÷◊ÿŸ⁄€›ﬁﬂ‡‚„ÂÊÁËÈÍÎÏÌÒÛÙı˜¯˘˙˚˝˛ÄÅÉÑÖÜáâäãåçèêëìîïñóòôöõù†£§•¶ß®©™´¨≠Ø∞≤≥¥µ∂∏∫ºæ¿¬√ƒ≈∆«»… ÀÃÕœ–—“‘’÷◊ÿŸ€‹ﬁﬂ‡·„‰ÂÊÁËÈÍÎÏÓÔÒÚÙı˜¯˘˙˚¸˛ˇÅÇÖÜáàâäçéèêxÇû !".013;=>?ACEGKMNOTVWXY_`bdeijlmnprtvyz~ÄÅÇÖáâãèïóòöõú°£§®∞≤∂∏ºΩæø√ƒ∆«»Œ–—‘’Ÿﬂ‡‚„ÂÊÁËÈÍı˜¯˘˙˚˝˛ÄÖÜãåëìîïñóù†£§•ß®´¨Ø¥µºæ∆«»… ÀÕœ–—“‘’÷ÿ€‡·„‰ÂÊÁÈÍÎÏÓÔÙ˚¸˛ˇÇÖáçÅ
+iC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Api\Repositories\Interfaces\IRepository.csr	
+~
+pC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Api\Repositories\Interfaces\IPatientRepository.csr	Ö
+uC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Api\Repositories\Interfaces\IHealthRecordRepository.csr
+	
+É
+oC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Api\Repositories\Interfaces\IDoctorRepository.csr	
+ä
+tC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Api\Repositories\Interfaces\IAppointmentRepository.csr	
+«
+mC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Api\Repositories\Implementations\Repository.cs 8	r9	
+ "#%'()*,-./01235689:;<>?@ABCDExÇ "#%',6:;@ABï
+tC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Api\Repositories\Implementations\PatientRepository.cs 8r	
+Ç¬
+yC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Api\Repositories\Implementations\HealthRecordRepository.cs 8r(	
+ !"#$%&'()*+Ç!"#$%&'·
+sC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Api\Repositories\Implementations\DoctorRepository.cs 8	rB	
+!"$%&')*+,-./02356789:;<=>?@ABCDEFGHIJKxÇ!%&+./2789:;<=>@BCDEFª
+xC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Api\Repositories\Implementations\AppointmentRepository.cs 	8rp	
+"#%&'()*+,-./012456789:;<=>?@BCDEFGHIJKLMNPQRSTUVWXYZ[\^_`abcdefghijkmnopqrsuvwxyz{|xÇB"&'()+,-./15679:;<=>CDEGHIJKLQRSUVWXYZ_`acdefghiopqruwxﬁ
+MC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Api\Program.csu8j"[b¬r˜	
+ #$%&'()*,-./12356789:;<>?@ABCDEFGHIJLMOPQRSTUVWXY\]^_`cdefghijkmnopqrstuvxyz|}~ÄÅÇÉÑÖÜáàâäãåéèêíìîïñóòôöõùûü†°¢£•¶ß®©™´≠ÆØ∞±≥¥µ∑∏π∫ªºæø¿√ƒ≈∆«… ÀÃÕœ—xÇÑ#$%&(),.125789:;>?ABJLMOQSUV\]^_`cdefghikmopqrsuvxy|}~ÄÜáâäãéíîñõùü•ß≠≥¥µ∑π∫ªºæø√≈∆… ÀÃÕœ—q
+[C:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Api\Options\GarnetOptions.cs 8r	Çá
+TC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Api\Models\Patient.cs 8j(r!	
+ "$&)*,-./Ç&w
+YC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Api\Models\Notification.cs 
+8
+r
+Çà
+YC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Api\Models\HealthRecord.cs 8jr	 !#$&'()Çy
+YC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Api\Models\DoctorLeaves.cs 8r	Çá
+SC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Api\Models\Doctor.cs 8j&r#	
+ "$'(*+,-./Ç$z
+[C:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Api\Models\AvailableSlots.cs 
+8
+r	Çá
+XC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Api\Models\Appointment.cs 8j!r	
+"#%&()*Ç°
+vC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Api\Migrations\20260713151720_Notificationtableadded.cs 8j
+r	Ç°
+vC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Api\Migrations\20260708044037_AddedNotificationTable.cs 8j
+r	Ç±
+tC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Api\Migrations\20260707163123_AddNotificationTable.cs 8jr	
+ !"#$%&Ç
+"é
+rC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Api\Migrations\20260624105126_RemovePatientEmail.cs 8j
+r	ß
+oC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Api\Migrations\20260624104651_AddPatientEmail.cs 8j
+r 	 !"#$%&'()Ç ˝
+mC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Api\Migrations\20260619153122_EverythingSet.cs" 8j
+brÃ	!"#%&')*+-./1235679:;<>?@ABCDFGHIKLMNOPRSTUVWYZ[\]^_`cdefgijkmnoqrsuvwyz{}~ÄÇÉÑÖÜàâäãåéèêëìîïñòôöõùûü†¢£§•ß®©™´¨≠Ø∞±≤≥¥∂∑∏π∫ªºΩæÇ/!%)-159>FKRY_eimquy}Çàéìòù¢ß≠Ø∂·	
+gC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Api\Migrations\20260619031923_ItlCrte.csL 8j∫rÔ	
+ !"#$%&'()*+,-./012356789:;<=>?@ABCDEFGHJKLMNOPQRSTUVWXYZ[\]_`abcdefghijklmnopqstuvwxyz{|}~ÄÅÇÉÑÖÜáàâãåçéèêëíìîïñóòôöõúùü†°¢£§•¶ß®©™´¨≠ÆØ∞±≤≥¥µ∂∑∏π∫ªºæø¿¡¬√ƒ≈∆«»… ÀÃÕŒœ–—“”‘’÷◊ÿŸ⁄€‹ﬁﬂ‡·‚„‰ÂÊÁËÈÍÎÏÌÓÔÒÛÙıˆ˜¯˘˙˚¸˝˛ˇÄÅÇÉÑÖÜáâäãåçéèêëíìîïñóòôöõúùûü†°¢£§•¶®©™´¨≠ÆØ∞±≤≥¥µ∂∑∏π∫ªºΩæø¿¡¬√ƒ≈∆«»… ÀÃŒœ–—”‘’÷ÿŸ⁄€‹›ﬂ‡·‚‰ÂÊÁËÈÎÏÌÓÒÚÛıˆ˜¯˙˚¸˝ˇÄÅÇÉÑÜáàâãåçéêëíìïñóòöõúùü†°¢£•¶ß®™´¨≠Ø∞±≤¥µ∂∑∏ªºΩæ¿¡√ƒ∆«… ÃÕœ–“”’÷ÿŸ€‹ﬁﬂ·‚„‰ÂÇÙ !"#$%&'()*+,-.02579;<=?ABDGJLNPQRTVWY\_acdefhjkmpsuwxz|}ÇÉÖàãçèêëíîñóôúü°£•¶ß®©™´¨Æ∞±≥∂∑πæ¿¬ƒ≈∆«»… ÀÃŒ–—”÷◊Ÿﬁ‡‚‰ÂÊËÍÎÌÛı˜˘˙˚¸˛ÄÅÉÜâãçèêëíìîïóôöúü†¢•®™¨ÆØ∞±≤≥¥µ∑π∫ºø¿¬≈∆»ÀŒ—”÷ÿ€ﬂ‰Îı˙ˇÜãêïöü•™≠Ø¥Ω¿√∆…Ãœ“’ÿ€ﬁ·Æ
+gC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Api\Middleware\GlobalExceptionHandler.cs 8jr%	!"#$%&')+-./0xÇ%&)+-{
+iC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Api\Exceptions\PatientNotFoundException.cs 8r	Æ
+iC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Api\Messaging\AppointmentBookedConsumer.cs 8r)	
+ !"$&)*+,-.012xÇ $&)+-¨
+\C:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Api\Mapping\MappingProfile.cs 8j!&r$	
+"#$'()*+,xÇ"#$'()Ä
+nC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Api\Exceptions\HealthRecordNotFoundException.cs 8r	
+z
+hC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Api\Exceptions\DoctorNotFoundException.cs 8r	
+mC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Api\Exceptions\AppointmentNotFoundException.cs 8r	ç
+UC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Api\Data\UserSeeder.cs	 8r 	
+ !"#$&'xÇ !}
+cC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Api\Events\AppointmentBookedEvent.cs 
+8
+r	Ç|
+UC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Api\Data\RoleSeeder.cs 8r	
+xÇ	
+È
+^C:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Api\Data\HealthCareDbContext.cs 	8	j
+rH	!"#%&')*+-./01345679:;<=?@ABCEFGHIKLMNOQRSTUVWXÇ1!"%&)*-.0134679:;<=?@ABCEFGHIKLMNOQRSTUÃ
+hC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Api\Controllers\HealthRecordController.cs 8
+rB	
+!"#$%&'(*+,-./012456789:;=>?@BCEFGHJKLMxÇ&'/019:?BGJ÷
+hC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Api\Controllers\PatientAdminController.cs 8
+rI	
+ !"#%&')*+,-./134689;<=>?@ABDEFGHIJKNOPQRSTUVWxÇ"#%&./13468@AIJST∫
+cC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Api\Controllers\PatientController.cs 8r6	
+ !"#$%&()*+./0235689:;<=?ABCDxÇ%&()*0235=?A–
+bC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Api\Controllers\DoctorController.cs 8
+rH	
+ !"#$&'()+,-./01345689:;<=>?ABCDFGIJKLMNPRSTUxÇ#$&'(01345=>CFNPR”
+gC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Api\Controllers\DoctorAdminController.cs 8
+rH	
+"#$%&'(*+,./01234678:;<=>?@ACDEFGHIJLMNOPQRSTUxÇ'(*+3467?@HIQR›
+`C:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Api\Controllers\AuthController.cs 8rY
+ !"#$%&'(),-./012356789:;<=>?BCDEFGHIJKLMNOPQRSTUVXYZ[\]_acdfgxÇ#'359=GHLPT\]_acı
+gC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Api\Controllers\AppointmentController.cs 
+8ra	
+!"#$%&')*+-./012345789:;<=>?ABCDEFGHIKLMNOPQRSUVWXZ[]^_`bcefghijklmnopxÇ&')*234<=>FGHPQRWZ_blm¬
+lC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Api\Controllers\AppointmentAdminController.cs 8r8	
+ !"#$%&')*+,-./0135689:;<=>?BCxÇ%&0135=>

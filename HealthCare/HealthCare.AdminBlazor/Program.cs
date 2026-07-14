@@ -8,9 +8,12 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
+
+var apiBaseUrl = builder.Configuration["ApiSettings:BaseUrl"];
+
 builder.Services.AddScoped(sp => new HttpClient
 {
-    BaseAddress = new Uri("https://localhost:7149")
+    BaseAddress = new Uri(apiBaseUrl!)
 });
 
 builder.Services.AddScoped<DoctorAdminService>();

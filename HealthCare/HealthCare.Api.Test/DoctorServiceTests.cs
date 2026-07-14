@@ -280,24 +280,56 @@ namespace HealthCare.Api.Tests
         [Fact]
         public async Task CreateLeave_ShouldCancelAppointments_WhenSlotsMismatch()
         {
+            // Arrange
+
+            _context.Doctors.Add(new Doctor
+            {
+                DoctorId = 1,
+                UserId = "user1",
+                FullName = "Doctor",
+                Specialisation = "Cardiology",
+                YearsOfExperience = 5,
+                ConsultationFee = 500,
+                IsActive = true
+            });
+
+            await _context.SaveChangesAsync();
+
             _repoMock.Setup(r => r.GetLeavesByDoctorId(1))
                 .ReturnsAsync(new List<DoctorLeaves>());
 
             _repoMock.Setup(r => r.GetSlots(1))
-                .ReturnsAsync(new List<string> { "09:00-10:00", "10:00-11:00" });
+                .ReturnsAsync(new List<string>
+                {
+            "09:00-10:00",
+            "10:00-11:00"
+                });
 
-            _appointmentRepoMock.Setup(r => r.BookedTimeSlots(It.IsAny<DateOnly>(), 1))
-                .ReturnsAsync(new List<string> { "09:00-10:00" });
+            _appointmentRepoMock.Setup(r =>
+                r.BookedTimeSlots(It.IsAny<DateOnly>(), 1))
+                .ReturnsAsync(new List<string>
+                {
+            "09:00-10:00"
+                });
 
             var leaves = new List<CreateLeaveDto>
-            {
-                new CreateLeaveDto { LeaveDate = new DateOnly(2026,7,2) }
-            };
+    {
+        new CreateLeaveDto
+        {
+            LeaveDate = new DateOnly(2026, 7, 2)
+        }
+    };
+
+            // Act
 
             var result = await _service.CreateLeave(1, leaves);
 
+            // Assert
+
             _appointmentRepoMock.Verify(r =>
-                r.CancelAppointmentsByDoctorDate(1, It.IsAny<DateOnly>()),
+                r.CancelAppointmentsByDoctorDate(
+                    1,
+                    It.IsAny<DateOnly>()),
                 Times.Once);
 
             Assert.Single(result.CreatedWithCancelledAppointments);
@@ -492,6 +524,10 @@ namespace HealthCare.Api.Tests
 
             await _context.SaveChangesAsync();
 
+            _mapperMock.Setup(m =>
+                m.Map<List<DoctorListDto>>(It.IsAny<List<Doctor>>()))
+                .Returns(new List<DoctorListDto>());
+
             var result = await _service.AvailableDoctors(
                 "Cardiology",
                 date);
@@ -610,11 +646,26 @@ namespace HealthCare.Api.Tests
         [Fact]
         public async Task CreateLeave_ShouldCreateLeaves()
         {
+            // Arrange
+
+            _context.Doctors.Add(new Doctor
+            {
+                DoctorId = 1,
+                FullName = "Doctor",
+                Specialisation = "Cardiology",
+                IsActive = true
+            });
+
+            await _context.SaveChangesAsync();
+
             _repoMock.Setup(r => r.GetLeavesByDoctorId(1))
                 .ReturnsAsync(new List<DoctorLeaves>());
 
             _repoMock.Setup(r => r.GetSlots(1))
-                .ReturnsAsync(new List<string> { "09:00-10:00" });
+                .ReturnsAsync(new List<string>
+                {
+            "09:00-10:00"
+                });
 
             _appointmentRepoMock.Setup(r =>
                 r.BookedTimeSlots(It.IsAny<DateOnly>(), 1))
@@ -624,14 +675,21 @@ namespace HealthCare.Api.Tests
     {
         new()
         {
-            LeaveDate = DateOnly.FromDateTime(DateTime.Today.AddDays(5))
+            LeaveDate = DateOnly.FromDateTime(
+                DateTime.Today.AddDays(5))
         }
     };
 
+            // Act
+
             await _service.CreateLeave(1, leaves);
 
+            // Assert
+
             _repoMock.Verify(r =>
-                r.CreateLeaves(1, It.IsAny<List<CreateLeaveDto>>()),
+                r.CreateLeaves(
+                    1,
+                    It.IsAny<List<CreateLeaveDto>>()),
                 Times.Once);
         }
 

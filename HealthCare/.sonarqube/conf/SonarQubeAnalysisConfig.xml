@@ -149,13 +149,13 @@
     <Property Name="sonar.java.jvmframeworkconfig.activate">true</Property>
     <Property Name="sonar.updatecenter.url">https://downloads.sonarsource.com/sonarqube/update/update-center.properties</Property>
     <Property Name="sonar.core.id">147B411E-AZ5d3d3opTytuCTrXc7d</Property>
-    <Property Name="sonar.core.startTime">03-07-2026 10:08:01</Property>
+    <Property Name="sonar.core.startTime">14-07-2026 09:47:45</Property>
   </ServerSettings>
   <LocalSettings>
     <Property Name="sonar.host.url">http://localhost:9000</Property>
     <Property Name="sonar.coverage.exclusions">**/bin/**,**/obj/**,**/Migrations/**,**/Middleware/**,**/Controllers/**,**/Exceptions/**,**/Data/**,**/DTOs/**,**/Mapping/**,**/Models/**,**/Properties/**,**/Repositories/**,**/HealthCare.Shared/**,**/HealthCare.UsersAngular/**,**/HealthCare.AdminBlazor/**,**/Program.cs</Property>
     <Property Name="sonar.cs.opencover.reportsPaths">TestResults/**/coverage.opencover.xml</Property>
-    <Property Name="sonar.exclusions">**/bin/**,**/obj/**,**/Migrations/**,TestResults/**/coverage.opencover.xml</Property>
+    <Property Name="sonar.exclusions">**/bin/**,**/obj/**,**/Migrations/**,**/*.css,TestResults/**/coverage.opencover.xml</Property>
   </LocalSettings>
   <ScannerOptsSettings />
   <AnalyzersSettings>

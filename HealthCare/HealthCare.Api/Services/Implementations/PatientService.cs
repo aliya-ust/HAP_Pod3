@@ -46,60 +46,23 @@ namespace HealthCare.Api.Services.Impl
 
         public async Task<PagedResult<PatientListDto>> GetAllAsync(PatientFilter filter)
         {
+            var search = filter.FullName?.Trim();
 
-            Expression<Func<Patient, bool>> predicate = p => true;
-
-            if (filter.HasInsurance.HasValue)
-            {
-                if (filter.HasInsurance.Value)
-                {
-                    predicate = p =>
-                        p.InsuranceId != null &&
-                        p.InsuranceId != "";
-                }
-                else
-                {
-                    predicate = p =>
-                        p.InsuranceId == null ||
-                        p.InsuranceId == "";
-                }
-            }
-
-            if (!string.IsNullOrWhiteSpace(filter.FullName))
-            {
-                var search = filter.FullName.Trim();
-
-                if (filter.HasInsurance.HasValue)
-                {
-                    if (filter.HasInsurance.Value)
-                    {
-                        predicate = p =>
-                            p.InsuranceId != null &&
-                            p.InsuranceId != "" &&
-                            p.FullName != null &&
-                            EF.Functions.Like(p.FullName, $"%{search}%");
-                    }
-                    else
-                    {
-                        predicate = p =>
-                            (p.InsuranceId == null || p.InsuranceId == "") &&
-                            p.FullName != null &&
-                            EF.Functions.Like(p.FullName, $"%{search}%");
-                    }
-                }
-                else
-                {
-                    predicate = p =>
-                        p.FullName != null &&
-                        EF.Functions.Like(p.FullName, $"%{search}%");
-                }
-            }
+            Expression<Func<Patient, bool>> predicate = p =>
+                (!filter.HasInsurance.HasValue ||
+                    (filter.HasInsurance.Value
+                        ? !string.IsNullOrEmpty(p.InsuranceId)
+                        : string.IsNullOrEmpty(p.InsuranceId)))
+                &&
+                (string.IsNullOrWhiteSpace(search) ||
+                    (p.FullName != null &&
+                     EF.Functions.Like(p.FullName, $"%{search}%")));
 
             var pagedResult = await _repository.GetAllAsync(
                 filter.PageNumber,
                 filter.PageSize,
-                predicate
-            );
+                predicate,
+                q => q.OrderBy(p => p.PatientId));
 
             return new PagedResult<PatientListDto>
             {

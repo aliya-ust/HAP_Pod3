@@ -109,11 +109,14 @@ namespace HealthCare.Api.Services.Implementations
                     appointment.DoctorId,
                     appointment.ScheduledDate);
 
-                _logger.LogInformation(
+                if (_logger.IsEnabled(LogLevel.Information))
+                { 
+                    _logger.LogInformation(
                     "Appointment booked successfully. AppointmentId={AppointmentId}, PatientId={PatientId}, DoctorId={DoctorId}",
                     appointment.AppointmentId,
                     patientId,
                     appointment.DoctorId);
+                    }
 
                 var patient = await _context.Patients
                     .FirstAsync(p => p.PatientId == patientId);
@@ -127,9 +130,12 @@ namespace HealthCare.Api.Services.Implementations
                     TimeSlot = appointment.TimeSlot
                 };
 
-                _logger.LogInformation(
+                if (_logger.IsEnabled(LogLevel.Information))
+                {
+                    _logger.LogInformation(
                     "Publishing AppointmentBookedEvent. AppointmentId={AppointmentId}",
                     appointment.AppointmentId);
+                }
                 await _publishEndpoint.Publish(appointmentEvent);
             }
             catch (DbUpdateException ex)
@@ -221,12 +227,15 @@ namespace HealthCare.Api.Services.Implementations
             var bookedSlots = await _repository.BookedTimeSlots(date, doctorId);
 
             var freeSlots = allSlots
-    .Where(slot =>
-        !bookedSlots.Any(b =>
-            b.Trim().ToLower().StartsWith(slot.Trim().ToLower().Substring(0, 4))
-        )
-    )
-    .ToList();
+     .Where(slot =>
+         !bookedSlots.Any(b =>
+             b.Trim().StartsWith(
+                 slot.Trim().Substring(0, 4),
+                 StringComparison.OrdinalIgnoreCase)
+         )
+     )
+     .ToList();
+
 
             return freeSlots;
         }
@@ -234,8 +243,6 @@ namespace HealthCare.Api.Services.Implementations
         public async Task<bool> IsAvailable(DateOnly date, int doctorId, string timeSlot)
         {
             var bookedSlots = await _repository.BookedTimeSlots(date, doctorId);
-
-            var normalized = timeSlot.Trim().ToLower();
 
             var exists = bookedSlots.Any(b =>
                  string.Equals(
@@ -378,9 +385,14 @@ namespace HealthCare.Api.Services.Implementations
             var cacheKey =
                 $"doctors:{doctor.Specialisation}:availability:{date}";
 
-            _logger.LogInformation(
-                "Removing cache key {Key}",
-                cacheKey);
+
+            if (_logger.IsEnabled(LogLevel.Information))
+            {
+                _logger.LogInformation(
+                    "Removing cache key {Key}",
+                    cacheKey);
+            }
+
 
             await _cache.RemoveAsync(cacheKey);
         }

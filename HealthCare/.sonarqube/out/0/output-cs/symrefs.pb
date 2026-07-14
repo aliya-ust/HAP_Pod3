@@ -1,18 +1,14 @@
-q
+è
+iC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\Patient\PatientDashboardDto.cs
+
+ $
+
+ ,
+
+ %q
 cC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\Enums\DoctorSpecialization.cs
 
- $§
-fC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\Patient\UpdatePatientDto.cs
-
- !
-
- 
-
- !
-
- 
-
- "Ä
+ $Ä
 dC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\Patient\PatientListDto.cs
 
  
@@ -45,14 +41,18 @@ cC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\Pati
 
  !
 
- è
-iC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\Patient\PatientDashboardDto.cs
+ §
+fC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\Patient\UpdatePatientDto.cs
 
- $
+ !
 
- ,
+ 
 
- %¢
+ !
+
+ 
+
+ "¢
 fC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\Patient\CreatePatientDto.cs
 
  !
@@ -78,18 +78,16 @@ fC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\Pati
 **= B,, 
 
 **V g
-,," %,,) ,¢
-pC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\HealthRecord\UpdateHealthRecordDto.cs
+,," %,,) ,ƒ
+^C:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\PaginationParams.cs
 
- &
+ !
+ %' 25 @
+   
 
-
-
- 
+ 
 
- "
-
- Õ
+ Õ
 YC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\PagedResult.cs
 
  
@@ -101,16 +99,18 @@ YC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\Page
  		H P
  		3 =
 
-		 ƒ
-^C:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\PaginationParams.cs
+		 ¢
+pC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\HealthRecord\UpdateHealthRecordDto.cs
 
- !
- %' 25 @
-   
+ &
 
- 
+
+
+ 
 
- –
+ "
+
+ –
 nC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\HealthRecord\HealthRecordListDto.cs
 
  $
@@ -167,6 +167,15 @@ pC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\Heal
  !
 
 		 ñ
+dC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\Doctor\UpdateDoctorDto.cs
+
+		  
+
+ 
+
+$ 2
+
+ %ñ
 dC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\Doctor\DoctoSummaryDto.cs
 
  !
@@ -205,16 +214,7 @@ aC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\Doct
 
  
 
-		 &ñ
-dC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\Doctor\UpdateDoctorDto.cs
-
-		  
-
- 
-
-$ 2
-
- %•
+		 &•
 gC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\Doctor\DoctorDashboardDto.cs
 
  #
@@ -276,21 +276,21 @@ ZC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\Auth
 
  
 
- ã
-eC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\Authentication\LoginDto.cs
-
- 
-
- 
-
- î
+ î
 nC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\Authentication\ChangePasswordDto.cs
 
  "
 
  %
 
- !¬
+ !ã
+eC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\Authentication\LoginDto.cs
+
+ 
+
+ 
+
+ ¬
 lC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\Authentication\AuthResponseDto.cs
 
   

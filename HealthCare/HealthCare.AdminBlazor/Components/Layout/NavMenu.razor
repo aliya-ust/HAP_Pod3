@@ -1,5 +1,6 @@
 ﻿@inject NavigationManager Nav
 @inject IJSRuntime JS
+@inject IConfiguration Configuration
 <div class="sidebar">
 
     <div class="sidebar-header">
@@ -45,7 +46,9 @@
     private async Task Logout()
     {
         await JS.InvokeVoidAsync("localStorage.removeItem", "token");
-        Nav.NavigateTo("http://localhost:50358/", true);
+
+        var homeUrl = Configuration["ApplicationSettings:HomeUrl"] ?? "/";
+        Nav.NavigateTo(homeUrl, true);
     }
 }
 

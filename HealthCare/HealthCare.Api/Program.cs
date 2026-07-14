@@ -20,13 +20,16 @@ using HealthCare.Api.Options;
 
 
 Log.Logger = new LoggerConfiguration()
-    .WriteTo.Console()
-    .WriteTo.File(
-        "Logs/log-.txt",
-        rollingInterval: RollingInterval.Day)
-    .CreateLogger();
+    .WriteTo.Console().CreateBootstrapLogger();
+Log.Information("HealthCare App Api Starting....");
 var builder = WebApplication.CreateBuilder(args);
-builder.Host.UseSerilog();
+
+builder.Services.AddSerilog(
+    (services, Configuration) => 
+         Configuration.ReadFrom.Configuration(builder.Configuration)
+        .ReadFrom.Services(services)
+        .Enrich.FromLogContext()
+);
 
 // Add services to the container.
 builder.Services.AddProblemDetails();

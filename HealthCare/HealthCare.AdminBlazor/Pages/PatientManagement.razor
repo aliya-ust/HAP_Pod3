@@ -1,5 +1,6 @@
 ﻿@page "/patient-management"
 
+@using HealthCare.AdminBlazor.Pages
 @inject PatientAdminService PatientService
 
 <PageTitle>Patient Management</PageTitle>
@@ -38,7 +39,6 @@
 
         <PatientTable Patients="patients"
                       IsSearchPerformed="isSearchPerformed"
-                      OnEdit="OpenEditModal"
                       OnDelete="ConfirmDeletePatient"
                       OnUpdateStatus="UpdatePatientStatus" />
 
@@ -66,15 +66,6 @@
 
 </div>
 
-<UpdatePatientModal Patient="selectedPatient"
-                    Visible="showEditModal"
-                    OnClose="CloseEditModal"
-                    OnSaved="PatientUpdated" />
-
-<RegisterPatientModal Visible="showRegisterModal"
-                        OnClose="CloseRegisterModal"
-                        OnSaved="LoadPatients" />
-
 <DeletePatientModal Visible="showDeleteModal"
                     OnCancel="CancelDelete"
                     OnConfirm="DeletePatient" />
@@ -82,8 +73,6 @@
 @code {
 
     private List<PatientListDto> patients = new();
-
-    private PatientListDto? selectedPatient;
 
     private PatientToolbar? toolbarRef;
 
@@ -96,9 +85,6 @@
     private int currentPage = 1;
     private const int pageSize = 5;
 
-
-    private bool showEditModal;
-    private bool showRegisterModal;
     private bool showDeleteModal;
 
     private int pendingDeleteId;
@@ -188,28 +174,6 @@
         }
     }
 
-
-    private void OpenEditModal(PatientListDto patient)
-    {
-        selectedPatient = patient;
-        showEditModal = true;
-    }
-
-    private void CloseEditModal()
-    {
-        showEditModal = false;
-    }
-
-    private void OpenRegisterModal()
-    {
-        showRegisterModal = true;
-    }
-
-    private void CloseRegisterModal()
-    {
-        showRegisterModal = false;
-    }
-
     private void ConfirmDeletePatient(int id)
     {
         pendingDeleteId = id;
@@ -242,15 +206,6 @@
         await LoadPatients();
     }
 
-
-    private async Task PatientUpdated()
-    {
-        showEditModal = false;
-
-        await LoadPatients();
-
-        await ShowSuccessMessage("Patient updated successfully.");
-    }
 
     private async Task ShowSuccessMessage(string message)
     {

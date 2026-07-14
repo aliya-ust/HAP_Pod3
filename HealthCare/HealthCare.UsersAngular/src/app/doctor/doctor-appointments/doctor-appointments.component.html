@@ -98,7 +98,11 @@
 
           <div class="modal-header">
             <h3>Health Records</h3>
-            <span class="close" (click)="closeModal()">×</span>
+            <button type="button"
+                    class="close"
+                    (click)="closeModal()">
+              ×
+            </button>
           </div>
 
           <div *ngIf="selectedPatientRecords.length === 0">
@@ -132,13 +136,11 @@
               Cancel Appointment
             </h3>
 
-            <span class="close"
-                  tabindex="0"
-                  (click)="closeCancelModal()"
-                  (keydown.enter)="closeCancelModal()"
-                  (keydown.space)="closeCancelModal()">
+            <button type="button"
+                    class="close"
+                    (click)="closeCancelModal()">
               ×
-            </span>
+            </button>
 
 
           </div>
@@ -185,13 +187,11 @@
 
           <div class="modal-header">
             <h3>Add Health Record</h3>
-            <span class="close"
-                  tabindex="0"
-                  (click)="closeModal()"
-                  (keydown.enter)="closeModal()"
-                  (keydown.space)="closeModal()">
+            <button type="button"
+                    class="close"
+                    (click)="closeModal()">
               ×
-            </span>
+            </button>
           </div>
 
           <div class="form" [formGroup]="recordForm">

@@ -26,7 +26,7 @@ namespace HealthCare.Api.Consumers
 
             var notification = new Notification
             {
-                UserId = message.DoctorId,
+                DoctorId = message.DoctorId,
                 Message =
                     $"New appointment booked by {message.PatientName} " +
                     $"for {message.ScheduledDate} at {message.TimeSlot}",
@@ -37,9 +37,14 @@ namespace HealthCare.Api.Consumers
 
             await _context.SaveChangesAsync();
 
-            _logger.LogInformation(
-                "Notification created for DoctorId={DoctorId}",
-                message.DoctorId);
+
+            if (_logger.IsEnabled(LogLevel.Information))
+            {
+                _logger.LogInformation(
+                    "Notification created for DoctorId={DoctorId}",
+                    message.DoctorId);
+            }
+
         }
     }
 }
