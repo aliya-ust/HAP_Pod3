@@ -192,3 +192,11 @@ C:\Users\310057\Desktop\Project\Sprint3\Health\Health\HealthCare.Api\obj\Debug\n
 C:\Users\310057\Desktop\Project\Sprint3\Health\Health\HealthCare.Api\obj\Debug\net10.0\HealthCare.Api.pdb
 C:\Users\310057\Desktop\Project\Sprint3\Health\Health\HealthCare.Api\obj\Debug\net10.0\HealthCare.Api.genruntimeconfig.cache
 C:\Users\310057\Desktop\Project\Sprint3\Health\Health\HealthCare.Api\obj\Debug\net10.0\ref\HealthCare.Api.dll
+C:\Users\310057\Desktop\Project\Sprint3\Health\Health\HealthCare.Api\bin\Debug\net10.0\Elastic.Channels.dll
+C:\Users\310057\Desktop\Project\Sprint3\Health\Health\HealthCare.Api\bin\Debug\net10.0\Elastic.CommonSchema.dll
+C:\Users\310057\Desktop\Project\Sprint3\Health\Health\HealthCare.Api\bin\Debug\net10.0\Elastic.CommonSchema.Serilog.dll
+C:\Users\310057\Desktop\Project\Sprint3\Health\Health\HealthCare.Api\bin\Debug\net10.0\Elastic.Ingest.Elasticsearch.dll
+C:\Users\310057\Desktop\Project\Sprint3\Health\Health\HealthCare.Api\bin\Debug\net10.0\Elastic.Ingest.Elasticsearch.CommonSchema.dll
+C:\Users\310057\Desktop\Project\Sprint3\Health\Health\HealthCare.Api\bin\Debug\net10.0\Elastic.Ingest.Transport.dll
+C:\Users\310057\Desktop\Project\Sprint3\Health\Health\HealthCare.Api\bin\Debug\net10.0\Elastic.Serilog.Sinks.dll
+C:\Users\310057\Desktop\Project\Sprint3\Health\Health\HealthCare.Api\bin\Debug\net10.0\Elastic.Transport.dll

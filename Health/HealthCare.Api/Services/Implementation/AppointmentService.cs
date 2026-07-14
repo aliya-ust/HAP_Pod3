@@ -502,9 +502,9 @@ namespace HealthCare.Api.Services.Implementations
 
             var appointment = await _repository.GetByIdAsync(appointmentId);
 
-            var doctor = await _context.Doctors.FirstAsync(d => d.DoctorId == appointment.DoctorId);
+            var doctor = await _context.Doctors.FirstAsync(d => d.DoctorId == appointment!.DoctorId);
 
-            await _doctorCache.RefreshAsync(doctor.Specialisation,appointment.ScheduledDate);
+            await _doctorCache.RefreshAsync(doctor.Specialisation,appointment!.ScheduledDate);
 
             _logger.LogInformation(
                 "Appointment {AppointmentId} cancelled successfully",

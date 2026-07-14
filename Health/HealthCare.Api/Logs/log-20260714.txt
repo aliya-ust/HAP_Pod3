@@ -1,0 +1,2 @@
+2026-07-14 06:49:04.454 +05:30 [INF] HTTP OPTIONS /api/patient/profile responded 204 in 68.9951 ms
+2026-07-14 06:49:11.399 +05:30 [INF] HTTP GET /api/patient/profile responded 401 in 762.7266 ms

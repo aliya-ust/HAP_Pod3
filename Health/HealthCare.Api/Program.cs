@@ -165,6 +165,7 @@ builder.Services.AddMassTransit(x =>
 });
 
 var app = builder.Build();
+app.UseSerilogRequestLogging();
 app.UseExceptionHandler();
 using (var scope = app.Services.CreateScope())
 {
