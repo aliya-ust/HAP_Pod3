@@ -76,7 +76,10 @@ public class PatientService
         if (!response.IsSuccessStatusCode)
         {
             var message = await response.Content.ReadAsStringAsync();
-            throw new Exception(message);
+
+            throw new HttpRequestException(
+                    $"Failed to delete patient. Status: {response.StatusCode}. Message: {message}");
+
         }
     }
 }

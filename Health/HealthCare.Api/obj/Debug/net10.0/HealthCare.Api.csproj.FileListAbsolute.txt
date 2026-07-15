@@ -193,7 +193,6 @@ C:\Users\310057\Desktop\Project\Sprint3\Health\Health\HealthCare.Api\obj\Debug\n
 C:\Users\310057\Desktop\Project\Sprint3\Health\Health\HealthCare.Api\obj\Debug\net10.0\staticwebassets.development.json
 C:\Users\310057\Desktop\Project\Sprint3\Health\Health\HealthCare.Api\obj\Debug\net10.0\staticwebassets.build.endpoints.json
 C:\Users\310057\Desktop\Project\Sprint3\Health\Health\HealthCare.Api\obj\Debug\net10.0\swae.build.ex.cache
-C:\Users\310057\Desktop\Project\Sprint3\Health\Health\HealthCare.Api\obj\Debug\net10.0\staticwebassets.upToDateCheck.txt
 C:\Users\310057\Desktop\Project\Sprint3\Health\Health\HealthCare.Api\obj\Debug\net10.0\HealthCa.7DA66EE0.Up2Date
 C:\Users\310057\Desktop\Project\Sprint3\Health\Health\HealthCare.Api\obj\Debug\net10.0\HealthCare.Api.dll
 C:\Users\310057\Desktop\Project\Sprint3\Health\Health\HealthCare.Api\obj\Debug\net10.0\refint\HealthCare.Api.dll

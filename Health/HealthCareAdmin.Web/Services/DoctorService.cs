@@ -105,7 +105,10 @@ public class DoctorService
         if (!response.IsSuccessStatusCode)
         {
             var message = await response.Content.ReadAsStringAsync();
-            throw new Exception(message);
+
+            throw new HttpRequestException(
+                    $"Doctor API request failed. StatusCode: {response.StatusCode}, Message: {message}");
+
         }
     }
     public async Task ToggleStatusAsync(int id, bool isActive)
