@@ -33,8 +33,8 @@ export class ProfileComponent implements OnInit {
   };
 
   constructor(
-    private patientService: PatientService,
-    private doctorService: DoctorService
+    private readonly patientService: PatientService,
+    private readonly doctorService: DoctorService
   ) { }
 
   ngOnInit(): void {

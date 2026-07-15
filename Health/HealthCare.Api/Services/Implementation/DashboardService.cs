@@ -21,7 +21,11 @@ public class DashboardService : IDashboardService
 
     public async Task<DashboardSummaryDto> GetDashboardSummaryAsync()
     {
-        _logger.LogInformation("Fetching admin dashboard summary.");
+        if (_logger.IsEnabled(LogLevel.Information))
+        {
+            _logger.LogInformation(
+                "Fetching admin dashboard summary.");
+        }
 
         var summary = new DashboardSummaryDto
         {
@@ -51,20 +55,29 @@ public class DashboardService : IDashboardService
                 .SumAsync(a => (decimal?)a.Doctor.ConsultationFee) ?? 0
         };
 
-        _logger.LogInformation(
-            "Dashboard summary generated successfully. Doctors: {Doctors}, Patients: {Patients}, Appointments: {Appointments}",
-            summary.TotalDoctors,
-            summary.TotalPatients,
-            summary.TotalAppointments);
+
+        if (_logger.IsEnabled(LogLevel.Information))
+        {
+            _logger.LogInformation(
+                "Dashboard summary generated successfully. Doctors: {Doctors}, Patients: {Patients}, Appointments: {Appointments}",
+                summary.TotalDoctors,
+                summary.TotalPatients,
+                summary.TotalAppointments);
+        }
 
         return summary;
     }
 
-    public async Task<DashboardPatientDto> GetPatientDashboardSummaryAsync(int patientId)
+
+    public async Task<DashboardPatientDto> GetPatientDashboardSummaryAsync(
+        int patientId)
     {
-        _logger.LogInformation(
-            "Fetching dashboard summary for Patient {PatientId}",
-            patientId);
+        if (_logger.IsEnabled(LogLevel.Information))
+        {
+            _logger.LogInformation(
+                "Fetching dashboard summary for Patient {PatientId}",
+                patientId);
+        }
 
         var today = DateOnly.FromDateTime(DateTime.Today);
 
@@ -77,7 +90,8 @@ public class DashboardService : IDashboardService
                 "Patient {PatientId} not found while fetching dashboard",
                 patientId);
 
-            throw new InvalidOperationException("Patient not found.");
+            throw new InvalidOperationException(
+                "Patient not found.");
         }
 
         var dashboard = new DashboardPatientDto
@@ -94,18 +108,27 @@ public class DashboardService : IDashboardService
                 .CountAsync(h => h.PatientId == patientId)
         };
 
-        _logger.LogInformation(
-            "Patient dashboard generated successfully for Patient {PatientId}",
-            patientId);
+
+        if (_logger.IsEnabled(LogLevel.Information))
+        {
+            _logger.LogInformation(
+                "Patient dashboard generated successfully for Patient {PatientId}",
+                patientId);
+        }
 
         return dashboard;
     }
 
-    public async Task<DashboardDoctorDto> GetDoctorDashboardSummaryAsync(int doctorId)
+
+    public async Task<DashboardDoctorDto> GetDoctorDashboardSummaryAsync(
+        int doctorId)
     {
-        _logger.LogInformation(
-            "Fetching dashboard summary for Doctor {DoctorId}",
-            doctorId);
+        if (_logger.IsEnabled(LogLevel.Information))
+        {
+            _logger.LogInformation(
+                "Fetching dashboard summary for Doctor {DoctorId}",
+                doctorId);
+        }
 
         var today = DateOnly.FromDateTime(DateTime.Today);
 
@@ -140,10 +163,14 @@ public class DashboardService : IDashboardService
                 .ToListAsync()
         };
 
-        _logger.LogInformation(
-            "Doctor dashboard generated successfully for Doctor {DoctorId}. Today's appointments: {Count}",
-            doctorId,
-            dashboard.TodayAppointments.Count);
+
+        if (_logger.IsEnabled(LogLevel.Information))
+        {
+            _logger.LogInformation(
+                "Doctor dashboard generated successfully for Doctor {DoctorId}. Today's appointments: {Count}",
+                doctorId,
+                dashboard.TodayAppointments.Count);
+        }
 
         return dashboard;
     }

@@ -45,3 +45,31 @@
 2026-07-14 10:07:54.561 +05:30 [INF] Fetching health records for Patient 5
 2026-07-14 10:07:54.570 +05:30 [INF] 3 health records found for Patient 5
 2026-07-14 10:07:54.573 +05:30 [INF] HTTP GET /api/HealthRecord/patient/5 responded 200 in 28.6456 ms
+2026-07-14 14:18:19.773 +05:30 [INF] Configured endpoint AppointmentBooked, Consumer: HealthCare.Api.Messaging.AppointmentBookedConsumer
+2026-07-14 14:18:23.100 +05:30 [INF] Bus started: "rabbitmq://localhost/"
+2026-07-14 14:19:11.484 +05:30 [INF] HTTP OPTIONS /api/auth/login responded 204 in 17.0314 ms
+2026-07-14 14:19:11.744 +05:30 [WRN] You do not have a valid license key for the Lucky Penny software AutoMapper. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.
+2026-07-14 14:19:11.928 +05:30 [INF] Login attempt for email ananya.menon@example.com
+2026-07-14 14:19:12.421 +05:30 [INF] Generating JWT token for User b9effe45-f711-4d74-a495-ec4a1add3e10
+2026-07-14 14:19:12.489 +05:30 [INF] JWT token generated successfully for User b9effe45-f711-4d74-a495-ec4a1add3e10
+2026-07-14 14:19:12.532 +05:30 [INF] User ananya.menon@example.com logged in successfully as Patient
+2026-07-14 14:19:12.562 +05:30 [INF] HTTP POST /api/auth/login responded 200 in 1049.4738 ms
+2026-07-14 14:19:12.937 +05:30 [INF] HTTP OPTIONS /api/dashboard/patient responded 204 in 0.9711 ms
+2026-07-14 14:19:13.091 +05:30 [INF] Fetching dashboard summary for Patient 5
+2026-07-14 14:19:13.264 +05:30 [INF] Patient dashboard generated successfully for Patient 5
+2026-07-14 14:19:13.269 +05:30 [INF] HTTP GET /api/dashboard/patient responded 200 in 323.3265 ms
+2026-07-14 14:19:34.939 +05:30 [INF] HTTP OPTIONS /api/auth/login responded 204 in 0.1638 ms
+2026-07-14 14:19:34.953 +05:30 [INF] Login attempt for email arun555@example.com
+2026-07-14 14:19:35.133 +05:30 [INF] Generating JWT token for User 424c5193-b5e8-4342-8e46-9917cb7e28b5
+2026-07-14 14:19:35.136 +05:30 [INF] JWT token generated successfully for User 424c5193-b5e8-4342-8e46-9917cb7e28b5
+2026-07-14 14:19:35.138 +05:30 [INF] User arun555@example.com logged in successfully as Doctor
+2026-07-14 14:19:35.139 +05:30 [INF] HTTP POST /api/auth/login responded 200 in 194.3824 ms
+2026-07-14 14:19:35.156 +05:30 [INF] HTTP OPTIONS /api/dashboard/doctor responded 204 in 0.1239 ms
+2026-07-14 14:19:35.182 +05:30 [INF] Fetching dashboard summary for Doctor 12
+2026-07-14 14:19:35.264 +05:30 [INF] Doctor dashboard generated successfully for Doctor 12. Today's appointments: 0
+2026-07-14 14:19:35.270 +05:30 [INF] HTTP GET /api/dashboard/doctor responded 200 in 107.1816 ms
+2026-07-14 15:58:55.411 +05:30 [INF] Configured endpoint AppointmentBooked, Consumer: HealthCare.Api.Messaging.AppointmentBookedConsumer
+2026-07-14 15:59:08.868 +05:30 [INF] Configured endpoint AppointmentBooked, Consumer: HealthCare.Api.Messaging.AppointmentBookedConsumer
+2026-07-14 15:59:11.010 +05:30 [INF] Bus started: "rabbitmq://localhost/"
+2026-07-14 15:59:41.619 +05:30 [INF] Configured endpoint AppointmentBooked, Consumer: HealthCare.Api.Messaging.AppointmentBookedConsumer
+2026-07-14 15:59:42.467 +05:30 [INF] Bus started: "rabbitmq://localhost/"

@@ -38,8 +38,8 @@ export class AppointmentsComponent implements OnInit {
   selectedAppointmentId = signal(0);
 
   constructor(
-    private appointmentService: AppointmentService,
-    private router: Router
+    private readonly appointmentService: AppointmentService,
+    private readonly router: Router
   ) { }
 
   ngOnInit(): void {

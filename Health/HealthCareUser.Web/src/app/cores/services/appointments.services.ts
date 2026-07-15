@@ -21,7 +21,7 @@ export class AppointmentService {
   patientAppointments: Appointment[] = [];
   doctorAppointments: Appointment[] = [];
 
-  constructor(private http: HttpClient) { }
+  constructor(private readonly http: HttpClient) { }
 
   // PATIENT APPOINTMENTS
   getPatientAppointments(): Observable<Appointment[]> {

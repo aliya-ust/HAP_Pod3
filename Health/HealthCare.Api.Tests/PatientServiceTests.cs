@@ -28,6 +28,10 @@ namespace HealthCare.Tests.Services
 
             _context = new HealthCareDbContext(options);
 
+            _logger.Setup(x =>
+                x.IsEnabled(It.IsAny<LogLevel>()))
+                .Returns(true);
+
             _service = new PatientService(
                 _repository.Object,
                 _context,

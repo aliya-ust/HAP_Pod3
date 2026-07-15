@@ -8,9 +8,9 @@ import { HealthRecord } from '../models/HealthRecord';
 })
 export class HealthRecordService {
 
-  private apiUrl = 'https://localhost:7171/api/HealthRecord';
+  private readonly apiUrl = 'https://localhost:7171/api/HealthRecord';
 
-  constructor(private http: HttpClient) { }
+  constructor(private readonly http: HttpClient) { }
 
   getPatientHealthRecords(): Observable<HealthRecord[]> {
     return this.http.get<HealthRecord[]>(

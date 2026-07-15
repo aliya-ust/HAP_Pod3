@@ -10,7 +10,6 @@ using HealthCare.Api.Services.Implementation;
 using HealthCare.Api.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using Moq;
 using Xunit;
 
@@ -25,7 +24,6 @@ namespace HealthCare.Tests.Services
         private readonly Mock<IJwtService> _jwtService;
         private readonly HealthCareDbContext _context;
         private readonly AuthService _service;
-        private readonly Mock<ILogger<AuthService>> _loggerMock;
         private readonly Mock<IDoctorAvailabilityCacheService> _doctorCacheMock;
 
         public AuthServiceTests()
@@ -54,7 +52,6 @@ namespace HealthCare.Tests.Services
 
             _context = new HealthCareDbContext(options);
 
-            _loggerMock = new Mock<ILogger<AuthService>>();
             _doctorCacheMock = new Mock<IDoctorAvailabilityCacheService>();
 
             _service = new AuthService(
@@ -64,7 +61,6 @@ namespace HealthCare.Tests.Services
                 _doctorRepo.Object,
                 _jwtService.Object,
                 _context,
-                _loggerMock.Object,
                 _doctorCacheMock.Object);
         }
 
@@ -162,8 +158,12 @@ namespace HealthCare.Tests.Services
             _patientRepo.Setup(x => x.GetByUserIdAsync("1"))
                 .ReturnsAsync(new Patient { PatientId = 10 });
 
-            _jwtService.Setup(x => x.GenerateToken(user, 10, null))
-                .ReturnsAsync("token");
+            _jwtService.Setup(x =>
+                         x.GenerateToken(
+                              user,
+                              It.Is<int?>(x => x == 10),
+                              It.IsAny<int?>()))
+                              .ReturnsAsync("token");
 
             var result = await _service.LoginAsync(dto);
 
@@ -295,14 +295,28 @@ namespace HealthCare.Tests.Services
                 NewPassword = "New@123"
             };
 
-            _userManager.Setup(x => x.FindByIdAsync("1")).ReturnsAsync(user);
+            _userManager
+                .Setup(x => x.FindByIdAsync("1"))
+                .ReturnsAsync(user);
 
-            _userManager.Setup(x => x.ChangePasswordAsync(user, dto.CurrentPassword, dto.NewPassword))
+
+            _userManager
+                .Setup(x => x.ChangePasswordAsync(
+                    user,
+                    dto.CurrentPassword,
+                    dto.NewPassword))
                 .ReturnsAsync(IdentityResult.Success);
+
 
             await _service.ChangePasswordAsync("1", dto);
 
-            Assert.True(true);
+
+            _userManager.Verify(
+                x => x.ChangePasswordAsync(
+                    user,
+                    dto.CurrentPassword,
+                    dto.NewPassword),
+                Times.Once);
         }
 
         [Fact]

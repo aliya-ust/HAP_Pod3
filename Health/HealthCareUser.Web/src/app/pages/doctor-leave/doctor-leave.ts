@@ -22,7 +22,7 @@ export class DoctorLeaveComponent {
   successMessage = signal('');
   errorMessage = signal('');
 
-  constructor(private leaveService: DoctorLeaveService) { }
+  constructor(private readonly leaveService: DoctorLeaveService) { }
 
   addLeaveDate(): void {
 

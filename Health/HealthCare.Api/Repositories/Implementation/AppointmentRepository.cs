@@ -9,13 +9,15 @@ namespace HealthCare.Api.Repositories.Implementation
 {
     public class AppointmentRepository : Repository<Appointment>, IAppointmentRepository
     {
+        private const string CancelledStatus = "Cancelled";
+        private const string ConfirmedStatus = "Confirmed";
         public AppointmentRepository(HealthCareDbContext context) : base(context) { }
 
         public async Task<List<string>> BookedTimeSlots(DateOnly date, int doctorId) =>
             await _dbSet
                 .Where(a => a.ScheduledDate == date
                          && a.DoctorId == doctorId
-                         && a.Status != "Cancelled")
+                         && a.Status != CancelledStatus)
                 .Select(a => a.TimeSlot)
                 .ToListAsync();
 
@@ -25,7 +27,7 @@ namespace HealthCare.Api.Repositories.Implementation
                 a.ScheduledDate == date
                 && a.DoctorId == doctorId
                 && a.TimeSlot == timeSlot
-                && a.Status != "Cancelled");
+                && a.Status != CancelledStatus);
 
             return !exists;
         }
@@ -48,8 +50,8 @@ namespace HealthCare.Api.Repositories.Implementation
                 {
                     Date = g.Key,
                     PendingCount = g.Count(a => a.Status == "Pending"),
-                    ConfirmedCount = g.Count(a => a.Status == "Confirmed"),
-                    CancelledCount = g.Count(a => a.Status == "Cancelled"),
+                    ConfirmedCount = g.Count(a => a.Status == ConfirmedStatus),
+                    CancelledCount = g.Count(a => a.Status == CancelledStatus),
                     CompletedCount = g.Count(a => a.Status == "Completed")
                 })
                 .OrderByDescending(x => x.Date)
@@ -60,12 +62,12 @@ namespace HealthCare.Api.Repositories.Implementation
         public async Task CancelAppointmentsByDoctorDate(int doctorId, DateOnly date)
         {
             var appointments = await _dbSet
-                .Where(a => a.DoctorId == doctorId && a.ScheduledDate == date && a.Status != "Cancelled")
+                .Where(a => a.DoctorId == doctorId && a.ScheduledDate == date && a.Status != CancelledStatus)
                 .ToListAsync();
 
             foreach (var appointment in appointments)
             {
-                appointment.Status = "Cancelled";
+                appointment.Status = CancelledStatus;
                 appointment.CancellationReason = "Doctor on leave";
             }
         }
@@ -105,7 +107,7 @@ namespace HealthCare.Api.Repositories.Implementation
                 .Where(a =>
                     a.PatientId == id &&
                     a.ScheduledDate >= today &&
-                    (a.Status == "Pending" || a.Status == "Confirmed"))
+                    (a.Status == "Pending" || a.Status == ConfirmedStatus))
                 .OrderBy(a => a.ScheduledDate)
                 .ThenBy(a => a.TimeSlot)
                 .Select(a => new AppointmentListDto
@@ -128,7 +130,7 @@ namespace HealthCare.Api.Repositories.Implementation
                 .Where(a =>
                     a.DoctorId == id &&
                     a.ScheduledDate >= today &&
-                    (a.Status == "Pending" || a.Status == "Confirmed"))
+                    (a.Status == "Pending" || a.Status == ConfirmedStatus))
                 .OrderBy(a => a.ScheduledDate)
                 .ThenBy(a => a.TimeSlot)
                 .Select(a => new AppointmentListDto
@@ -151,7 +153,7 @@ namespace HealthCare.Api.Repositories.Implementation
             if (appointment == null)
                 throw new InvalidOperationException("Appointment not found");
 
-            appointment.Status = "Confirmed";
+            appointment.Status = ConfirmedStatus;
 
             await _context.SaveChangesAsync();
         }
@@ -163,7 +165,7 @@ namespace HealthCare.Api.Repositories.Implementation
             if (appointment == null)
                 throw new InvalidOperationException("Appointment not found");
 
-            appointment.Status = "Cancelled";
+            appointment.Status = CancelledStatus;
 
             await _context.SaveChangesAsync();
         }

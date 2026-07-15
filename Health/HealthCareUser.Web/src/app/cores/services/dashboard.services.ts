@@ -10,9 +10,9 @@ import { DoctorDashboard } from '../models/DoctorDashboard';
 })
 export class DashboardService {
 
-  private apiUrl = 'https://localhost:7171/api/dashboard';
+  private readonly apiUrl = 'https://localhost:7171/api/dashboard';
 
-  constructor(private http: HttpClient) { }
+  constructor(private readonly http: HttpClient) { }
 
   getPatientDashboard(): Observable<PatientDashboard> {
 

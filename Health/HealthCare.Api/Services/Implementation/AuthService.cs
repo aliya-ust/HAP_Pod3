@@ -8,7 +8,6 @@ using HealthCare.Api.Models;
 using HealthCare.Api.Repositories.Interfaces;
 using HealthCare.Api.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Logging;
 
 namespace HealthCare.Api.Services.Implementation
 {
@@ -20,7 +19,6 @@ namespace HealthCare.Api.Services.Implementation
         private readonly IDoctorRepository _doctorRepository;
         private readonly IJwtService _jwtService;
         private readonly HealthCareDbContext _context;
-        private readonly ILogger<AuthService> _logger;
         private readonly IDoctorAvailabilityCacheService _doctorCache;
 
         public AuthService(
@@ -30,7 +28,6 @@ namespace HealthCare.Api.Services.Implementation
             IDoctorRepository doctorRepository,
             IJwtService jwtService,
             HealthCareDbContext context,
-            ILogger<AuthService> logger,
             IDoctorAvailabilityCacheService doctorCache)
         {
             _userManager = userManager;
@@ -39,23 +36,20 @@ namespace HealthCare.Api.Services.Implementation
             _doctorRepository = doctorRepository;
             _jwtService = jwtService;
             _context = context;
-            _logger = logger;
             _doctorCache = doctorCache;
         }
 
         private async Task<User> CreateUserWithRoleAsync(
-            string email,
-            string password,
-            string role)
+    string email,
+    string password,
+    string role)
         {
-            _logger.LogInformation("Creating new user with email {Email} and role {Role}", email, role);
-
             var existingUser = await _userManager.FindByEmailAsync(email);
 
             if (existingUser != null)
             {
-                _logger.LogWarning("Registration failed. Email {Email} is already registered.", email);
-                throw new InvalidOperationException("Email is already registered.");
+                throw new InvalidOperationException(
+                    "Email is already registered.");
             }
 
             var user = new User
@@ -64,108 +58,108 @@ namespace HealthCare.Api.Services.Implementation
                 Email = email
             };
 
-            var result = await _userManager.CreateAsync(user, password);
+            var result = await _userManager.CreateAsync(
+                user,
+                password);
+
 
             if (!result.Succeeded)
             {
-                var errors = string.Join(", ", result.Errors.Select(e => e.Description));
-
-                _logger.LogWarning(
-                    "Failed to create user {Email}. Errors: {Errors}",
-                    email,
-                    errors);
+                var errors = string.Join(
+                    ", ",
+                    result.Errors.Select(e => e.Description));
 
                 throw new InvalidOperationException(errors);
             }
 
-            await _userManager.AddToRoleAsync(user, role);
 
-            _logger.LogInformation(
-                "User {Email} created successfully with role {Role}",
-                email,
+            var roleResult = await _userManager.AddToRoleAsync(
+                user,
                 role);
+
+
+            if (!roleResult.Succeeded)
+            {
+                var errors = string.Join(
+                    ", ",
+                    roleResult.Errors.Select(e => e.Description));
+
+                throw new InvalidOperationException(errors);
+            }
+
 
             return user;
         }
 
         public async Task RegisterPatientAsync(CreatePatientDto dto)
         {
-            _logger.LogInformation(
-                "Registering patient with email {Email}",
-                dto.Email);
+            ArgumentNullException.ThrowIfNull(dto);
 
             var user = await CreateUserWithRoleAsync(
                 dto.Email,
                 dto.Password,
                 "Patient");
 
+
             var patient = _mapper.Map<Patient>(dto);
+
             patient.UserId = user.Id;
 
-            await _patientRepository.AddAsync(patient);
-            await _context.SaveChangesAsync();
 
-            _logger.LogInformation(
-                "Patient registered successfully. PatientId: {PatientId}",
-                patient.PatientId);
+            await _patientRepository.AddAsync(patient);
+
+            await _context.SaveChangesAsync();
         }
 
         public async Task RegisterDoctorAsync(CreateDoctorDto dto)
         {
-            _logger.LogInformation(
-                "Registering doctor with email {Email}",
-                dto.Email);
+            ArgumentNullException.ThrowIfNull(dto);
+
 
             var user = await CreateUserWithRoleAsync(
                 dto.Email,
                 dto.Password,
                 "Doctor");
 
+
             var doctor = _mapper.Map<Doctor>(dto);
+
             doctor.UserId = user.Id;
 
+
             await _doctorRepository.AddAsync(doctor);
+
             await _context.SaveChangesAsync();
+
 
             await _doctorRepository.CreateSlots(
                 doctor.DoctorId,
                 dto.TimeSlots);
 
+
             await _context.SaveChangesAsync();
 
-            await _doctorCache.RefreshSpecializationAsync(doctor.Specialisation);
 
-            _logger.LogInformation(
-                "Doctor registered successfully. DoctorId: {DoctorId}",
-                doctor.DoctorId);
+            await _doctorCache.RefreshSpecializationAsync(
+                doctor.Specialisation);
         }
 
         public async Task<AuthResponseDto> LoginAsync(LoginDto dto)
         {
-            _logger.LogInformation(
-                "Login attempt for email {Email}",
-                dto.Email);
-
             var user = await _userManager.FindByEmailAsync(dto.Email);
 
             if (user == null)
             {
-                _logger.LogWarning(
-                    "Login failed. User not found for email {Email}",
-                    dto.Email);
-
                 throw new UnauthorizedAccessException("Invalid credentials.");
             }
 
             var passwordValid =
-                await _userManager.CheckPasswordAsync(user, dto.Password);
+                await _userManager.CheckPasswordAsync(
+                    user,
+                    dto.Password);
 
             if (!passwordValid)
             {
-                _logger.LogWarning(
-                    "Login failed. Invalid password for email {Email}",
-                    dto.Email);
-
                 throw new UnauthorizedAccessException("Invalid credentials.");
             }
 
@@ -173,29 +167,24 @@ namespace HealthCare.Api.Services.Implementation
 
             if (roles.Count == 0)
             {
-                _logger.LogWarning(
-                    "User {Email} has no role assigned",
-                    dto.Email);
-
                 throw new InvalidOperationException("No role assigned.");
             }
 
             var role = roles[0];
+
             string token;
 
             switch (role)
             {
                 case "Patient":
 
-                    var patient = await _patientRepository.GetByUserIdAsync(user.Id);
+                    var patient = await _patientRepository
+                        .GetByUserIdAsync(user.Id);
 
                     if (patient == null)
                     {
-                        _logger.LogWarning(
-                            "Patient profile not found for user {Email}",
-                            dto.Email);
-
-                        throw new InvalidOperationException("Patient profile not found.");
+                        throw new InvalidOperationException(
+                            "Patient profile not found.");
                     }
 
                     token = await _jwtService.GenerateToken(
@@ -206,15 +195,13 @@ namespace HealthCare.Api.Services.Implementation
 
                 case "Doctor":
 
-                    var doctor = await _doctorRepository.GetByUserIdAsync(user.Id);
+                    var doctor = await _doctorRepository
+                        .GetByUserIdAsync(user.Id);
 
                     if (doctor == null)
                     {
-                        _logger.LogWarning(
-                            "Doctor profile not found for user {Email}",
-                            dto.Email);
-
-                        throw new InvalidOperationException("Doctor profile not found.");
+                        throw new InvalidOperationException(
+                            "Doctor profile not found.");
                     }
 
                     token = await _jwtService.GenerateToken(
@@ -226,22 +213,14 @@ namespace HealthCare.Api.Services.Implementation
                 case "Admin":
 
                     token = await _jwtService.GenerateToken(user);
+
                     break;
 
                 default:
 
-                    _logger.LogWarning(
-                        "Invalid role {Role} for user {Email}",
-                        role,
-                        dto.Email);
-
-                    throw new InvalidOperationException("Invalid role.");
+                    throw new InvalidOperationException(
+                        "Invalid role.");
             }
-
-            _logger.LogInformation(
-                "User {Email} logged in successfully as {Role}",
-                dto.Email,
-                role);
 
             return new AuthResponseDto
             {
@@ -254,19 +233,12 @@ namespace HealthCare.Api.Services.Implementation
             string userId,
             ChangePasswordDto dto)
         {
-            _logger.LogInformation(
-                "Password change requested for UserId {UserId}",
-                userId);
-
             var user = await _userManager.FindByIdAsync(userId);
 
             if (user == null)
             {
-                _logger.LogWarning(
-                    "Password change failed. User {UserId} not found",
-                    userId);
-
-                throw new InvalidOperationException("User not found");
+                throw new InvalidOperationException(
+                    "User not found");
             }
 
             var result = await _userManager.ChangePasswordAsync(
@@ -276,19 +248,12 @@ namespace HealthCare.Api.Services.Implementation
 
             if (!result.Succeeded)
             {
-                var errors = string.Join(", ", result.Errors.Select(e => e.Description));
-
-                _logger.LogWarning(
-                    "Password change failed for UserId {UserId}. Errors: {Errors}",
-                    userId,
-                    errors);
+                var errors = string.Join(
+                    ", ",
+                    result.Errors.Select(e => e.Description));
 
                 throw new InvalidOperationException(errors);
             }
-
-            _logger.LogInformation(
-                "Password changed successfully for UserId {UserId}",
-                userId);
         }
     }
 }

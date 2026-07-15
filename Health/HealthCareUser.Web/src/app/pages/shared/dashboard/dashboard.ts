@@ -21,7 +21,7 @@ export class DashboardComponent implements OnInit {
   upcomingLeaves = signal(0);
   todayAppointments = signal<any[]>([]);
 
-  constructor(private dashboardService: DashboardService) { }
+  constructor(private readonly dashboardService: DashboardService) { }
 
   ngOnInit(): void {
 

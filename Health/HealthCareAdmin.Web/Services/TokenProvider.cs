@@ -15,4 +15,11 @@ public class TokenProvider
     {
         return await _js.InvokeAsync<string>("localStorage.getItem", "accessToken");
     }
+
+    public async Task ClearTokenAsync()
+    {
+        await _js.InvokeVoidAsync(
+            "localStorage.removeItem",
+            "accessToken");
+    }
 }

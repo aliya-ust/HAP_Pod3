@@ -1,5 +1,6 @@
 ﻿@inject IJSRuntime JS
 @inject NavigationManager Navigation
+@inject IConfiguration Configuration
 
 
 <div class="sidebar-container @(collapseNavMenu ? "collapsed" : "")">
@@ -68,7 +69,11 @@
     private async Task Logout()
     {
         await JS.InvokeVoidAsync("localStorage.removeItem", "accessToken");
-        Navigation.NavigateTo("http://localhost:49642", forceLoad: true);
+        
+        var loginUrl = Configuration["ApplicationUrls:LoginUrl"];
+
+        Navigation.NavigateTo(loginUrl!, forceLoad: true);
+
     }
 
 }

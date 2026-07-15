@@ -17,7 +17,7 @@ export class HealthRecordComponent implements OnInit {
   loading = signal(true);
   error = signal('');
 
-  constructor(private healthRecordService: HealthRecordService) { }
+  constructor(private readonly healthRecordService: HealthRecordService) { }
 
   ngOnInit(): void {
     this.loadHealthRecords();

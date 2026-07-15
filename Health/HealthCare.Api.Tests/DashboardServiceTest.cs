@@ -23,6 +23,11 @@ namespace HealthCare.Tests.Services
         {
             var logger = new Mock<ILogger<DashboardService>>();
 
+
+            logger.Setup(x => x.IsEnabled(It.IsAny<LogLevel>()))
+                      .Returns(true);
+
+
             return new DashboardService(
                 context,
                 logger.Object);

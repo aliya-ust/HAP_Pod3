@@ -33,7 +33,6 @@ namespace HealthCare.Api.Services.Implementations
             IMapper mapper,
             ILogger<AppointmentService> logger,
             IPublishEndpoint publishEndpoint,
-            IDistributedCache cache,
             IDoctorAvailabilityCacheService doctorCache)
         {
             _repository = repository;
@@ -47,7 +46,10 @@ namespace HealthCare.Api.Services.Implementations
 
         public async Task<AppointmentListDto?> GetByIdAsync(int id)
         {
-            _logger.LogInformation("Fetching appointment with ID {AppointmentId}", id);
+            if (_logger.IsEnabled(LogLevel.Information))
+            {
+                _logger.LogInformation("Fetching appointment with ID {AppointmentId}", id);
+            }
 
             var appointment = await _repository.GetByIdAsync(id);
 
@@ -57,19 +59,25 @@ namespace HealthCare.Api.Services.Implementations
                 return null;
             }
 
-            _logger.LogInformation("Appointment with ID {AppointmentId} retrieved successfully", id);
+            if (_logger.IsEnabled(LogLevel.Information))
+            {
+                _logger.LogInformation("Appointment with ID {AppointmentId} retrieved successfully", id);
+            }      
 
             return _mapper.Map<AppointmentListDto>(appointment);
         }
 
         public async Task<PagedResult<AppointmentListDto>> GetAllAsync(AppointmentFilter filter)
         {
-            _logger.LogInformation(
-                "Fetching appointments. Page: {PageNumber}, PageSize: {PageSize}, Status: {Status}, Date: {ScheduledDate}",
-                filter.PageNumber,
-                filter.PageSize,
-                filter.Status,
-                filter.ScheduledDate);
+            if (_logger.IsEnabled(LogLevel.Information))
+            {
+                _logger.LogInformation(
+                   "Fetching appointments. Page: {PageNumber}, PageSize: {PageSize}, Status: {Status}, Date: {ScheduledDate}",
+                 filter.PageNumber,
+                 filter.PageSize,
+                 filter.Status,
+                 filter.ScheduledDate);
+            }
 
             Expression<Func<Appointment, bool>>? predicate = null;
 
@@ -98,9 +106,12 @@ namespace HealthCare.Api.Services.Implementations
                 orderBy
             );
 
-            _logger.LogInformation(
-                "Retrieved {TotalCount} appointments successfully",
-                pagedResult.TotalCount);
+            if (_logger.IsEnabled(LogLevel.Information))
+            {
+                _logger.LogInformation(
+                       "Retrieved {TotalCount} appointments successfully",
+                        pagedResult.TotalCount);
+            }
 
             return new PagedResult<AppointmentListDto>
             {
@@ -113,12 +124,17 @@ namespace HealthCare.Api.Services.Implementations
 
         public async Task AddAsync(CreateAppointmentDto dto, int patientId)
         {
-            _logger.LogInformation(
-                "Booking appointment for Patient {PatientId} with Doctor {DoctorId} on {Date} at {TimeSlot}",
-                patientId,
-                dto.DoctorId,
-                dto.ScheduledDate,
-                dto.TimeSlot);
+
+            if (_logger.IsEnabled(LogLevel.Information))
+            {
+                _logger.LogInformation(
+                      "Booking appointment for Patient {PatientId} with Doctor {DoctorId} on {Date} at {TimeSlot}",
+                        patientId,
+                        dto.DoctorId,
+                        dto.ScheduledDate,
+                        dto.TimeSlot);
+
+            }
 
             if (dto.ScheduledDate < DateOnly.FromDateTime(DateTime.Today))
             {
@@ -151,28 +167,35 @@ namespace HealthCare.Api.Services.Implementations
 
                 await _publishEndpoint.Publish(
                 new AppointmentBookedEvent
-                 {
-                  AppointmentId = appointment.AppointmentId,
-                  PatientName = patient.FullName,
-                  DoctorId = appointment.DoctorId,
-                  ScheduledDate = appointment.ScheduledDate,
-                  TimeSlot = appointment.TimeSlot
+                {
+                    AppointmentId = appointment.AppointmentId,
+                    PatientName = patient.FullName,
+                    DoctorId = appointment.DoctorId,
+                    ScheduledDate = appointment.ScheduledDate,
+                    TimeSlot = appointment.TimeSlot
                 });
 
-                _logger.LogInformation(
-                    "Appointment booked and event published. AppointmentId {AppointmentId}",
-                    appointment.AppointmentId);
+                if (_logger.IsEnabled(LogLevel.Information))
+                {
+                    _logger.LogInformation(
+                        "Appointment booked and event published. AppointmentId {AppointmentId}",
+                         appointment.AppointmentId);
+                }
             }
-            catch (Exception ex)
+
+            finally
             {
-                _logger.LogError(ex, "Error while booking appointment");
-                throw;
+                _logger.LogDebug("Appointment booking operation completed.");
             }
+
         }
 
         public async Task UpdateAsync(int id, UpdateAppointmentDto dto)
         {
-            _logger.LogInformation("Updating appointment {AppointmentId}", id);
+            if (_logger.IsEnabled(LogLevel.Information))
+            {
+                _logger.LogInformation("Updating appointment {AppointmentId}", id);
+            }
 
             var appointment = await _repository.GetByIdAsync(id);
 
@@ -187,15 +210,23 @@ namespace HealthCare.Api.Services.Implementations
             await _repository.UpdateAsync(appointment);
             await _context.SaveChangesAsync();
 
-            _logger.LogInformation("Appointment {AppointmentId} updated successfully", id);
+            if (_logger.IsEnabled(LogLevel.Information))
+            {
+                _logger.LogInformation(
+                    "Appointment {AppointmentId} updated successfully",
+                    id);
+            }
         }
 
         public async Task UpdateStatusAsync(int id, UpdateAppointmentDto dto)
         {
-            _logger.LogInformation(
+            if (_logger.IsEnabled(LogLevel.Information))
+            {
+                _logger.LogInformation(
                 "Updating status of appointment {AppointmentId} to {Status}",
                 id,
                 dto.Status);
+            }
 
             var appointment = await _repository.GetByIdAsync(id);
 
@@ -214,14 +245,20 @@ namespace HealthCare.Api.Services.Implementations
             await _repository.UpdateAsync(appointment);
             await _context.SaveChangesAsync();
 
-            _logger.LogInformation(
-                "Appointment {AppointmentId} status updated successfully",
-                id);
+            if (_logger.IsEnabled(LogLevel.Information))
+            {
+                _logger.LogInformation(
+                    "Appointment {AppointmentId} status updated successfully",
+                    id);
+            }
         }
 
         public async Task DeleteAsync(int id)
         {
-            _logger.LogInformation("Deleting appointment {AppointmentId}", id);
+            if (_logger.IsEnabled(LogLevel.Information))
+            {
+                _logger.LogInformation("Deleting appointment {AppointmentId}", id);
+            }
 
             var appointment = await _repository.GetByIdAsync(id);
 
@@ -236,9 +273,13 @@ namespace HealthCare.Api.Services.Implementations
                 await _repository.DeleteAsync(id);
                 await _context.SaveChangesAsync();
 
-                _logger.LogInformation(
+                if (_logger.IsEnabled(LogLevel.Information))
+                {
+                    _logger.LogInformation(
                     "Appointment {AppointmentId} deleted successfully",
                     id);
+                }
+                
             }
             catch (DbUpdateException ex)
             {
@@ -255,10 +296,14 @@ namespace HealthCare.Api.Services.Implementations
 
         public async Task<List<string>> AvailableTimeSlots(DateOnly date, int doctorId)
         {
-            _logger.LogInformation(
+            if (_logger.IsEnabled(LogLevel.Information))
+            {
+                _logger.LogInformation(
                 "Checking available slots for Doctor {DoctorId} on {Date}",
                 doctorId,
                 date);
+            }
+            
 
             if (date < DateOnly.FromDateTime(DateTime.Today))
             {
@@ -274,21 +319,29 @@ namespace HealthCare.Api.Services.Implementations
 
             var freeSlots = allSlots.Except(bookedSlots).ToList();
 
-            _logger.LogInformation(
+            if (_logger.IsEnabled(LogLevel.Information))
+            {
+                _logger.LogInformation(
                 "{Count} available slots found for Doctor {DoctorId}",
                 freeSlots.Count,
                 doctorId);
+            }
+            
 
             return freeSlots;
         }
 
         public async Task<bool> IsAvailable(DateOnly date, int doctorId, string timeSlot)
         {
-            _logger.LogInformation(
+            if (_logger.IsEnabled(LogLevel.Information))
+            {
+                 _logger.LogInformation(
                 "Checking availability of Doctor {DoctorId} for slot {TimeSlot} on {Date}",
                 doctorId,
                 timeSlot,
                 date);
+            }
+
 
             var available = await _repository.IsAvailable(date, doctorId, timeSlot);
 
@@ -303,10 +356,13 @@ namespace HealthCare.Api.Services.Implementations
                 throw new InvalidOperationException("This time slot is already booked.");
             }
 
-            _logger.LogInformation(
+            if (_logger.IsEnabled(LogLevel.Information))
+            {
+                _logger.LogInformation(
                 "Time slot {TimeSlot} is available for Doctor {DoctorId}",
                 timeSlot,
                 doctorId);
+            }
 
             return true;
         }
@@ -315,20 +371,27 @@ namespace HealthCare.Api.Services.Implementations
             DateOnly? startDate,
             DateOnly? endDate)
         {
-            _logger.LogInformation(
+            if (_logger.IsEnabled(LogLevel.Information))
+            {
+                _logger.LogInformation(
                 "Generating daily appointment report from {StartDate} to {EndDate}",
                 startDate,
                 endDate);
+            }
+            
 
             return await _repository.GetDailyReport(startDate, endDate);
         }
 
         public async Task<List<AppointmentListDto>> GetDoctorSchedule(DateOnly date, int id)
         {
-            _logger.LogInformation(
+            if (_logger.IsEnabled(LogLevel.Information))
+            {
+                _logger.LogInformation(
                 "Fetching schedule for Doctor {DoctorId} on {Date}",
                 id,
                 date);
+            }
 
             var schedule = await _repository.GetDoctorSchedule(date, id);
 
@@ -337,10 +400,13 @@ namespace HealthCare.Api.Services.Implementations
 
         public async Task<List<AppointmentListDto>> GetPatientSchedule(DateOnly date, int id)
         {
-            _logger.LogInformation(
+            if (_logger.IsEnabled(LogLevel.Information))
+            {
+                _logger.LogInformation(
                 "Fetching schedule for Patient {PatientId} on {Date}",
                 id,
                 date);
+            }
 
             var schedule = await _repository.GetPatientSchedule(date, id);
 
@@ -349,9 +415,12 @@ namespace HealthCare.Api.Services.Implementations
 
         public async Task<List<AppointmentListDto>> GetAppointmentByPatient(int id)
         {
-            _logger.LogInformation(
+            if (_logger.IsEnabled(LogLevel.Information))
+            {
+                _logger.LogInformation(
                 "Fetching appointments for Patient {PatientId}",
                 id);
+            }
 
             var appointments = await _repository.GetAppointmentByPatient(id);
 
@@ -360,9 +429,12 @@ namespace HealthCare.Api.Services.Implementations
 
         public async Task<List<AppointmentListDto>> GetAppointmentByDoctor(int id)
         {
-            _logger.LogInformation(
+            if (_logger.IsEnabled(LogLevel.Information))
+            {
+                _logger.LogInformation(
                 "Fetching appointments for Doctor {DoctorId}",
                 id);
+            }
 
             var appointments = await _repository.GetAppointmentByDoctor(id);
 
@@ -371,10 +443,13 @@ namespace HealthCare.Api.Services.Implementations
 
         public async Task ValidateDoctorAvailability(int doctorId, DateOnly date)
         {
-            _logger.LogInformation(
+            if (_logger.IsEnabled(LogLevel.Information))
+            {
+                _logger.LogInformation(
                 "Validating availability for Doctor {DoctorId} on {Date}",
                 doctorId,
                 date);
+            }
 
             var doctor = await _context.Doctors
                 .FirstOrDefaultAsync(d => d.DoctorId == doctorId);
@@ -410,18 +485,26 @@ namespace HealthCare.Api.Services.Implementations
                 throw new InvalidOperationException("Doctor is on leave on selected date.");
             }
 
-            _logger.LogInformation(
+            if (_logger.IsEnabled(LogLevel.Information))
+            {
+                _logger.LogInformation(
                 "Doctor {DoctorId} is available on {Date}",
                 doctorId,
                 date);
+            }
+            
         }
 
         public async Task<List<DoctorDropdownDto>> GetAvailableDoctorsAsync(DateOnly date, string specialization)
         {
-            _logger.LogInformation(
+            if (_logger.IsEnabled(LogLevel.Information))
+            {
+                _logger.LogInformation(
                 "Fetching available doctors for Specialization {Specialization} on {Date}",
                 specialization,
                 date);
+            }
+            
 
             var doctors = await _context.Doctors
                 .Where(d => d.IsActive)
@@ -445,58 +528,82 @@ namespace HealthCare.Api.Services.Implementations
                         Specialization = doctor.Specialisation
                     });
 
-                    _logger.LogInformation(
+                    if (_logger.IsEnabled(LogLevel.Information))
+                    {
+                        _logger.LogInformation(
                         "Doctor {DoctorId} has {SlotCount} available slots",
                         doctor.DoctorId,
                         slots.Count);
+                    }
+                    
                 }
             }
 
-            _logger.LogInformation(
+            if (_logger.IsEnabled(LogLevel.Information))
+            {
+                _logger.LogInformation(
                 "{DoctorCount} doctors available for Specialization {Specialization} on {Date}",
                 result.Count,
                 specialization,
                 date);
+            }
 
             return result;
         }
 
         public async Task<List<string>> GetAvailableSlotsAsync(int doctorId, DateOnly date)
         {
-            _logger.LogInformation(
+            if (_logger.IsEnabled(LogLevel.Information))
+            {
+                _logger.LogInformation(
                 "Fetching available slots for Doctor {DoctorId} on {Date}",
                 doctorId,
                 date);
+            }
 
             var availableSlots = await _doctorService.AvailableTimeSlotsCheck(date, doctorId);
 
-            _logger.LogInformation(
+            if (_logger.IsEnabled(LogLevel.Information))
+            {
+                _logger.LogInformation(
                 "Doctor {DoctorId} has {AvailableSlotCount} available slots on {Date}",
                 doctorId,
                 availableSlots.Count,
                 date);
+            }
+            
 
             return availableSlots;
         }
 
         public async Task ConfirmAppointment(int appointmentId)
         {
-            _logger.LogInformation(
+            if (_logger.IsEnabled(LogLevel.Information))
+            {
+                _logger.LogInformation(
                 "Confirming appointment {AppointmentId}",
                 appointmentId);
+            }
 
             await _repository.ConfirmAppointment(appointmentId);
 
-            _logger.LogInformation(
+            if (_logger.IsEnabled(LogLevel.Information))
+            {
+                _logger.LogInformation(
                 "Appointment {AppointmentId} confirmed successfully",
                 appointmentId);
+            }
+            
         }
 
         public async Task CancelAppointment(int appointmentId)
         {
-            _logger.LogInformation(
-                "Cancelling appointment {AppointmentId}",
-                appointmentId);
+            if (_logger.IsEnabled(LogLevel.Information))
+            {
+                _logger.LogInformation(
+                    "Cancelling appointment {AppointmentId}",
+                    appointmentId);
+            }
 
             await _repository.CancelAppointment(appointmentId);
 
@@ -506,9 +613,12 @@ namespace HealthCare.Api.Services.Implementations
 
             await _doctorCache.RefreshAsync(doctor.Specialisation,appointment!.ScheduledDate);
 
-            _logger.LogInformation(
+            if (_logger.IsEnabled(LogLevel.Information))
+            {
+                _logger.LogInformation(
                 "Appointment {AppointmentId} cancelled successfully",
                 appointmentId);
+            }
         }
     }
 }

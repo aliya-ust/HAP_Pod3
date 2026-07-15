@@ -96,16 +96,18 @@ public class DoctorService
 
     public async Task DeleteDoctorAsync(int id)
     {
-
         var request = new HttpRequestMessage(
             HttpMethod.Delete,
-            $"api/admin/doctoradmin/{id}"
-        );
+            $"api/admin/doctoradmin/{id}");
 
         var response = await _http.SendAsync(request);
-        response.EnsureSuccessStatusCode();
-    }
 
+        if (!response.IsSuccessStatusCode)
+        {
+            var message = await response.Content.ReadAsStringAsync();
+            throw new Exception(message);
+        }
+    }
     public async Task ToggleStatusAsync(int id, bool isActive)
     { 
 
@@ -121,7 +123,7 @@ public class DoctorService
     }
 
     //FIXED: proper query builder
-    private string BuildQuery(DoctorFilter filter)
+    private static string BuildQuery(DoctorFilter filter)
     {
         var q = new List<string>();
 

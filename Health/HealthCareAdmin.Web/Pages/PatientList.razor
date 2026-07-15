@@ -200,12 +200,10 @@
     {
         bool? insurance = null;
 
-        if (!string.IsNullOrWhiteSpace(insuranceFilter))
+        if (!string.IsNullOrWhiteSpace(insuranceFilter)
+            && bool.TryParse(insuranceFilter, out var parsed))
         {
-            if (bool.TryParse(insuranceFilter, out var parsed))
-            {
-                insurance = parsed;
-            }
+            insurance = parsed;
         }
 
         var result = await PatientService.GetPatients(
@@ -226,9 +224,7 @@
     {
         validationMessage = "";
 
-        if (!string.IsNullOrWhiteSpace(searchName))
-        {
-            if (!System.Text.RegularExpressions.Regex.IsMatch(
+        if (!string.IsNullOrWhiteSpace(searchName) && !System.Text.RegularExpressions.Regex.IsMatch(
                      searchName,
                      @"^[A-Za-z\s]*$",
                      System.Text.RegularExpressions.RegexOptions.None,
@@ -236,8 +232,8 @@
             {
                 validationMessage = "Search name must contain alphabets only.";
                 return;
+            
             }
-        }
 
         pageNumber = 1;
 
@@ -252,10 +248,23 @@
 
         if (!confirm)
             return;
+        try
+        {
+            await PatientService.DeletePatientAsync(id);
 
-        await PatientService.DeletePatient(id);
+            await JS.InvokeVoidAsync(
+                "alert",
+                "Patient deleted successfully");
 
-        await LoadPatients();
+            await LoadPatients();
+        }
+        catch (Exception ex)
+        {
+            await JS.InvokeVoidAsync(
+                "alert",
+                ex.Message);
+        }
+        
     }
 
     void OpenStatusDialog(PatientListDto patient)

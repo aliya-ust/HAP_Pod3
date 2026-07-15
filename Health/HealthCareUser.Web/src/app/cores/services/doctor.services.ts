@@ -9,9 +9,9 @@ import { DoctorProfile } from '../models/DoctorProfile';
 })
 export class DoctorService {
 
-  private apiUrl = 'https://localhost:7171/api';
+  private readonly apiUrl = 'https://localhost:7171/api';
 
-  constructor(private http: HttpClient) { }
+  constructor(private readonly http: HttpClient) { }
 
   getProfile(): Observable<DoctorProfile> {
     return this.http.get<DoctorProfile>(

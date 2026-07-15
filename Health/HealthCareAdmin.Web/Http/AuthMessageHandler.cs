@@ -1,14 +1,23 @@
-﻿using System.Net.Http.Headers;
+﻿using Microsoft.AspNetCore.Components;
+using System.Net;
+using System.Net.Http.Headers;
 
 namespace HealthCareAdmin.Web.Services;
 
 public class AuthMessageHandler : DelegatingHandler
 {
     private readonly TokenProvider _tokenProvider;
+    private readonly NavigationManager _navigationManager;
+    private readonly IConfiguration _config;
 
-    public AuthMessageHandler(TokenProvider tokenProvider)
+    public AuthMessageHandler(
+        TokenProvider tokenProvider,
+        NavigationManager navigationManager,
+        IConfiguration config)
     {
         _tokenProvider = tokenProvider;
+        _navigationManager = navigationManager;
+        _config = config;
     }
 
     protected override async Task<HttpResponseMessage> SendAsync(
@@ -23,6 +32,17 @@ public class AuthMessageHandler : DelegatingHandler
                 new AuthenticationHeaderValue("Bearer", token);
         }
 
-        return await base.SendAsync(request, cancellationToken);
+        var response = await base.SendAsync(request, cancellationToken);
+
+        if (response.StatusCode == HttpStatusCode.Unauthorized)
+        {
+            await _tokenProvider.ClearTokenAsync();
+
+            var loginUrl = _config["ApplicationUrls:LoginUrl"];
+
+            _navigationManager.NavigateTo($"{loginUrl}?expired=true", forceLoad: true);
+        }
+
+        return response;
     }
 }

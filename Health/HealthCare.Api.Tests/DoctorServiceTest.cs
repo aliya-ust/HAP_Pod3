@@ -31,46 +31,18 @@ namespace HealthCare.Tests.Services
 
             _context = new HealthCareDbContext(options);
 
+            _logger.Setup(x =>
+                x.IsEnabled(It.IsAny<LogLevel>()))
+                .Returns(true);
+
             _service = new DoctorService(
-                        _doctorRepo.Object,
-                        _context,
-                        _mapper.Object,
-                        _appointmentRepo.Object,
-                        _logger.Object,
-                        _doctorCache.Object);
+                _doctorRepo.Object,
+                _context,
+                _mapper.Object,
+                _appointmentRepo.Object,
+                _logger.Object,
+                _doctorCache.Object);
         }
-
-        //[Fact]
-        //public async Task AddAsync_Should_Add_Doctor()
-        //{
-        //    var dto = new CreateDoctorDto
-        //    {
-        //        FullName = "John",
-        //        Specialisation = "Cardiology",
-        //        TimeSlots = new List<string> { "09:00" }
-        //    };
-
-        //    var doctor = new Doctor
-        //    {
-        //        DoctorId = 1,
-        //        Specialisation = "Cardiology"
-        //    };
-
-        //    _mapper.Setup(x => x.Map<Doctor>(dto))
-        //        .Returns(doctor);
-
-        //    await _service.AddAsync(dto);
-
-        //    _doctorRepo.Verify(x =>
-        //        x.AddAsync(It.IsAny<Doctor>()), Times.Once);
-
-        //    _doctorRepo.Verify(x =>
-        //        x.CreateSlots(1, dto.TimeSlots), Times.Once);
-
-        //    _doctorCache.Verify(x =>
-        //        x.RefreshSpecializationAsync("Cardiology"),
-        //        Times.Once);
-        //}
 
         [Fact]
         public async Task UpdateAsync_Should_Update_Doctor()

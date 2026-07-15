@@ -20,76 +20,11 @@ namespace HealthCare.Tests.Services
             _service = new DoctorAvailabilityCacheService(
                 _cache.Object,
                 _logger.Object);
+
+            _logger.Setup(x =>
+                x.IsEnabled(It.IsAny<LogLevel>()))
+                .Returns(true);
         }
-
-        //[Fact]
-        //public async Task GetAsync_Should_Return_Null_When_Cache_Is_Empty()
-        //{
-        //    var date = DateOnly.FromDateTime(DateTime.Today);
-
-        //    _cache.Setup(x => x.GetStringAsync(
-        //            It.IsAny<string>(),
-        //            default))
-        //        .ReturnsAsync((string?)null);
-
-        //    var result = await _service.GetAsync("Cardiology", date);
-
-        //    Assert.Null(result);
-        //}
-
-        //[Fact]
-        //public async Task GetAsync_Should_Return_Doctors_When_Cache_Exists()
-        //{
-        //    var date = DateOnly.FromDateTime(DateTime.Today);
-
-        //    var doctors = new List<DoctorListDto>
-        //    {
-        //        new DoctorListDto
-        //        {
-        //            DoctorId = 1,
-        //            FullName = "John"
-        //        }
-        //    };
-
-        //    _cache.Setup(x => x.GetStringAsync(
-        //            It.IsAny<string>(),
-        //            default))
-        //        .ReturnsAsync(JsonSerializer.Serialize(doctors));
-
-        //    var result = await _service.GetAsync("Cardiology", date);
-
-        //    Assert.NotNull(result);
-        //    Assert.Single(result!);
-        //    Assert.Equal("John", result[0].FullName);
-        //}
-
-        //[Fact]
-        //public async Task SetAsync_Should_Store_Data_In_Cache()
-        //{
-        //    var doctors = new List<DoctorListDto>
-        //    {
-        //        new DoctorListDto
-        //        {
-        //            DoctorId = 1,
-        //            FullName = "John"
-        //        }
-        //    };
-
-        //    var date = DateOnly.FromDateTime(DateTime.Today);
-
-        //    await _service.SetAsync(
-        //        "Cardiology",
-        //        date,
-        //        doctors);
-
-        //    _cache.Verify(x =>
-        //        x.SetStringAsync(
-        //            It.IsAny<string>(),
-        //            It.IsAny<string>(),
-        //            It.IsAny<DistributedCacheEntryOptions>(),
-        //            default),
-        //        Times.Once);
-        //}
 
         [Fact]
         public async Task RemoveAsync_Should_Remove_Cache()
@@ -133,6 +68,41 @@ namespace HealthCare.Tests.Services
                     It.IsAny<string>(),
                     default),
                 Times.Exactly(30));
+        }
+
+        [Fact]
+        public async Task GetAsync_Should_Return_Doctors_When_Cache_Exists()
+        {
+            var json = "[]";
+
+            _cache.Setup(x => x.GetAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(System.Text.Encoding.UTF8.GetBytes(json));
+
+            var result = await _service.GetAsync(
+                "Cardiology",
+                DateOnly.FromDateTime(DateTime.Today));
+
+            Assert.NotNull(result);
+        }
+
+        [Fact]
+        public async Task SetAsync_Should_Store_Data_In_Cache()
+        {
+            var doctors = new List<DoctorListDto>();
+
+            await _service.SetAsync(
+                "Cardiology",
+                DateOnly.FromDateTime(DateTime.Today),
+                doctors);
+
+            _cache.Verify(x => x.SetAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<byte[]>(),
+                    It.IsAny<DistributedCacheEntryOptions>(),
+                    It.IsAny<CancellationToken>()),
+                Times.Once);
         }
     }
 }

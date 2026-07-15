@@ -30,9 +30,13 @@ namespace HealthCare.Api.Services.Implementations
             int? patientId = null,
             int? doctorId = null)
         {
-            _logger.LogInformation(
-                "Generating JWT token for User {UserId}",
-                user.Id);
+
+            if (_logger.IsEnabled(LogLevel.Information))
+            {
+                _logger.LogInformation(
+               "Generating JWT token for User {UserId}",
+               user.Id);
+            }
 
             var jwtSettings = _config.GetSection("Jwt");
 
@@ -79,9 +83,12 @@ namespace HealthCare.Api.Services.Implementations
                 signingCredentials: credentials
             );
 
-            _logger.LogInformation(
+            if (_logger.IsEnabled(LogLevel.Information))
+            {
+                _logger.LogInformation(
                 "JWT token generated successfully for User {UserId}",
                 user.Id);
+            }
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }

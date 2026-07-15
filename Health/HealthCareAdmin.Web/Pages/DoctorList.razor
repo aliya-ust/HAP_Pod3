@@ -178,17 +178,29 @@
 
     private async Task Delete(int id)
     {
-        var confirm = await JS.InvokeAsync<bool>("confirm",
+        var confirm = await JS.InvokeAsync<bool>(
+            "confirm",
             "Are you sure you want to delete this doctor?");
 
-        if (!confirm) return;
+        if (!confirm)
+            return;
 
-        await DoctorService.DeleteDoctorAsync(id);
+        try
+        {
+            await DoctorService.DeleteDoctorAsync(id);
 
-        await JS.InvokeVoidAsync("alert",
-            "Doctor deleted successfully ✅");
+            await JS.InvokeVoidAsync(
+                "alert",
+                "Doctor deleted successfully");
 
-        await LoadDoctors();
+            await LoadDoctors();
+        }
+        catch (Exception ex)
+        {
+            await JS.InvokeVoidAsync(
+                "alert",
+                ex.Message);
+        }
     }
 
     private async Task ToggleStatus(int id, bool currentStatus)

@@ -1,9 +1,8 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../cores/services/auth.services';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -37,10 +36,8 @@ export class AllLoginComponent {
         localStorage.setItem('role', response.role);
 
         if (response.role === 'Admin') {
-
-          window.location.href =
+          globalThis.location.href =
             `https://localhost:7260/login?token=${encodeURIComponent(response.accessToken)}`;
-
         }
         else {
 

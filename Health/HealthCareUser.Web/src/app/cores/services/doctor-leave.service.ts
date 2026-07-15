@@ -8,9 +8,9 @@ import { CreateLeave, CreateLeaveResult } from '../models/doctor-leave';
 })
 export class DoctorLeaveService {
 
-  private apiUrl = 'https://localhost:7171/api/Doctor';
+  private readonly apiUrl = 'https://localhost:7171/api/Doctor';
 
-  constructor(private http: HttpClient) { }
+  constructor(private readonly http: HttpClient) { }
 
   createLeaves(leaves: CreateLeave[]): Observable<CreateLeaveResult> {
     return this.http.post<CreateLeaveResult>(

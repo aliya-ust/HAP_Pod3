@@ -16,7 +16,7 @@ public class PatientService
         _httpClient = httpClient;
     }
 
-    public async Task<PagedResult<PatientListDto>> GetPatients(
+    public async Task<PagedResult<PatientListDto>?> GetPatients(
     string? searchTerm,
     bool? hasInsurance,
     int pageNumber,
@@ -69,12 +69,14 @@ public class PatientService
         response.EnsureSuccessStatusCode();
     }
 
-    public async Task DeletePatient(int id)
+    public async Task DeletePatientAsync(int id)
     {
+        var response = await _httpClient.DeleteAsync($"api/admin/patients/{id}");
 
-        var response = await _httpClient.DeleteAsync(
-            $"api/admin/patients/{id}");
-
-        response.EnsureSuccessStatusCode();
+        if (!response.IsSuccessStatusCode)
+        {
+            var message = await response.Content.ReadAsStringAsync();
+            throw new Exception(message);
+        }
     }
 }

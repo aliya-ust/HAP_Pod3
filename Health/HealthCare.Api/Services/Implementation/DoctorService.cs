@@ -7,11 +7,7 @@ using HealthCare.Api.Models;
 using HealthCare.Api.Repositories.Interfaces;
 using HealthCare.Api.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
-using StackExchange.Redis;
-using System.Linq.Expressions;
-using System.Text.Json;
 
 namespace HealthCare.Api.Services.Implementations
 {
@@ -23,7 +19,9 @@ namespace HealthCare.Api.Services.Implementations
         private readonly IMapper _mapper;
         private readonly ILogger<DoctorService> _logger;
         private readonly IDoctorAvailabilityCacheService _doctorCache;
+
         private const string NotFoundExceptionMessage = "Doctor not found.";
+        private const string DoctorNotFoundLogMessage = "Doctor {DoctorId} not found.";
 
         public DoctorService(
             IDoctorRepository repository,
@@ -41,40 +39,27 @@ namespace HealthCare.Api.Services.Implementations
             _doctorCache = doctorCache;
         }
 
-        public async Task AddAsync(CreateDoctorDto dto)
+        public async Task UpdateAsync(
+            int id,
+            UpdateDoctorDto dto)
         {
-            _logger.LogInformation(
-                "Creating doctor {DoctorName}",
-                dto.FullName);
-
-            var doctor = _mapper.Map<Doctor>(dto);
-
-            await _repository.AddAsync(doctor);
-            await _context.SaveChangesAsync();
-
-            await _repository.CreateSlots(doctor.DoctorId, dto.TimeSlots);
-            await _context.SaveChangesAsync();
-
-            _logger.LogInformation(
-                "Doctor {DoctorId} created successfully",
-                doctor.DoctorId);
-        }
-
-        public async Task UpdateAsync(int id, UpdateDoctorDto dto)
-        {
-            _logger.LogInformation(
-                "Updating doctor {DoctorId}",
-                id);
+            if (_logger.IsEnabled(LogLevel.Information))
+            {
+                _logger.LogInformation(
+                    "Updating doctor {DoctorId}",
+                    id);
+            }
 
             var doctor = await _repository.GetByIdAsync(id);
 
             if (doctor is null)
             {
                 _logger.LogWarning(
-                    "Doctor {DoctorId} not found",
+                    DoctorNotFoundLogMessage,
                     id);
 
-                throw new InvalidOperationException(NotFoundExceptionMessage);
+                throw new InvalidOperationException(
+                    NotFoundExceptionMessage);
             }
 
             _mapper.Map(dto, doctor);
@@ -82,27 +67,38 @@ namespace HealthCare.Api.Services.Implementations
             await _repository.UpdateAsync(doctor);
             await _context.SaveChangesAsync();
 
-            _logger.LogInformation(
-                "Doctor {DoctorId} updated successfully",
-                id);
+
+            if (_logger.IsEnabled(LogLevel.Information))
+            {
+                _logger.LogInformation(
+                    "Doctor {DoctorId} updated successfully",
+                    id);
+            }
         }
 
-        public async Task UpdateStatusAsync(int id, bool isActive)
+
+        public async Task UpdateStatusAsync(
+            int id,
+            bool isActive)
         {
-            _logger.LogInformation(
-                "Updating Doctor {DoctorId} status to {Status}",
-                id,
-                isActive);
+            if (_logger.IsEnabled(LogLevel.Information))
+            {
+                _logger.LogInformation(
+                    "Updating Doctor {DoctorId} status to {Status}",
+                    id,
+                    isActive);
+            }
 
             var doctor = await _repository.GetByIdAsync(id);
 
             if (doctor is null)
             {
                 _logger.LogWarning(
-                    "Doctor {DoctorId} not found",
+                    DoctorNotFoundLogMessage,
                     id);
 
-                throw new InvalidOperationException(NotFoundExceptionMessage);
+                throw new InvalidOperationException(
+                    NotFoundExceptionMessage);
             }
 
             doctor.IsActive = isActive;
@@ -110,28 +106,38 @@ namespace HealthCare.Api.Services.Implementations
             await _repository.UpdateAsync(doctor);
             await _context.SaveChangesAsync();
 
-            await _doctorCache.RefreshSpecializationAsync(doctor.Specialisation);
+            await _doctorCache.RefreshSpecializationAsync(
+                doctor.Specialisation);
 
-            _logger.LogInformation(
-                "Doctor {DoctorId} status updated successfully",
-                id);
+
+            if (_logger.IsEnabled(LogLevel.Information))
+            {
+                _logger.LogInformation(
+                    "Doctor {DoctorId} status updated successfully",
+                    id);
+            }
         }
+
 
         public async Task DeleteAsync(int id)
         {
-            _logger.LogInformation(
-                "Deleting doctor {DoctorId}",
-                id);
+            if (_logger.IsEnabled(LogLevel.Information))
+            {
+                _logger.LogInformation(
+                    "Deleting doctor {DoctorId}",
+                    id);
+            }
 
             var doctor = await _repository.GetByIdAsync(id);
 
             if (doctor is null)
             {
                 _logger.LogWarning(
-                    "Doctor {DoctorId} not found",
+                   DoctorNotFoundLogMessage,
                     id);
 
-                throw new InvalidOperationException(NotFoundExceptionMessage);
+                throw new InvalidOperationException(
+                    NotFoundExceptionMessage);
             }
 
             try
@@ -139,9 +145,13 @@ namespace HealthCare.Api.Services.Implementations
                 await _repository.DeleteAsync(id);
                 await _context.SaveChangesAsync();
 
-                _logger.LogInformation(
-                    "Doctor {DoctorId} deleted successfully",
-                    id);
+
+                if (_logger.IsEnabled(LogLevel.Information))
+                {
+                    _logger.LogInformation(
+                        "Doctor {DoctorId} deleted successfully",
+                        id);
+                }
             }
             catch (DbUpdateException ex)
             {
@@ -156,11 +166,15 @@ namespace HealthCare.Api.Services.Implementations
             }
         }
 
+
         public async Task<DoctorProfileDto> GetByIdAsync(int id)
         {
-            _logger.LogInformation(
-                "Fetching doctor profile for Doctor {DoctorId}",
-                id);
+            if (_logger.IsEnabled(LogLevel.Information))
+            {
+                _logger.LogInformation(
+                    "Fetching doctor profile for Doctor {DoctorId}",
+                    id);
+            }
 
             var doctor =
                 await
@@ -182,64 +196,88 @@ namespace HealthCare.Api.Services.Implementations
                     }
                 ).FirstOrDefaultAsync();
 
+
             if (doctor == null)
             {
                 _logger.LogWarning(
-                    "Doctor {DoctorId} not found",
+                    DoctorNotFoundLogMessage,
                     id);
 
-                throw new InvalidOperationException(NotFoundExceptionMessage);
+                throw new InvalidOperationException(
+                    NotFoundExceptionMessage);
             }
 
-            _logger.LogInformation(
-                "Doctor profile fetched successfully for Doctor {DoctorId}",
-                id);
+
+            if (_logger.IsEnabled(LogLevel.Information))
+            {
+                _logger.LogInformation(
+                    "Doctor profile fetched successfully for Doctor {DoctorId}",
+                    id);
+            }
 
             return doctor;
         }
 
-        public async Task<PagedResult<DoctorListDto>> GetAllAsync(DoctorFilter filter)
+        public async Task<PagedResult<DoctorListDto>> GetAllAsync(
+    DoctorFilter filter)
         {
-            _logger.LogInformation(
-                "Fetching doctors. Page: {PageNumber}, PageSize: {PageSize}",
-                filter.PageNumber,
-                filter.PageSize);
+            if (_logger.IsEnabled(LogLevel.Information))
+            {
+                _logger.LogInformation(
+                    "Fetching doctors. Page: {PageNumber}, PageSize: {PageSize}",
+                    filter.PageNumber,
+                    filter.PageSize);
+            }
 
             IQueryable<Doctor> query = _context.Doctors;
 
+
             if (!string.IsNullOrWhiteSpace(filter.FullName))
             {
-                var search = filter.FullName.Trim().ToLower();
-
                 query = query.Where(d =>
-                    d.FullName.ToLower().Contains(search));
+                    EF.Functions.Like(d.FullName, $"%{filter.FullName}%"));
             }
+
 
             if (!string.IsNullOrWhiteSpace(filter.Specialisation))
             {
-                query = query.Where(d => d.Specialisation == filter.Specialisation);
+                query = query.Where(d =>
+                    d.Specialisation == filter.Specialisation);
             }
+
 
             if (!string.IsNullOrWhiteSpace(filter.Status))
             {
-                bool isActive = filter.Status.ToLower() == "active";
+                bool isActive = string.Equals(
+                    filter.Status,
+                    "active",
+                    StringComparison.OrdinalIgnoreCase);
+
                 query = query.Where(d => d.IsActive == isActive);
             }
+
 
             query = filter.ExperienceSort?.ToLower() == "asc"
                 ? query.OrderBy(d => d.YearsOfExperience)
                 : query.OrderByDescending(d => d.YearsOfExperience);
 
+
             var totalCount = await query.CountAsync();
+
 
             var items = await query
                 .Skip((filter.PageNumber - 1) * filter.PageSize)
                 .Take(filter.PageSize)
                 .ToListAsync();
 
-            _logger.LogInformation(
-                "{DoctorCount} doctors fetched successfully",
-                totalCount);
+
+            if (_logger.IsEnabled(LogLevel.Information))
+            {
+                _logger.LogInformation(
+                    "{DoctorCount} doctors fetched successfully",
+                    totalCount);
+            }
+
 
             return new PagedResult<DoctorListDto>
             {
@@ -250,13 +288,20 @@ namespace HealthCare.Api.Services.Implementations
             };
         }
 
+
+
         public async Task<List<string>> GetSlots(int doctorId)
         {
-            _logger.LogInformation(
-                "Fetching slots for Doctor {DoctorId}",
-                doctorId);
+            if (_logger.IsEnabled(LogLevel.Information))
+            {
+                _logger.LogInformation(
+                    "Fetching slots for Doctor {DoctorId}",
+                    doctorId);
+            }
+
 
             var slots = await _repository.GetSlots(doctorId);
+
 
             if (slots.Count == 0)
             {
@@ -264,62 +309,110 @@ namespace HealthCare.Api.Services.Implementations
                     "No slots found for Doctor {DoctorId}",
                     doctorId);
 
-                throw new InvalidOperationException("No available slots found for this doctor.");
+                throw new InvalidOperationException(
+                    "No available slots found for this doctor.");
             }
 
-            _logger.LogInformation(
-                "{SlotCount} slots found for Doctor {DoctorId}",
-                slots.Count,
-                doctorId);
+
+            if (_logger.IsEnabled(LogLevel.Information))
+            {
+                _logger.LogInformation(
+                    "{SlotCount} slots found for Doctor {DoctorId}",
+                    slots.Count,
+                    doctorId);
+            }
+
 
             return slots;
         }
 
-        public async Task CreateSlots(int id, List<string> timeslots)
-        {
-            _logger.LogInformation(
-                "Creating {SlotCount} slots for Doctor {DoctorId}",
-                timeslots.Count,
-                id);
 
-            await _repository.CreateSlots(id, timeslots);
+
+
+        public async Task CreateSlots(
+            int id,
+            List<string> timeslots)
+        {
+            if (_logger.IsEnabled(LogLevel.Information))
+            {
+                _logger.LogInformation(
+                    "Creating {SlotCount} slots for Doctor {DoctorId}",
+                    timeslots.Count,
+                    id);
+            }
+
+
+            await _repository.CreateSlots(
+                id,
+                timeslots);
+
             await _context.SaveChangesAsync();
 
-            _logger.LogInformation(
-                "Slots created successfully for Doctor {DoctorId}",
-                id);
+
+            if (_logger.IsEnabled(LogLevel.Information))
+            {
+                _logger.LogInformation(
+                    "Slots created successfully for Doctor {DoctorId}",
+                    id);
+            }
         }
 
-        public async Task<List<string>> AvailableTimeSlotsCheck(DateOnly date, int doctorId)
+
+
+
+        public async Task<List<string>> AvailableTimeSlotsCheck(
+            DateOnly date,
+            int doctorId)
         {
-            _logger.LogInformation(
-                "Checking available slots for Doctor {DoctorId} on {Date}",
-                doctorId,
-                date);
+            if (_logger.IsEnabled(LogLevel.Information))
+            {
+                _logger.LogInformation(
+                    "Checking available slots for Doctor {DoctorId} on {Date}",
+                    doctorId,
+                    date);
+            }
 
-            var allSlots = await _repository.GetSlots(doctorId);
-            var bookedSlots = await _appointmentRepository.BookedTimeSlots(date, doctorId);
 
-            var availableSlots = allSlots.Except(bookedSlots).ToList();
+            var allSlots =
+                await _repository.GetSlots(doctorId);
 
-            _logger.LogInformation(
-                "{AvailableSlotCount} slots available for Doctor {DoctorId}",
-                availableSlots.Count,
-                doctorId);
+
+            var bookedSlots =
+                await _appointmentRepository.BookedTimeSlots(
+                    date,
+                    doctorId);
+
+
+            var availableSlots =
+                allSlots.Except(bookedSlots).ToList();
+
+
+            if (_logger.IsEnabled(LogLevel.Information))
+            {
+                _logger.LogInformation(
+                    "{AvailableSlotCount} slots available for Doctor {DoctorId}",
+                    availableSlots.Count,
+                    doctorId);
+            }
+
 
             return availableSlots;
         }
 
-        public async Task<CreateLeaveResultDto> CreateLeave(int id, List<CreateLeaveDto> leaves)
+        public async Task<CreateLeaveResultDto> CreateLeave(
+             int id,
+             List<CreateLeaveDto> leaves)
         {
-            _logger.LogInformation(
-                "Creating leave for Doctor {DoctorId}",
-                id);
+            if (_logger.IsEnabled(LogLevel.Information))
+            {
+                _logger.LogInformation(
+                    "Creating leave for Doctor {DoctorId}",
+                    id);
+            }
 
             var result = new CreateLeaveResultDto();
 
-            var existingLeaves = await _repository.GetLeavesByDoctorId(id);
-            var existingLeaveDates = existingLeaves
+            var existingLeaveDates = (await _repository.GetLeavesByDoctorId(id))
                 .Select(l => l.LeaveDate)
                 .ToHashSet();
 
@@ -327,122 +420,188 @@ namespace HealthCare.Api.Services.Implementations
 
             foreach (var leave in leaves)
             {
-                if (existingLeaveDates.Contains(leave.LeaveDate))
+                var canCreate = await ProcessLeaveAsync(
+                    id,
+                    leave,
+                    existingLeaveDates,
+                    result);
+
+                if (canCreate)
                 {
-                    _logger.LogWarning(
-                        "Leave already exists for Doctor {DoctorId} on {LeaveDate}",
-                        id,
-                        leave.LeaveDate);
-
-                    result.SkippedDates.Add(leave.LeaveDate);
-                    continue;
+                    leavesToCreate.Add(leave);
                 }
-
-                var availableSlots = await AvailableTimeSlotsCheck(
-                    leave.LeaveDate,
-                    id);
-
-                var allSlots = await GetSlots(id);
-
-                if (availableSlots.Count != allSlots.Count)
-                {
-                    _logger.LogInformation(
-                        "Cancelling appointments for Doctor {DoctorId} on {LeaveDate} because leave is being created",
-                        id,
-                        leave.LeaveDate);
-
-                    await _appointmentRepository.CancelAppointmentsByDoctorDate(
-                        id,
-                        leave.LeaveDate);
-
-                    result.CreatedWithCancelledAppointments.Add(
-                        leave.LeaveDate);
-                }
-
-                leavesToCreate.Add(leave);
             }
 
-            if (leavesToCreate.Count > 0)
-            {
-                await _repository.CreateLeaves(id, leavesToCreate);
-                await _context.SaveChangesAsync();
-
-                var doctor = await _context.Doctors
-                    .FirstOrDefaultAsync(d => d.DoctorId == id);
-
-                if (doctor != null)
-                {
-                    foreach (var leave in leavesToCreate)
-                    {
-                        await _doctorCache.RefreshAsync(
-                            doctor.Specialisation,
-                            leave.LeaveDate);
-
-                        _logger.LogInformation(
-                            "Doctor availability cache refreshed for {Specialisation} on {LeaveDate}",
-                            doctor.Specialisation,
-                            leave.LeaveDate);
-                    }
-                }
-
-                _logger.LogInformation(
-                    "{LeaveCount} leave(s) created successfully for Doctor {DoctorId}",
-                    leavesToCreate.Count,
-                    id);
-            }
-
-            _logger.LogInformation(
-                "Leave creation completed for Doctor {DoctorId}. Created: {CreatedCount}, Skipped: {SkippedCount}",
+            await SaveLeavesAndRefreshCacheAsync(
                 id,
-                leavesToCreate.Count,
-                result.SkippedDates.Count);
+                leavesToCreate);
+
+            if (_logger.IsEnabled(LogLevel.Information))
+            {
+                _logger.LogInformation(
+                    "Leave creation completed for Doctor {DoctorId}. Created: {CreatedCount}, Skipped: {SkippedCount}",
+                    id,
+                    leavesToCreate.Count,
+                    result.SkippedDates.Count);
+            }
 
             return result;
         }
 
+        private async Task<bool> ProcessLeaveAsync(
+                      int doctorId,
+                      CreateLeaveDto leave,
+                      HashSet<DateOnly> existingLeaveDates,
+                      CreateLeaveResultDto result)
+        {
+            if (existingLeaveDates.Contains(leave.LeaveDate))
+            {
+                _logger.LogWarning(
+                    "Leave already exists for Doctor {DoctorId} on {LeaveDate}",
+                    doctorId,
+                    leave.LeaveDate);
+
+                result.SkippedDates.Add(leave.LeaveDate);
+                return false;
+            }
+
+            var availableSlots =
+                await AvailableTimeSlotsCheck(
+                    leave.LeaveDate,
+                    doctorId);
+
+            var allSlots =
+                await GetSlots(doctorId);
+
+            if (availableSlots.Count != allSlots.Count)
+            {
+                if (_logger.IsEnabled(LogLevel.Information))
+                {
+                    _logger.LogInformation(
+                        "Cancelling appointments for Doctor {DoctorId} on {LeaveDate} because leave is being created",
+                        doctorId,
+                        leave.LeaveDate);
+                }
+
+                await _appointmentRepository
+                    .CancelAppointmentsByDoctorDate(
+                        doctorId,
+                        leave.LeaveDate);
+
+                result.CreatedWithCancelledAppointments
+                    .Add(leave.LeaveDate);
+            }
+
+            return true;
+        }
+
+        private async Task SaveLeavesAndRefreshCacheAsync(
+                       int doctorId,
+                       List<CreateLeaveDto> leavesToCreate)
+        {
+            if (leavesToCreate.Count == 0)
+            {
+                return;
+            }
+
+            await _repository.CreateLeaves(
+                doctorId,
+                leavesToCreate);
+
+            await _context.SaveChangesAsync();
+
+            var doctor = await _context.Doctors
+                .FirstOrDefaultAsync(
+                    d => d.DoctorId == doctorId);
+
+            if (doctor != null)
+            {
+                foreach (var leaveDate in leavesToCreate.Select(leave => leave.LeaveDate))
+                {
+                    await _doctorCache.RefreshAsync(
+                        doctor.Specialisation,
+                        leaveDate);
+
+                    if (_logger.IsEnabled(LogLevel.Information))
+                    {
+                        _logger.LogInformation(
+                            "Doctor availability cache refreshed for {Specialisation} on {LeaveDate}",
+                            doctor.Specialisation,
+                            leaveDate);
+                    }
+                }
+            }
+
+            if (_logger.IsEnabled(LogLevel.Information))
+            {
+                _logger.LogInformation(
+                    "{LeaveCount} leave(s) created successfully for Doctor {DoctorId}",
+                    leavesToCreate.Count,
+                    doctorId);
+            }
+        }
+
+
         public async Task<List<DoctorListDto>> AvailableDoctors(
     string specialisation,
     DateOnly date)
-        {
-            _logger.LogInformation(
-                "Fetching available doctors for Specialisation {Specialisation} on {Date}",
-                specialisation,
-                date);
+        { 
 
-            // Try to get data from cache
-            var cachedDoctors = await _doctorCache.GetAsync(specialisation, date);
+            var cachedDoctors =
+                await _doctorCache.GetAsync(
+                    specialisation,
+                    date);
+
+
 
             if (cachedDoctors != null)
             {
-                _logger.LogInformation(
-                    "Cache hit for Specialisation {Specialisation} on {Date}",
-                    specialisation,
-                    date);
+                if (_logger.IsEnabled(LogLevel.Information))
+                {
+                    _logger.LogInformation(
+                        "Cache hit for Specialisation {Specialisation} on {Date}",
+                        specialisation,
+                        date);
+                }
 
                 return cachedDoctors;
             }
 
-            _logger.LogInformation(
-                "Cache miss for Specialisation {Specialisation} on {Date}. Loading from database.",
-                specialisation,
-                date);
 
-            // Load from database
-            var doctors = await _repository.AvailableDoctors(
-                specialisation,
-                date);
 
-            // Store in cache for 5 minutes
+            if (_logger.IsEnabled(LogLevel.Information))
+            {
+                _logger.LogInformation(
+                    "Cache miss for Specialisation {Specialisation} on {Date}. Loading from database.",
+                    specialisation,
+                    date);
+            }
+
+
+
+            var doctors =
+                await _repository.AvailableDoctors(
+                    specialisation,
+                    date);
+
+
+
             await _doctorCache.SetAsync(
                 specialisation,
                 date,
                 doctors);
 
-            _logger.LogInformation(
-                "{DoctorCount} doctor(s) loaded from database and cached for Specialisation {Specialisation} on {Date}",
-                doctors.Count,
-                specialisation,
-                date);
+
+
+            if (_logger.IsEnabled(LogLevel.Information))
+            {
+                _logger.LogInformation(
+                    "{DoctorCount} doctor(s) loaded from database and cached for Specialisation {Specialisation} on {Date}",
+                    doctors.Count,
+                    specialisation,
+                    date);
+            }
+
 
             return doctors;
         }

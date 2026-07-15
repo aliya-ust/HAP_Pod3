@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AppointmentService } from '../../cores/services/appointments.services';
@@ -33,9 +33,7 @@ export class BookAppointmentComponent {
   isLoadingDoctors = signal(false);
   isLoadingSlots = signal(false);
 
-  constructor(private appointmentService: AppointmentService) { }
-
-  //ngOnInit(): void { }
+  constructor(private readonly appointmentService: AppointmentService) { }
 
   get minDate(): string {
     return new Date().toISOString().split('T')[0];

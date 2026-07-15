@@ -37,18 +37,26 @@
     </div>
 
     <!-- Doctor -->
-    <div class="form-group" *ngIf="doctors().length > 0">
+    <div class="form-group">
       <label for="doctor">
         <i class="bi bi-person-badge"></i> Doctor
       </label>
 
       <select id="doctor"
+              [disabled]="doctors().length === 0"
               [ngModel]="selectedDoctorId()"
               (ngModelChange)="selectedDoctorId.set($event); onDoctorChange()">
 
-        <option value="">-- Select Doctor --</option>
+        <option value="" *ngIf="doctors().length === 0">
+          No doctors available
+        </option>
 
-        <option *ngFor="let d of doctors()" [value]="d.doctorId">
+        <option value="" *ngIf="doctors().length > 0">
+          -- Select Doctor --
+        </option>
+
+        <option *ngFor="let d of doctors()"
+                [value]="d.doctorId">
           {{ d.fullName }}
         </option>
 
@@ -56,18 +64,26 @@
     </div>
 
     <!-- Time Slots -->
-    <div class="form-group" *ngIf="timeSlots().length > 0">
+    <div class="form-group">
       <label for="timeSlot">
         <i class="bi bi-clock"></i> Time Slot
       </label>
 
       <select id="timeSlot"
+              [disabled]="timeSlots().length === 0"
               [ngModel]="selectedSlot()"
               (ngModelChange)="selectedSlot.set($event)">
 
-        <option value="">-- Select Slot --</option>
+        <option value="" *ngIf="timeSlots().length === 0">
+          No time slots available
+        </option>
 
-        <option *ngFor="let t of timeSlots()" [value]="t">
+        <option value="" *ngIf="timeSlots().length > 0">
+          -- Select Slot --
+        </option>
+
+        <option *ngFor="let t of timeSlots()"
+                [value]="t">
           {{ t }}
         </option>
 
@@ -75,7 +91,9 @@
     </div>
 
     <!-- Button -->
-    <button class="primary-btn" (click)="bookAppointment()">
+    <button class="primary-btn"
+            (click)="bookAppointment()"
+            [disabled]="!selectedDoctorId() || !selectedSlot()">
       <i class="bi bi-check-circle"></i> Book Appointment
     </button>
 

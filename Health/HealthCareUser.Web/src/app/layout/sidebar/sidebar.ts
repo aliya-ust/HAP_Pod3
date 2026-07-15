@@ -17,7 +17,7 @@ export class SidebarComponent implements OnInit {
 
   role = signal('');
 
-  constructor(private router: Router) { }
+  constructor(private readonly router: Router) { }
 
   ngOnInit(): void {
     const roleValue = localStorage.getItem('role') ?? '';

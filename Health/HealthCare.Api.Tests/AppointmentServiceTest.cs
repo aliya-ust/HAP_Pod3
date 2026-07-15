@@ -27,7 +27,6 @@ public class AppointmentServiceTests
     private readonly AppointmentService _service;
     private readonly Mock<ILogger<AppointmentService>> _loggerMock;
     private readonly Mock<IPublishEndpoint> _publishEndpointMock;
-    private readonly Mock<IDistributedCache> _cacheMock;
     private readonly Mock<IDoctorAvailabilityCacheService> _doctorCacheMock;
 
     public AppointmentServiceTests()
@@ -44,8 +43,11 @@ public class AppointmentServiceTests
 
         _loggerMock = new Mock<ILogger<AppointmentService>>();
         _publishEndpointMock = new Mock<IPublishEndpoint>();
-        _cacheMock = new Mock<IDistributedCache>();
         _doctorCacheMock = new Mock<IDoctorAvailabilityCacheService>();
+
+        _loggerMock.Setup(x =>
+                x.IsEnabled(It.IsAny<LogLevel>()))
+                .Returns(true);
 
         _service = new AppointmentService(
             _repositoryMock.Object,
@@ -54,7 +56,6 @@ public class AppointmentServiceTests
             _mapperMock.Object,
             _loggerMock.Object,
             _publishEndpointMock.Object,
-            _cacheMock.Object,
             _doctorCacheMock.Object);
     }
 
@@ -98,63 +99,6 @@ public class AppointmentServiceTests
         await Assert.ThrowsAsync<InvalidOperationException>(() =>
             _service.AddAsync(dto, 1));
     }
-
-    //[Fact]
-    //public async Task AddAsync_ShouldBookAppointment()
-    //{
-    //    // Arrange
-    //    _context.Doctors.Add(new Doctor
-    //    {
-    //        DoctorId = 1,
-    //        FullName = "Doctor",
-    //        IsActive = true,
-    //        Specialisation = "Cardiology"
-    //    });
-
-    //    _context.Patients.Add(new Patient
-    //    {
-    //        PatientId = 1,
-    //        FullName = "Ali"
-    //    });
-
-    //    await _context.SaveChangesAsync();
-
-    //    var dto = new CreateAppointmentDto
-    //    {
-    //        DoctorId = 1,
-    //        ScheduledDate = DateOnly.FromDateTime(DateTime.Today.AddDays(1)),
-    //        TimeSlot = "09:00 AM"
-    //    };
-
-    //    var appointment = new Appointment
-    //    {
-    //        AppointmentId = 1,
-    //        DoctorId = 1,
-    //        ScheduledDate = dto.ScheduledDate,
-    //        TimeSlot = dto.TimeSlot
-    //    };
-
-    //    _repositoryMock
-    //        .Setup(x => x.IsAvailable(dto.ScheduledDate, 1, dto.TimeSlot))
-    //        .ReturnsAsync(true);
-
-    //    _mapperMock
-    //        .Setup(x => x.Map<Appointment>(dto))
-    //        .Returns(appointment);
-
-    //    // Act
-    //    await _service.AddAsync(dto, 1);
-
-    //    // Assert
-    //    _repositoryMock.Verify(x =>
-    //        x.AddAsync(It.IsAny<Appointment>()), Times.Once);
-
-    //    _publishEndpointMock.Verify(x =>
-    //        x.Publish(
-    //            It.IsAny<AppointmentBookedEvent>(),
-    //            It.IsAny<CancellationToken>()),
-    //        Times.Once);
-    //}
 
     [Fact]
     public async Task UpdateAsync_ShouldThrow_WhenAppointmentNotFound()
@@ -415,11 +359,20 @@ public class AppointmentServiceTests
     [Fact]
     public async Task GetAllAsync_ShouldFilterOnlyDate()
     {
+        // Arrange
         var filter = new AppointmentFilter
         {
             ScheduledDate = DateOnly.FromDateTime(DateTime.Today),
             PageNumber = 1,
             PageSize = 10
+        };
+
+        var pagedResult = new PagedResult<Appointment>
+        {
+            Items = new List<Appointment>(),
+            PageNumber = 1,
+            PageSize = 10,
+            TotalCount = 0
         };
 
         _repositoryMock.Setup(r =>
@@ -428,21 +381,46 @@ public class AppointmentServiceTests
                 10,
                 It.IsAny<Expression<Func<Appointment, bool>>>(),
                 It.IsAny<Func<IQueryable<Appointment>, IOrderedQueryable<Appointment>>>()))
-            .ReturnsAsync(new PagedResult<Appointment>());
+            .ReturnsAsync(pagedResult);
 
-        _mapperMock.Setup(x => x.Map<IEnumerable<AppointmentListDto>>(It.IsAny<IEnumerable<Appointment>>()))
+        _mapperMock.Setup(x =>
+            x.Map<IEnumerable<AppointmentListDto>>(It.IsAny<IEnumerable<Appointment>>()))
             .Returns(new List<AppointmentListDto>());
 
-        await _service.GetAllAsync(filter);
-    }
+        // Act
+        var result = await _service.GetAllAsync(filter);
 
+        // Assert
+        Assert.NotNull(result);
+        Assert.Empty(result.Items);
+        Assert.Equal(1, result.PageNumber);
+        Assert.Equal(10, result.PageSize);
+        Assert.Equal(0, result.TotalCount);
+
+        _repositoryMock.Verify(r =>
+            r.GetAllAsync(
+                1,
+                10,
+                It.IsAny<Expression<Func<Appointment, bool>>>(),
+                It.IsAny<Func<IQueryable<Appointment>, IOrderedQueryable<Appointment>>>()),
+            Times.Once);
+    }
     [Fact]
     public async Task GetAllAsync_ShouldReturnAllAppointments()
     {
+        // Arrange
         var filter = new AppointmentFilter
         {
             PageNumber = 1,
             PageSize = 10
+        };
+
+        var pagedResult = new PagedResult<Appointment>
+        {
+            Items = new List<Appointment>(),
+            PageNumber = 1,
+            PageSize = 10,
+            TotalCount = 0
         };
 
         _repositoryMock.Setup(r =>
@@ -451,12 +429,29 @@ public class AppointmentServiceTests
                 10,
                 null,
                 It.IsAny<Func<IQueryable<Appointment>, IOrderedQueryable<Appointment>>>()))
-            .ReturnsAsync(new PagedResult<Appointment>());
+            .ReturnsAsync(pagedResult);
 
-        _mapperMock.Setup(x => x.Map<IEnumerable<AppointmentListDto>>(It.IsAny<IEnumerable<Appointment>>()))
+        _mapperMock
+            .Setup(x => x.Map<IEnumerable<AppointmentListDto>>(It.IsAny<IEnumerable<Appointment>>()))
             .Returns(new List<AppointmentListDto>());
 
-        await _service.GetAllAsync(filter);
+        // Act
+        var result = await _service.GetAllAsync(filter);
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal(1, result.PageNumber);
+        Assert.Equal(10, result.PageSize);
+        Assert.Equal(0, result.TotalCount);
+        Assert.Empty(result.Items);
+
+        _repositoryMock.Verify(r =>
+            r.GetAllAsync(
+                1,
+                10,
+                null,
+                It.IsAny<Func<IQueryable<Appointment>, IOrderedQueryable<Appointment>>>()),
+            Times.Once);
     }
 
     [Fact]
@@ -627,4 +622,5 @@ public class AppointmentServiceTests
             x.AvailableTimeSlotsCheck(date, 1),
             Times.Once);
     }
+
 }

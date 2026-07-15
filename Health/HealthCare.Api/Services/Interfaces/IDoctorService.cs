@@ -8,7 +8,6 @@ namespace HealthCare.Api.Services.Interfaces
     {
         Task<DoctorProfileDto> GetByIdAsync(int id);
         Task<PagedResult<DoctorListDto>> GetAllAsync(DoctorFilter filter);
-        Task AddAsync(CreateDoctorDto dto);
         Task UpdateAsync(int id, UpdateDoctorDto dto);
         Task UpdateStatusAsync(int id, bool isActive);
         Task DeleteAsync(int id);

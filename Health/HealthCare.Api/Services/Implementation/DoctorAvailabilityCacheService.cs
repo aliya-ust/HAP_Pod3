@@ -20,7 +20,7 @@ namespace HealthCare.Api.Services.Implementations
             _logger = logger;
         }
 
-        private string GetKey(string specialization, DateOnly date)
+        private static string GetKey(string specialization, DateOnly date)
         {
             return $"doctors:availability:{specialization}:{date:yyyy-MM-dd}";
         }
@@ -71,9 +71,13 @@ namespace HealthCare.Api.Services.Implementations
                 await RemoveAsync(specialization, date);
             }
 
-            _logger.LogInformation(
+            if (_logger.IsEnabled(LogLevel.Information))
+            {
+                _logger.LogInformation(
                 "Availability cache refreshed for specialization {Specialization}",
                 specialization);
+            }
+            
         }
 
         public async Task RemoveAsync(
@@ -84,10 +88,14 @@ namespace HealthCare.Api.Services.Implementations
 
             await _cache.RemoveAsync(key);
 
-            _logger.LogInformation(
+            if (_logger.IsEnabled(LogLevel.Information))
+            {
+                _logger.LogInformation(
                 "Cache removed for {Specialization} on {Date}",
                 specialization,
                 date);
+            }
+            
         }
 
         public async Task RefreshAsync(
