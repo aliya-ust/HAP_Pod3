@@ -1,7 +1,8 @@
 ﻿using AutoMapper;
 using HealthCare.Api.Data;
-using HealthCare.Api.DTOs;
+
 using HealthCare.Api.DTOs.Doctor;
+using HealthCare.Api.Exceptions;
 using HealthCare.Api.Models;
 using HealthCare.Api.Repositories.Interfaces;
 using HealthCare.Api.Services.Interfaces;
@@ -21,7 +22,7 @@ namespace HealthCare.Api.Services.Implementations
         private readonly IAppointmentRepository _appointmentRepository;
         private readonly HealthCareDbContext _context;
         private readonly IMapper _mapper;
-        private readonly ILogger<AppointmentService> _logger;
+        private readonly ILogger<DoctorService> _logger;
         private readonly IDistributedCache _cache;
       
       
@@ -31,7 +32,7 @@ namespace HealthCare.Api.Services.Implementations
      IDoctorRepository repository,
      IAppointmentRepository appointmentRepository,
      HealthCareDbContext context,
-     IMapper mapper,ILogger<AppointmentService> logger,
+     IMapper mapper,ILogger<DoctorService> logger,
      IDistributedCache cache)
         {
             _repository = repository;
@@ -190,17 +191,18 @@ namespace HealthCare.Api.Services.Implementations
         {
             var slots = await _repository.GetSlots(doctorId);
 
-            return slots ?? new List<string>();
-        }
+            if (slots.Count == 0)
+                throw new NoAvailableSlotsException();
 
-        public async Task CreateSlots(int id, DateOnly date, string specialisation, List<string> timeslots)
+            return slots;
+        }
+        public async Task CreateSlots(int id, List<string> timeslots)
         {
             await _repository.CreateSlots(id, timeslots);
-
             await _context.SaveChangesAsync();
-
-            await InvalidateAvailableDoctorsCacheAsync(specialisation, date);
         }
+
+
 
         private async Task<List<string>> AvailableTimeSlotsCheck(DateOnly date, int doctorId)
         {
@@ -244,7 +246,7 @@ namespace HealthCare.Api.Services.Implementations
                 var allSlots = await GetSlots(id);
 
                 if (availableSlots.Count != allSlots.Count)
-                {
+                {   // Doctor has confirmed/pending appointments that day cancel them and proceed
                     await _appointmentRepository.CancelAppointmentsByDoctorDate(id, leave.LeaveDate);
                     result.CreatedWithCancelledAppointments.Add(leave.LeaveDate);
                 }
@@ -311,12 +313,7 @@ namespace HealthCare.Api.Services.Implementations
             return $"doctors:available:{safeSpecialisation}:{date:yyyy-MM-dd}";
         }
 
-        private async Task InvalidateAvailableDoctorsCacheAsync(string specialisation, DateOnly date)
-        {
-            var cacheKey = GetAvailableDoctorsCacheKey(specialisation, date);
-
-            await _cache.RemoveAsync(cacheKey);
-        }
+       
         public async Task<DoctorSummaryDto> GetSummaryAsync()
         {
             return await _repository.GetSummaryAsync();
@@ -357,11 +354,6 @@ namespace HealthCare.Api.Services.Implementations
                 UpcomingLeaves = upcomingLeaves,
                 TodaysAppointments = todaysAppointments
             };
-        }
-
-        public Task CreateSlots(int id, List<string> timeslots)
-        {
-            throw new NotImplementedException();
         }
     }
 }

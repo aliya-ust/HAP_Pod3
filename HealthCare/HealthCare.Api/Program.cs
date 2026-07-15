@@ -1,4 +1,4 @@
-using HealthCare.Api.Consumers;
+using HealthCare.Api.Messaging;
 using HealthCare.Api.Data;
 using HealthCare.Api.Mapping;
 
@@ -15,18 +15,22 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
-using Serilog;
+
 using System.Security.Claims;
 using System.Text;
+using Serilog;
 
+Log.Logger = new LoggerConfiguration()
+.WriteTo.Console().CreateBootstrapLogger();
+ Log.Information(" HealthCareApp Api Starting......");
+    
 var builder = WebApplication.CreateBuilder(args);
 
-// Serilog
-Log.Logger = new LoggerConfiguration()
-    .ReadFrom.Configuration(builder.Configuration)
-    .CreateLogger();
+builder.Host.UseSerilog((context, services, configuration) =>
+    configuration
+        .ReadFrom.Configuration(context.Configuration)
+        .ReadFrom.Services(services));
 
-builder.Host.UseSerilog();
 
 // Add services to the container.
 builder.Services.AddProblemDetails();
@@ -92,27 +96,22 @@ builder.Services.AddScoped<IDoctorService, DoctorService>();
 builder.Services.AddScoped<IAppointmentService, AppointmentService>();
 builder.Services.AddScoped<IHealthRecordService, HealthRecordService>();
 builder.Services.AddScoped<IJwtService, JwtService>();
+var rabbitmqConfig = builder.Configuration.GetSection("RabbitMq");
+
 builder.Services.AddMassTransit(x =>
 {
     x.AddConsumer<AppointmentBookedConsumer>();
-
+  
     x.UsingRabbitMq((context, cfg) =>
     {
-        var rabbitMq = builder.Configuration.GetSection("RabbitMQ");
 
-        var hostName = rabbitMq["HostName"] ?? "localhost";
-        var virtualHost = rabbitMq["VirtualHost"] ?? "/";
-        var userName = rabbitMq["UserName"] ?? "guest";
-        var password = rabbitMq["Password"] ?? "guest";
-        var appointmentQueue = rabbitMq["AppointmentQueue"] ?? "appointment.events.queue";
-
-        cfg.Host(hostName, virtualHost, h =>
+        cfg.Host(rabbitmqConfig["HostName"], rabbitmqConfig["VirtualHost"], h => 
         {
-            h.Username(userName);
-            h.Password(password);
+            h.Username(rabbitmqConfig["UserName"]!);
+            h.Password(rabbitmqConfig["Password"]!);
         });
 
-        cfg.ReceiveEndpoint(appointmentQueue, e =>
+        cfg.ReceiveEndpoint(rabbitmqConfig["AppointmentQueue"]!, e =>
         {
             e.ConfigureConsumer<AppointmentBookedConsumer>(context);
         });
@@ -132,10 +131,6 @@ builder.Services.AddStackExchangeRedisCache(option => {
     option.InstanceName = garnetOptions.InstanceName;
 
 });
-
-
-
-
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowClients", policy =>
@@ -176,20 +171,8 @@ builder.Services.AddSwaggerGen(options =>
 
 var app = builder.Build();
 
+app.UseSerilogRequestLogging();
 app.UseExceptionHandler();
-
-// Logs every API request: method, path, status
-app.Use(async (context, next) =>
-{
-    await next();
-
-    Log.Information(
-        "API Request: {Method} {Path} responded {StatusCode}",
-        context.Request.Method,
-        context.Request.Path,
-        context.Response.StatusCode
-    );
-});
 
 using (var scope = app.Services.CreateScope())
 {

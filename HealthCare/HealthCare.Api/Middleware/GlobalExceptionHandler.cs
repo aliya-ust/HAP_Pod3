@@ -32,6 +32,7 @@ namespace HealthCare.Api.Middleware
                 DoctorNotFoundException => (StatusCodes.Status404NotFound, exception.Message),
                 AppointmentNotFoundException => (StatusCodes.Status404NotFound, exception.Message),
                 HealthRecordNotFoundException => (StatusCodes.Status404NotFound, exception.Message),
+                NoAvailableSlotsException => (StatusCodes.Status404NotFound, exception.Message),
 
                 InvalidOperationException => (StatusCodes.Status400BadRequest, exception.Message),
                 UnauthorizedAccessException => (StatusCodes.Status401Unauthorized, exception.Message),

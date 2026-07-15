@@ -2,21 +2,23 @@
   <h1>Book Appointment</h1>
 
   <form (ngSubmit)="bookAppointment()">
+
     <div class="form-group">
       <label>Select Date</label>
+
       <input type="date"
              name="selectedDate"
              [min]="minDate"
-             [(ngModel)]="selectedDate"
-             (change)="onDateOrSpecialisationChange()">
+             [ngModel]="selectedDate()"
+             (ngModelChange)="selectedDate.set($event); onDateOrSpecialisationChange()" />
     </div>
 
     <div class="form-group">
       <label>Specialisation</label>
-      <select name="selectedSpecialisation"
-              [(ngModel)]="selectedSpecialisation"
-              (change)="onDateOrSpecialisationChange()">
 
+      <select name="selectedSpecialisation"
+              [ngModel]="selectedSpecialisation()"
+              (ngModelChange)="selectedSpecialisation.set($event); onDateOrSpecialisationChange()">
         <option value="">-- Select Specialisation --</option>
 
         <option *ngFor="let item of specialisations"
@@ -28,10 +30,10 @@
 
     <div class="form-group">
       <label>Select Doctor</label>
-      <select name="selectedDoctorId"
-              [(ngModel)]="selectedDoctorId"
-              (change)="onDoctorChange()">
 
+      <select name="selectedDoctorId"
+              [ngModel]="selectedDoctorId()"
+              (ngModelChange)="selectedDoctorId.set($event); onDoctorChange()">
         <option [ngValue]="null">-- Select Doctor --</option>
 
         <option *ngFor="let doctor of doctorService.availableDoctors()"
@@ -40,12 +42,7 @@
         </option>
       </select>
 
-      <small *ngIf="
-          selectedDate &&
-          selectedSpecialisation &&
-          !doctorService.isLoading() &&
-          doctorService.availableDoctors().length === 0
-        ">
+      <small *ngIf="showNoDoctorsMessage()">
         No doctors available with free time slots.
       </small>
     </div>
@@ -54,8 +51,8 @@
       <label>Time Slot</label>
 
       <select name="selectedTimeSlot"
-              [(ngModel)]="selectedTimeSlot">
-
+              [ngModel]="selectedTimeSlot()"
+              (ngModelChange)="selectedTimeSlot.set($event)">
         <option value="">-- Select Time Slot --</option>
 
         <option *ngFor="let slot of doctorService.availableSlots()"
@@ -64,15 +61,25 @@
         </option>
       </select>
 
-      <small *ngIf="
-          selectedDoctorId &&
-          doctorService.slotsLoaded() &&
-          doctorService.availableSlots().length === 0
-        ">
+      <small *ngIf="showNoSlotsMessage()">
         No free slots available for this doctor.
       </small>
     </div>
 
-    <button type="submit">Book Appointment</button>
+    <div class="success-message"
+         *ngIf="successMessage()">
+      {{ successMessage() }}
+    </div>
+
+    <div class="error-message"
+         *ngIf="errorMessage()">
+      {{ errorMessage() }}
+    </div>
+
+    <button type="submit"
+            [disabled]="isBooking()">
+      {{ isBooking() ? 'Booking...' : 'Book Appointment' }}
+    </button>
+
   </form>
 </div>

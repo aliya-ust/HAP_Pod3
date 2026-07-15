@@ -11,7 +11,9 @@ using HealthCare.Shared.DTOs;
 using HealthCare.Shared.DTOs.Appointment;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Distributed;
 using Serilog;
+using Serilog.Core;
 
 
 namespace HealthCare.Api.Services.Implementations
@@ -21,19 +23,23 @@ namespace HealthCare.Api.Services.Implementations
         private readonly IAppointmentRepository _repository;
         private readonly IDoctorService _doctorService;
         private readonly HealthCareDbContext _context;
+        private readonly ILogger<AppointmentService> _logger;
         private readonly IMapper _mapper;
-        private readonly IBus _bus;
+        private readonly IPublishEndpoint _publishEndpoint;
+        private readonly IDistributedCache _cache;
         public AppointmentService(
     IAppointmentRepository repository,
     IDoctorService doctorService,
     HealthCareDbContext context,
-    IMapper mapper, IBus bus)
+    IMapper mapper, IPublishEndpoint publishEndpoint, ILogger<AppointmentService> logger, IDistributedCache cache)
         {
             _repository = repository;
             _doctorService = doctorService;
             _context = context;
             _mapper = mapper;
-            _bus = bus;
+            _cache = cache;
+            _publishEndpoint = publishEndpoint;
+            _logger = logger;
         }
 
      
@@ -137,7 +143,7 @@ namespace HealthCare.Api.Services.Implementations
                 var patient = await _context.Patients
                     .FirstOrDefaultAsync(p => p.PatientId == patientId);
 
-                await _bus.Publish(new AppointmentBookedEvent
+                await _publishEndpoint.Publish(new AppointmentBookedEvent
                 {
                     AppointmentId = appointment.AppointmentId,
                     PatientName = patient?.FullName ?? "Unknown",
@@ -145,13 +151,15 @@ namespace HealthCare.Api.Services.Implementations
                     ScheduledDate = appointment.ScheduledDate,
                     TimeSlot = appointment.TimeSlot
                 });
+                Log.Information(
+                    "AppointmentBookedEvent published. AppointmentId: {AppointmentId}, DoctorId: {DoctorId}",
+                    appointment.AppointmentId,
+                    appointment.DoctorId);
             }
             catch (DbUpdateException ex)
             {
                 throw new InvalidOperationException(
-                    "Failed to book the appointment.",
-                    ex
-                );
+                    "Failed to book the appointment.", ex);
             }
         }
 

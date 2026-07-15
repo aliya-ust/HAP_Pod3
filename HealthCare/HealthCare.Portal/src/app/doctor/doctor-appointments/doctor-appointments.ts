@@ -22,13 +22,13 @@ export class DoctorAppointments implements OnInit {
 
   selectedRecords = signal<HealthRecordListDto[]>([]);
 
-  addRecordForm: CreateHealthRecordRequest = {
+  addRecordForm = signal<CreateHealthRecordRequest>({
     appointmentId: 0,
     visitDate: this.getTodayDate(),
     diagnosis: '',
     prescription: '',
     notes: ''
-  };
+  });
 
   constructor(
     public appointmentService: AppointmentService,
@@ -58,32 +58,52 @@ export class DoctorAppointments implements OnInit {
   }
 
   openAddRecordDialog(appointmentId: number): void {
-    this.addRecordForm = {
-      appointmentId,
+    this.addRecordForm.set({
+      appointmentId: appointmentId,
       visitDate: this.getTodayDate(),
       diagnosis: '',
       prescription: '',
       notes: ''
-    };
+    });
 
     this.showAddRecordDialog.set(true);
   }
 
   closeAddRecordDialog(): void {
     this.showAddRecordDialog.set(false);
+
+    this.addRecordForm.set({
+      appointmentId: 0,
+      visitDate: this.getTodayDate(),
+      diagnosis: '',
+      prescription: '',
+      notes: ''
+    });
+  }
+
+  updateAddRecordForm<K extends keyof CreateHealthRecordRequest>(
+    field: K,
+    value: CreateHealthRecordRequest[K]
+  ): void {
+    this.addRecordForm.update(form => ({
+      ...form,
+      value
+    }));
   }
 
   saveHealthRecord(): void {
+    const form = this.addRecordForm();
+
     if (
-      !this.addRecordForm.visitDate ||
-      !this.addRecordForm.diagnosis ||
-      !this.addRecordForm.prescription
+      !form.visitDate ||
+      !form.diagnosis ||
+      !form.prescription
     ) {
       alert('Please enter visit date, diagnosis and prescription');
       return;
     }
 
-    this.healthRecordService.createRecord(this.addRecordForm)
+    this.healthRecordService.createRecord(form)
       .subscribe({
         next: () => {
           alert('Health record added successfully');
@@ -98,7 +118,6 @@ export class DoctorAppointments implements OnInit {
   }
 
   viewRecord(patientId: number): void {
-
     if (!patientId) {
       alert('Invalid patient ID');
       return;

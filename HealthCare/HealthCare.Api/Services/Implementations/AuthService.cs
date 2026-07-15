@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Azure;
+
 using HealthCare.Api.Data;
 using HealthCare.Api.DTOs.Auth;
 using HealthCare.Api.DTOs.Doctor;
@@ -8,8 +8,10 @@ using HealthCare.Api.Models;
 using HealthCare.Api.Repositories.Interfaces;
 using HealthCare.Api.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Caching.Distributed;
 using System.Data;
 using System.Numerics;
+
 
 namespace HealthCare.Api.Services.Implementations
 {
@@ -21,14 +23,14 @@ namespace HealthCare.Api.Services.Implementations
         private readonly IDoctorRepository _doctorRepo;
         private readonly IJwtService _jwtService;
         private readonly HealthCareDbContext _context;
-
+        private readonly IDistributedCache _cache;
         public AuthService(
             UserManager<User> userManager,
             IMapper mapper,
             IPatientRepository patientRepo,
             IDoctorRepository doctorRepo,
             IJwtService jwtService,
-            HealthCareDbContext context)
+            HealthCareDbContext context, IDistributedCache cache)
         {
             _userManager = userManager;
             _mapper = mapper;
@@ -36,6 +38,7 @@ namespace HealthCare.Api.Services.Implementations
             _doctorRepo = doctorRepo;
             _jwtService = jwtService;
             _context = context;
+            _cache = cache;
         }
 
         private async Task<User> CreateUserWithRoleAsync(string email, string password, string role)
@@ -90,6 +93,28 @@ namespace HealthCare.Api.Services.Implementations
             await _doctorRepo.CreateSlots(doctor.DoctorId, dto.TimeSlots);
 
             await _context.SaveChangesAsync();
+
+            // Invalidate available doctor caches
+            await InvalidateDoctorAvailabilityCache(dto.Specialisation);
+
+
+        }
+        private async Task InvalidateDoctorAvailabilityCache(string specialisation)
+        {
+            var safeSpecialisation = specialisation
+                .Trim()
+                .ToLower()
+                .Replace(" ", "-");
+
+            for (int i = 0; i < 30; i++)
+            {
+                var date = DateOnly.FromDateTime(DateTime.Today.AddDays(i));
+
+                var cacheKey =
+                    $"doctors:available:{safeSpecialisation}:{date:yyyy-MM-dd}";
+
+                await _cache.RemoveAsync(cacheKey);
+            }
         }
 
         public async Task<AuthResponseDto> LoginAsync(LoginDto dto)

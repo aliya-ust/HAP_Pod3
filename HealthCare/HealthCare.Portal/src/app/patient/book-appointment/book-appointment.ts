@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, computed, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AppointmentService } from '../../core/services/appointment.service';
 import { DoctorService } from '../../core/services/doctor.service';
@@ -14,19 +14,38 @@ import { DoctorService } from '../../core/services/doctor.service';
 export class BookAppointment {
   minDate = this.getTodayDate();
 
-  selectedDate = '';
-  selectedSpecialisation = '';
-  selectedDoctorId: number | null = null;
-  selectedTimeSlot = '';
+  selectedDate = signal('');
+  selectedSpecialisation = signal('');
+  selectedDoctorId = signal<number | null>(null);
+  selectedTimeSlot = signal('');
+
+  successMessage = signal('');
+  errorMessage = signal('');
+  isBooking = signal(false);
 
   specialisations = [
-    'Pediatrician',
-    'Cardiologist',
-    'Psychiatrist',
-    'Orthopedic',
-    'Dermatologist'
     
-  ];
+    'Cardiologist',
+    'Dermatologist',
+    'Neurologist',
+    'Orthopedic',
+    'Pediatrician',
+    'Psychiatrist',
+    'General Physician',
+    'ENT'];
+
+  showNoDoctorsMessage = computed(() =>
+    this.selectedDate() &&
+    this.selectedSpecialisation() &&
+    !this.doctorService.isLoading() &&
+    this.doctorService.availableDoctors().length === 0
+  );
+
+  showNoSlotsMessage = computed(() =>
+    this.selectedDoctorId() &&
+    this.doctorService.slotsLoaded() &&
+    this.doctorService.availableSlots().length === 0
+  );
 
   constructor(
     public doctorService: DoctorService,
@@ -35,6 +54,7 @@ export class BookAppointment {
 
   getTodayDate(): string {
     const today = new Date();
+
     const year = today.getFullYear();
     const month = String(today.getMonth() + 1).padStart(2, '0');
     const day = String(today.getDate()).padStart(2, '0');
@@ -43,66 +63,86 @@ export class BookAppointment {
   }
 
   onDateOrSpecialisationChange(): void {
-    this.selectedDoctorId = null;
-    this.selectedTimeSlot = '';
+    this.successMessage.set('');
+    this.errorMessage.set('');
+
+    this.selectedDoctorId.set(null);
+    this.selectedTimeSlot.set('');
 
     this.doctorService.availableDoctors.set([]);
     this.doctorService.availableSlots.set([]);
+    this.doctorService.slotsLoaded.set(false);
 
-    if (!this.selectedDate || !this.selectedSpecialisation) {
+    if (!this.selectedDate() || !this.selectedSpecialisation()) {
       return;
     }
 
     this.doctorService.loadAvailableDoctors(
-      this.selectedSpecialisation,
-      this.selectedDate
+      this.selectedSpecialisation(),
+      this.selectedDate()
     );
   }
 
   onDoctorChange(): void {
-    this.selectedTimeSlot = '';
+    this.successMessage.set('');
+    this.errorMessage.set('');
+
+    this.selectedTimeSlot.set('');
+
     this.doctorService.availableSlots.set([]);
     this.doctorService.slotsLoaded.set(false);
 
-    if (!this.selectedDoctorId || !this.selectedDate) {
+    if (!this.selectedDoctorId() || !this.selectedDate()) {
       return;
     }
 
     this.doctorService.loadAvailableSlots(
-      Number(this.selectedDoctorId),
-      this.selectedDate
+      Number(this.selectedDoctorId()),
+      this.selectedDate()
     );
   }
 
   bookAppointment(): void {
+    this.successMessage.set('');
+    this.errorMessage.set('');
+
     if (
-      !this.selectedDate ||
-      !this.selectedSpecialisation ||
-      !this.selectedDoctorId ||
-      !this.selectedTimeSlot
+      !this.selectedDate() ||
+      !this.selectedSpecialisation() ||
+      !this.selectedDoctorId() ||
+      !this.selectedTimeSlot()
     ) {
-      alert('Please fill all fields');
+      this.errorMessage.set('Please fill all fields');
       return;
     }
 
+    this.isBooking.set(true);
+
     this.appointmentService.bookAppointment({
-      doctorId: this.selectedDoctorId,
-      scheduledDate: this.selectedDate,
-      timeSlot: this.selectedTimeSlot
+      doctorId: Number(this.selectedDoctorId()),
+      scheduledDate: this.selectedDate(),
+      timeSlot: this.selectedTimeSlot()
     }).subscribe({
       next: () => {
-        alert('Appointment booked successfully');
+        this.successMessage.set('Appointment booked successfully');
 
-        this.selectedDate = '';
-        this.selectedSpecialisation = '';
-        this.selectedDoctorId = null;
-        this.selectedTimeSlot = '';
+        this.selectedDate.set('');
+        this.selectedSpecialisation.set('');
+        this.selectedDoctorId.set(null);
+        this.selectedTimeSlot.set('');
 
         this.doctorService.availableDoctors.set([]);
         this.doctorService.availableSlots.set([]);
+        this.doctorService.slotsLoaded.set(false);
+
+        this.isBooking.set(false);
       },
       error: (error) => {
-        alert(error?.error?.message || 'Failed to book appointment');
+        this.errorMessage.set(
+          error?.error?.message || 'Failed to book appointment'
+        );
+
+        this.isBooking.set(false);
       }
     });
   }

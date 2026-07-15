@@ -1,0 +1,260 @@
+2026-07-15 00:02:27.576 +05:30 [INF] HTTP OPTIONS /api/records/my-records responded 204 in 0.1615 ms
+2026-07-15 00:02:27.577 +05:30 [INF] HTTP OPTIONS /api/appointments/patient/upcoming responded 204 in 0.0831 ms
+2026-07-15 00:02:27.987 +05:30 [INF] HTTP GET /api/appointments/patient/upcoming responded 200 in 399.0402 ms
+2026-07-15 00:02:28.273 +05:30 [INF] HTTP GET /api/records/my-records responded 200 in 684.4692 ms
+2026-07-15 00:02:45.750 +05:30 [INF] HTTP OPTIONS /api/appointments/patient/upcoming responded 204 in 0.1464 ms
+2026-07-15 00:02:45.750 +05:30 [INF] HTTP OPTIONS /api/records/my-records responded 204 in 0.1481 ms
+2026-07-15 00:02:45.761 +05:30 [INF] HTTP GET /api/appointments/patient/upcoming responded 200 in 4.2405 ms
+2026-07-15 00:02:45.770 +05:30 [INF] HTTP GET /api/records/my-records responded 200 in 13.3726 ms
+2026-07-15 00:03:00.892 +05:30 [INF] HTTP OPTIONS /api/doctors/available responded 204 in 0.1360 ms
+2026-07-15 00:03:00.902 +05:30 [INF] Cache MISS for key: doctors:available:general-physician:2026-07-25
+2026-07-15 00:03:00.954 +05:30 [INF] Cache SET for key: doctors:available:general-physician:2026-07-25 with 5 minutes TTL
+2026-07-15 00:03:00.956 +05:30 [INF] HTTP GET /api/doctors/available responded 200 in 57.9788 ms
+2026-07-15 00:03:04.449 +05:30 [INF] HTTP OPTIONS /api/appointments/available-slots responded 204 in 0.0535 ms
+2026-07-15 00:03:04.461 +05:30 [INF] HTTP GET /api/appointments/available-slots responded 200 in 7.4903 ms
+2026-07-15 00:03:11.675 +05:30 [INF] HTTP OPTIONS /api/appointments/book responded 204 in 0.1022 ms
+2026-07-15 00:03:11.694 +05:30 [INF] Appointment booked: AppointmentId 1025
+2026-07-15 00:03:11.706 +05:30 [INF] Received AppointmentBookedEvent. AppointmentId=1025
+2026-07-15 00:03:11.707 +05:30 [INF] AppointmentBookedEvent published. AppointmentId: 1025, DoctorId: 7
+2026-07-15 00:03:11.708 +05:30 [INF] HTTP POST /api/appointments/book responded 200 in 26.8866 ms
+2026-07-15 00:03:11.712 +05:30 [INF] Notification created for DoctorId 7 from AppointmentId 1025
+2026-07-15 00:03:19.955 +05:30 [INF] HTTP OPTIONS /api/appointments/patient/upcoming responded 204 in 0.0592 ms
+2026-07-15 00:03:19.975 +05:30 [INF] HTTP GET /api/appointments/patient/upcoming responded 200 in 15.6318 ms
+2026-07-15 00:04:38.881 +05:30 [INF] HTTP OPTIONS /api/doctors/available responded 204 in 0.0648 ms
+2026-07-15 00:04:38.891 +05:30 [INF] Cache MISS for key: doctors:available:ent:2026-07-16
+2026-07-15 00:04:38.908 +05:30 [INF] Cache SET for key: doctors:available:ent:2026-07-16 with 5 minutes TTL
+2026-07-15 00:04:38.909 +05:30 [INF] HTTP GET /api/doctors/available responded 200 in 22.8768 ms
+2026-07-15 00:04:42.144 +05:30 [INF] HTTP OPTIONS /api/doctors/available responded 204 in 0.0540 ms
+2026-07-15 00:04:42.150 +05:30 [INF] Cache MISS for key: doctors:available:cardiologist:2026-07-16
+2026-07-15 00:04:42.154 +05:30 [INF] Cache SET for key: doctors:available:cardiologist:2026-07-16 with 5 minutes TTL
+2026-07-15 00:04:42.156 +05:30 [INF] HTTP GET /api/doctors/available responded 200 in 7.0458 ms
+2026-07-15 00:04:46.248 +05:30 [INF] HTTP OPTIONS /api/doctors/available responded 204 in 0.1348 ms
+2026-07-15 00:04:46.254 +05:30 [INF] Cache MISS for key: doctors:available:dermatologist:2026-07-16
+2026-07-15 00:04:46.257 +05:30 [INF] Cache SET for key: doctors:available:dermatologist:2026-07-16 with 5 minutes TTL
+2026-07-15 00:04:46.258 +05:30 [INF] HTTP GET /api/doctors/available responded 200 in 5.8986 ms
+2026-07-15 00:04:50.257 +05:30 [INF] HTTP OPTIONS /api/doctors/available responded 204 in 0.0573 ms
+2026-07-15 00:04:50.264 +05:30 [INF] Cache MISS for key: doctors:available:neurologist:2026-07-16
+2026-07-15 00:04:50.267 +05:30 [INF] Cache SET for key: doctors:available:neurologist:2026-07-16 with 5 minutes TTL
+2026-07-15 00:04:50.268 +05:30 [INF] HTTP GET /api/doctors/available responded 200 in 6.0309 ms
+2026-07-15 00:04:53.882 +05:30 [INF] HTTP OPTIONS /api/doctors/available responded 204 in 0.0760 ms
+2026-07-15 00:04:53.888 +05:30 [INF] Cache MISS for key: doctors:available:orthopedic:2026-07-16
+2026-07-15 00:04:53.892 +05:30 [INF] Cache SET for key: doctors:available:orthopedic:2026-07-16 with 5 minutes TTL
+2026-07-15 00:04:53.893 +05:30 [INF] HTTP GET /api/doctors/available responded 200 in 6.4332 ms
+2026-07-15 00:05:02.706 +05:30 [INF] HTTP OPTIONS /api/doctors/available responded 204 in 0.0768 ms
+2026-07-15 00:05:02.738 +05:30 [INF] Cache HIT for key: doctors:available:cardiologist:2026-07-16
+2026-07-15 00:05:02.741 +05:30 [INF] HTTP GET /api/doctors/available responded 200 in 28.0753 ms
+2026-07-15 00:05:08.285 +05:30 [INF] HTTP OPTIONS /api/doctors/available responded 204 in 0.0525 ms
+2026-07-15 00:05:08.292 +05:30 [INF] Cache MISS for key: doctors:available:psychiatrist:2026-07-16
+2026-07-15 00:05:08.309 +05:30 [INF] Cache SET for key: doctors:available:psychiatrist:2026-07-16 with 5 minutes TTL
+2026-07-15 00:05:08.311 +05:30 [INF] HTTP GET /api/doctors/available responded 200 in 21.8653 ms
+2026-07-15 00:05:13.778 +05:30 [INF] HTTP OPTIONS /api/doctors/available responded 204 in 0.1230 ms
+2026-07-15 00:05:13.785 +05:30 [INF] Cache MISS for key: doctors:available:general-physician:2026-07-16
+2026-07-15 00:05:13.804 +05:30 [INF] Cache SET for key: doctors:available:general-physician:2026-07-16 with 5 minutes TTL
+2026-07-15 00:05:13.806 +05:30 [INF] HTTP GET /api/doctors/available responded 200 in 22.0978 ms
+2026-07-15 00:11:10.505 +05:30 [INF] HTTP OPTIONS /api/doctors/available responded 204 in 0.2050 ms
+2026-07-15 00:11:10.538 +05:30 [INF] HTTP GET /api/doctors/available responded 401 in 18.7732 ms
+2026-07-15 00:11:14.293 +05:30 [INF] HTTP OPTIONS /api/doctors/available responded 204 in 0.0567 ms
+2026-07-15 00:11:14.304 +05:30 [INF] HTTP GET /api/doctors/available responded 401 in 2.3162 ms
+2026-07-15 00:14:49.749 +05:30 [INF] Configured endpoint appointment.events.queue, Consumer: HealthCare.Api.Messaging.AppointmentBookedConsumer
+2026-07-15 00:14:51.845 +05:30 [INF] Now listening on: https://localhost:7234
+2026-07-15 00:14:51.847 +05:30 [INF] Bus started: "rabbitmq://localhost/"
+2026-07-15 00:14:51.854 +05:30 [INF] Now listening on: http://localhost:5225
+2026-07-15 00:14:51.953 +05:30 [INF] Application started. Press Ctrl+C to shut down.
+2026-07-15 00:14:51.956 +05:30 [INF] Hosting environment: Development
+2026-07-15 00:14:51.959 +05:30 [INF] Content root path: C:\Users\310508\source\repos\UST-Live-01\HealthCare\HealthCare.Api
+2026-07-15 00:19:51.953 +05:30 [INF] Usage Telemetry: {"id":"d8450000-e56a-1944-d23a-08dee1d7fc07","created":"2026-07-15T00:14:49.5784300\u002B05:30","host":{"framework_version":"10.0.8","mass_transit_version":"8.5.10.0","operating_system_version":"Microsoft Windows NT 10.0.26200.0","time_zone_info":"(UTC\u002B05:30) Chennai, Kolkata, Mumbai, New Delhi","commit_hash":"62ab339afa3bac2e9b3fe1769d0d35d7e44778e9"},"bus":[{"created":"2026-07-15T00:14:49.5858519\u002B05:30","configured":"2026-07-15T00:14:51.0509056\u002B05:30","started":"2026-07-15T00:14:51.8393075\u002B05:30","name":"IBus","endpoints":[{"name":"appointment.events.queue","type":"RabbitMQ","prefetch_count":16,"consumer_count":1,"message_count":1},{"name":"_bus_","type":"RabbitMQ","prefetch_count":16}]}]}
+2026-07-15 09:36:41.328 +05:30 [INF] Configured endpoint appointment.events.queue, Consumer: HealthCare.Api.Messaging.AppointmentBookedConsumer
+2026-07-15 09:36:42.544 +05:30 [INF] Now listening on: https://localhost:7234
+2026-07-15 09:36:42.548 +05:30 [INF] Now listening on: http://localhost:5225
+2026-07-15 09:36:42.605 +05:30 [INF] Bus started: "rabbitmq://localhost/"
+2026-07-15 09:36:42.607 +05:30 [INF] Application started. Press Ctrl+C to shut down.
+2026-07-15 09:36:42.629 +05:30 [INF] Hosting environment: Development
+2026-07-15 09:36:42.631 +05:30 [INF] Content root path: C:\Users\310508\source\repos\UST-Live-01\HealthCare\HealthCare.Api
+2026-07-15 09:37:06.882 +05:30 [INF] HTTP OPTIONS /api/auth/login responded 204 in 50.8020 ms
+2026-07-15 09:37:07.101 +05:30 [WRN] You do not have a valid license key for the Lucky Penny software AutoMapper. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.
+2026-07-15 09:37:07.599 +05:30 [INF] HTTP POST /api/auth/login responded 200 in 692.5907 ms
+2026-07-15 09:37:07.946 +05:30 [INF] HTTP OPTIONS /api/records/my-records responded 204 in 0.4625 ms
+2026-07-15 09:37:07.946 +05:30 [INF] HTTP OPTIONS /api/appointments/patient/upcoming responded 204 in 0.8230 ms
+2026-07-15 09:37:08.149 +05:30 [INF] HTTP GET /api/records/my-records responded 200 in 197.4496 ms
+2026-07-15 09:37:08.387 +05:30 [INF] HTTP GET /api/appointments/patient/upcoming responded 200 in 434.3343 ms
+2026-07-15 09:37:10.342 +05:30 [INF] HTTP OPTIONS /api/patients/profile responded 204 in 0.3545 ms
+2026-07-15 09:37:10.438 +05:30 [INF] HTTP GET /api/patients/profile responded 200 in 78.8798 ms
+2026-07-15 09:37:23.845 +05:30 [INF] HTTP OPTIONS /api/appointments/patient/upcoming responded 204 in 0.1706 ms
+2026-07-15 09:37:23.862 +05:30 [INF] HTTP GET /api/appointments/patient/upcoming responded 200 in 11.4999 ms
+2026-07-15 09:37:28.303 +05:30 [INF] HTTP OPTIONS /api/records/my-records responded 204 in 0.5399 ms
+2026-07-15 09:37:28.314 +05:30 [INF] HTTP GET /api/records/my-records responded 200 in 4.6185 ms
+2026-07-15 09:38:48.059 +05:30 [INF] HTTP OPTIONS /api/auth/login responded 204 in 0.2635 ms
+2026-07-15 09:38:48.158 +05:30 [INF] HTTP POST /api/auth/login responded 200 in 91.4393 ms
+2026-07-15 09:38:48.170 +05:30 [INF] HTTP OPTIONS /api/appointments/patient/upcoming responded 204 in 0.1615 ms
+2026-07-15 09:38:48.171 +05:30 [INF] HTTP OPTIONS /api/records/my-records responded 204 in 0.0880 ms
+2026-07-15 09:38:48.192 +05:30 [INF] HTTP GET /api/records/my-records responded 200 in 9.6069 ms
+2026-07-15 09:38:48.198 +05:30 [INF] HTTP GET /api/appointments/patient/upcoming responded 200 in 20.0883 ms
+2026-07-15 09:38:50.342 +05:30 [INF] HTTP GET /api/records/my-records responded 200 in 5.1630 ms
+2026-07-15 09:38:52.700 +05:30 [INF] HTTP GET /api/appointments/patient/upcoming responded 200 in 5.4363 ms
+2026-07-15 09:38:56.709 +05:30 [INF] HTTP OPTIONS /api/patients/profile responded 204 in 0.2123 ms
+2026-07-15 09:38:56.722 +05:30 [INF] HTTP GET /api/patients/profile responded 200 in 6.8773 ms
+2026-07-15 09:38:58.193 +05:30 [INF] HTTP OPTIONS /api/appointments/patient/upcoming responded 204 in 0.1136 ms
+2026-07-15 09:38:58.193 +05:30 [INF] HTTP OPTIONS /api/records/my-records responded 204 in 0.1138 ms
+2026-07-15 09:38:58.203 +05:30 [INF] HTTP GET /api/appointments/patient/upcoming responded 200 in 3.2313 ms
+2026-07-15 09:38:58.203 +05:30 [INF] HTTP GET /api/records/my-records responded 200 in 3.1445 ms
+2026-07-15 09:39:00.949 +05:30 [INF] HTTP GET /api/records/my-records responded 200 in 3.5931 ms
+2026-07-15 09:39:21.908 +05:30 [INF] HTTP OPTIONS /api/records/my-records responded 204 in 0.1279 ms
+2026-07-15 09:39:21.977 +05:30 [INF] HTTP GET /api/records/my-records responded 200 in 18.2958 ms
+2026-07-15 09:41:42.671 +05:30 [INF] Usage Telemetry: {"id":"58580000-e56a-1944-bb2d-08dee22679c3","created":"2026-07-15T09:36:41.2695730\u002B05:30","host":{"framework_version":"10.0.8","mass_transit_version":"8.5.10.0","operating_system_version":"Microsoft Windows NT 10.0.26200.0","time_zone_info":"(UTC\u002B05:30) Chennai, Kolkata, Mumbai, New Delhi","commit_hash":"62ab339afa3bac2e9b3fe1769d0d35d7e44778e9"},"bus":[{"created":"2026-07-15T09:36:41.2719344\u002B05:30","configured":"2026-07-15T09:36:42.1212008\u002B05:30","started":"2026-07-15T09:36:42.6024925\u002B05:30","name":"IBus","endpoints":[{"name":"appointment.events.queue","type":"RabbitMQ","prefetch_count":16,"consumer_count":1,"message_count":1},{"name":"_bus_","type":"RabbitMQ","prefetch_count":16}]}]}
+2026-07-15 10:47:30.691 +05:30 [INF] HTTP OPTIONS /api/appointments/patient/upcoming responded 204 in 4.9237 ms
+2026-07-15 10:47:30.743 +05:30 [INF] HTTP GET /api/appointments/patient/upcoming responded 401 in 34.1789 ms
+2026-07-15 10:47:32.594 +05:30 [INF] HTTP OPTIONS /api/records/my-records responded 204 in 0.4266 ms
+2026-07-15 10:47:32.639 +05:30 [INF] HTTP GET /api/records/my-records responded 401 in 3.5098 ms
+2026-07-15 11:22:42.366 +05:30 [INF] Configured endpoint appointment.events.queue, Consumer: HealthCare.Api.Messaging.AppointmentBookedConsumer
+2026-07-15 11:22:43.050 +05:30 [INF] Now listening on: https://localhost:7234
+2026-07-15 11:22:43.055 +05:30 [INF] Now listening on: http://localhost:5225
+2026-07-15 11:22:43.122 +05:30 [INF] Bus started: "rabbitmq://localhost/"
+2026-07-15 11:22:43.163 +05:30 [INF] Application started. Press Ctrl+C to shut down.
+2026-07-15 11:22:43.165 +05:30 [INF] Hosting environment: Development
+2026-07-15 11:22:43.166 +05:30 [INF] Content root path: C:\Users\310508\source\repos\UST-Live-01\HealthCare\HealthCare.Api
+2026-07-15 11:23:06.686 +05:30 [INF] HTTP OPTIONS /api/auth/login responded 204 in 36.1780 ms
+2026-07-15 11:23:06.874 +05:30 [WRN] You do not have a valid license key for the Lucky Penny software AutoMapper. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.
+2026-07-15 11:23:07.455 +05:30 [INF] HTTP POST /api/auth/login responded 200 in 748.1859 ms
+2026-07-15 11:23:07.810 +05:30 [INF] HTTP OPTIONS /api/appointments/patient/upcoming responded 204 in 0.8176 ms
+2026-07-15 11:23:07.810 +05:30 [INF] HTTP OPTIONS /api/records/my-records responded 204 in 0.7233 ms
+2026-07-15 11:23:08.051 +05:30 [INF] HTTP GET /api/records/my-records responded 200 in 231.5783 ms
+2026-07-15 11:23:08.231 +05:30 [INF] HTTP GET /api/appointments/patient/upcoming responded 200 in 414.5273 ms
+2026-07-15 11:23:11.869 +05:30 [INF] HTTP GET /api/records/my-records responded 200 in 14.8923 ms
+2026-07-15 11:23:13.771 +05:30 [INF] HTTP OPTIONS /api/appointments/patient/upcoming responded 204 in 0.2004 ms
+2026-07-15 11:23:13.832 +05:30 [INF] HTTP GET /api/appointments/patient/upcoming responded 200 in 5.6180 ms
+2026-07-15 11:23:15.009 +05:30 [INF] HTTP OPTIONS /api/records/my-records responded 204 in 0.1929 ms
+2026-07-15 11:23:15.025 +05:30 [INF] HTTP GET /api/records/my-records responded 200 in 9.0363 ms
+2026-07-15 11:27:43.191 +05:30 [INF] Usage Telemetry: {"id":"4c5b0000-e56a-1944-9dfc-08dee235493b","created":"2026-07-15T11:22:42.2979147\u002B05:30","host":{"framework_version":"10.0.8","mass_transit_version":"8.5.10.0","operating_system_version":"Microsoft Windows NT 10.0.26200.0","time_zone_info":"(UTC\u002B05:30) Chennai, Kolkata, Mumbai, New Delhi","commit_hash":"62ab339afa3bac2e9b3fe1769d0d35d7e44778e9"},"bus":[{"created":"2026-07-15T11:22:42.3015074\u002B05:30","configured":"2026-07-15T11:22:42.6050727\u002B05:30","started":"2026-07-15T11:22:43.1195869\u002B05:30","name":"IBus","endpoints":[{"name":"appointment.events.queue","type":"RabbitMQ","prefetch_count":16,"consumer_count":1,"message_count":1},{"name":"_bus_","type":"RabbitMQ","prefetch_count":16}]}]}
+2026-07-15 11:28:02.632 +05:30 [INF] HTTP OPTIONS /api/auth/login responded 204 in 0.2022 ms
+2026-07-15 11:28:02.839 +05:30 [INF] HTTP POST /api/auth/login responded 200 in 201.6215 ms
+2026-07-15 11:28:03.172 +05:30 [INF] HTTP OPTIONS /api/doctors/dashboard-summary responded 204 in 0.1881 ms
+2026-07-15 11:28:03.279 +05:30 [INF] HTTP GET /api/doctors/dashboard-summary responded 200 in 97.9358 ms
+2026-07-15 11:28:09.246 +05:30 [INF] HTTP OPTIONS /api/appointments/doctor/upcoming responded 204 in 0.1686 ms
+2026-07-15 11:28:09.302 +05:30 [INF] HTTP GET /api/appointments/doctor/upcoming responded 200 in 50.9769 ms
+2026-07-15 11:28:18.204 +05:30 [INF] HTTP OPTIONS /api/records/by-patient/15 responded 204 in 0.2417 ms
+2026-07-15 11:28:18.234 +05:30 [INF] HTTP GET /api/records/by-patient/15 responded 200 in 24.0063 ms
+2026-07-15 11:30:52.544 +05:30 [INF] HTTP OPTIONS /api/records/by-patient/15 responded 204 in 0.2013 ms
+2026-07-15 11:30:52.566 +05:30 [INF] HTTP GET /api/records/by-patient/15 responded 200 in 16.9210 ms
+2026-07-15 11:36:24.506 +05:30 [INF] HTTP OPTIONS /api/auth/login responded 204 in 0.2525 ms
+2026-07-15 11:36:24.837 +05:30 [INF] HTTP POST /api/auth/login responded 200 in 325.2227 ms
+2026-07-15 11:36:24.848 +05:30 [INF] HTTP OPTIONS /api/appointments/patient/upcoming responded 204 in 0.1451 ms
+2026-07-15 11:36:24.848 +05:30 [INF] HTTP OPTIONS /api/records/my-records responded 204 in 0.0767 ms
+2026-07-15 11:36:24.866 +05:30 [INF] HTTP GET /api/records/my-records responded 200 in 10.9660 ms
+2026-07-15 11:36:25.059 +05:30 [INF] HTTP GET /api/appointments/patient/upcoming responded 200 in 204.5770 ms
+2026-07-15 11:36:27.366 +05:30 [INF] HTTP OPTIONS /api/patients/profile responded 204 in 0.1624 ms
+2026-07-15 11:36:27.413 +05:30 [INF] HTTP GET /api/patients/profile responded 200 in 41.8115 ms
+2026-07-15 11:36:30.415 +05:30 [INF] HTTP OPTIONS /api/appointments/patient/upcoming responded 204 in 0.2162 ms
+2026-07-15 11:36:30.423 +05:30 [INF] HTTP GET /api/appointments/patient/upcoming responded 200 in 2.5450 ms
+2026-07-15 11:36:32.247 +05:30 [INF] HTTP OPTIONS /api/records/my-records responded 204 in 0.2054 ms
+2026-07-15 11:36:32.256 +05:30 [INF] HTTP GET /api/records/my-records responded 200 in 2.7570 ms
+2026-07-15 11:38:42.378 +05:30 [INF] HTTP OPTIONS /api/records/my-records responded 204 in 0.2704 ms
+2026-07-15 11:38:42.397 +05:30 [INF] HTTP GET /api/records/my-records responded 200 in 11.3888 ms
+2026-07-15 11:48:15.041 +05:30 [INF] HTTP OPTIONS /api/appointments/patient/upcoming responded 204 in 0.1542 ms
+2026-07-15 11:48:15.314 +05:30 [INF] HTTP GET /api/appointments/patient/upcoming responded 200 in 266.9638 ms
+2026-07-15 11:48:16.686 +05:30 [INF] HTTP OPTIONS /api/records/my-records responded 204 in 0.0862 ms
+2026-07-15 11:48:16.707 +05:30 [INF] HTTP GET /api/records/my-records responded 200 in 9.7690 ms
+2026-07-15 11:48:26.033 +05:30 [INF] HTTP OPTIONS /api/appointments/patient/upcoming responded 204 in 0.1290 ms
+2026-07-15 11:48:26.046 +05:30 [INF] HTTP GET /api/appointments/patient/upcoming responded 200 in 5.7059 ms
+2026-07-15 11:48:27.241 +05:30 [INF] HTTP OPTIONS /api/records/my-records responded 204 in 0.0921 ms
+2026-07-15 11:48:27.250 +05:30 [INF] HTTP GET /api/records/my-records responded 200 in 2.0287 ms
+2026-07-15 11:48:44.291 +05:30 [INF] HTTP OPTIONS /api/appointments/patient/upcoming responded 204 in 0.1562 ms
+2026-07-15 11:48:44.300 +05:30 [INF] HTTP GET /api/appointments/patient/upcoming responded 200 in 2.7200 ms
+2026-07-15 11:48:45.201 +05:30 [INF] HTTP OPTIONS /api/records/my-records responded 204 in 0.1515 ms
+2026-07-15 11:48:45.211 +05:30 [INF] HTTP GET /api/records/my-records responded 200 in 4.3994 ms
+2026-07-15 11:49:07.881 +05:30 [INF] HTTP OPTIONS /api/appointments/patient/upcoming responded 204 in 0.1390 ms
+2026-07-15 11:49:07.907 +05:30 [INF] HTTP GET /api/appointments/patient/upcoming responded 200 in 13.9646 ms
+2026-07-15 11:49:09.562 +05:30 [INF] HTTP OPTIONS /api/records/my-records responded 204 in 0.0922 ms
+2026-07-15 11:49:09.577 +05:30 [INF] HTTP GET /api/records/my-records responded 200 in 10.6006 ms
+2026-07-15 12:13:05.879 +05:30 [INF] Configured endpoint appointment.events.queue, Consumer: HealthCare.Api.Messaging.AppointmentBookedConsumer
+2026-07-15 12:13:06.539 +05:30 [INF] Bus started: "rabbitmq://localhost/"
+2026-07-15 12:13:06.591 +05:30 [INF] Now listening on: https://localhost:7234
+2026-07-15 12:13:06.593 +05:30 [INF] Now listening on: http://localhost:5225
+2026-07-15 12:13:06.675 +05:30 [INF] Application started. Press Ctrl+C to shut down.
+2026-07-15 12:13:06.677 +05:30 [INF] Hosting environment: Development
+2026-07-15 12:13:06.684 +05:30 [INF] Content root path: C:\Users\310508\source\repos\UST-Live-01\HealthCare\HealthCare.Api
+2026-07-15 12:13:17.344 +05:30 [INF] HTTP OPTIONS /api/auth/login responded 204 in 27.7365 ms
+2026-07-15 12:13:17.517 +05:30 [WRN] You do not have a valid license key for the Lucky Penny software AutoMapper. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.
+2026-07-15 12:13:17.966 +05:30 [INF] HTTP POST /api/auth/login responded 200 in 605.0990 ms
+2026-07-15 12:13:18.321 +05:30 [INF] HTTP OPTIONS /api/appointments/patient/upcoming responded 204 in 0.8872 ms
+2026-07-15 12:13:18.326 +05:30 [INF] HTTP OPTIONS /api/records/my-records responded 204 in 0.1884 ms
+2026-07-15 12:13:18.516 +05:30 [INF] HTTP GET /api/records/my-records responded 200 in 179.4453 ms
+2026-07-15 12:13:18.737 +05:30 [INF] HTTP GET /api/appointments/patient/upcoming responded 200 in 406.1404 ms
+2026-07-15 12:13:20.819 +05:30 [INF] HTTP GET /api/records/my-records responded 200 in 28.2054 ms
+2026-07-15 12:18:06.578 +05:30 [INF] Usage Telemetry: {"id":"9c620000-e56a-1944-a1b0-08dee23c5366","created":"2026-07-15T12:13:05.8340510\u002B05:30","host":{"framework_version":"10.0.8","mass_transit_version":"8.5.10.0","operating_system_version":"Microsoft Windows NT 10.0.26200.0","time_zone_info":"(UTC\u002B05:30) Chennai, Kolkata, Mumbai, New Delhi","commit_hash":"62ab339afa3bac2e9b3fe1769d0d35d7e44778e9"},"bus":[{"created":"2026-07-15T12:13:05.8366755\u002B05:30","configured":"2026-07-15T12:13:06.1561102\u002B05:30","started":"2026-07-15T12:13:06.5361400\u002B05:30","name":"IBus","endpoints":[{"name":"appointment.events.queue","type":"RabbitMQ","prefetch_count":16,"consumer_count":1,"message_count":1},{"name":"_bus_","type":"RabbitMQ","prefetch_count":16}]}]}
+2026-07-15 18:28:04.824 +05:30 [INF] Configured endpoint appointment.events.queue, Consumer: HealthCare.Api.Messaging.AppointmentBookedConsumer
+2026-07-15 18:28:08.446 +05:30 [INF] Now listening on: https://localhost:7234
+2026-07-15 18:28:08.457 +05:30 [INF] Now listening on: http://localhost:5225
+2026-07-15 18:28:08.621 +05:30 [INF] Application started. Press Ctrl+C to shut down.
+2026-07-15 18:28:08.628 +05:30 [INF] Hosting environment: Development
+2026-07-15 18:28:08.639 +05:30 [INF] Content root path: C:\Users\310508\source\repos\UST-Live-01\HealthCare\HealthCare.Api
+2026-07-15 18:28:08.735 +05:30 [INF] Bus started: "rabbitmq://localhost/"
+2026-07-15 18:32:49.236 +05:30 [INF] Configured endpoint appointment.events.queue, Consumer: HealthCare.Api.Messaging.AppointmentBookedConsumer
+2026-07-15 18:32:52.093 +05:30 [INF] Bus started: "rabbitmq://localhost/"
+2026-07-15 18:32:52.223 +05:30 [INF] Now listening on: https://localhost:7234
+2026-07-15 18:32:52.230 +05:30 [INF] Now listening on: http://localhost:5225
+2026-07-15 18:32:52.341 +05:30 [INF] Application started. Press Ctrl+C to shut down.
+2026-07-15 18:32:52.345 +05:30 [INF] Hosting environment: Development
+2026-07-15 18:32:52.350 +05:30 [INF] Content root path: C:\Users\310508\source\repos\UST-Live-01\HealthCare\HealthCare.Api
+2026-07-15 18:35:29.688 +05:30 [INF] HTTP OPTIONS /api/auth/login responded 204 in 93.2862 ms
+2026-07-15 18:35:30.216 +05:30 [WRN] You do not have a valid license key for the Lucky Penny software AutoMapper. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.
+2026-07-15 18:35:31.693 +05:30 [INF] HTTP POST /api/auth/login responded 200 in 1956.4496 ms
+2026-07-15 18:35:32.092 +05:30 [INF] HTTP OPTIONS /api/records/my-records responded 204 in 1.8633 ms
+2026-07-15 18:35:32.093 +05:30 [INF] HTTP OPTIONS /api/appointments/patient/upcoming responded 204 in 2.6742 ms
+2026-07-15 18:35:32.635 +05:30 [INF] HTTP GET /api/records/my-records responded 200 in 500.7805 ms
+2026-07-15 18:35:33.358 +05:30 [INF] HTTP GET /api/appointments/patient/upcoming responded 200 in 1215.6438 ms
+2026-07-15 18:35:49.376 +05:30 [INF] HTTP OPTIONS /api/doctors/available responded 204 in 0.6284 ms
+2026-07-15 18:35:50.340 +05:30 [INF] Cache MISS for key: doctors:available:dermatologist:2026-07-16
+2026-07-15 18:35:50.668 +05:30 [INF] Cache SET for key: doctors:available:dermatologist:2026-07-16 with 5 minutes TTL
+2026-07-15 18:35:50.675 +05:30 [INF] HTTP GET /api/doctors/available responded 200 in 1285.6102 ms
+2026-07-15 18:35:53.536 +05:30 [INF] HTTP OPTIONS /api/appointments/available-slots responded 204 in 0.7778 ms
+2026-07-15 18:35:53.630 +05:30 [INF] HTTP GET /api/appointments/available-slots responded 200 in 81.2408 ms
+2026-07-15 18:36:25.249 +05:30 [INF] HTTP OPTIONS /api/appointments/patient/upcoming responded 204 in 0.2570 ms
+2026-07-15 18:36:25.361 +05:30 [INF] HTTP GET /api/appointments/patient/upcoming responded 200 in 63.8933 ms
+2026-07-15 18:36:37.448 +05:30 [INF] HTTP OPTIONS /api/doctors/available responded 204 in 0.5203 ms
+2026-07-15 18:36:37.519 +05:30 [INF] Cache HIT for key: doctors:available:dermatologist:2026-07-16
+2026-07-15 18:36:37.531 +05:30 [INF] HTTP GET /api/doctors/available responded 200 in 66.8277 ms
+2026-07-15 18:36:39.432 +05:30 [INF] HTTP OPTIONS /api/appointments/available-slots responded 204 in 0.1481 ms
+2026-07-15 18:36:39.461 +05:30 [INF] HTTP GET /api/appointments/available-slots responded 200 in 17.1584 ms
+2026-07-15 18:37:13.141 +05:30 [INF] HTTP OPTIONS /api/appointments/book responded 204 in 1.3506 ms
+2026-07-15 18:37:14.042 +05:30 [INF] Appointment booked: AppointmentId 1026
+2026-07-15 18:37:14.602 +05:30 [INF] AppointmentBookedEvent published. AppointmentId: 1026, DoctorId: 6
+2026-07-15 18:37:14.611 +05:30 [INF] HTTP POST /api/appointments/book responded 200 in 1455.4123 ms
+2026-07-15 18:37:14.688 +05:30 [INF] Received AppointmentBookedEvent. AppointmentId=1026
+2026-07-15 18:37:14.796 +05:30 [INF] Notification created for DoctorId 6 from AppointmentId 1026
+2026-07-15 18:37:52.186 +05:30 [INF] Usage Telemetry: {"id":"e8570000-e56a-1944-269b-08dee2715f43","created":"2026-07-15T18:32:49.0612902\u002B05:30","host":{"framework_version":"10.0.8","mass_transit_version":"8.5.10.0","operating_system_version":"Microsoft Windows NT 10.0.26200.0","time_zone_info":"(UTC\u002B05:30) Chennai, Kolkata, Mumbai, New Delhi","commit_hash":"62ab339afa3bac2e9b3fe1769d0d35d7e44778e9"},"bus":[{"created":"2026-07-15T18:32:49.0682451\u002B05:30","configured":"2026-07-15T18:32:51.2055624\u002B05:30","started":"2026-07-15T18:32:52.0882422\u002B05:30","name":"IBus","endpoints":[{"name":"appointment.events.queue","type":"RabbitMQ","prefetch_count":16,"consumer_count":1,"message_count":1},{"name":"_bus_","type":"RabbitMQ","prefetch_count":16}]}]}
+2026-07-15 18:42:48.348 +05:30 [INF] Configured endpoint appointment.events.queue, Consumer: HealthCare.Api.Messaging.AppointmentBookedConsumer
+2026-07-15 18:42:50.761 +05:30 [INF] Bus started: "rabbitmq://localhost/"
+2026-07-15 18:42:50.863 +05:30 [INF] Now listening on: https://localhost:7234
+2026-07-15 18:42:50.869 +05:30 [INF] Now listening on: http://localhost:5225
+2026-07-15 18:42:50.979 +05:30 [INF] Application started. Press Ctrl+C to shut down.
+2026-07-15 18:42:50.984 +05:30 [INF] Hosting environment: Development
+2026-07-15 18:42:50.989 +05:30 [INF] Content root path: C:\Users\310508\source\repos\UST-Live-01\HealthCare\HealthCare.Api
+2026-07-15 18:43:49.265 +05:30 [INF] HTTP OPTIONS /api/auth/login responded 204 in 73.5079 ms
+2026-07-15 18:43:49.640 +05:30 [WRN] You do not have a valid license key for the Lucky Penny software AutoMapper. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.
+2026-07-15 18:43:50.702 +05:30 [INF] HTTP POST /api/auth/login responded 200 in 1395.7689 ms
+2026-07-15 18:43:51.085 +05:30 [INF] HTTP OPTIONS /api/records/my-records responded 204 in 2.3292 ms
+2026-07-15 18:43:51.085 +05:30 [INF] HTTP OPTIONS /api/appointments/patient/upcoming responded 204 in 3.1671 ms
+2026-07-15 18:43:51.607 +05:30 [INF] HTTP GET /api/records/my-records responded 200 in 475.0484 ms
+2026-07-15 18:43:52.137 +05:30 [INF] HTTP GET /api/appointments/patient/upcoming responded 200 in 998.1246 ms
+2026-07-15 18:43:53.118 +05:30 [INF] HTTP OPTIONS /api/patients/profile responded 204 in 0.2579 ms
+2026-07-15 18:43:53.338 +05:30 [INF] HTTP GET /api/patients/profile responded 200 in 190.4597 ms
+2026-07-15 18:44:03.646 +05:30 [INF] HTTP OPTIONS /api/doctors/available responded 204 in 0.3236 ms
+2026-07-15 18:44:04.195 +05:30 [INF] Cache MISS for key: doctors:available:cardiologist:2026-07-16
+2026-07-15 18:44:04.427 +05:30 [INF] Cache SET for key: doctors:available:cardiologist:2026-07-16 with 5 minutes TTL
+2026-07-15 18:44:04.436 +05:30 [INF] HTTP GET /api/doctors/available responded 200 in 774.3290 ms
+2026-07-15 18:44:05.765 +05:30 [INF] HTTP OPTIONS /api/appointments/available-slots responded 204 in 0.3045 ms
+2026-07-15 18:44:05.878 +05:30 [INF] HTTP GET /api/appointments/available-slots responded 200 in 85.6713 ms
+2026-07-15 18:44:30.023 +05:30 [INF] HTTP OPTIONS /api/appointments/patient/upcoming responded 204 in 1.2108 ms
+2026-07-15 18:44:30.158 +05:30 [INF] HTTP GET /api/appointments/patient/upcoming responded 200 in 81.3694 ms
+2026-07-15 18:44:40.650 +05:30 [INF] HTTP OPTIONS /api/doctors/available responded 204 in 0.2206 ms
+2026-07-15 18:44:40.688 +05:30 [INF] Cache HIT for key: doctors:available:cardiologist:2026-07-16
+2026-07-15 18:44:40.701 +05:30 [INF] HTTP GET /api/doctors/available responded 200 in 37.1633 ms
+2026-07-15 18:44:43.939 +05:30 [INF] HTTP OPTIONS /api/appointments/available-slots responded 204 in 0.9355 ms
+2026-07-15 18:44:43.985 +05:30 [INF] HTTP GET /api/appointments/available-slots responded 200 in 13.1061 ms
+2026-07-15 18:45:07.119 +05:30 [INF] HTTP OPTIONS /api/appointments/book responded 204 in 0.4352 ms
+2026-07-15 18:45:07.921 +05:30 [INF] Appointment booked: AppointmentId 1027
+2026-07-15 18:45:08.386 +05:30 [INF] AppointmentBookedEvent published. AppointmentId: 1027, DoctorId: 3
+2026-07-15 18:45:08.396 +05:30 [INF] HTTP POST /api/appointments/book responded 200 in 1266.0577 ms
+2026-07-15 18:45:08.477 +05:30 [INF] Received AppointmentBookedEvent. AppointmentId=1027
+2026-07-15 18:45:08.583 +05:30 [INF] Notification created for DoctorId 3 from AppointmentId 1027
+2026-07-15 18:47:50.864 +05:30 [INF] Usage Telemetry: {"id":"ec660000-e56a-1944-7677-08dee272c462","created":"2026-07-15T18:42:48.2130723\u002B05:30","host":{"framework_version":"10.0.8","mass_transit_version":"8.5.10.0","operating_system_version":"Microsoft Windows NT 10.0.26200.0","time_zone_info":"(UTC\u002B05:30) Chennai, Kolkata, Mumbai, New Delhi","commit_hash":"62ab339afa3bac2e9b3fe1769d0d35d7e44778e9"},"bus":[{"created":"2026-07-15T18:42:48.2201892\u002B05:30","configured":"2026-07-15T18:42:49.9693462\u002B05:30","started":"2026-07-15T18:42:50.7537015\u002B05:30","name":"IBus","endpoints":[{"name":"appointment.events.queue","type":"RabbitMQ","prefetch_count":16,"consumer_count":1,"message_count":1},{"name":"_bus_","type":"RabbitMQ","prefetch_count":16}]}]}

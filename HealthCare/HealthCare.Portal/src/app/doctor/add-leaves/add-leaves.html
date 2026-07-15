@@ -1,23 +1,83 @@
 <div class="form-card">
-  <h1>Add Leave</h1>
+  <h1>
+    <i class="bi bi-calendar-x"></i>
+    Add Leave
+  </h1>
 
-  <form (ngSubmit)="addLeave()">
+  <form (ngSubmit)="submitLeaves()">
+
     <div class="form-group">
-      <label>Leave Date</label>
-      <input type="date"
-             name="leaveDate"
-             [min]="minDate"
-             [(ngModel)]="leaveDate">
+      <label>
+        <i class="bi bi-calendar-date"></i>
+        Leave Date
+      </label>
+
+      <div class="date-row">
+        <input type="date"
+               name="leaveDate"
+               [min]="minDate"
+               [ngModel]="leaveDate()"
+               (ngModelChange)="leaveDate.set($event)" />
+
+        <button type="button"
+                class="add-btn"
+                (click)="addLeave()">
+          <i class="bi bi-plus-circle"></i>
+          Add
+        </button>
+      </div>
+    </div>
+
+    <div class="message success-message" *ngIf="successMessage()">
+      <i class="bi bi-check-circle"></i>
+      {{ successMessage() }}
+    </div>
+
+    <div class="message error-message" *ngIf="errorMessage()">
+      <i class="bi bi-exclamation-circle"></i>
+      {{ errorMessage() }}
+    </div>
+
+    <div class="selected-leaves" *ngIf="hasSelectedLeaves()">
+      <h3>
+        <i class="bi bi-list-check"></i>
+        Selected Leaves
+      </h3>
+
+      <div class="leave-item"
+           *ngFor="let leave of selectedLeaves(); let i = index">
+        <span>
+          <i class="bi bi-calendar-event"></i>
+          {{ leave.leaveDate }}
+        </span>
+
+        <button type="button"
+                class="delete-btn"
+                (click)="removeLeave(i)">
+          <i class="bi bi-trash3"></i>
+        </button>
+      </div>
     </div>
 
     <div class="form-group">
-      <label>Reason</label>
+      <label>
+        <i class="bi bi-chat-left-text"></i>
+        Reason
+      </label>
+
       <textarea name="reason"
-                [(ngModel)]="reason"
-                rows="4">
-      </textarea>
+                rows="4"
+                placeholder="Optional reason for leave..."
+                [ngModel]="reason()"
+                (ngModelChange)="reason.set($event)"></textarea>
     </div>
 
-    <button type="submit">Add Leave</button>
+    <button type="submit"
+            class="submit-btn"
+            [disabled]="isSubmitting()">
+      <i class="bi bi-check-circle"></i>
+      {{ isSubmitting() ? 'Submitting...' : 'Submit Leaves' }}
+    </button>
+
   </form>
 </div>

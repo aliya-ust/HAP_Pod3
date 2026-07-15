@@ -252,7 +252,6 @@ public class JwtServiceTests
         var token = new JwtSecurityTokenHandler()
             .ReadJwtToken(tokenString);
 
-        Assert.NotNull(token.ValidTo);
         Assert.True(token.ValidTo > DateTime.UtcNow);
     }
 }

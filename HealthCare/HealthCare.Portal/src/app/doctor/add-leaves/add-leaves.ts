@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, computed, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DoctorService } from '../../core/services/doctor.service';
+import { CreateLeaveRequest } from '../../core/models/portal.models';
 
 @Component({
   selector: 'app-add-leaves',
@@ -12,8 +13,17 @@ import { DoctorService } from '../../core/services/doctor.service';
 })
 export class AddLeaves {
   minDate = this.getTodayDate();
-  leaveDate = '';
-  reason = '';
+
+  leaveDate = signal('');
+  reason = signal('');
+
+  selectedLeaves = signal<CreateLeaveRequest[]>([]);
+
+  isSubmitting = signal(false);
+  successMessage = signal('');
+  errorMessage = signal('');
+
+  hasSelectedLeaves = computed(() => this.selectedLeaves().length > 0);
 
   constructor(private doctorService: DoctorService) { }
 
@@ -23,25 +33,79 @@ export class AddLeaves {
   }
 
   addLeave(): void {
-    if (!this.leaveDate) {
-      alert('Please select leave date');
+    this.successMessage.set('');
+    this.errorMessage.set('');
+
+    if (!this.leaveDate()) {
+      this.errorMessage.set('Please select leave date');
       return;
     }
 
-    this.doctorService.addLeaves([
-      {
-        leaveDate: this.leaveDate,
-        reason: this.reason
-      }
-    ]).subscribe({
+    const alreadyAdded = this.selectedLeaves().some(
+      leave => leave.leaveDate === this.leaveDate()
+    );
+
+    if (alreadyAdded) {
+      this.errorMessage.set('This leave date is already added');
+      return;
+    }
+
+    const newLeave: CreateLeaveRequest = {
+      leaveDate: this.leaveDate(),
+      reason: this.reason()
+    };
+
+    this.selectedLeaves.update(leaves => [
+      ...leaves,
+      newLeave
+    ]);
+
+    this.leaveDate.set('');
+  }
+
+  removeLeave(index: number): void {
+    this.selectedLeaves.update(leaves =>
+      leaves.filter((_, i) => i !== index)
+    );
+
+    this.successMessage.set('');
+    this.errorMessage.set('');
+  }
+
+  submitLeaves(): void {
+    this.successMessage.set('');
+    this.errorMessage.set('');
+
+    if (this.selectedLeaves().length === 0) {
+      this.errorMessage.set('Please add at least one leave date');
+      return;
+    }
+
+    const leavesToSubmit: CreateLeaveRequest[] = this.selectedLeaves().map(
+      leave => ({
+        leaveDate: leave.leaveDate,
+        reason: this.reason() || leave.reason
+      })
+    );
+
+    this.isSubmitting.set(true);
+
+    this.doctorService.addLeaves(leavesToSubmit).subscribe({
       next: () => {
-        alert('Leave added successfully');
-        this.leaveDate = '';
-        this.reason = '';
+        this.successMessage.set('Leaves added successfully');
+
+        this.selectedLeaves.set([]);
+        this.leaveDate.set('');
+        this.reason.set('');
+        this.isSubmitting.set(false);
       },
       error: (error) => {
-        alert(error?.error?.message || 'Failed to add leave');
-      } 
+        this.errorMessage.set(
+          error?.error?.message || 'Failed to add leaves'
+        );
+
+        this.isSubmitting.set(false);
+      }
     });
   }
 }

@@ -58,3 +58,27 @@ button {
   font-weight: 800;
   cursor: pointer;
 }
+.success-message {
+  margin-bottom: 14px;
+  padding: 12px;
+  border-radius: 8px;
+  background: #ecfdf5;
+  color: #047857;
+  font-weight: 700;
+  border: 1px solid #a7f3d0;
+}
+
+.error-message {
+  margin-bottom: 14px;
+  padding: 12px;
+  border-radius: 8px;
+  background: #fef2f2;
+  color: #dc2626;
+  font-weight: 700;
+  border: 1px solid #fecaca;
+}
+
+button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, computed, signal } from '@angular/core';
 import { HealthRecordService } from '../../core/services/health-record.service';
 import { HealthRecordResponse } from '../../core/models/portal.models';
 
@@ -11,30 +11,57 @@ import { HealthRecordResponse } from '../../core/models/portal.models';
   styleUrl: './health-records.css'
 })
 export class HealthRecords implements OnInit {
-  records: HealthRecordResponse[] = [];
-  isLoading = false;
-  errorMessage = '';
+  records = signal<HealthRecordResponse[]>([]);
+  isLoading = signal(false);
+  errorMessage = signal('');
 
-  constructor(private healthRecordService: HealthRecordService) { }
+  hasRecords = computed(() => this.records().length > 0);
+
+  showEmptyMessage = computed(() =>
+    !this.isLoading() &&
+    !this.hasRecords() &&
+    !this.errorMessage()
+  );
+
+  constructor(
+    private healthRecordService: HealthRecordService
+  ) { }
 
   ngOnInit(): void {
     this.loadRecords();
   }
 
   loadRecords(): void {
-    this.isLoading = true;
-    this.errorMessage = '';
+    this.isLoading.set(true);
+    this.errorMessage.set('');
+    this.records.set([]);
 
     this.healthRecordService.getMyRecords().subscribe({
-      next: (res) => {
-        this.records = res || [];
-        this.isLoading = false;
+      next: (response) => {
+        console.log('Health records received:', response);
+
+        this.records.set(response ?? []);
+        this.isLoading.set(false);
+
+        console.log(
+          'Health records count:',
+          this.records().length
+        );
       },
       error: (error) => {
-        console.error('Failed to load health records:', error);
-        this.records = [];
-        this.errorMessage = 'Failed to load health records.';
-        this.isLoading = false;
+        console.error(
+          'Failed to load health records:',
+          error
+        );
+
+        this.records.set([]);
+
+        this.errorMessage.set(
+          error?.error?.message ||
+          'Failed to load health records.'
+        );
+
+        this.isLoading.set(false);
       }
     });
   }
