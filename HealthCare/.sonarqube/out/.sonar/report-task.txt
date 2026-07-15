@@ -2,5 +2,5 @@ projectKey=HealthCare-Sprint-3
 serverUrl=http://localhost:9000
 serverVersion=26.1.0.118079
 dashboardUrl=http://localhost:9000/dashboard?id=HealthCare-Sprint-3
-ceTaskId=2789d57d-f91b-4ab8-8d35-6b7fe5980249
-ceTaskUrl=http://localhost:9000/api/ce/task?id=2789d57d-f91b-4ab8-8d35-6b7fe5980249
+ceTaskId=24c65b7b-0880-47d8-b82a-aee15f6849ca
+ceTaskUrl=http://localhost:9000/api/ce/task?id=24c65b7b-0880-47d8-b82a-aee15f6849ca

@@ -1,19 +1,19 @@
 }
 cC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\Enums\DoctorSpecialization.csr	
-{
-iC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\Patient\PatientDashboardDto.cs 8rƒ
-dC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\Patient\PatientListDto.cs 8r	
-‚u
-cC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\Patient\PatientFilter.cs 8rŠ
+Š
 fC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\Patient\UpdatePatientDto.cs 8jr	
-¥
+ƒ
+dC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\Patient\PatientListDto.cs 8r	
+‚Œ
+pC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\HealthRecord\UpdateHealthRecordDto.cs 8r	
+{
+iC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\Patient\PatientDashboardDto.cs 8r¥
 fC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\Patient\CreatePatientDto.cs 8r+	
  "#$%'()*+,-./1234x‚,.1|
 ^C:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\PaginationParams.cs 8rx‚r
 YC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\PagedResult.cs 	8	r	
-‚	Œ
-pC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\HealthRecord\UpdateHealthRecordDto.cs 8r	
-…
+‚	u
+cC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\Patient\PatientFilter.cs 8r…
 nC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\HealthRecord\HealthRecordListDto.cs 8r	
 ~
 mC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\HealthRecord\HealthRecordFilter.cs 8r£
@@ -44,13 +44,13 @@ ZC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\Auth
 eC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\Authentication\LoginDto.cs 8r‚ˆ
 nC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\Authentication\ChangePasswordDto.cs 8r
 ‚ˆ
-lC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\Authentication\AuthResponseDto.cs 8r	‚‡
+lC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\Authentication\AuthResponseDto.cs 8r	‚„
+oC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\Appointment\AppointmentSummaryDto.cs 
+8
+r	‡
 nC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\Appointment\UpdateAppointmentDto.cs 8jr	›
 nC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\Appointment\CreateAppointmentDto.cs 8	r	
 x‚„
-oC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\Appointment\AppointmentSummaryDto.cs 
-8
-r	„
 nC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\Appointment\AppointmentReportDto.cs 8r	
 ƒ
 lC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\Appointment\AppointmentListDto.cs 8r	

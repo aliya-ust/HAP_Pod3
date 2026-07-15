@@ -271,19 +271,19 @@ pC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\Comp
 qq( 1ssB K(
 ss uu ww %yy. 5
 ss. /ss3 4
-ww yy7 @ð
-vC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\Components\Patient\DeletePatientModal.razor
-'' # 
-))% -// 
-++% .44 
--- 0 65 ;
-22 $5 BÚ
+ww yy7 @Ú
 jC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\Components\Layout\NavMenu.razor
 .. &&- 3
 22 33 
  $22 #
  00 
- 33 o
+ 33 ð
+vC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\Components\Patient\DeletePatientModal.razor
+'' # 
+))% -// 
+++% .44 
+-- 0 65 ;
+22 $5 Bo
 mC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\Components\Layout\MainLayout.razorp
 nC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\Components\Layout\EmptyLayout.razor¦
 tC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\Components\Doctor\UpdateDoctorModal.razorJ
@@ -435,7 +435,13 @@ nC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\Comp
 qq )663 E
 qq. 6ss? G
 ss uu vv- 3
-ss, -ss1 2Ÿ
+ss, -ss1 2î
+tC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\Components\Doctor\DeleteDoctorModal.razor
+)) # 
+**% ---) 1
+++% ...0 9
+-- 		0 65 ;
+.. $5 BŸ
 yC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\Components\Appointment\AppointmentReport.razor
 :: >>% *LL N
 vv' .88 <<' .
@@ -506,28 +512,8 @@ yC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\Comp
 –– .
 ¦¦ .
 ¶¶  2
-ÆÆ  2î
-tC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\Components\Doctor\DeleteDoctorModal.razor
-)) # 
-**% ---) 1
-++% ...0 9
--- 		0 65 ;
-.. $5 BV
-TC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\App.razor§
-aC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\Services\JwtService.cs
-
- 2
-  #  $$ %% 
-
-
-! # 
- ' "
-
- ,
-8 <  
- ' ,8 =
-
-""  î
+ÆÆ  2V
+TC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\App.razorî
 jC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\Services\PatientAdminService.cs
 
   x
@@ -557,7 +543,21 @@ jC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\Serv
 
 << "
 <<' )??; =
-<<0 6??H NÊ
+<<0 6??H N§
+aC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\Services\JwtService.cs
+
+ 2
+  #  $$ %% 
+
+
+! # 
+ ' "
+
+ ,
+8 <  
+ ' ,8 =
+
+""  Ê
 iC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\Services\DoctorAdminService.cs
 
 		  

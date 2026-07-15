@@ -23,17 +23,17 @@ vC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\Comp
 pC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\Components\Doctor\DoctorToolbar.razor 8r=
 	"(01346789:<=>@ABCDEFGIJLMOPRSTUVWXZ[^_`abcefx
 Ç>@BFIOPTUVWZ`abceƒ
-nC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\Components\Doctor\DoctorTable.razor 8r1!#&'046<BCDEHKUVXY[\^_abdefhijlmnoqrsuvwxÇ!#&'046<Hfhinsuvˆ
-yC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\Components\Appointment\AppointmentReport.razor  
-8jîr¢ 89:<=>?@ABCEFGLMNOPVbchlmvxz|}ÅÇÖÜáàâãåçéèíìîñóòôöúùü†°¢§¶ß®©™¨≠∞±≤≥¥∂∑∏π∫ºΩæ¿¡¬√ƒ∆«»… ÃÕŒxÇG8<>?@ABCEFLhmxzáàçéîñóòú°¢§¶ß®¨≤¥∂∑∏º¬ƒ∆«»Ãí
+nC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\Components\Doctor\DoctorTable.razor 8r1!#&'046<BCDEHKUVXY[\^_abdefhijlmnoqrsuvwxÇ!#&'046<Hfhinsuví
 tC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\Components\Doctor\DeleteDoctorModal.razor 8
-r	%)*+-.xÇ-.d
-TC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\App.razor8rÇõ
-aC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\Services\JwtService.cs 8r!
- "#$%&'xÇ$%ø
+r	%)*+-.xÇ-.ˆ
+yC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\Components\Appointment\AppointmentReport.razor  
+8jîr¢ 89:<=>?@ABCEFGLMNOPVbchlmvxz|}ÅÇÖÜáàâãåçéèíìîñóòôöúùü†°¢§¶ß®©™¨≠∞±≤≥¥∂∑∏π∫ºΩæ¿¡¬√ƒ∆«»… ÃÕŒxÇG8<>?@ABCEFLhmxzáàçéîñóòú°¢§¶ß®¨≤¥∂∑∏º¬ƒ∆«»Ãd
+TC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\App.razor8rÇø
 jC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\Services\PatientAdminService.cs 8
 r0	
-!#$&')+-.012346789:<=>?@AxÇ#$&')+-2389>?‹
+!#$&')+-.012346789:<=>?@AxÇ#$&')+-2389>?õ
+aC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\Services\JwtService.cs 8r!
+ "#$%&'xÇ$%‹
 iC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\Services\DoctorAdminService.cs  8rC	
  !#%&()+,-./12345789:;=>?@ACDEGIJLMOPRSUWYZ[xÇ!#%&(-.349:?@EIJLMOPRSUWY£
 gC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\Services\DashboardService.cs
