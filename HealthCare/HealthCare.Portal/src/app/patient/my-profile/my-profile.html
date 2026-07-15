@@ -62,36 +62,44 @@
     <h2>Edit Patient Profile</h2>
 
     <div class="form-group">
-      <label>Name</label>
-      <input type="text"
-             name="fullName"
-             [(ngModel)]="editProfile.fullName">
+      <label>
+        Name
+        <input type="text"
+               name="fullName"
+               [(ngModel)]="editProfile.fullName">
+      </label>
     </div>
 
     <div class="form-group">
-      <label>Phone</label>
-      <input type="text"
-             name="phoneNumber"
-             [(ngModel)]="editProfile.phoneNumber">
+      <label>
+        Phone
+        <input type="text"
+               name="phoneNumber"
+               [(ngModel)]="editProfile.phoneNumber">
+      </label>
     </div>
 
     <div class="form-group">
-      <label>Gender</label>
-      <select name="gender"
-              [(ngModel)]="editProfile.gender">
-        <option value="">Select Gender</option>
-        <option value="Male">Male</option>
-        <option value="Female">Female</option>
-        <option value="Other">Other</option>
-      </select>
+      <label>
+        Gender
+        <select name="gender"
+                [(ngModel)]="editProfile.gender">
+          <option value="">Select Gender</option>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+          <option value="Other">Other</option>
+        </select>
+      </label>
     </div>
 
     <div class="form-group">
-      <label>Insurance</label>
-      <input type="text"
-             name="insuranceId"
-             [(ngModel)]="editProfile.insuranceId"
-             placeholder="Enter Insurance ID">
+      <label>
+        Insurance
+        <input type="text"
+               name="insuranceId"
+               [(ngModel)]="editProfile.insuranceId"
+               placeholder="Enter Insurance ID">
+      </label>
     </div>
 
     <div class="dialog-actions">

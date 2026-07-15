@@ -149,32 +149,40 @@
     <form (ngSubmit)="saveHealthRecord()">
 
       <div class="form-group">
-        <label>Visit Date</label>
-        <input type="date"
-               name="visitDate"
-               [ngModel]="addRecordForm().visitDate"
-               (ngModelChange)="updateAddRecordForm('visitDate', $event)" />
+        <label>
+          Visit Date
+          <input type="date"
+                 name="visitDate"
+                 [ngModel]="addRecordForm().visitDate"
+                 (ngModelChange)="updateAddRecordForm('visitDate', $event)" />
+        </label>
+       </div>
+
+      <div class="form-group">
+        <label>
+          Diagnosis
+          <textarea name="diagnosis"
+                    [ngModel]="addRecordForm().diagnosis"
+                    (ngModelChange)="updateAddRecordForm('diagnosis', $event)"></textarea>
+        </label>
       </div>
 
       <div class="form-group">
-        <label>Diagnosis</label>
-        <textarea name="diagnosis"
-                  [ngModel]="addRecordForm().diagnosis"
-                  (ngModelChange)="updateAddRecordForm('diagnosis', $event)"></textarea>
+        <label>
+          Prescription
+          <textarea name="prescription"
+                    [ngModel]="addRecordForm().prescription"
+                    (ngModelChange)="updateAddRecordForm('prescription', $event)"></textarea>
+        </label>
       </div>
 
       <div class="form-group">
-        <label>Prescription</label>
-        <textarea name="prescription"
-                  [ngModel]="addRecordForm().prescription"
-                  (ngModelChange)="updateAddRecordForm('prescription', $event)"></textarea>
-      </div>
-
-      <div class="form-group">
-        <label>Notes</label>
-        <textarea name="notes"
-                  [ngModel]="addRecordForm().notes"
-                  (ngModelChange)="updateAddRecordForm('notes', $event)"></textarea>
+        <label>
+          Notes
+          <textarea name="notes"
+                    [ngModel]="addRecordForm().notes"
+                    (ngModelChange)="updateAddRecordForm('notes', $event)"></textarea>
+        </label>
       </div>
 
       <div class="dialog-actions">

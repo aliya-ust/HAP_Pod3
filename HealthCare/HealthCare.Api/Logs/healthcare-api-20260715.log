@@ -258,3 +258,5 @@
 2026-07-15 18:45:08.477 +05:30 [INF] Received AppointmentBookedEvent. AppointmentId=1027
 2026-07-15 18:45:08.583 +05:30 [INF] Notification created for DoctorId 3 from AppointmentId 1027
 2026-07-15 18:47:50.864 +05:30 [INF] Usage Telemetry: {"id":"ec660000-e56a-1944-7677-08dee272c462","created":"2026-07-15T18:42:48.2130723\u002B05:30","host":{"framework_version":"10.0.8","mass_transit_version":"8.5.10.0","operating_system_version":"Microsoft Windows NT 10.0.26200.0","time_zone_info":"(UTC\u002B05:30) Chennai, Kolkata, Mumbai, New Delhi","commit_hash":"62ab339afa3bac2e9b3fe1769d0d35d7e44778e9"},"bus":[{"created":"2026-07-15T18:42:48.2201892\u002B05:30","configured":"2026-07-15T18:42:49.9693462\u002B05:30","started":"2026-07-15T18:42:50.7537015\u002B05:30","name":"IBus","endpoints":[{"name":"appointment.events.queue","type":"RabbitMQ","prefetch_count":16,"consumer_count":1,"message_count":1},{"name":"_bus_","type":"RabbitMQ","prefetch_count":16}]}]}
+2026-07-15 18:58:54.199 +05:30 [INF] Application is shutting down...
+2026-07-15 18:58:54.366 +05:30 [INF] Bus stopped: "rabbitmq://localhost/"

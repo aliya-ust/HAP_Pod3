@@ -1,81 +1,93 @@
 <div class="form-card">
   <h1>
-    <i class="bi bi-calendar-x"></i>
+    <i class="bi bi-calendar-x" aria-hidden="true"></i>
     Add Leave
   </h1>
 
   <form (ngSubmit)="submitLeaves()">
 
     <div class="form-group">
-      <label>
-        <i class="bi bi-calendar-date"></i>
-        Leave Date
+      <label class="field-label">
+        <span class="label-text">
+          <i class="bi bi-calendar-date" aria-hidden="true"></i>
+          Leave Date
+        </span>
+
+        <span class="date-row">
+          <input type="date"
+                 name="leaveDate"
+                 [min]="minDate"
+                 [ngModel]="leaveDate()"
+                 (ngModelChange)="leaveDate.set($event)" />
+
+          <button type="button"
+                  class="add-btn"
+                  (click)="addLeave()">
+            <i class="bi bi-plus-circle" aria-hidden="true"></i>
+            Add
+          </button>
+        </span>
       </label>
-
-      <div class="date-row">
-        <input type="date"
-               name="leaveDate"
-               [min]="minDate"
-               [ngModel]="leaveDate()"
-               (ngModelChange)="leaveDate.set($event)" />
-
-        <button type="button"
-                class="add-btn"
-                (click)="addLeave()">
-          <i class="bi bi-plus-circle"></i>
-          Add
-        </button>
-      </div>
     </div>
 
-    <div class="message success-message" *ngIf="successMessage()">
-      <i class="bi bi-check-circle"></i>
+    <div class="message success-message"
+         *ngIf="successMessage()"
+         role="status"
+         aria-live="polite">
+      <i class="bi bi-check-circle" aria-hidden="true"></i>
       {{ successMessage() }}
     </div>
 
-    <div class="message error-message" *ngIf="errorMessage()">
-      <i class="bi bi-exclamation-circle"></i>
+    <div class="message error-message"
+         *ngIf="errorMessage()"
+         role="alert"
+         aria-live="assertive">
+      <i class="bi bi-exclamation-circle" aria-hidden="true"></i>
       {{ errorMessage() }}
     </div>
 
-    <div class="selected-leaves" *ngIf="hasSelectedLeaves()">
+    <div class="selected-leaves"
+         *ngIf="hasSelectedLeaves()">
       <h3>
-        <i class="bi bi-list-check"></i>
+        <i class="bi bi-list-check" aria-hidden="true"></i>
         Selected Leaves
       </h3>
 
       <div class="leave-item"
            *ngFor="let leave of selectedLeaves(); let i = index">
         <span>
-          <i class="bi bi-calendar-event"></i>
+          <i class="bi bi-calendar-event" aria-hidden="true"></i>
           {{ leave.leaveDate }}
         </span>
 
         <button type="button"
                 class="delete-btn"
+                [attr.aria-label]="'Delete leave for ' + leave.leaveDate"
                 (click)="removeLeave(i)">
-          <i class="bi bi-trash3"></i>
+          <i class="bi bi-trash3" aria-hidden="true"></i>
         </button>
       </div>
     </div>
 
     <div class="form-group">
-      <label>
-        <i class="bi bi-chat-left-text"></i>
-        Reason
-      </label>
+      <label class="field-label">
+        <span class="label-text">
+          <i class="bi bi-chat-left-text" aria-hidden="true"></i>
+          Reason
+        </span>
 
-      <textarea name="reason"
-                rows="4"
-                placeholder="Optional reason for leave..."
-                [ngModel]="reason()"
-                (ngModelChange)="reason.set($event)"></textarea>
+        <textarea name="reason"
+                  rows="4"
+                  placeholder="Optional reason for leave..."
+                  [ngModel]="reason()"
+                  (ngModelChange)="reason.set($event)"></textarea>
+      </label>
     </div>
 
     <button type="submit"
             class="submit-btn"
             [disabled]="isSubmitting()">
-      <i class="bi bi-check-circle"></i>
+      <i class="bi bi-check-circle" aria-hidden="true"></i>
       {{ isSubmitting() ? 'Submitting...' : 'Submit Leaves' }}
     </button>
 

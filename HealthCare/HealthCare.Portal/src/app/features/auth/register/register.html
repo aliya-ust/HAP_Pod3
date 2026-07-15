@@ -9,107 +9,123 @@
     <form [formGroup]="registerForm" (ngSubmit)="register()">
 
       <div class="form-group">
-        <label>Full Name</label>
+        <label>
+          Full Name
 
-        <input type="text"
-               class="form-control"
-               formControlName="fullName"
-               placeholder="Enter your full name" />
+          <input type="text"
+                 class="form-control"
+                 formControlName="fullName"
+                 placeholder="Enter your full name" />
 
-        <small *ngIf="isInvalid('fullName')" class="error-text">
-          Full Name is required.
-        </small>
+          <small *ngIf="isInvalid('fullName')" class="error-text">
+            Full Name is required.
+          </small>
+        </label>
       </div>
 
       <div class="form-group">
-        <label>Date of Birth</label>
+        <label>
+          Date of Birth
 
-        <input type="date"
-               class="form-control"
-               formControlName="dateOfBirth" />
+          <input type="date"
+                 class="form-control"
+                 formControlName="dateOfBirth" />
 
-        <small *ngIf="isInvalid('dateOfBirth')" class="error-text">
-          Date of Birth is required.
-        </small>
+          <small *ngIf="isInvalid('dateOfBirth')" class="error-text">
+            Date of Birth is required.
+          </small>
+        </label>
       </div>
 
       <div class="form-group">
-        <label>Gender</label>
+        <label>
+          Gender
 
-        <select class="form-control"
-                formControlName="gender">
+          <select class="form-control"
+                  formControlName="gender">
 
-          <option value="">Select Gender</option>
-          <option value="Male">Male</option>
-          <option value="Female">Female</option>
-          <option value="Other">Other</option>
+            <option value="">Select Gender</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
 
-        </select>
+          </select>
 
-        <small *ngIf="isInvalid('gender')" class="error-text">
-          Gender is required.
-        </small>
+          <small *ngIf="isInvalid('gender')" class="error-text">
+            Gender is required.
+          </small>
+        </label>
       </div>
 
       <div class="form-group">
-        <label>Phone Number</label>
+        <label>
+          Phone Number
 
-        <input type="text"
-               class="form-control"
-               formControlName="phoneNumber"
-               placeholder="Enter phone number" />
+          <input type="text"
+                 class="form-control"
+                 formControlName="phoneNumber"
+                 placeholder="Enter phone number" />
 
-        <small *ngIf="isInvalid('phoneNumber')" class="error-text">
-          Phone Number is required.
-        </small>
+          <small *ngIf="isInvalid('phoneNumber')" class="error-text">
+            Phone Number is required.
+          </small>
+        </label>
       </div>
 
       <div class="form-group">
-        <label>Email Address</label>
+        <label>
+          Email Address
 
-        <input type="email"
-               class="form-control"
-               formControlName="email"
-               placeholder="Enter email address" />
+          <input type="email"
+                 class="form-control"
+                 formControlName="email"
+                 placeholder="Enter email address" />
 
-        <small *ngIf="isInvalid('email')" class="error-text">
-          Please enter a valid email address.
-        </small>
+          <small *ngIf="isInvalid('email')" class="error-text">
+            Please enter a valid email address.
+          </small>
+        </label>
       </div>
 
       <div class="form-group">
-        <label>Password</label>
+        <label>
+          Password
 
-        <input type="password"
-               class="form-control"
-               formControlName="password"
-               placeholder="Enter password" />
+          <input type="password"
+                 class="form-control"
+                 formControlName="password"
+                 placeholder="Enter password" />
 
-        <small *ngIf="isInvalid('password')" class="error-text">
-          Password must be at least 8 characters.
-        </small>
+          <small *ngIf="isInvalid('password')" class="error-text">
+            Password must be at least 8 characters.
+          </small>
+        </label>
       </div>
 
       <div class="form-group">
-        <label>Confirm Password</label>
+        <label>
+          Confirm Password
 
-        <input type="password"
-               class="form-control"
-               formControlName="confirmPassword"
-               placeholder="Confirm password" />
+          <input type="password"
+                 class="form-control"
+                 formControlName="confirmPassword"
+                 placeholder="Confirm password" />
 
-        <small *ngIf="hasPasswordMismatch()" class="error-text">
-          Passwords do not match.
-        </small>
+          <small *ngIf="hasPasswordMismatch()" class="error-text">
+            Passwords do not match.
+          </small>
+        </label>
       </div>
 
       <div class="form-group">
-        <label>Insurance ID (Optional)</label>
+        <label>
+          Insurance ID (Optional)
 
-        <input type="text"
-               class="form-control"
-               formControlName="insuranceId"
-               placeholder="Enter insurance ID" />
+          <input type="text"
+                 class="form-control"
+                 formControlName="insuranceId"
+                 placeholder="Enter insurance ID" />
+        </label>
       </div>
 
       <div *ngIf="errorMessage" class="alert-danger">
