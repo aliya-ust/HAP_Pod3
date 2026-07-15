@@ -2102,3 +2102,39 @@ Error Number:547,State:0,Class:16
 2026-07-15 14:43:03.012 +05:30 [INF] Fetching admin dashboard summary.
 2026-07-15 14:43:03.022 +05:30 [INF] Dashboard summary generated successfully. Doctors: 14, Patients: 8, Appointments: 23
 2026-07-15 14:43:03.025 +05:30 [INF] HTTP GET /api/dashboard responded 200 in 16.6086 ms
+2026-07-15 15:29:54.230 +05:30 [INF] HTTP OPTIONS /api/admin/patients responded 204 in 1.2930 ms
+2026-07-15 15:29:54.289 +05:30 [INF] HTTP GET /api/admin/patients responded 401 in 31.2433 ms
+2026-07-15 16:29:05.535 +05:30 [INF] HTTP OPTIONS /api/auth/login responded 204 in 1.8169 ms
+2026-07-15 16:29:06.192 +05:30 [INF] Generating JWT token for User b9effe45-f711-4d74-a495-ec4a1add3e10
+2026-07-15 16:29:06.199 +05:30 [INF] JWT token generated successfully for User b9effe45-f711-4d74-a495-ec4a1add3e10
+2026-07-15 16:29:06.203 +05:30 [INF] HTTP POST /api/auth/login responded 200 in 656.2937 ms
+2026-07-15 16:29:06.687 +05:30 [INF] HTTP OPTIONS /api/dashboard/patient responded 204 in 1.2000 ms
+2026-07-15 16:29:06.748 +05:30 [INF] Fetching dashboard summary for Patient 5
+2026-07-15 16:29:06.800 +05:30 [INF] Patient dashboard generated successfully for Patient 5
+2026-07-15 16:29:06.808 +05:30 [INF] HTTP GET /api/dashboard/patient responded 200 in 110.6438 ms
+2026-07-15 16:29:07.885 +05:30 [INF] HTTP OPTIONS /api/patient/profile responded 204 in 0.5143 ms
+2026-07-15 16:29:07.910 +05:30 [INF] Fetching patient profile for Patient 5
+2026-07-15 16:29:07.941 +05:30 [INF] Patient profile fetched successfully for Patient 5
+2026-07-15 16:29:07.946 +05:30 [INF] HTTP GET /api/patient/profile responded 200 in 52.3775 ms
+2026-07-15 16:29:09.579 +05:30 [INF] HTTP OPTIONS /api/Appointment/patient responded 204 in 0.1206 ms
+2026-07-15 16:29:09.608 +05:30 [INF] Fetching appointments for Patient 5
+2026-07-15 16:29:09.678 +05:30 [INF] HTTP GET /api/Appointment/patient responded 200 in 87.2206 ms
+2026-07-15 16:29:10.254 +05:30 [INF] HTTP OPTIONS /api/HealthRecord/patient responded 204 in 0.0778 ms
+2026-07-15 16:29:10.274 +05:30 [INF] Fetching health records for Patient 5
+2026-07-15 16:29:10.302 +05:30 [INF] 3 health records found for Patient 5
+2026-07-15 16:29:10.308 +05:30 [INF] HTTP GET /api/HealthRecord/patient responded 200 in 46.6329 ms
+2026-07-15 16:29:13.360 +05:30 [INF] HTTP OPTIONS /api/patient/profile responded 204 in 0.0810 ms
+2026-07-15 16:29:13.396 +05:30 [INF] Fetching patient profile for Patient 5
+2026-07-15 16:29:13.407 +05:30 [INF] Patient profile fetched successfully for Patient 5
+2026-07-15 16:29:13.409 +05:30 [INF] HTTP GET /api/patient/profile responded 200 in 13.9991 ms
+2026-07-15 16:29:18.727 +05:30 [INF] HTTP OPTIONS /api/patient/profile responded 204 in 0.1310 ms
+2026-07-15 16:29:18.775 +05:30 [INF] Updating patient 5
+2026-07-15 16:29:18.828 +05:30 [INF] Patient 5 updated successfully
+2026-07-15 16:29:18.831 +05:30 [INF] HTTP PUT /api/patient/profile responded 200 in 98.6897 ms
+2026-07-15 16:29:20.141 +05:30 [INF] Fetching patient profile for Patient 5
+2026-07-15 16:29:20.151 +05:30 [INF] Patient profile fetched successfully for Patient 5
+2026-07-15 16:29:20.153 +05:30 [INF] HTTP GET /api/patient/profile responded 200 in 13.7207 ms
+2026-07-15 16:29:25.260 +05:30 [INF] HTTP OPTIONS /api/dashboard/patient responded 204 in 0.0679 ms
+2026-07-15 16:29:25.267 +05:30 [INF] Fetching dashboard summary for Patient 5
+2026-07-15 16:29:25.288 +05:30 [INF] Patient dashboard generated successfully for Patient 5
+2026-07-15 16:29:25.289 +05:30 [INF] HTTP GET /api/dashboard/patient responded 200 in 22.9658 ms
