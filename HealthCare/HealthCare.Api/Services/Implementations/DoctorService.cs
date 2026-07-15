@@ -196,12 +196,15 @@ namespace HealthCare.Api.Services.Implementations
                     continue;
                 }
 
+                //currently available slots
                 var availableSlots = await AvailableTimeSlotsCheck(leave.LeaveDate, id);
+                //get all slots
                 var allSlots = await GetSlots(id);
 
                 if (availableSlots.Count != allSlots.Count)
                 {
                     await _appointmentRepository.CancelAppointmentsByDoctorDate(id, leave.LeaveDate);
+                    //Tracks dates where appointments were cancelled.
                     result.CreatedWithCancelledAppointments.Add(leave.LeaveDate);
                 }
 
@@ -228,7 +231,27 @@ namespace HealthCare.Api.Services.Implementations
                             "Removing cache key {Key}",
                             cacheKey);
                     }
-                    await _cache.RemoveAsync(cacheKey);
+                    try
+                    {
+                        await _cache.RemoveAsync(cacheKey);
+
+                        if (_logger.IsEnabled(LogLevel.Information))
+                        {
+                            _logger.LogInformation(
+                            "Removed cache key {Key}",
+                            cacheKey);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        if (_logger.IsEnabled(LogLevel.Information))
+                        {
+                            _logger.LogWarning(
+                            ex,
+                            "Failed to remove cache key {Key}",
+                            cacheKey);
+                        }
+                    }
                 }
             }
 
@@ -242,28 +265,38 @@ namespace HealthCare.Api.Services.Implementations
             var cacheKey =
                 $"doctors:{specialisation}:availability:{date}";
 
-            var cachedData =
-    await _cache.GetStringAsync(cacheKey);
-
-            if (!string.IsNullOrEmpty(cachedData))
+            try
             {
-                if (_logger.IsEnabled(LogLevel.Information))
+                var cachedData =
+                    await _cache.GetStringAsync(cacheKey);
+
+                if (!string.IsNullOrEmpty(cachedData))
                 {
                     _logger.LogInformation(
                         "Doctor availability cache HIT. Key={Key}",
                         cacheKey);
+
+                    return JsonSerializer.Deserialize<
+                        AvailableDoctorsResponseDto>(
+                            cachedData)!;
                 }
 
-                return JsonSerializer.Deserialize<
-                    AvailableDoctorsResponseDto>(
-                        cachedData)!;
-            }
-
-            if (_logger.IsEnabled(LogLevel.Information))
-            {
-                _logger.LogInformation(
+                if (_logger.IsEnabled(LogLevel.Information))
+                {
+                    _logger.LogInformation(
                     "Doctor availability cache MISS. Key={Key}",
                     cacheKey);
+                }
+            }
+            catch (Exception ex)
+            {
+                if (_logger.IsEnabled(LogLevel.Information))
+                {
+                    _logger.LogWarning(
+                    ex,
+                    "Garnet cache unavailable. Falling back to SQL Server. Key={Key}",
+                    cacheKey);
+                }
             }
 
             var allDoctors = await _context.Doctors
@@ -331,14 +364,34 @@ namespace HealthCare.Api.Services.Implementations
                     cacheKey);
             }
 
-            await _cache.SetStringAsync(
-                cacheKey,
-                JsonSerializer.Serialize(response),
-                new DistributedCacheEntryOptions
+            try
+            {
+                if (_logger.IsEnabled(LogLevel.Information))
                 {
-                    AbsoluteExpirationRelativeToNow =
-                        TimeSpan.FromMinutes(5)
-                });
+                    _logger.LogInformation(
+                    "Caching doctor availability. Key={Key}, TTL=5 minutes",
+                    cacheKey);
+                }
+
+                await _cache.SetStringAsync(
+                    cacheKey,
+                    JsonSerializer.Serialize(response),
+                    new DistributedCacheEntryOptions
+                    {
+                        AbsoluteExpirationRelativeToNow =
+                            TimeSpan.FromMinutes(5)
+                    });
+            }
+            catch (Exception ex)
+            {
+                if (_logger.IsEnabled(LogLevel.Information))
+                {
+                    _logger.LogWarning(
+                    ex,
+                    "Unable to cache doctor availability. Key={Key}",
+                    cacheKey);
+                }
+            }
 
             return response;
         }
@@ -362,7 +415,27 @@ namespace HealthCare.Api.Services.Implementations
                     cacheKey);
                 }
 
-                await _cache.RemoveAsync(cacheKey);
+                try
+                {
+                    await _cache.RemoveAsync(cacheKey);
+
+                    if (_logger.IsEnabled(LogLevel.Information))
+                    {
+                        _logger.LogInformation(
+                        "Removed cache key {Key}",
+                        cacheKey);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    if (_logger.IsEnabled(LogLevel.Information))
+                    {
+                        _logger.LogWarning(
+                        ex,
+                        "Failed to remove cache key {Key}",
+                        cacheKey);
+                    }
+                }
             }
         }
 

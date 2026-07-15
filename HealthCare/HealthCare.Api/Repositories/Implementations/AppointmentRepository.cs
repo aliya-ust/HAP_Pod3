@@ -1,7 +1,6 @@
 ﻿using HealthCare.Api.Data;
 using HealthCare.Shared.DTOs.Appointment;
 using HealthCare.Api.Models;
-using HealthCare.Api.Repositories.Implementations;
 using HealthCare.Api.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 

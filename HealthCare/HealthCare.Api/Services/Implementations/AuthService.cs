@@ -143,7 +143,27 @@ namespace HealthCare.Api.Services.Implementations
                 }
 
 
-                await _cache.RemoveAsync(cacheKey);
+                try
+                {
+                    await _cache.RemoveAsync(cacheKey);
+
+                    if (_logger.IsEnabled(LogLevel.Information))
+                    {
+                        _logger.LogInformation(
+                        "Removed cache key {Key}",
+                        cacheKey);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    if (_logger.IsEnabled(LogLevel.Information))
+                    {
+                        _logger.LogWarning(
+                        ex,
+                        "Failed to remove cache key {Key}",
+                        cacheKey);
+                    }
+                }
             }
         }
 

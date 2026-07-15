@@ -125,6 +125,7 @@ builder.Services.AddMassTransit(x =>
             builder.Configuration["RabbitMq:HealthCareQueue"]!,
             e =>
             {
+                //attach consumer to the queue
                 e.ConfigureConsumer<
                     AppointmentBookedConsumer>(
                         context);

@@ -376,6 +376,8 @@ namespace HealthCare.Api.Services.Implementations
     int doctorId,
     DateOnly date)
         {
+
+            //fetch the doctor details from database
             var doctor = await _context.Doctors
                 .FirstOrDefaultAsync(d => d.DoctorId == doctorId);
 
