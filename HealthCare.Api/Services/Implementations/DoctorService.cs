@@ -1,5 +1,4 @@
 using AutoMapper;
-using HealthCare.Api.Data;
 using HealthCare.Shared.DTOs;
 using HealthCare.Shared.DTOs.Doctor;
 using HealthCare.Api.Exceptions;
@@ -8,7 +7,9 @@ using HealthCare.Api.Repositories.Interfaces;
 using HealthCare.Api.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Distributed;
 using System.Linq.Expressions;
+using System.Text.Json;
 
 namespace HealthCare.Api.Services.Implementations
 {
@@ -16,17 +17,22 @@ namespace HealthCare.Api.Services.Implementations
     {
         private readonly IDoctorRepository _repository;
         private readonly IAppointmentRepository _appointmentRepository;
-        private readonly HealthCareDbContext _context;
         private readonly IMapper _mapper;
         private readonly UserManager<User> _userManager;
+        private readonly IDistributedCache _cache;
+        private readonly ILogger<DoctorService> _logger;
+        private readonly int _ttlMinutes;
+        private static readonly JsonSerializerOptions _jsonOptions = new() { PropertyNameCaseInsensitive = true };
 
-        public DoctorService(IDoctorRepository repository, IAppointmentRepository appointmentRepository, HealthCareDbContext context, IMapper mapper, UserManager<User> userManager)
+        public DoctorService(IDoctorRepository repository, IAppointmentRepository appointmentRepository, IMapper mapper, UserManager<User> userManager, IDistributedCache cache, ILogger<DoctorService> logger, int ttlMinutes)
         {
             _repository = repository;
             _appointmentRepository = appointmentRepository;
-            _context = context;
             _mapper = mapper;
             _userManager = userManager;
+            _cache = cache;
+            _logger = logger;
+            _ttlMinutes = ttlMinutes;
         }
 
         public async Task<DoctorListDto> GetByIdAsync(int id)
@@ -110,7 +116,7 @@ namespace HealthCare.Api.Services.Implementations
 
             await _repository.CreateSlots(doctor.DoctorId, dto.TimeSlots);
 
-            await _context.SaveChangesAsync();
+            await _repository.SaveChangesAsync();
         }
 
         public async Task UpdateAsync(int id, UpdateDoctorDto dto)
@@ -123,7 +129,7 @@ namespace HealthCare.Api.Services.Implementations
             _mapper.Map(dto, doctor); // maps onto the tracked entity � EF picks up the changes
 
             await _repository.UpdateAsync(doctor);
-            await _context.SaveChangesAsync();
+            await _repository.SaveChangesAsync();
         }
 
         public async Task UpdateStatusAsync(int id, bool isActive)
@@ -136,7 +142,8 @@ namespace HealthCare.Api.Services.Implementations
             doctor.IsActive = isActive;
 
             await _repository.UpdateAsync(doctor);
-            await _context.SaveChangesAsync();
+            await _repository.SaveChangesAsync();
+            await InvalidateCache(id);
         }
 
         public async Task DeleteAsync(int id)
@@ -162,7 +169,7 @@ namespace HealthCare.Api.Services.Implementations
                 }
 
                 await _repository.DeleteAsync(id);
-                await _context.SaveChangesAsync();
+                await _repository.SaveChangesAsync();
             }
             catch (DbUpdateException)
             {
@@ -183,7 +190,8 @@ namespace HealthCare.Api.Services.Implementations
         public async Task CreateSlots(int id, List<string> timeslots)
         {
             await _repository.CreateSlots(id, timeslots);
-            await _context.SaveChangesAsync();
+            await _repository.SaveChangesAsync();
+            await InvalidateCache(id);
         }
 
         private async Task<List<string>> AvailableTimeSlotsCheck(DateOnly date, int doctorId)
@@ -225,14 +233,67 @@ namespace HealthCare.Api.Services.Implementations
             if (leavesToCreate.Count > 0)
             {
                 await _repository.CreateLeaves(id, leavesToCreate);
-                await _context.SaveChangesAsync();
+                await _repository.SaveChangesAsync();
+                await InvalidateCache(id);
             }
 
             return result;
         }
 
-        public async Task<List<DoctorListDto>> AvailableDoctors(string specialisation, DateOnly date) =>
-            await _repository.AvailableDoctors(specialisation, date);
+        public async Task<List<DoctorListDto>> AvailableDoctors(string specialisation, DateOnly date)
+        {
+            try
+            {
+                var version = await _cache.GetStringAsync($"cache_ver:{specialisation}") ?? "0";
+                var cacheKey = $"available_doctors:{specialisation}:{date:yyyy-MM-dd}:v{version}";
+
+                var cached = await _cache.GetStringAsync(cacheKey);
+                if (cached is not null)
+                {
+                    if (_logger.IsEnabled(LogLevel.Information))
+                        _logger.LogInformation("Cache hit for {CacheKey}", cacheKey);
+                    return JsonSerializer.Deserialize<List<DoctorListDto>>(cached, _jsonOptions) ?? [];
+                }
+
+                if (_logger.IsEnabled(LogLevel.Information))
+                    _logger.LogInformation("Cache miss for {CacheKey}. Querying database.", cacheKey);
+                var result = await _repository.AvailableDoctors(specialisation, date);
+
+                await _cache.SetStringAsync(cacheKey, JsonSerializer.Serialize(result),
+                    new DistributedCacheEntryOptions
+                    {
+                        AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(_ttlMinutes)
+                    });
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "Cache unavailable, falling through to database");
+                return await _repository.AvailableDoctors(specialisation, date);
+            }
+        }
+
+        private async Task InvalidateCache(int doctorId)
+        {
+            try
+            {
+                var doctor = await _repository.GetByIdAsync(doctorId);
+                if (doctor is null || doctor.Specialisation is null) return;
+
+                var versionKey = $"cache_ver:{doctor.Specialisation}";
+                var current = await _cache.GetStringAsync(versionKey) ?? "0";
+                var next = (int.Parse(current) + 1).ToString();
+                await _cache.SetStringAsync(versionKey, next);
+
+                if (_logger.IsEnabled(LogLevel.Information))
+                    _logger.LogInformation("Invalidated cache for {Specialisation} (v{Version})", doctor.Specialisation, next);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "Failed to invalidate cache for doctor {DoctorId}", doctorId);
+            }
+        }
 
         public async Task<DoctorSummaryDto> GetSummaryAsync() =>
             await _repository.GetSummaryAsync();

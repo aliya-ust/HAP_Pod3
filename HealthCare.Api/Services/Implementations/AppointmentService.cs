@@ -6,6 +6,8 @@ using HealthCare.Api.Exceptions;
 using HealthCare.Api.Models;
 using HealthCare.Api.Repositories.Interfaces;
 using HealthCare.Api.Services.Interfaces;
+using HealthCare.Shared.Events;
+using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using System.Globalization;
 
@@ -17,13 +19,17 @@ namespace HealthCare.Api.Services.Implementations
         private readonly IDoctorService _doctorService;
         private readonly HealthCareDbContext _context;
         private readonly IMapper _mapper;
+        private readonly IPublishEndpoint _publishEndpoint;
+        private readonly ILogger<AppointmentService> _logger;
 
-        public AppointmentService(IAppointmentRepository repository, IDoctorService doctorService, HealthCareDbContext context, IMapper mapper)
+        public AppointmentService(IAppointmentRepository repository, IDoctorService doctorService, HealthCareDbContext context, IMapper mapper, IPublishEndpoint publishEndpoint, ILogger<AppointmentService> logger)
         {
             _repository = repository;
             _doctorService = doctorService;
             _context = context;
             _mapper = mapper;
+            _publishEndpoint = publishEndpoint;
+            _logger = logger;
         }
 
         public async Task<AppointmentListDto?> GetByIdAsync(int id)
@@ -94,6 +100,22 @@ namespace HealthCare.Api.Services.Implementations
             {
                 await _repository.AddAsync(appointment);
                 await _context.SaveChangesAsync();
+
+                var patient = await _context.Patients.FindAsync(patientId);
+                await _publishEndpoint.Publish(new AppointmentBookedEvent
+                {
+                    AppointmentId = appointment.AppointmentId,
+                    PatientName = patient?.FullName ?? "Unknown",
+                    DoctorId = appointment.DoctorId,
+                    ScheduledDate = appointment.ScheduledDate,
+                    TimeSlot = appointment.TimeSlot
+                });
+
+                if (_logger.IsEnabled(LogLevel.Information))
+                    _logger.LogInformation(
+                        "Appointment {AppointmentId} booked by Patient {PatientId} with Doctor {DoctorId} on {Date} at {TimeSlot}",
+                        appointment.AppointmentId, patientId, appointment.DoctorId,
+                        appointment.ScheduledDate, appointment.TimeSlot);
             }
             catch (DbUpdateException)
             {

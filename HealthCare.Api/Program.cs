@@ -1,7 +1,11 @@
+using HealthCare.Api.BackgroundServices;
+using HealthCare.Api.Consumers;
 using HealthCare.Api.Data;
 using HealthCare.Api.Mapping;
 using HealthCare.Api.Middleware;
 using HealthCare.Api.Models;
+using HealthCare.Shared.Events;
+using MassTransit;
 using HealthCare.Api.Repositories.Implementations;
 using HealthCare.Api.Repositories.Interfaces;
 using HealthCare.Api.Services.Implementations;
@@ -11,6 +15,10 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
+using Serilog;
+using Serilog.Sinks.Elasticsearch;
+using AutoMapper;
+using Microsoft.Extensions.Caching.Distributed;
 using System.Security.Claims;
 using System.Text;
 
@@ -73,8 +81,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     {
         OnAuthenticationFailed = context =>
         {
-            // Set a breakpoint here in Visual Studio
-            Console.WriteLine($"JWT Error: {context.Exception.Message}");
             return Task.CompletedTask;
         }
     };
@@ -91,9 +97,49 @@ builder.Services.AddScoped<IHealthRecordRepository, HealthRecordRepository>();
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IPatientService, PatientService>();
-builder.Services.AddScoped<IDoctorService, DoctorService>();
+builder.Services.AddScoped<IDoctorService>(sp =>
+{
+    var ttl = sp.GetRequiredService<IConfiguration>().GetValue<int>("Cache:TtlMinutes", 5);
+    return new DoctorService(
+        sp.GetRequiredService<IDoctorRepository>(),
+        sp.GetRequiredService<IAppointmentRepository>(),
+        sp.GetRequiredService<IMapper>(),
+        sp.GetRequiredService<UserManager<User>>(),
+        sp.GetRequiredService<IDistributedCache>(),
+        sp.GetRequiredService<ILogger<DoctorService>>(),
+        ttl);
+});
 builder.Services.AddScoped<IAppointmentService, AppointmentService>();
 builder.Services.AddScoped<IHealthRecordService, HealthRecordService>();
+builder.Services.AddScoped<INotificationService, NotificationService>();
+
+// Background Services
+builder.Services.AddHostedService<HeartbeatService>();
+builder.Services.AddHostedService<NotificationCleanupService>();
+
+// Garnet (embedded cache)
+builder.Services.AddSingleton<GarnetHostedService>();
+builder.Services.AddHostedService(sp => sp.GetRequiredService<GarnetHostedService>());
+builder.Services.AddStackExchangeRedisCache(options =>
+    options.Configuration = "localhost:3278");
+
+// MassTransit + RabbitMQ
+builder.Services.AddMassTransit(x =>
+{
+    x.AddConsumer<AppointmentBookedConsumer>();
+
+    x.UsingRabbitMq((context, cfg) =>
+    {
+        var rabbit = builder.Configuration.GetSection("RabbitMQ");
+        cfg.Host(rabbit["Host"], h =>
+        {
+            h.Username(rabbit["Username"]!);
+            h.Password(rabbit["Password"]!);
+        });
+
+        cfg.ConfigureEndpoints(context);
+    });
+});
 
 builder.Services.AddEndpointsApiExplorer();
 
@@ -121,7 +167,24 @@ builder.Services.AddSwaggerGen(options =>
 
 builder.Services.AddAuthorization();
 
+// Serilog
+builder.Host.UseSerilog((context, config) =>
+{
+    config.MinimumLevel.Information()
+          .WriteTo.Console()
+          .WriteTo.File("logs/healthcare-.log", rollingInterval: RollingInterval.Day)
+          .WriteTo.Elasticsearch(new ElasticsearchSinkOptions(new Uri(context.Configuration["Elasticsearch:Uri"]!))
+          {
+              IndexFormat = "healthcare-logs-{0:yyyy.MM.dd}",
+              AutoRegisterTemplate = true,
+              NumberOfShards = 1,
+              NumberOfReplicas = 0
+          })
+          .Enrich.FromLogContext();
+});
+
 var app = builder.Build();
+app.UseSerilogRequestLogging();
 app.UseExceptionHandler();
 
 using (var scope = app.Services.CreateScope())

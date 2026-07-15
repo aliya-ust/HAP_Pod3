@@ -83,6 +83,9 @@ namespace HealthCare.Api.Repositories.Implementations
                 .ToListAsync();
         }
 
+        public async Task SaveChangesAsync(CancellationToken ct = default) =>
+            await _context.SaveChangesAsync(ct);
+
         public async Task<DoctorSummaryDto> GetSummaryAsync()
         {
             var result = await _dbSet

@@ -12,6 +12,7 @@ namespace HealthCare.Api.Repositories.Interfaces
         Task<List<DoctorLeaves>> GetLeavesByDoctorId(int doctorId);
         Task CreateLeaves(int doctorId, List<CreateLeaveDto> leaves);
         Task<List<DoctorListDto>> AvailableDoctors(string specialisation, DateOnly date);
+        Task SaveChangesAsync(CancellationToken ct = default);
         Task<DoctorSummaryDto> GetSummaryAsync();
     }
 }

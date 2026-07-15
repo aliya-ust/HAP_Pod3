@@ -16,6 +16,7 @@ namespace HealthCare.Api.Data
         public DbSet<HealthRecord> HealthRecords => Set<HealthRecord>();
         public DbSet<AvailableSlots> AvailableSlots => Set<AvailableSlots>();
         public DbSet<DoctorLeaves> DoctorLeaves => Set<DoctorLeaves>();
+        public DbSet<Notification> Notifications => Set<Notification>();
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

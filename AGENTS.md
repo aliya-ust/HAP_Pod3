@@ -15,11 +15,15 @@
 ## Commands
 
 - `dotnet build` — build solution
-- `dotnet test` — run all unit tests (69 tests)
+- `dotnet test` — run all unit tests (81 tests)
 - `dotnet run --project HealthCare.Api` — API (http://localhost:5090 / https://localhost:7223)
 - `dotnet run --project HealthCare.Admin` — Blazor admin (calls API at https://localhost:7223)
 - `ng serve` in `HealthCare.Portal/` — Angular portal (http://localhost:4200)
 - `.\run-sonar.bat` — local SonarQube scan (requires `dotnet sonarscanner` + SonarQube on localhost:9000)
+- `.\start-logging.bat` — start Elasticsearch (http://localhost:9200) + Kibana (http://localhost:5601)
+- `.\start-elasticsearch.bat` — start Elasticsearch only
+- `.\start-kibana.bat` — start Kibana only
+- `.\stop-logging.bat` — stop Elasticsearch and Kibana
 
 ## Auth & Unified Login Flow
 
@@ -42,7 +46,7 @@
 - **Custom exceptions**: `PatientNotFoundException`, `DoctorNotFoundException`, `AppointmentNotFoundException`, `HealthRecordNotFoundException`, `DbHandleException`, `InvalidLoginException`, `EmailAlreadyInUseException`, `RoleNotAssignedException`, `InvalidRoleException`, `UserNotFoundException`, `IdentityOperationException`, `NoAvailableSlotsException`, `SlotAlreadyBookedException`, `PastAppointmentException`.
 - **Controllers**: Each domain entity has a public controller and an `*AdminController` for admin operations.
 - **Seed data**: DbContext seeds one Doctor + one Patient. `RoleSeeder` and `UserSeeder` run at startup.
-- **.gitignore**: Covers `.vs/`, `bin/`, `obj/`, `.sonarqube/`, `TestResults/`, `appsettings.Development.json`, `node_modules/`, `dist/`.
+- **.gitignore**: Covers `.vs/`, `bin/`, `obj/`, `.sonarqube/`, `TestResults/`, `appsettings.Development.json`, `node_modules/`, `dist/`, `tools/elasticsearch/`, `tools/kibana/`.
 
 ## Testing
 

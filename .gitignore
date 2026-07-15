@@ -8,6 +8,10 @@ TestResults/
 
 appsettings.Development.json
 
+# Elasticsearch + Kibana binaries (too large for source control)
+/tools/elasticsearch/
+/tools/kibana/
+
 # See https://docs.github.com/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
 
 # Compiled output

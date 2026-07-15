@@ -8,6 +8,9 @@ using HealthCare.Api.Repositories.Interfaces;
 using HealthCare.Api.Services.Implementations;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Moq;
 
 namespace HealthCare.Api.Tests
@@ -18,6 +21,8 @@ namespace HealthCare.Api.Tests
         private readonly Mock<IAppointmentRepository> _appointmentRepoMock;
         private readonly Mock<IMapper> _mapperMock;
         private readonly Mock<UserManager<User>> _userManagerMock;
+        private readonly Mock<IDistributedCache> _cacheMock;
+        private readonly Mock<ILogger<DoctorService>> _loggerMock;
         private readonly HealthCareDbContext _context;
         private readonly DoctorService _service;
 
@@ -26,6 +31,8 @@ namespace HealthCare.Api.Tests
             _repoMock = new Mock<IDoctorRepository>();
             _appointmentRepoMock = new Mock<IAppointmentRepository>();
             _mapperMock = new Mock<IMapper>();
+            _cacheMock = new Mock<IDistributedCache>();
+            _loggerMock = new Mock<ILogger<DoctorService>>();
 
             _userManagerMock = new Mock<UserManager<User>>(
                 Mock.Of<IUserStore<User>>(), null!, null!, null!, null!, null!, null!, null!, null!);
@@ -39,9 +46,11 @@ namespace HealthCare.Api.Tests
             _service = new DoctorService(
                 _repoMock.Object,
                 _appointmentRepoMock.Object,
-                _context,
                 _mapperMock.Object,
-                _userManagerMock.Object
+                _userManagerMock.Object,
+                _cacheMock.Object,
+                _loggerMock.Object,
+                5
             );
         }
 
@@ -343,6 +352,9 @@ namespace HealthCare.Api.Tests
         [Fact]
         public async Task CreateSlots_ShouldCallRepository()
         {
+            _repoMock.Setup(r => r.GetByIdAsync(1))
+                .ReturnsAsync(new Doctor { Specialisation = "Cardiology" });
+
             await _service.CreateSlots(1, new List<string> { "09:00-10:00" });
 
             _repoMock.Verify(r => r.CreateSlots(1, It.IsAny<List<string>>()), Times.Once);
@@ -352,6 +364,9 @@ namespace HealthCare.Api.Tests
         [Fact]
         public async Task CreateLeave_ShouldSkipExistingLeave()
         {
+            _repoMock.Setup(r => r.GetByIdAsync(1))
+                .ReturnsAsync(new Doctor { Specialisation = "Cardiology" });
+
             _repoMock.Setup(r => r.GetLeavesByDoctorId(1))
                 .ReturnsAsync(new List<DoctorLeaves>
                 {
@@ -371,6 +386,9 @@ namespace HealthCare.Api.Tests
         [Fact]
         public async Task CreateLeave_ShouldCancelAppointments_WhenSlotsMismatch()
         {
+            _repoMock.Setup(r => r.GetByIdAsync(1))
+                .ReturnsAsync(new Doctor { Specialisation = "Cardiology" });
+
             _repoMock.Setup(r => r.GetLeavesByDoctorId(1))
                 .ReturnsAsync(new List<DoctorLeaves>());
 
@@ -398,6 +416,9 @@ namespace HealthCare.Api.Tests
         [Fact]
         public async Task AvailableDoctors_ShouldReturnDoctors()
         {
+            _cacheMock.Setup(c => c.GetAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync((byte[]?)null);
+
             _repoMock.Setup(r =>
                 r.AvailableDoctors("Cardiology", It.IsAny<DateOnly>()))
                 .ReturnsAsync(new List<DoctorListDto>
