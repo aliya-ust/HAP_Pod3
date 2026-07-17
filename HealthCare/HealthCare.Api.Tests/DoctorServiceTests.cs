@@ -567,4 +567,538 @@ public class DoctorServiceTests
             Times.Once
         );
     }
+
+    [Fact]
+    public async Task GetMyProfileAsync_ReturnsProfile_WhenDoctorExists()
+    {
+        // Arrange
+        _context.Users.Add(new User
+        {
+            Id = "doctor-user-1",
+            UserName = "doctor1@test.com",
+            Email = "doctor1@test.com"
+        });
+
+        await _context.SaveChangesAsync();
+
+        // Act
+        var result = await _service.GetMyProfileAsync(1);
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal(1, result.DoctorId);
+        Assert.Equal("Dr John", result.FullName);
+        Assert.Equal("doctor1@test.com", result.Email);
+        Assert.Equal("Cardiology", result.Specialisation);
+        Assert.Equal(10, result.YearsOfExperience);
+        Assert.Equal(500, result.ConsultationFee);
+    }
+
+    [Fact]
+    public async Task GetMyProfileAsync_ReturnsNull_WhenDoctorDoesNotExist()
+    {
+        // Act
+        var result = await _service.GetMyProfileAsync(999);
+
+        // Assert
+        Assert.Null(result);
+    }
+
+    [Fact]
+    public async Task GetAllAsync_ReturnsPagedDoctors_WithDefaultSorting()
+    {
+        // Arrange
+        var filter = new DoctorFilter
+        {
+            PageNumber = 1,
+            PageSize = 10
+        };
+
+        _repositoryMock
+            .Setup(r => r.GetQueryable())
+            .Returns(_context.Doctors.AsQueryable());
+
+        _mapperMock
+            .Setup(m => m.Map<IEnumerable<DoctorListDto>>(It.IsAny<IEnumerable<Doctor>>()))
+            .Returns(new List<DoctorListDto>
+            {
+            new DoctorListDto(),
+            new DoctorListDto()
+            });
+
+        // Act
+        var result = await _service.GetAllAsync(filter);
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal(1, result.PageNumber);
+        Assert.Equal(10, result.PageSize);
+        Assert.Equal(2, result.TotalCount);
+        Assert.Equal(2, result.Items.Count());
+
+        _repositoryMock.Verify(
+            r => r.GetQueryable(),
+            Times.Once
+        );
+    }
+
+    [Fact]
+    public async Task GetAllAsync_FiltersBySearch()
+    {
+        // Arrange
+        var filter = new DoctorFilter
+        {
+            Search = "John",
+            PageNumber = 1,
+            PageSize = 10
+        };
+
+        _repositoryMock
+            .Setup(r => r.GetQueryable())
+            .Returns(_context.Doctors.AsQueryable());
+
+        _mapperMock
+            .Setup(m => m.Map<IEnumerable<DoctorListDto>>(It.IsAny<IEnumerable<Doctor>>()))
+            .Returns(new List<DoctorListDto>
+            {
+            new DoctorListDto()
+            });
+
+        // Act
+        var result = await _service.GetAllAsync(filter);
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal(1, result.TotalCount);
+        Assert.Single(result.Items);
+    }
+
+    [Fact]
+    public async Task GetAllAsync_FiltersBySpecialisation()
+    {
+        // Arrange
+        var filter = new DoctorFilter
+        {
+            Specialisation = "Cardiology",
+            PageNumber = 1,
+            PageSize = 10
+        };
+
+        _repositoryMock
+            .Setup(r => r.GetQueryable())
+            .Returns(_context.Doctors.AsQueryable());
+
+        _mapperMock
+            .Setup(m => m.Map<IEnumerable<DoctorListDto>>(It.IsAny<IEnumerable<Doctor>>()))
+            .Returns(new List<DoctorListDto>
+            {
+            new DoctorListDto()
+            });
+
+        // Act
+        var result = await _service.GetAllAsync(filter);
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal(1, result.TotalCount);
+        Assert.Single(result.Items);
+    }
+
+    [Fact]
+    public async Task GetAllAsync_FiltersByIsActive()
+    {
+        // Arrange
+        var filter = new DoctorFilter
+        {
+            IsActive = true,
+            PageNumber = 1,
+            PageSize = 10
+        };
+
+        _repositoryMock
+            .Setup(r => r.GetQueryable())
+            .Returns(_context.Doctors.AsQueryable());
+
+        _mapperMock
+            .Setup(m => m.Map<IEnumerable<DoctorListDto>>(It.IsAny<IEnumerable<Doctor>>()))
+            .Returns(new List<DoctorListDto>
+            {
+            new DoctorListDto(),
+            new DoctorListDto()
+            });
+
+        // Act
+        var result = await _service.GetAllAsync(filter);
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal(2, result.TotalCount);
+        Assert.Equal(2, result.Items.Count());
+    }
+
+    [Fact]
+    public async Task GetAllAsync_SortsByExperienceDescending()
+    {
+        // Arrange
+        var filter = new DoctorFilter
+        {
+            SortBy = "experience",
+            IsDescending = true,
+            PageNumber = 1,
+            PageSize = 10
+        };
+
+        _repositoryMock
+            .Setup(r => r.GetQueryable())
+            .Returns(_context.Doctors.AsQueryable());
+
+        _mapperMock
+            .Setup(m => m.Map<IEnumerable<DoctorListDto>>(It.IsAny<IEnumerable<Doctor>>()))
+            .Returns(new List<DoctorListDto>
+            {
+            new DoctorListDto(),
+            new DoctorListDto()
+            });
+
+        // Act
+        var result = await _service.GetAllAsync(filter);
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal(2, result.TotalCount);
+        Assert.Equal(2, result.Items.Count());
+    }
+
+    [Fact]
+    public async Task GetAllAsync_SortsByFeeAscending()
+    {
+        // Arrange
+        var filter = new DoctorFilter
+        {
+            SortBy = "fee",
+            IsDescending = false,
+            PageNumber = 1,
+            PageSize = 10
+        };
+
+        _repositoryMock
+            .Setup(r => r.GetQueryable())
+            .Returns(_context.Doctors.AsQueryable());
+
+        _mapperMock
+            .Setup(m => m.Map<IEnumerable<DoctorListDto>>(It.IsAny<IEnumerable<Doctor>>()))
+            .Returns(new List<DoctorListDto>
+            {
+            new DoctorListDto(),
+            new DoctorListDto()
+            });
+
+        // Act
+        var result = await _service.GetAllAsync(filter);
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal(2, result.TotalCount);
+        Assert.Equal(2, result.Items.Count());
+    }
+
+    [Fact]
+    public async Task DeleteAsync_ThrowsInvalidOperationException_WhenDbUpdateExceptionOccurs()
+    {
+        // Arrange
+        var doctor = new Doctor
+        {
+            DoctorId = 1,
+            FullName = "Dr John"
+        };
+
+        _repositoryMock
+            .Setup(r => r.GetByIdAsync(1))
+            .ReturnsAsync(doctor);
+
+        _repositoryMock
+            .Setup(r => r.DeleteAsync(1))
+            .ThrowsAsync(new DbUpdateException("Database error"));
+
+        // Act
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            _service.DeleteAsync(1));
+
+        // Assert
+        Assert.Equal(
+            "Failed to delete Doctor. It may be referenced by existing appointments or health records.",
+            exception.Message
+        );
+
+        _repositoryMock.Verify(
+            r => r.DeleteAsync(1),
+            Times.Once
+        );
+    }
+
+
+    [Fact]
+    public async Task CreateLeave_Throws_WhenLeaveDateIsPast()
+    {
+        // Arrange
+        var leaves = new List<CreateLeaveDto>
+    {
+        new CreateLeaveDto
+        {
+            LeaveDate = DateOnly.FromDateTime(DateTime.Today.AddDays(-1)),
+            Reason = "Past leave"
+        }
+    };
+
+        _repositoryMock
+            .Setup(r => r.GetLeavesByDoctorId(1))
+            .ReturnsAsync(new List<DoctorLeaves>());
+
+        // Act
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            _service.CreateLeave(1, leaves));
+
+        // Assert
+        Assert.Equal("Cannot create leave for a past date.", exception.Message);
+
+        _repositoryMock.Verify(
+            r => r.CreateLeaves(It.IsAny<int>(), It.IsAny<List<CreateLeaveDto>>()),
+            Times.Never
+        );
+    }
+    [Fact]
+    public async Task CreateLeave_SkipsExistingLeaveDate()
+    {
+        // Arrange
+        var leaveDate = DateOnly.FromDateTime(DateTime.Today.AddDays(1));
+
+        var leaves = new List<CreateLeaveDto>
+    {
+        new CreateLeaveDto
+        {
+            LeaveDate = leaveDate,
+            Reason = "Personal leave"
+        }
+    };
+
+        _repositoryMock
+            .Setup(r => r.GetLeavesByDoctorId(1))
+            .ReturnsAsync(new List<DoctorLeaves>
+            {
+            new DoctorLeaves
+            {
+                Id = 1,
+                DoctorId = 1,
+                LeaveDate = leaveDate,
+                Reason = "Already applied"
+            }
+            });
+
+        // Act
+        var result = await _service.CreateLeave(1, leaves);
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Single(result.SkippedDates);
+        Assert.Contains(leaveDate, result.SkippedDates);
+
+        _repositoryMock.Verify(
+            r => r.CreateLeaves(It.IsAny<int>(), It.IsAny<List<CreateLeaveDto>>()),
+            Times.Never
+        );
+
+        _appointmentRepositoryMock.Verify(
+            r => r.CancelAppointmentsByDoctorDate(It.IsAny<int>(), It.IsAny<DateOnly>()),
+            Times.Never
+        );
+    }
+
+    [Fact]
+    public async Task CreateLeave_CreatesLeave_WhenNoAppointmentsBooked()
+    {
+        // Arrange
+        var leaveDate = DateOnly.FromDateTime(DateTime.Today.AddDays(1));
+
+        var leaves = new List<CreateLeaveDto>
+    {
+        new CreateLeaveDto
+        {
+            LeaveDate = leaveDate,
+            Reason = "Vacation"
+        }
+    };
+
+        var allSlots = new List<string> { "09:00", "10:00" };
+
+        _repositoryMock
+            .Setup(r => r.GetLeavesByDoctorId(1))
+            .ReturnsAsync(new List<DoctorLeaves>());
+
+        _repositoryMock
+            .Setup(r => r.GetSlots(1))
+            .ReturnsAsync(allSlots);
+
+        _appointmentRepositoryMock
+            .Setup(r => r.BookedTimeSlots(leaveDate, 1))
+            .ReturnsAsync(new List<string>());
+
+        _repositoryMock
+            .Setup(r => r.CreateLeaves(1, It.IsAny<List<CreateLeaveDto>>()))
+            .Returns(Task.CompletedTask);
+
+        // Act
+        var result = await _service.CreateLeave(1, leaves);
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Empty(result.SkippedDates);
+        Assert.Empty(result.CreatedWithCancelledAppointments);
+
+        _repositoryMock.Verify(
+            r => r.CreateLeaves(
+                1,
+                It.Is<List<CreateLeaveDto>>(x =>
+                    x.Count == 1 &&
+                    x[0].LeaveDate == leaveDate)),
+            Times.Once
+        );
+
+        _appointmentRepositoryMock.Verify(
+            r => r.CancelAppointmentsByDoctorDate(It.IsAny<int>(), It.IsAny<DateOnly>()),
+            Times.Never
+        );
+    }
+    [Fact]
+    public async Task CreateLeave_CancelsAppointments_WhenBookedSlotsExist()
+    {
+        // Arrange
+        var leaveDate = DateOnly.FromDateTime(DateTime.Today.AddDays(1));
+
+        var leaves = new List<CreateLeaveDto>
+    {
+        new CreateLeaveDto
+        {
+            LeaveDate = leaveDate,
+            Reason = "Emergency leave"
+        }
+    };
+
+        var allSlots = new List<string> { "09:00", "10:00" };
+        var bookedSlots = new List<string> { "09:00" };
+
+        _repositoryMock
+            .Setup(r => r.GetLeavesByDoctorId(1))
+            .ReturnsAsync(new List<DoctorLeaves>());
+
+        _repositoryMock
+            .Setup(r => r.GetSlots(1))
+            .ReturnsAsync(allSlots);
+
+        _appointmentRepositoryMock
+            .Setup(r => r.BookedTimeSlots(leaveDate, 1))
+            .ReturnsAsync(bookedSlots);
+
+        _appointmentRepositoryMock
+            .Setup(r => r.CancelAppointmentsByDoctorDate(1, leaveDate))
+            .Returns(Task.CompletedTask);
+
+        _repositoryMock
+            .Setup(r => r.CreateLeaves(1, It.IsAny<List<CreateLeaveDto>>()))
+            .Returns(Task.CompletedTask);
+
+        // Act
+        var result = await _service.CreateLeave(1, leaves);
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Single(result.CreatedWithCancelledAppointments);
+        Assert.Contains(leaveDate, result.CreatedWithCancelledAppointments);
+
+        _appointmentRepositoryMock.Verify(
+            r => r.CancelAppointmentsByDoctorDate(1, leaveDate),
+            Times.Once
+        );
+
+        _repositoryMock.Verify(
+            r => r.CreateLeaves(
+                1,
+                It.Is<List<CreateLeaveDto>>(x =>
+                    x.Count == 1 &&
+                    x[0].LeaveDate == leaveDate)),
+            Times.Once
+        );
+    }
+
+    [Fact]
+    public async Task GetDashboardSummaryAsync_ReturnsCorrectDashboardCounts()
+    {
+        // Arrange
+        var doctorId = 1;
+
+        _repositoryMock
+            .Setup(r => r.GetLeavesByDoctorId(doctorId))
+            .ReturnsAsync(new List<DoctorLeaves>());
+
+        // Act
+        var result = await _service.GetDashboardSummaryAsync(doctorId);
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal(1, result.UpcomingAppointments);
+        Assert.Equal(1, result.CompletedAppointments);
+        Assert.Equal(1, result.TodaysAppointments);
+        Assert.Equal(0, result.UpcomingLeaves);
+
+        _repositoryMock.Verify(
+            r => r.GetLeavesByDoctorId(doctorId),
+            Times.Once
+        );
+    }
+
+    [Fact]
+    public async Task GetDashboardSummaryAsync_CountsUpcomingLeaves()
+    {
+        // Arrange
+        var doctorId = 1;
+        var today = DateOnly.FromDateTime(DateTime.Today);
+
+        _repositoryMock
+            .Setup(r => r.GetLeavesByDoctorId(doctorId))
+            .ReturnsAsync(new List<DoctorLeaves>
+            {
+            new DoctorLeaves
+            {
+                Id = 1,
+                DoctorId = doctorId,
+                LeaveDate = today,
+                Reason = "Today leave"
+            },
+            new DoctorLeaves
+            {
+                Id = 2,
+                DoctorId = doctorId,
+                LeaveDate = today.AddDays(2),
+                Reason = "Upcoming leave"
+            },
+            new DoctorLeaves
+            {
+                Id = 3,
+                DoctorId = doctorId,
+                LeaveDate = today.AddDays(-1),
+                Reason = "Past leave"
+            }
+            });
+
+        // Act
+        var result = await _service.GetDashboardSummaryAsync(doctorId);
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal(2, result.UpcomingLeaves);
+
+        _repositoryMock.Verify(
+            r => r.GetLeavesByDoctorId(doctorId),
+            Times.Once
+        );
+    }
 }

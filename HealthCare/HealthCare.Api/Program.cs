@@ -114,6 +114,12 @@ builder.Services.AddMassTransit(x =>
 
         cfg.ReceiveEndpoint(rabbitmqConfig["AppointmentQueue"]!, e =>
         {
+            // Retry the message 3 times with a 5-second interval
+            e.UseMessageRetry(r =>
+            {
+                r.Interval(3, TimeSpan.FromSeconds(5));     
+            });
+
             e.ConfigureConsumer<AppointmentBookedConsumer>(context);
         });
     });

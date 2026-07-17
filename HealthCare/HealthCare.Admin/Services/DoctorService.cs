@@ -53,7 +53,7 @@ namespace HealthCare.Admin.Services
             if (!response.IsSuccessStatusCode)
             {
                 var error = await response.Content.ReadAsStringAsync();
-                throw new Exception($"API Error: {error}");
+                throw new InvalidOperationException($"API Error: {error}");
             }
 
             var result = await response.Content.ReadFromJsonAsync<PagedResult<DoctorListDto>>();

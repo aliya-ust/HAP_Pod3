@@ -28,7 +28,7 @@ namespace HealthCare.Admin.Services
             if (!response.IsSuccessStatusCode)
             {
                 var errorContent = await response.Content.ReadAsStringAsync();
-                throw new Exception($"API Error: {(int)response.StatusCode} {response.ReasonPhrase}. {errorContent}");
+                throw new   InvalidOperationException($"API Error: {(int)response.StatusCode} {response.ReasonPhrase}. {errorContent}");
             }
 
             var result = await response.Content.ReadFromJsonAsync<List<AppointmentReportDto>>();
@@ -45,7 +45,7 @@ namespace HealthCare.Admin.Services
             if (!response.IsSuccessStatusCode)
             {
                 var errorContent = await response.Content.ReadAsStringAsync();
-                throw new Exception($"API Error: {(int)response.StatusCode} {response.ReasonPhrase}. {errorContent}");
+                throw new InvalidOperationException($"API Error: {(int)response.StatusCode} {response.ReasonPhrase}. {errorContent}");
             }
 
             var result = await response.Content.ReadFromJsonAsync<AppointmentSummaryDto>();
@@ -62,7 +62,7 @@ namespace HealthCare.Admin.Services
             if (!response.IsSuccessStatusCode)
             {
                 var errorContent = await response.Content.ReadAsStringAsync();
-                throw new Exception($"API Error: {(int)response.StatusCode} {response.ReasonPhrase}. {errorContent}");
+                throw new InvalidOperationException($"API Error: {(int)response.StatusCode} {response.ReasonPhrase}. {errorContent}");
             }
 
             var result = await response.Content.ReadFromJsonAsync<AppointmentSummaryDto>();
