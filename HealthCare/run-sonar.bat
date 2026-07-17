@@ -11,8 +11,8 @@ dotnet sonarscanner begin ^
   /k:"%PROJECT_KEY%" ^
   /d:sonar.host.url="%SONAR_URL%" ^
   /d:sonar.login="%SONAR_TOKEN%" ^
-  /d:sonar.exclusions="**/bin/**,**/obj/**,**/*.css,**/Migrations/**" ^
-  /d:sonar.coverage.exclusions="**/bin/**,**/obj/**,**/Controllers/**,**/Events/**,**/Middleware/**,**/Options/**,**/Messaging/**,**/BackgroundServices/**,**/Exceptions/**,**/Data/**,**/DTOs/**,**/Mapping/**,**/Models/**,**/Properties/**,**/Repositories/**,**/HealthCare.Shared/**,**/HealthCare.Admin/**,**/HealthCare.Portal/**,**/Program.cs" ^
+  /d:sonar.exclusions="**/bin/**,**/obj/**,**/Migrations/**,**/*.html,**/*.css,**/*.razor" ^
+  /d:sonar.coverage.exclusions="**/bin/**,**/obj/**,**/Migrations/**,**/Events/**,**/Middleware/**,**/Options/**,**/Messaging/**,**/BackgroundServices/**,**/Controllers/**,**/Exceptions/**,**/Data/**,**/DTOs/**,**/Mapping/**,**/Models/**,**/Properties/**,**/Repositories/**,**/HealthCare.Shared/**,**/HealthCare.Admin/**,**/HealthCare.Portal/**,**/Program.cs" ^
   /d:sonar.cs.opencover.reportsPaths="TestResults/**/coverage.opencover.xml"
 
 IF %ERRORLEVEL% NEQ 0 (

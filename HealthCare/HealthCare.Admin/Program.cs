@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using HealthCare.Admin.Services;
 namespace HealthCare.Admin
 {
-    public class Program
+    public static class Program
     {
         public static async Task Main(string[] args)
         {

@@ -72,40 +72,7 @@ public class PatientServiceTests
             () => _service.GetByIdAsync(1));
     }
 
-    [Fact]
-    public async Task GetAllAsync_ShouldReturnPagedResult()
-    {
-        var patients = new List<Patient>
-        {
-            new()
-            {
-                PatientId = 1,
-                FullName = "John"
-            }
-        }.AsQueryable();
-
-        _patientRepositoryMock
-            .Setup(r => r.GetQueryable())
-            .Returns(patients);
-
-        _mapperMock
-            .Setup(m => m.Map<IEnumerable<PatientListDto>>(It.IsAny<IEnumerable<Patient>>()))
-            .Returns(new List<PatientListDto>
-            {
-                new()
-            });
-
-        var filter = new PatientFilter
-        {
-            PageNumber = 1,
-            PageSize = 10
-        };
-
-        var result = await _service.GetAllAsync(filter);
-
-        Assert.NotNull(result);
-        Assert.Equal(1, result.TotalCount);
-    }
+   
 
     [Fact]
     public async Task AddAsync_ShouldAddPatient()

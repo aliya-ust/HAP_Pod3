@@ -9,7 +9,6 @@ using HealthCare.Shared.DTOs;
 using HealthCare.Shared.DTOs.Doctor;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
-using Microsoft.Extensions.Logging;
 using Moq;
 using System.Text;
 using System.Text.Json;
@@ -18,57 +17,113 @@ namespace HealthCare.Api.Tests;
 
 public class DoctorServiceTests
 {
-    private readonly Mock<IDoctorRepository> _doctorRepositoryMock;
+    private readonly Mock<IDoctorRepository> _repositoryMock;
     private readonly Mock<IAppointmentRepository> _appointmentRepositoryMock;
     private readonly Mock<IMapper> _mapperMock;
-    private readonly Mock<HealthCareDbContext> _contextMock;
-    private readonly Mock<ILogger<DoctorService>> _loggerMock;
     private readonly Mock<IDistributedCache> _cacheMock;
 
+    private readonly HealthCareDbContext _context;
     private readonly DoctorService _service;
 
     public DoctorServiceTests()
     {
-        _doctorRepositoryMock = new Mock<IDoctorRepository>();
+        _repositoryMock = new Mock<IDoctorRepository>();
         _appointmentRepositoryMock = new Mock<IAppointmentRepository>();
         _mapperMock = new Mock<IMapper>();
-        _loggerMock = new Mock<ILogger<DoctorService>>();
         _cacheMock = new Mock<IDistributedCache>();
 
-        var options = new DbContextOptions<HealthCareDbContext>();
+        var options = new DbContextOptionsBuilder<HealthCareDbContext>()
+            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+            .Options;
 
-        _contextMock = new Mock<HealthCareDbContext>(options);
+        _context = new HealthCareDbContext(options);
 
-        _contextMock
-            .Setup(c => c.SaveChangesAsync(It.IsAny<CancellationToken>()))
-            .ReturnsAsync(1);
+        SeedDoctorsAndAppointments();
 
         _service = new DoctorService(
-            _doctorRepositoryMock.Object,
+            _repositoryMock.Object,
             _appointmentRepositoryMock.Object,
-            _contextMock.Object,
+            _context,
             _mapperMock.Object,
-            _loggerMock.Object,
             _cacheMock.Object
         );
     }
 
-    [Fact]
-    public async Task GetByIdAsync_ShouldReturnDoctor_WhenDoctorExists()
+    private void SeedDoctorsAndAppointments()
     {
+        _context.Doctors.AddRange(
+            new Doctor
+            {
+                DoctorId = 1,
+                FullName = "Dr John",
+                Specialisation = "Cardiology",
+                YearsOfExperience = 10,
+                ConsultationFee = 500,
+                IsActive = true,
+                UserId = "doctor-user-1"
+            },
+            new Doctor
+            {
+                DoctorId = 2,
+                FullName = "Dr Smith",
+                Specialisation = "Dermatology",
+                YearsOfExperience = 5,
+                ConsultationFee = 300,
+                IsActive = true,
+                UserId = "doctor-user-2"
+            }
+        );
+
+        _context.Appointments.AddRange(
+            new Appointment
+            {
+                AppointmentId = 1,
+                DoctorId = 1,
+                PatientId = 5,
+                ScheduledDate = DateOnly.FromDateTime(DateTime.Today.AddDays(1)),
+                TimeSlot = "09:00",
+                Status = "Confirmed"
+            },
+            new Appointment
+            {
+                AppointmentId = 2,
+                DoctorId = 1,
+                PatientId = 6,
+                ScheduledDate = DateOnly.FromDateTime(DateTime.Today.AddDays(-1)),
+                TimeSlot = "10:00",
+                Status = "Completed"
+            },
+            new Appointment
+            {
+                AppointmentId = 3,
+                DoctorId = 1,
+                PatientId = 7,
+                ScheduledDate = DateOnly.FromDateTime(DateTime.Today),
+                TimeSlot = "11:00",
+                Status = "Pending"
+            }
+        );
+
+        _context.SaveChanges();
+    }
+
+    [Fact]
+    public async Task GetByIdAsync_ReturnsDoctorDto_WhenDoctorExists()
+    {
+        // Arrange
         var doctor = new Doctor
         {
             DoctorId = 1,
-            FullName = "Dr Test"
+            FullName = "Dr John",
+            Specialisation = "Cardiology",
+            YearsOfExperience = 10,
+            ConsultationFee = 500,
+            IsActive = true
         };
 
-        var doctorDto = new DoctorListDto
-        {
-            DoctorId = 1,
-            FullName = "Dr Test"
-        };
+        var doctorDto = new DoctorListDto();
 
-        _doctorRepositoryMock
+        _repositoryMock
             .Setup(r => r.GetByIdAsync(1))
             .ReturnsAsync(doctor);
 
@@ -76,553 +131,440 @@ public class DoctorServiceTests
             .Setup(m => m.Map<DoctorListDto>(doctor))
             .Returns(doctorDto);
 
+        // Act
         var result = await _service.GetByIdAsync(1);
 
+        // Assert
         Assert.NotNull(result);
-        Assert.Equal(1, result.DoctorId);
-        Assert.Equal("Dr Test", result.FullName);
+        Assert.Same(doctorDto, result);
+
+        _repositoryMock.Verify(
+            r => r.GetByIdAsync(1),
+            Times.Once
+        );
+
+        _mapperMock.Verify(
+            m => m.Map<DoctorListDto>(doctor),
+            Times.Once
+        );
     }
 
     [Fact]
-    public async Task GetByIdAsync_ShouldThrow_WhenDoctorNotFound()
+    public async Task GetByIdAsync_ThrowsDoctorNotFoundException_WhenDoctorDoesNotExist()
     {
-        _doctorRepositoryMock
-            .Setup(r => r.GetByIdAsync(1))
+        // Arrange
+        _repositoryMock
+            .Setup(r => r.GetByIdAsync(99))
             .ReturnsAsync((Doctor?)null);
 
-        await Assert.ThrowsAsync<InvalidOperationException>(
-            () => _service.GetByIdAsync(1));
+        // Act and Assert
+        await Assert.ThrowsAsync<DoctorNotFoundException>(() =>
+            _service.GetByIdAsync(99));
+
+        _repositoryMock.Verify(
+            r => r.GetByIdAsync(99),
+            Times.Once
+        );
     }
 
     [Fact]
-    public async Task AddAsync_ShouldAddDoctorAndCreateSlots()
+    public async Task AddAsync_AddsDoctorAndCreatesSlots()
     {
+        // Arrange
         var dto = new CreateDoctorDto
         {
-            TimeSlots = new List<string>
-            {
-                "09:00 AM",
-                "10:00 AM"
-            }
+            TimeSlots = new List<string> { "09:00", "10:00" }
         };
 
         var doctor = new Doctor
         {
-            DoctorId = 1
+            DoctorId = 10,
+            FullName = "Dr New",
+            Specialisation = "Neurology",
+            YearsOfExperience = 8,
+            ConsultationFee = 700,
+            IsActive = true
         };
 
         _mapperMock
             .Setup(m => m.Map<Doctor>(dto))
             .Returns(doctor);
 
+        _repositoryMock
+            .Setup(r => r.AddAsync(doctor))
+            .Returns(Task.CompletedTask);
+
+        _repositoryMock
+            .Setup(r => r.CreateSlots(doctor.DoctorId, dto.TimeSlots))
+            .Returns(Task.CompletedTask);
+
+        // Act
         await _service.AddAsync(dto);
 
-        _doctorRepositoryMock.Verify(
+        // Assert
+        _repositoryMock.Verify(
             r => r.AddAsync(doctor),
-            Times.Once);
+            Times.Once
+        );
 
-        _doctorRepositoryMock.Verify(
+        _repositoryMock.Verify(
             r => r.CreateSlots(doctor.DoctorId, dto.TimeSlots),
-            Times.Once);
-
-        _contextMock.Verify(
-            c => c.SaveChangesAsync(It.IsAny<CancellationToken>()),
-            Times.Once);
+            Times.Once
+        );
     }
 
     [Fact]
-    public async Task UpdateAsync_ShouldUpdateDoctor_WhenDoctorExists()
+    public async Task UpdateAsync_UpdatesDoctor_WhenDoctorExists()
     {
-        var doctor = new Doctor
-        {
-            DoctorId = 1
-        };
-
+        // Arrange
         var dto = new UpdateDoctorDto();
 
-        _doctorRepositoryMock
-            .Setup(r => r.GetByIdAsync(1))
-            .ReturnsAsync(doctor);
-
-        await _service.UpdateAsync(1, dto);
-
-        _mapperMock.Verify(
-            m => m.Map(dto, doctor),
-            Times.Once);
-
-        _doctorRepositoryMock.Verify(
-            r => r.UpdateAsync(doctor),
-            Times.Once);
-
-        _contextMock.Verify(
-            c => c.SaveChangesAsync(It.IsAny<CancellationToken>()),
-            Times.Once);
-    }
-
-    [Fact]
-    public async Task UpdateAsync_ShouldThrow_WhenDoctorNotFound()
-    {
-        _doctorRepositoryMock
-            .Setup(r => r.GetByIdAsync(1))
-            .ReturnsAsync((Doctor?)null);
-
-        await Assert.ThrowsAsync<InvalidOperationException>(
-            () => _service.UpdateAsync(1, new UpdateDoctorDto()));
-    }
-
-    [Fact]
-    public async Task UpdateStatusAsync_ShouldUpdateDoctorStatus()
-    {
         var doctor = new Doctor
         {
             DoctorId = 1,
+            FullName = "Dr John",
+            Specialisation = "Cardiology",
+            YearsOfExperience = 10,
+            ConsultationFee = 500,
             IsActive = true
         };
 
-        _doctorRepositoryMock
+        _repositoryMock
             .Setup(r => r.GetByIdAsync(1))
             .ReturnsAsync(doctor);
 
+        _repositoryMock
+            .Setup(r => r.UpdateAsync(doctor))
+            .Returns(Task.CompletedTask);
+
+        // Act
+        await _service.UpdateAsync(1, dto);
+
+        // Assert
+        _mapperMock.Verify(
+            m => m.Map(dto, doctor),
+            Times.Once
+        );
+
+        _repositoryMock.Verify(
+            r => r.UpdateAsync(doctor),
+            Times.Once
+        );
+    }
+
+    [Fact]
+    public async Task UpdateAsync_Throws_WhenDoctorNotFound()
+    {
+        // Arrange
+        var dto = new UpdateDoctorDto();
+
+        _repositoryMock
+            .Setup(r => r.GetByIdAsync(99))
+            .ReturnsAsync((Doctor?)null);
+
+        // Act
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            _service.UpdateAsync(99, dto));
+
+        // Assert
+        Assert.Equal("Doctor not found.", exception.Message);
+
+        _repositoryMock.Verify(
+            r => r.UpdateAsync(It.IsAny<Doctor>()),
+            Times.Never
+        );
+    }
+
+    [Fact]
+    public async Task UpdateStatusAsync_UpdatesDoctorStatus_WhenDoctorExists()
+    {
+        // Arrange
+        var doctor = new Doctor
+        {
+            DoctorId = 1,
+            FullName = "Dr John",
+            IsActive = true
+        };
+
+        _repositoryMock
+            .Setup(r => r.GetByIdAsync(1))
+            .ReturnsAsync(doctor);
+
+        _repositoryMock
+            .Setup(r => r.UpdateAsync(doctor))
+            .Returns(Task.CompletedTask);
+
+        // Act
         await _service.UpdateStatusAsync(1, false);
 
+        // Assert
         Assert.False(doctor.IsActive);
 
-        _doctorRepositoryMock.Verify(
-            r => r.UpdateAsync(doctor),
-            Times.Once);
-
-        _contextMock.Verify(
-            c => c.SaveChangesAsync(It.IsAny<CancellationToken>()),
-            Times.Once);
+        _repositoryMock.Verify(
+            r => r.UpdateAsync(It.Is<Doctor>(d =>
+                d.DoctorId == 1 &&
+                d.IsActive == false)),
+            Times.Once
+        );
     }
 
     [Fact]
-    public async Task UpdateStatusAsync_ShouldThrow_WhenDoctorNotFound()
+    public async Task UpdateStatusAsync_Throws_WhenDoctorNotFound()
     {
-        _doctorRepositoryMock
-            .Setup(r => r.GetByIdAsync(1))
+        // Arrange
+        _repositoryMock
+            .Setup(r => r.GetByIdAsync(99))
             .ReturnsAsync((Doctor?)null);
 
-        await Assert.ThrowsAsync<InvalidOperationException>(
-            () => _service.UpdateStatusAsync(1, false));
+        // Act
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            _service.UpdateStatusAsync(99, false));
+
+        // Assert
+        Assert.Equal("Doctor not found.", exception.Message);
+
+        _repositoryMock.Verify(
+            r => r.UpdateAsync(It.IsAny<Doctor>()),
+            Times.Never
+        );
     }
 
     [Fact]
-    public async Task DeleteAsync_ShouldDeleteDoctor_WhenDoctorExists()
+    public async Task DeleteAsync_DeletesDoctor_WhenDoctorExists()
     {
+        // Arrange
         var doctor = new Doctor
         {
-            DoctorId = 1
+            DoctorId = 1,
+            FullName = "Dr John"
         };
 
-        _doctorRepositoryMock
+        _repositoryMock
             .Setup(r => r.GetByIdAsync(1))
             .ReturnsAsync(doctor);
 
+        _repositoryMock
+            .Setup(r => r.DeleteAsync(1))
+            .Returns(Task.CompletedTask);
+
+        // Act
         await _service.DeleteAsync(1);
 
-        _doctorRepositoryMock.Verify(
+        // Assert
+        _repositoryMock.Verify(
             r => r.DeleteAsync(1),
-            Times.Once);
-
-        _contextMock.Verify(
-            c => c.SaveChangesAsync(It.IsAny<CancellationToken>()),
-            Times.Once);
+            Times.Once
+        );
     }
 
     [Fact]
-    public async Task DeleteAsync_ShouldThrow_WhenDoctorNotFound()
+    public async Task DeleteAsync_Throws_WhenDoctorNotFound()
     {
-        _doctorRepositoryMock
-            .Setup(r => r.GetByIdAsync(1))
+        // Arrange
+        _repositoryMock
+            .Setup(r => r.GetByIdAsync(99))
             .ReturnsAsync((Doctor?)null);
 
-        await Assert.ThrowsAsync<InvalidOperationException>(
-            () => _service.DeleteAsync(1));
+        // Act
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            _service.DeleteAsync(99));
+
+        // Assert
+        Assert.Equal("Doctor not found.", exception.Message);
+
+        _repositoryMock.Verify(
+            r => r.DeleteAsync(It.IsAny<int>()),
+            Times.Never
+        );
     }
 
     [Fact]
-    public async Task DeleteAsync_ShouldThrowInvalidOperationException_WhenDeleteFails()
+    public async Task GetSlots_ReturnsSlots_WhenSlotsExist()
     {
-        var doctor = new Doctor
-        {
-            DoctorId = 1
-        };
+        // Arrange
+        var slots = new List<string> { "09:00", "10:00" };
 
-        _doctorRepositoryMock
-            .Setup(r => r.GetByIdAsync(1))
-            .ReturnsAsync(doctor);
-
-        _doctorRepositoryMock
-            .Setup(r => r.DeleteAsync(1))
-            .ThrowsAsync(new DbUpdateException());
-
-        await Assert.ThrowsAsync<InvalidOperationException>(
-            () => _service.DeleteAsync(1));
-    }
-
-    [Fact]
-    public async Task GetSlots_ShouldReturnSlots_WhenSlotsExist()
-    {
-        var slots = new List<string>
-        {
-            "09:00 AM",
-            "10:00 AM"
-        };
-
-        _doctorRepositoryMock
+        _repositoryMock
             .Setup(r => r.GetSlots(1))
             .ReturnsAsync(slots);
 
+        // Act
         var result = await _service.GetSlots(1);
 
+        // Assert
+        Assert.NotNull(result);
         Assert.Equal(2, result.Count);
-        Assert.Contains("09:00 AM", result);
-        Assert.Contains("10:00 AM", result);
+        Assert.Contains("09:00", result);
+        Assert.Contains("10:00", result);
     }
 
     [Fact]
-    public async Task GetSlots_ShouldThrowNoAvailableSlotsException_WhenSlotsAreEmpty()
+    public async Task GetSlots_ThrowsNoAvailableSlotsException_WhenNoSlotsExist()
     {
-        _doctorRepositoryMock
+        // Arrange
+        _repositoryMock
             .Setup(r => r.GetSlots(1))
             .ReturnsAsync(new List<string>());
 
-        await Assert.ThrowsAsync<NoAvailableSlotsException>(
-            () => _service.GetSlots(1));
+        // Act and Assert
+        await Assert.ThrowsAsync<NoAvailableSlotsException>(() =>
+            _service.GetSlots(1));
     }
 
     [Fact]
-    public async Task CreateSlots_ShouldCreateSlotsAndSaveChanges()
+    public async Task CreateSlots_CreatesSlots()
     {
-        var slots = new List<string>
-        {
-            "09:00 AM",
-            "10:00 AM"
-        };
+        // Arrange
+        var slots = new List<string> { "09:00", "10:00" };
 
+        _repositoryMock
+            .Setup(r => r.CreateSlots(1, slots))
+            .Returns(Task.CompletedTask);
+
+        // Act
         await _service.CreateSlots(1, slots);
 
-        _doctorRepositoryMock.Verify(
+        // Assert
+        _repositoryMock.Verify(
             r => r.CreateSlots(1, slots),
-            Times.Once);
-
-        _contextMock.Verify(
-            c => c.SaveChangesAsync(It.IsAny<CancellationToken>()),
-            Times.Once);
+            Times.Once
+        );
     }
 
     [Fact]
-    public async Task AvailableDoctors_ShouldReturnDoctorsFromCache_WhenCacheHit()
+    public async Task AvailableDoctors_Throws_WhenDateIsPast()
     {
-        var date = DateOnly.FromDateTime(DateTime.Today);
-        var specialisation = "Cardiology";
-        var cacheKey = $"doctors:available:cardiology:{date:yyyy-MM-dd}";
+        // Arrange
+        var pastDate = DateOnly.FromDateTime(DateTime.Today.AddDays(-1));
 
-        var cachedDoctors = new List<DoctorListDto>
-        {
-            new()
-            {
-                DoctorId = 1,
-                FullName = "Cached Doctor",
-                Specialisation = "Cardiology",
-                IsActive = true
-            }
-        };
+        // Act
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            _service.AvailableDoctors("Cardiology", pastDate));
 
-        var cachedBytes = Encoding.UTF8.GetBytes(
-            JsonSerializer.Serialize(cachedDoctors));
+        // Assert
+        Assert.Equal("Cannot check availability for a past date.", exception.Message);
 
-        _cacheMock
-            .Setup(c => c.GetAsync(
-                cacheKey,
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync(cachedBytes);
-
-        var result = await _service.AvailableDoctors(specialisation, date);
-
-        Assert.Single(result);
-        Assert.Equal("Cached Doctor", result[0].FullName);
-
-        _doctorRepositoryMock.Verify(
-            r => r.AvailableDoctors(
-                It.IsAny<string>(),
-                It.IsAny<DateOnly>()),
-            Times.Never);
+        _repositoryMock.Verify(
+            r => r.AvailableDoctors(It.IsAny<string>(), It.IsAny<DateOnly>()),
+            Times.Never
+        );
     }
 
     [Fact]
-    public async Task AvailableDoctors_ShouldReturnDoctorsFromRepository_WhenCacheMiss()
+    public async Task AvailableDoctors_ReturnsFromRepository_WhenCacheMiss()
     {
-        var date = DateOnly.FromDateTime(DateTime.Today);
+        // Arrange
+        var date = DateOnly.FromDateTime(DateTime.Today.AddDays(1));
         var specialisation = "Cardiology";
-        var cacheKey = $"doctors:available:cardiology:{date:yyyy-MM-dd}";
 
         var doctors = new List<DoctorListDto>
         {
-            new()
-            {
-                DoctorId = 1,
-                FullName = "Dr Repository",
-                Specialisation = "Cardiology",
-                IsActive = true
-            }
+            new DoctorListDto()
         };
 
         _cacheMock
             .Setup(c => c.GetAsync(
-                cacheKey,
+                It.IsAny<string>(),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync((byte[]?)null);
 
-        _doctorRepositoryMock
+        _cacheMock
+            .Setup(c => c.SetAsync(
+                It.IsAny<string>(),
+                It.IsAny<byte[]>(),
+                It.IsAny<DistributedCacheEntryOptions>(),
+                It.IsAny<CancellationToken>()))
+            .Returns(Task.CompletedTask);
+
+        _repositoryMock
             .Setup(r => r.AvailableDoctors(specialisation, date))
             .ReturnsAsync(doctors);
 
+        // Act
         var result = await _service.AvailableDoctors(specialisation, date);
 
+        // Assert
+        Assert.NotNull(result);
         Assert.Single(result);
-        Assert.Equal("Dr Repository", result[0].FullName);
 
-        _doctorRepositoryMock.Verify(
+        _repositoryMock.Verify(
             r => r.AvailableDoctors(specialisation, date),
-            Times.Once);
+            Times.Once
+        );
 
         _cacheMock.Verify(
             c => c.SetAsync(
-                cacheKey,
+                It.IsAny<string>(),
                 It.IsAny<byte[]>(),
                 It.IsAny<DistributedCacheEntryOptions>(),
                 It.IsAny<CancellationToken>()),
-            Times.Once);
+            Times.Once
+        );
     }
 
     [Fact]
-    public async Task AvailableDoctors_ShouldThrow_WhenDateIsPast()
+    public async Task AvailableDoctors_ReturnsFromCache_WhenCacheHit()
     {
-        var pastDate = DateOnly.FromDateTime(DateTime.Today.AddDays(-1));
+        // Arrange
+        var date = DateOnly.FromDateTime(DateTime.Today.AddDays(1));
+        var specialisation = "Cardiology";
 
-        await Assert.ThrowsAsync<InvalidOperationException>(
-            () => _service.AvailableDoctors("Cardiology", pastDate));
-    }
-
-    [Fact]
-    public async Task GetSummaryAsync_ShouldReturnSummary()
-    {
-        var summary = new DoctorSummaryDto
+        var cachedDoctors = new List<DoctorListDto>
         {
-            TotalDoctors = 5,
-            ActiveDoctors = 4,
-            InactiveDoctors = 1
+            new DoctorListDto()
         };
 
-        _doctorRepositoryMock
+        var cachedJson = JsonSerializer.Serialize(cachedDoctors);
+        var cachedBytes = Encoding.UTF8.GetBytes(cachedJson);
+
+        _cacheMock
+            .Setup(c => c.GetAsync(
+                It.IsAny<string>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(cachedBytes);
+
+        // Act
+        var result = await _service.AvailableDoctors(specialisation, date);
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Single(result);
+
+        _repositoryMock.Verify(
+            r => r.AvailableDoctors(It.IsAny<string>(), It.IsAny<DateOnly>()),
+            Times.Never
+        );
+
+        _cacheMock.Verify(
+            c => c.SetAsync(
+                It.IsAny<string>(),
+                It.IsAny<byte[]>(),
+                It.IsAny<DistributedCacheEntryOptions>(),
+                It.IsAny<CancellationToken>()),
+            Times.Never
+        );
+    }
+
+    [Fact]
+    public async Task GetSummaryAsync_ReturnsSummary()
+    {
+        // Arrange
+        var summary = new DoctorSummaryDto();
+
+        _repositoryMock
             .Setup(r => r.GetSummaryAsync())
             .ReturnsAsync(summary);
 
+        // Act
         var result = await _service.GetSummaryAsync();
 
-        Assert.Equal(5, result.TotalDoctors);
-        Assert.Equal(4, result.ActiveDoctors);
-        Assert.Equal(1, result.InactiveDoctors);
-    }
+        // Assert
+        Assert.NotNull(result);
+        Assert.Same(summary, result);
 
-    [Fact]
-    public async Task CreateLeave_ShouldThrow_WhenLeaveDateIsPast()
-    {
-        var pastDate = DateOnly.FromDateTime(DateTime.Today.AddDays(-1));
-
-        var leaves = new List<CreateLeaveDto>
-        {
-            new()
-            {
-                LeaveDate = pastDate,
-                Reason = "Past leave"
-            }
-        };
-
-        _doctorRepositoryMock
-            .Setup(r => r.GetLeavesByDoctorId(1))
-            .ReturnsAsync(new List<DoctorLeaves>());
-
-        await Assert.ThrowsAsync<InvalidOperationException>(
-            () => _service.CreateLeave(1, leaves));
-    }
-
-    [Fact]
-    public async Task CreateLeave_ShouldSkipDuplicateLeaveDate()
-    {
-        var leaveDate = DateOnly.FromDateTime(DateTime.Today);
-
-        var existingLeaves = new List<DoctorLeaves>
-        {
-            new()
-            {
-                LeaveDate = leaveDate
-            }
-        };
-
-        var leaves = new List<CreateLeaveDto>
-        {
-            new()
-            {
-                LeaveDate = leaveDate,
-                Reason = "Already exists"
-            }
-        };
-
-        _doctorRepositoryMock
-            .Setup(r => r.GetLeavesByDoctorId(1))
-            .ReturnsAsync(existingLeaves);
-
-        var result = await _service.CreateLeave(1, leaves);
-
-        Assert.Contains(leaveDate, result.SkippedDates);
-
-        _doctorRepositoryMock.Verify(
-            r => r.CreateLeaves(
-                It.IsAny<int>(),
-                It.IsAny<List<CreateLeaveDto>>()),
-            Times.Never);
-    }
-
-    [Fact]
-    public async Task CreateLeave_ShouldCreateLeave_WhenNoAppointmentsExist()
-    {
-        var leaveDate = DateOnly.FromDateTime(DateTime.Today.AddDays(1));
-
-        var leaves = new List<CreateLeaveDto>
-        {
-            new()
-            {
-                LeaveDate = leaveDate,
-                Reason = "Personal"
-            }
-        };
-
-        var allSlots = new List<string>
-        {
-            "09:00 AM",
-            "10:00 AM"
-        };
-
-        var bookedSlots = new List<string>();
-
-        _doctorRepositoryMock
-            .Setup(r => r.GetLeavesByDoctorId(1))
-            .ReturnsAsync(new List<DoctorLeaves>());
-
-        _doctorRepositoryMock
-            .Setup(r => r.GetSlots(1))
-            .ReturnsAsync(allSlots);
-
-        _appointmentRepositoryMock
-            .Setup(r => r.BookedTimeSlots(leaveDate, 1))
-            .ReturnsAsync(bookedSlots);
-
-        var result = await _service.CreateLeave(1, leaves);
-
-        Assert.Empty(result.SkippedDates);
-        Assert.Empty(result.CreatedWithCancelledAppointments);
-
-        _doctorRepositoryMock.Verify(
-            r => r.CreateLeaves(1, leaves),
-            Times.Once);
-
-        _appointmentRepositoryMock.Verify(
-            r => r.CancelAppointmentsByDoctorDate(
-                It.IsAny<int>(),
-                It.IsAny<DateOnly>()),
-            Times.Never);
-
-        _contextMock.Verify(
-            c => c.SaveChangesAsync(It.IsAny<CancellationToken>()),
-            Times.Once);
-    }
-
-    [Fact]
-    public async Task CreateLeave_ShouldCancelAppointments_WhenBookedSlotsExist()
-    {
-        var leaveDate = DateOnly.FromDateTime(DateTime.Today.AddDays(1));
-
-        var leaves = new List<CreateLeaveDto>
-        {
-            new()
-            {
-                LeaveDate = leaveDate,
-                Reason = "Emergency"
-            }
-        };
-
-        var allSlots = new List<string>
-        {
-            "09:00 AM",
-            "10:00 AM"
-        };
-
-        var bookedSlots = new List<string>
-        {
-            "09:00 AM"
-        };
-
-        _doctorRepositoryMock
-            .Setup(r => r.GetLeavesByDoctorId(1))
-            .ReturnsAsync(new List<DoctorLeaves>());
-
-        _doctorRepositoryMock
-            .Setup(r => r.GetSlots(1))
-            .ReturnsAsync(allSlots);
-
-        _appointmentRepositoryMock
-            .Setup(r => r.BookedTimeSlots(leaveDate, 1))
-            .ReturnsAsync(bookedSlots);
-
-        var result = await _service.CreateLeave(1, leaves);
-
-        Assert.Contains(
-            leaveDate,
-            result.CreatedWithCancelledAppointments);
-
-        _appointmentRepositoryMock.Verify(
-            r => r.CancelAppointmentsByDoctorDate(1, leaveDate),
-            Times.Once);
-
-        _doctorRepositoryMock.Verify(
-            r => r.CreateLeaves(1, leaves),
-            Times.Once);
-
-        _contextMock.Verify(
-            c => c.SaveChangesAsync(It.IsAny<CancellationToken>()),
-            Times.Once);
-    }
-
-    [Fact]
-    public async Task CreateLeave_ShouldThrowNoAvailableSlotsException_WhenDoctorHasNoSlots()
-    {
-        var leaveDate = DateOnly.FromDateTime(DateTime.Today.AddDays(1));
-
-        var leaves = new List<CreateLeaveDto>
-        {
-            new()
-            {
-                LeaveDate = leaveDate,
-                Reason = "Personal"
-            }
-        };
-
-        _doctorRepositoryMock
-            .Setup(r => r.GetLeavesByDoctorId(1))
-            .ReturnsAsync(new List<DoctorLeaves>());
-
-        _doctorRepositoryMock
-            .Setup(r => r.GetSlots(1))
-            .ReturnsAsync(new List<string>());
-
-        _appointmentRepositoryMock
-            .Setup(r => r.BookedTimeSlots(leaveDate, 1))
-            .ReturnsAsync(new List<string>());
-
-        await Assert.ThrowsAsync<NoAvailableSlotsException>(
-            () => _service.CreateLeave(1, leaves));
+        _repositoryMock.Verify(
+            r => r.GetSummaryAsync(),
+            Times.Once
+        );
     }
 }

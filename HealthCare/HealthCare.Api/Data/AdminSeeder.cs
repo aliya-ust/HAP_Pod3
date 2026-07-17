@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace HealthCare.Api.Data
 {
-    public class AdminSeeder
+    public static class AdminSeeder
     {
 
         public static async Task SeedAdminAsync(UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
@@ -32,7 +32,7 @@ namespace HealthCare.Api.Data
                 }
                 else
                 {
-                    throw new Exception("Admin creation failed: " +
+                    throw new InvalidOperationException("Admin creation failed: " +
                         string.Join(", ", result.Errors.Select(e => e.Description)));
                 }
             }

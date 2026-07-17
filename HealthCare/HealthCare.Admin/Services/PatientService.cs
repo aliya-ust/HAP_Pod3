@@ -27,19 +27,19 @@ namespace HealthCare.Admin.Services
 
             var queryParams = new List<string>();
 
-            // ✅ Search by name
+            // Search by name
             if (!string.IsNullOrWhiteSpace(filter.Search))
                 queryParams.Add($"Search={Uri.EscapeDataString(filter.Search)}");
 
-            // ✅ Insurance filter
+            // Insurance filter
             if (filter.HasInsurance.HasValue)
                 queryParams.Add($"HasInsurance={filter.HasInsurance.Value.ToString().ToLower()}");
 
-            // ✅ Pagination
+            // Pagination
             queryParams.Add($"PageNumber={filter.PageNumber}");
             queryParams.Add($"PageSize={filter.PageSize}");
 
-            // ✅ FIX
+            //  FIX
             var queryString = string.Join("&", queryParams);
 
             var url = $"api/admin/patients?{queryString}";
@@ -47,12 +47,12 @@ namespace HealthCare.Admin.Services
             var response = await _httpClient.GetAsync(url);
 
             if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
-                throw new Exception("Unauthorized");
+                throw new InvalidOperationException("Unauthorized");
 
             if (!response.IsSuccessStatusCode)
             {
                 var error = await response.Content.ReadAsStringAsync();
-                throw new Exception(error);
+                throw new InvalidOperationException(error);
             }
 
             var pagedResult = await response.Content.ReadFromJsonAsync<PagedResult<PatientListDto>>();

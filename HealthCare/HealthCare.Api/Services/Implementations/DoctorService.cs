@@ -22,7 +22,6 @@ namespace HealthCare.Api.Services.Implementations
         private readonly IAppointmentRepository _appointmentRepository;
         private readonly HealthCareDbContext _context;
         private readonly IMapper _mapper;
-        private readonly ILogger<DoctorService> _logger;
         private readonly IDistributedCache _cache;
       
       
@@ -32,7 +31,7 @@ namespace HealthCare.Api.Services.Implementations
      IDoctorRepository repository,
      IAppointmentRepository appointmentRepository,
      HealthCareDbContext context,
-     IMapper mapper,ILogger<DoctorService> logger,
+     IMapper mapper,
      IDistributedCache cache)
         {
             _repository = repository;
@@ -40,7 +39,6 @@ namespace HealthCare.Api.Services.Implementations
             _context = context;
             _mapper = mapper;
             _cache = cache;
-            _logger = logger;
         }
 
 
@@ -50,7 +48,7 @@ namespace HealthCare.Api.Services.Implementations
             var doctor = await _repository.GetByIdAsync(id);
 
             if (doctor is null)
-                throw new InvalidOperationException(NotFoundExceptionMessage);
+                throw new DoctorNotFoundException(id);
 
             return _mapper.Map<DoctorListDto>(doctor);
         }

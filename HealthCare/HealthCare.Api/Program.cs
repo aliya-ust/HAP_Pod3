@@ -96,8 +96,9 @@ builder.Services.AddScoped<IDoctorService, DoctorService>();
 builder.Services.AddScoped<IAppointmentService, AppointmentService>();
 builder.Services.AddScoped<IHealthRecordService, HealthRecordService>();
 builder.Services.AddScoped<IJwtService, JwtService>();
-var rabbitmqConfig = builder.Configuration.GetSection("RabbitMq");
 
+
+var rabbitmqConfig = builder.Configuration.GetSection("RabbitMq");
 builder.Services.AddMassTransit(x =>
 {
     x.AddConsumer<AppointmentBookedConsumer>();

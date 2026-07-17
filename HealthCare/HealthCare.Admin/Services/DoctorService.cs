@@ -48,7 +48,7 @@ namespace HealthCare.Admin.Services
             var response = await _httpClient.GetAsync(url);
 
             if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
-                throw new Exception("Unauthorized");
+                throw new InvalidOperationException("Unauthorized");
 
             if (!response.IsSuccessStatusCode)
             {
@@ -67,7 +67,7 @@ namespace HealthCare.Admin.Services
             var response = await _httpClient.GetAsync($"api/admin/doctors/{doctorId}");
 
             if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
-                throw new Exception("Unauthorized");
+                throw new InvalidOperationException("Unauthorized");
 
             if (!response.IsSuccessStatusCode)
                 return null;
@@ -115,7 +115,7 @@ namespace HealthCare.Admin.Services
             if (!response.IsSuccessStatusCode)
             {
                 var error = await response.Content.ReadAsStringAsync();
-                throw new Exception($"Registration failed: {error}");
+                throw new  InvalidOperationException($"Registration failed: {error}");
             }
 
             return true;
