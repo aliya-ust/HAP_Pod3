@@ -101,6 +101,8 @@ namespace HealthCare.Api.Services.Implementations
                 await _repository.AddAsync(appointment);
                 await _context.SaveChangesAsync();
 
+                await _doctorService.InvalidateDoctorCache(appointment.DoctorId);
+
                 var patient = await _context.Patients.FindAsync(patientId);
                 await _publishEndpoint.Publish(new AppointmentBookedEvent
                 {
@@ -133,6 +135,7 @@ namespace HealthCare.Api.Services.Implementations
             _mapper.Map(dto, appointment);
             await _repository.UpdateAsync(appointment);
             await _context.SaveChangesAsync();
+            await _doctorService.InvalidateDoctorCache(appointment.DoctorId);
         }
 
         public async Task UpdateStatusAsync(int id, UpdateAppointmentDto dto)
@@ -147,6 +150,7 @@ namespace HealthCare.Api.Services.Implementations
 
             await _repository.UpdateAsync(appointment);
             await _context.SaveChangesAsync();
+            await _doctorService.InvalidateDoctorCache(appointment.DoctorId);
         }
 
         public async Task DeleteAsync(int id)

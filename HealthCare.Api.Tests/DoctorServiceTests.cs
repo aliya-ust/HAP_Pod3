@@ -12,6 +12,8 @@ using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Moq;
+using System.Text;
+using System.Text.Json;
 
 namespace HealthCare.Api.Tests
 {
@@ -429,6 +431,102 @@ namespace HealthCare.Api.Tests
             var result = await _service.AvailableDoctors("Cardiology", DateOnly.FromDateTime(DateTime.Today));
 
             Assert.NotEmpty(result);
+        }
+
+        //  AvailableDoctors - cache hit
+        [Fact]
+        public async Task AvailableDoctors_ShouldReturnCachedData_WhenCacheHit()
+        {
+            var doctors = new List<DoctorListDto>
+            {
+                new DoctorListDto { FullName = "Dr. Cached", Specialisation = "Cardiology" }
+            };
+            var json = JsonSerializer.Serialize(doctors);
+
+            _cacheMock.SetupSequence(c => c.GetAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(Encoding.UTF8.GetBytes("0"))
+                .ReturnsAsync(Encoding.UTF8.GetBytes(json));
+
+            var result = await _service.AvailableDoctors("Cardiology", DateOnly.FromDateTime(DateTime.Today));
+
+            Assert.NotEmpty(result);
+            Assert.Equal("Dr. Cached", result[0].FullName);
+            _repoMock.Verify(r => r.AvailableDoctors(It.IsAny<string>(), It.IsAny<DateOnly>()), Times.Never);
+        }
+
+        //  AvailableDoctors - cache fallback
+        [Fact]
+        public async Task AvailableDoctors_ShouldFallbackToDatabase_WhenCacheFails()
+        {
+            _cacheMock.Setup(c => c.GetAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new Exception("Cache unavailable"));
+
+            _repoMock.Setup(r => r.AvailableDoctors("Cardiology", It.IsAny<DateOnly>()))
+                .ReturnsAsync(new List<DoctorListDto>
+                {
+                    new DoctorListDto { FullName = "Dr. Fallback" }
+                });
+
+            var result = await _service.AvailableDoctors("Cardiology", DateOnly.FromDateTime(DateTime.Today));
+
+            Assert.NotEmpty(result);
+            Assert.Equal("Dr. Fallback", result[0].FullName);
+            _repoMock.Verify(r => r.AvailableDoctors("Cardiology", It.IsAny<DateOnly>()), Times.Once);
+        }
+
+        //  AvailableDoctors - empty
+        [Fact]
+        public async Task AvailableDoctors_ShouldReturnEmptyList_WhenNone()
+        {
+            _cacheMock.Setup(c => c.GetAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync((byte[]?)null);
+
+            _repoMock.Setup(r => r.AvailableDoctors("Cardiology", It.IsAny<DateOnly>()))
+                .ReturnsAsync(new List<DoctorListDto>());
+
+            var result = await _service.AvailableDoctors("Cardiology", DateOnly.FromDateTime(DateTime.Today));
+
+            Assert.Empty(result);
+        }
+
+        //  GetSummaryAsync
+        [Fact]
+        public async Task GetSummaryAsync_ShouldReturnSummary()
+        {
+            var summary = new DoctorSummaryDto
+            {
+                TotalDoctors = 10,
+                ActiveDoctors = 7,
+                InactiveDoctors = 3
+            };
+
+            _repoMock.Setup(r => r.GetSummaryAsync()).ReturnsAsync(summary);
+
+            var result = await _service.GetSummaryAsync();
+
+            Assert.Equal(10, result.TotalDoctors);
+            Assert.Equal(7, result.ActiveDoctors);
+            Assert.Equal(3, result.InactiveDoctors);
+        }
+
+        //  InvalidateDoctorCache
+        [Fact]
+        public async Task InvalidateDoctorCache_ShouldIncrementCacheVersion()
+        {
+            var doctor = new Doctor { Specialisation = "Cardiology" };
+
+            _repoMock.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(doctor);
+
+            _cacheMock.Setup(c => c.GetAsync("cache_ver:Cardiology", It.IsAny<CancellationToken>()))
+                .ReturnsAsync(Encoding.UTF8.GetBytes("5"));
+
+            await _service.InvalidateDoctorCache(1);
+
+            _cacheMock.Verify(c => c.SetAsync(
+                "cache_ver:Cardiology",
+                It.Is<byte[]>(b => Encoding.UTF8.GetString(b) == "6"),
+                It.IsAny<DistributedCacheEntryOptions>(),
+                It.IsAny<CancellationToken>()), Times.Once);
         }
     }
 }

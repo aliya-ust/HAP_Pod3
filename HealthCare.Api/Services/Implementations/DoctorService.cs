@@ -143,7 +143,7 @@ namespace HealthCare.Api.Services.Implementations
 
             await _repository.UpdateAsync(doctor);
             await _repository.SaveChangesAsync();
-            await InvalidateCache(id);
+            await InvalidateDoctorCache(id);
         }
 
         public async Task DeleteAsync(int id)
@@ -191,7 +191,7 @@ namespace HealthCare.Api.Services.Implementations
         {
             await _repository.CreateSlots(id, timeslots);
             await _repository.SaveChangesAsync();
-            await InvalidateCache(id);
+            await InvalidateDoctorCache(id);
         }
 
         private async Task<List<string>> AvailableTimeSlotsCheck(DateOnly date, int doctorId)
@@ -234,7 +234,7 @@ namespace HealthCare.Api.Services.Implementations
             {
                 await _repository.CreateLeaves(id, leavesToCreate);
                 await _repository.SaveChangesAsync();
-                await InvalidateCache(id);
+                await InvalidateDoctorCache(id);
             }
 
             return result;
@@ -274,7 +274,7 @@ namespace HealthCare.Api.Services.Implementations
             }
         }
 
-        private async Task InvalidateCache(int doctorId)
+        public async Task InvalidateDoctorCache(int doctorId)
         {
             try
             {

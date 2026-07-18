@@ -111,7 +111,6 @@ builder.Services.AddScoped<IDoctorService>(sp =>
 });
 builder.Services.AddScoped<IAppointmentService, AppointmentService>();
 builder.Services.AddScoped<IHealthRecordService, HealthRecordService>();
-builder.Services.AddScoped<INotificationService, NotificationService>();
 
 // Background Services
 builder.Services.AddHostedService<HeartbeatService>();

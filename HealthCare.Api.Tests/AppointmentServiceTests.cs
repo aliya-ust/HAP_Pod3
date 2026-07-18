@@ -145,12 +145,13 @@ namespace HealthCare.Api.Tests
             _repoMock.Setup(r => r.IsAvailable(dto.ScheduledDate, 1, dto.TimeSlot))
                 .ReturnsAsync(true);
 
-            var appointment = new Appointment();
+            var appointment = new Appointment { DoctorId = 1 };
             _mapperMock.Setup(m => m.Map<Appointment>(dto)).Returns(appointment);
 
             await _service.AddAsync(dto, 5);
 
             _repoMock.Verify(r => r.AddAsync(appointment), Times.Once);
+            _doctorServiceMock.Verify(d => d.InvalidateDoctorCache(1), Times.Once);
         }
 
         //  AddAsync - past date
@@ -185,17 +186,42 @@ namespace HealthCare.Api.Tests
                 _service.AddAsync(dto, 1));
         }
 
+        //  AddAsync - db failure
+        [Fact]
+        public async Task AddAsync_ShouldThrow_WhenDbFails()
+        {
+            var dto = new CreateAppointmentDto
+            {
+                ScheduledDate = DateOnly.FromDateTime(DateTime.Today.AddDays(1)),
+                DoctorId = 1,
+                TimeSlot = "09:00-10:00"
+            };
+
+            _repoMock.Setup(r => r.IsAvailable(dto.ScheduledDate, 1, dto.TimeSlot))
+                .ReturnsAsync(true);
+
+            var appointment = new Appointment { DoctorId = 1 };
+            _mapperMock.Setup(m => m.Map<Appointment>(dto)).Returns(appointment);
+
+            _repoMock.Setup(r => r.AddAsync(appointment))
+                .ThrowsAsync(new DbUpdateException());
+
+            await Assert.ThrowsAsync<DbHandleException>(() =>
+                _service.AddAsync(dto, 5));
+        }
+
         //  UpdateAsync
         [Fact]
         public async Task UpdateAsync_ShouldUpdateAppointment()
         {
-            var appointment = new Appointment();
+            var appointment = new Appointment { DoctorId = 1 };
 
             _repoMock.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(appointment);
 
             await _service.UpdateAsync(1, new UpdateAppointmentDto());
 
             _repoMock.Verify(r => r.UpdateAsync(appointment), Times.Once);
+            _doctorServiceMock.Verify(d => d.InvalidateDoctorCache(1), Times.Once);
         }
 
         [Fact]
@@ -211,7 +237,7 @@ namespace HealthCare.Api.Tests
         [Fact]
         public async Task UpdateStatusAsync_ShouldUpdateStatus()
         {
-            var appointment = new Appointment();
+            var appointment = new Appointment { DoctorId = 1 };
 
             _repoMock.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(appointment);
 
@@ -224,6 +250,16 @@ namespace HealthCare.Api.Tests
             await _service.UpdateStatusAsync(1, dto);
 
             Assert.Equal("Cancelled", appointment.Status);
+            _doctorServiceMock.Verify(d => d.InvalidateDoctorCache(1), Times.Once);
+        }
+
+        [Fact]
+        public async Task UpdateStatusAsync_ShouldThrow_WhenNotFound()
+        {
+            _repoMock.Setup(r => r.GetByIdAsync(1)).ReturnsAsync((Appointment?)null);
+
+            await Assert.ThrowsAsync<AppointmentNotFoundException>(() =>
+                _service.UpdateStatusAsync(1, new UpdateAppointmentDto()));
         }
 
         //  Delete
@@ -245,6 +281,17 @@ namespace HealthCare.Api.Tests
             _repoMock.Setup(r => r.GetByIdAsync(1)).ReturnsAsync((Appointment?)null);
 
             await Assert.ThrowsAsync<AppointmentNotFoundException>(() =>
+                _service.DeleteAsync(1));
+        }
+
+        [Fact]
+        public async Task DeleteAsync_ShouldThrow_WhenDbFails()
+        {
+            var appointment = new Appointment();
+            _repoMock.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(appointment);
+            _repoMock.Setup(r => r.DeleteAsync(1)).ThrowsAsync(new DbUpdateException());
+
+            await Assert.ThrowsAsync<DbHandleException>(() =>
                 _service.DeleteAsync(1));
         }
 
@@ -300,25 +347,60 @@ namespace HealthCare.Api.Tests
 
         //  Schedule methods
         [Fact]
-        public async Task GetDoctorSchedule_ShouldReturnList()
+        public async Task GetDoctorSchedule_ShouldReturnSchedule()
+        {
+            var schedule = new List<AppointmentListDto>
+            {
+                new AppointmentListDto { AppointmentId = 1, Status = "Confirmed" },
+                new AppointmentListDto { AppointmentId = 2, Status = "Pending" }
+            };
+
+            _repoMock.Setup(r => r.GetDoctorSchedule(It.IsAny<DateOnly>(), 1))
+                .ReturnsAsync(schedule);
+
+            var result = await _service.GetDoctorSchedule(DateOnly.FromDateTime(DateTime.Today), 1);
+
+            Assert.Equal(2, result.Count);
+            Assert.Equal("Confirmed", result[0].Status);
+        }
+
+        [Fact]
+        public async Task GetDoctorSchedule_ShouldReturnEmptyList_WhenNone()
         {
             _repoMock.Setup(r => r.GetDoctorSchedule(It.IsAny<DateOnly>(), 1))
                 .ReturnsAsync(new List<AppointmentListDto>());
 
             var result = await _service.GetDoctorSchedule(DateOnly.FromDateTime(DateTime.Today), 1);
 
-            Assert.NotNull(result);
+            Assert.Empty(result);
         }
 
         [Fact]
-        public async Task GetPatientSchedule_ShouldReturnList()
+        public async Task GetPatientSchedule_ShouldReturnSchedule()
+        {
+            var schedule = new List<AppointmentListDto>
+            {
+                new AppointmentListDto { AppointmentId = 1, Status = "Confirmed" }
+            };
+
+            _repoMock.Setup(r => r.GetPatientSchedule(It.IsAny<DateOnly>(), 1))
+                .ReturnsAsync(schedule);
+
+            var result = await _service.GetPatientSchedule(DateOnly.FromDateTime(DateTime.Today), 1);
+
+            Assert.Single(result);
+            Assert.Equal("Confirmed", result[0].Status);
+        }
+
+        [Fact]
+        public async Task GetPatientSchedule_ShouldReturnEmptyList_WhenNone()
         {
             _repoMock.Setup(r => r.GetPatientSchedule(It.IsAny<DateOnly>(), 1))
                 .ReturnsAsync(new List<AppointmentListDto>());
 
             var result = await _service.GetPatientSchedule(DateOnly.FromDateTime(DateTime.Today), 1);
 
-            Assert.NotNull(result);
+            Assert.Empty(result);
         }
 
         //  CancelAppointments
@@ -330,6 +412,117 @@ namespace HealthCare.Api.Tests
             _repoMock.Verify(r =>
                 r.CancelAppointmentsByDoctorDate(1, It.IsAny<DateOnly>()),
                 Times.Once);
+        }
+
+        //  GetReport
+        [Fact]
+        public async Task GetReport_ShouldReturnReportData()
+        {
+            var reportData = new List<AppointmentReportDto>
+            {
+                new AppointmentReportDto { Date = DateOnly.FromDateTime(DateTime.Today), PendingCount = 2, ConfirmedCount = 1 }
+            };
+
+            _repoMock.Setup(r => r.GetReport(It.IsAny<DateOnly>(), It.IsAny<DateOnly>()))
+                .ReturnsAsync(reportData);
+
+            var result = await _service.GetReport(new AppointmentReportFilter());
+
+            Assert.NotEmpty(result);
+            Assert.Single(result);
+        }
+
+        [Fact]
+        public async Task GetReport_ShouldReturnEmptyList_WhenNoData()
+        {
+            _repoMock.Setup(r => r.GetReport(It.IsAny<DateOnly>(), It.IsAny<DateOnly>()))
+                .ReturnsAsync(new List<AppointmentReportDto>());
+
+            var result = await _service.GetReport(new AppointmentReportFilter());
+
+            Assert.Empty(result);
+        }
+
+        [Fact]
+        public async Task GetReport_ShouldUseDefaultDates_WhenNull()
+        {
+            var fromDate = DateOnly.FromDateTime(DateTime.Today.AddDays(-7));
+            var toDate = DateOnly.FromDateTime(DateTime.Today);
+
+            _repoMock.Setup(r => r.GetReport(fromDate, toDate))
+                .ReturnsAsync(new List<AppointmentReportDto> { new AppointmentReportDto() });
+
+            var result = await _service.GetReport(new AppointmentReportFilter());
+
+            Assert.NotEmpty(result);
+            _repoMock.Verify(r => r.GetReport(fromDate, toDate), Times.Once);
+        }
+
+        //  GetAppointmentByPatient
+        [Fact]
+        public async Task GetAppointmentByPatient_ShouldReturnList()
+        {
+            _repoMock.Setup(r => r.GetAppointmentByPatient(1))
+                .ReturnsAsync(new List<AppointmentListDto> { new AppointmentListDto() });
+
+            var result = await _service.GetAppointmentByPatient(1);
+
+            Assert.NotEmpty(result);
+        }
+
+        [Fact]
+        public async Task GetAppointmentByPatient_ShouldReturnEmpty_WhenNone()
+        {
+            _repoMock.Setup(r => r.GetAppointmentByPatient(1))
+                .ReturnsAsync(new List<AppointmentListDto>());
+
+            var result = await _service.GetAppointmentByPatient(1);
+
+            Assert.Empty(result);
+        }
+
+        //  GetAppointmentByDoctor
+        [Fact]
+        public async Task GetAppointmentByDoctor_ShouldReturnList()
+        {
+            _repoMock.Setup(r => r.GetAppointmentByDoctor(1))
+                .ReturnsAsync(new List<AppointmentListDto> { new AppointmentListDto() });
+
+            var result = await _service.GetAppointmentByDoctor(1);
+
+            Assert.NotEmpty(result);
+        }
+
+        [Fact]
+        public async Task GetAppointmentByDoctor_ShouldReturnEmpty_WhenNone()
+        {
+            _repoMock.Setup(r => r.GetAppointmentByDoctor(1))
+                .ReturnsAsync(new List<AppointmentListDto>());
+
+            var result = await _service.GetAppointmentByDoctor(1);
+
+            Assert.Empty(result);
+        }
+
+        //  GetSummaryAsync
+        [Fact]
+        public async Task GetSummaryAsync_ShouldReturnSummary()
+        {
+            var summary = new AppointmentSummaryDto
+            {
+                PendingCount = 5,
+                ConfirmedCount = 3,
+                CompletedCount = 10,
+                CancelledCount = 2,
+                TotalRevenue = 5000m
+            };
+
+            _repoMock.Setup(r => r.GetSummaryAsync()).ReturnsAsync(summary);
+
+            var result = await _service.GetSummaryAsync();
+
+            Assert.Equal(5, result.PendingCount);
+            Assert.Equal(3, result.ConfirmedCount);
         }
     }
 }
