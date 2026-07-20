@@ -1,0 +1,229 @@
+2026-07-18 06:08:22.916 +05:30 [INF] HTTP OPTIONS /api/auth/login responded 204 in 30.3119 ms
+2026-07-18 06:08:22.926 +05:30 [INF] HTTP OPTIONS /api/auth/login responded 204 in 31.0855 ms
+2026-07-18 06:08:22.926 +05:30 [INF] HTTP OPTIONS /api/auth/login responded 204 in 53.1892 ms
+2026-07-18 06:08:37.388 +05:30 [ERR] Unhandled exception occurred. RequestId: 0HNN3NLJAKIBO:0000000B, Method: POST, Path: /api/auth/login
+System.UnauthorizedAccessException: Invalid credentials.
+   at HealthCare.Api.Services.Implementation.AuthService.LoginAsync(LoginDto dto) in C:\Users\310057\Desktop\Project\Sprint3\Health\Health\HealthCare.Api\Services\Implementation\AuthService.cs:line 153
+   at HealthCare.Api.Controllers.AuthController.Login(LoginDto dto) in C:\Users\310057\Desktop\Project\Sprint3\Health\Health\HealthCare.Api\Controllers\AuthController.cs:line 70
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddlewareImpl.<Invoke>g__Awaited|10_0(ExceptionHandlerMiddlewareImpl middleware, HttpContext context, Task task)
+2026-07-18 06:08:37.388 +05:30 [ERR] Unhandled exception occurred. RequestId: 0HNN3NLJAKIBO:00000009, Method: POST, Path: /api/auth/login
+System.UnauthorizedAccessException: Invalid credentials.
+   at HealthCare.Api.Services.Implementation.AuthService.LoginAsync(LoginDto dto) in C:\Users\310057\Desktop\Project\Sprint3\Health\Health\HealthCare.Api\Services\Implementation\AuthService.cs:line 153
+   at HealthCare.Api.Controllers.AuthController.Login(LoginDto dto) in C:\Users\310057\Desktop\Project\Sprint3\Health\Health\HealthCare.Api\Controllers\AuthController.cs:line 70
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddlewareImpl.<Invoke>g__Awaited|10_0(ExceptionHandlerMiddlewareImpl middleware, HttpContext context, Task task)
+2026-07-18 06:08:37.388 +05:30 [ERR] Unhandled exception occurred. RequestId: 0HNN3NLJAKIBO:00000007, Method: POST, Path: /api/auth/login
+System.UnauthorizedAccessException: Invalid credentials.
+   at HealthCare.Api.Services.Implementation.AuthService.LoginAsync(LoginDto dto) in C:\Users\310057\Desktop\Project\Sprint3\Health\Health\HealthCare.Api\Services\Implementation\AuthService.cs:line 153
+   at HealthCare.Api.Controllers.AuthController.Login(LoginDto dto) in C:\Users\310057\Desktop\Project\Sprint3\Health\Health\HealthCare.Api\Controllers\AuthController.cs:line 70
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddlewareImpl.<Invoke>g__Awaited|10_0(ExceptionHandlerMiddlewareImpl middleware, HttpContext context, Task task)
+2026-07-18 06:08:38.530 +05:30 [ERR] HTTP POST /api/auth/login responded 500 in 14941.0999 ms
+2026-07-18 06:08:38.538 +05:30 [ERR] HTTP POST /api/auth/login responded 500 in 14771.1855 ms
+2026-07-18 06:08:38.539 +05:30 [ERR] HTTP POST /api/auth/login responded 500 in 14921.3686 ms
+2026-07-18 09:34:52.000 +05:30 [INF] Configured endpoint AppointmentBooked, Consumer: HealthCare.Api.Messaging.AppointmentBookedConsumer
+2026-07-18 09:34:52.908 +05:30 [INF] Bus started: "rabbitmq://localhost/"
+2026-07-18 09:35:13.415 +05:30 [INF] HTTP OPTIONS /api/auth/login responded 204 in 20.1643 ms
+2026-07-18 09:35:13.608 +05:30 [WRN] You do not have a valid license key for the Lucky Penny software AutoMapper. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.
+2026-07-18 09:35:13.962 +05:30 [INF] Generating JWT token for User ab4f145e-c021-4d1c-8504-8766b4b339ae
+2026-07-18 09:35:14.012 +05:30 [INF] JWT token generated successfully for User ab4f145e-c021-4d1c-8504-8766b4b339ae
+2026-07-18 09:35:14.069 +05:30 [INF] HTTP POST /api/auth/login responded 200 in 635.4304 ms
+2026-07-18 09:35:18.192 +05:30 [INF] HTTP OPTIONS /api/dashboard responded 204 in 1.0797 ms
+2026-07-18 09:35:18.403 +05:30 [INF] Fetching admin dashboard summary.
+2026-07-18 09:35:18.705 +05:30 [INF] Dashboard summary generated successfully. Doctors: 16, Patients: 8, Appointments: 38
+2026-07-18 09:35:18.727 +05:30 [INF] HTTP GET /api/dashboard responded 200 in 528.0216 ms
+2026-07-18 09:36:09.619 +05:30 [INF] HTTP OPTIONS /api/admin/patients responded 204 in 0.1843 ms
+2026-07-18 09:36:09.650 +05:30 [INF] Fetching patients. Page: 1, PageSize: 10
+2026-07-18 09:36:09.674 +05:30 [WRN] The query uses a row limiting operator ('Skip'/'Take') without an 'OrderBy' operator. This may lead to unpredictable results. If the 'Distinct' operator is used after 'OrderBy', then make sure to use the 'OrderBy' operator after 'Distinct' as the ordering would otherwise get erased.
+2026-07-18 09:36:09.676 +05:30 [WRN] The query uses a row limiting operator ('Skip'/'Take') without an 'OrderBy' operator. This may lead to unpredictable results. If the 'Distinct' operator is used after 'OrderBy', then make sure to use the 'OrderBy' operator after 'Distinct' as the ordering would otherwise get erased.
+2026-07-18 09:36:09.736 +05:30 [INF] 8 patients fetched successfully
+2026-07-18 09:36:09.757 +05:30 [INF] HTTP GET /api/admin/patients responded 200 in 132.1290 ms
+2026-07-18 09:36:14.880 +05:30 [INF] HTTP OPTIONS /api/admin/patients responded 204 in 0.1780 ms
+2026-07-18 09:36:14.891 +05:30 [INF] Fetching patients. Page: 1, PageSize: 10
+2026-07-18 09:36:14.915 +05:30 [WRN] The query uses a row limiting operator ('Skip'/'Take') without an 'OrderBy' operator. This may lead to unpredictable results. If the 'Distinct' operator is used after 'OrderBy', then make sure to use the 'OrderBy' operator after 'Distinct' as the ordering would otherwise get erased.
+2026-07-18 09:36:14.916 +05:30 [WRN] The query uses a row limiting operator ('Skip'/'Take') without an 'OrderBy' operator. This may lead to unpredictable results. If the 'Distinct' operator is used after 'OrderBy', then make sure to use the 'OrderBy' operator after 'Distinct' as the ordering would otherwise get erased.
+2026-07-18 09:36:14.927 +05:30 [INF] 1 patients fetched successfully
+2026-07-18 09:36:14.928 +05:30 [INF] HTTP GET /api/admin/patients responded 200 in 43.8746 ms
+2026-07-18 09:37:46.297 +05:30 [INF] HTTP OPTIONS /api/dashboard responded 204 in 0.1506 ms
+2026-07-18 09:37:46.314 +05:30 [INF] Fetching admin dashboard summary.
+2026-07-18 09:37:46.347 +05:30 [INF] Dashboard summary generated successfully. Doctors: 16, Patients: 8, Appointments: 38
+2026-07-18 09:37:46.350 +05:30 [INF] HTTP GET /api/dashboard responded 200 in 39.9733 ms
+2026-07-18 09:42:27.623 +05:30 [INF] Configured endpoint AppointmentBooked, Consumer: HealthCare.Api.Messaging.AppointmentBookedConsumer
+2026-07-18 09:42:28.454 +05:30 [INF] Bus started: "rabbitmq://localhost/"
+2026-07-18 09:43:11.770 +05:30 [INF] HTTP OPTIONS /api/auth/login responded 204 in 17.5062 ms
+2026-07-18 09:43:11.949 +05:30 [WRN] You do not have a valid license key for the Lucky Penny software AutoMapper. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.
+2026-07-18 09:43:12.192 +05:30 [INF] Generating JWT token for User 8c29040f-434b-4ab7-8091-423887b017eb
+2026-07-18 09:43:12.223 +05:30 [INF] JWT token generated successfully for User 8c29040f-434b-4ab7-8091-423887b017eb
+2026-07-18 09:43:12.248 +05:30 [INF] HTTP POST /api/auth/login responded 200 in 454.0513 ms
+2026-07-18 09:43:12.583 +05:30 [INF] HTTP OPTIONS /api/dashboard/patient responded 204 in 1.0413 ms
+2026-07-18 09:43:12.651 +05:30 [INF] Fetching dashboard summary for Patient 12
+2026-07-18 09:43:12.734 +05:30 [INF] Patient dashboard generated successfully for Patient 12
+2026-07-18 09:43:12.737 +05:30 [INF] HTTP GET /api/dashboard/patient responded 200 in 148.2763 ms
+2026-07-18 11:35:25.134 +05:30 [INF] Configured endpoint AppointmentBooked, Consumer: HealthCare.Api.Messaging.AppointmentBookedConsumer
+2026-07-18 11:35:26.313 +05:30 [INF] Bus started: "rabbitmq://localhost/"
+2026-07-18 11:35:56.307 +05:30 [INF] HTTP OPTIONS /api/auth/login responded 204 in 13.6337 ms
+2026-07-18 11:35:56.560 +05:30 [WRN] You do not have a valid license key for the Lucky Penny software AutoMapper. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.
+2026-07-18 11:35:57.060 +05:30 [INF] Generating JWT token for User a86c0aba-c48b-403a-b542-c2c31ad7c0fc
+2026-07-18 11:35:57.144 +05:30 [INF] JWT token generated successfully for User a86c0aba-c48b-403a-b542-c2c31ad7c0fc
+2026-07-18 11:35:57.226 +05:30 [INF] HTTP POST /api/auth/login responded 200 in 883.4332 ms
+2026-07-18 11:35:57.588 +05:30 [INF] HTTP OPTIONS /api/dashboard/patient responded 204 in 0.6689 ms
+2026-07-18 11:35:57.675 +05:30 [INF] Fetching dashboard summary for Patient 15
+2026-07-18 11:35:57.780 +05:30 [INF] Patient dashboard generated successfully for Patient 15
+2026-07-18 11:35:57.784 +05:30 [INF] HTTP GET /api/dashboard/patient responded 200 in 190.7747 ms
+2026-07-18 11:36:00.925 +05:30 [INF] HTTP OPTIONS /api/Appointment/patient responded 204 in 3.0154 ms
+2026-07-18 11:36:00.953 +05:30 [INF] Fetching appointments for Patient 15
+2026-07-18 11:36:01.027 +05:30 [INF] HTTP GET /api/Appointment/patient responded 200 in 88.6802 ms
+2026-07-18 11:36:13.115 +05:30 [INF] HTTP OPTIONS /api/HealthRecord/patient responded 204 in 0.1321 ms
+2026-07-18 11:36:13.140 +05:30 [INF] Fetching health records for Patient 15
+2026-07-18 11:36:13.152 +05:30 [INF] 0 health records found for Patient 15
+2026-07-18 11:36:13.156 +05:30 [INF] HTTP GET /api/HealthRecord/patient responded 200 in 33.3083 ms
+2026-07-18 11:36:41.199 +05:30 [INF] HTTP OPTIONS /api/auth/login responded 204 in 0.1344 ms
+2026-07-18 11:36:41.348 +05:30 [INF] Generating JWT token for User 2556b21e-7d41-4508-b62b-ca255caba251
+2026-07-18 11:36:41.352 +05:30 [INF] JWT token generated successfully for User 2556b21e-7d41-4508-b62b-ca255caba251
+2026-07-18 11:36:41.355 +05:30 [INF] HTTP POST /api/auth/login responded 200 in 148.1733 ms
+2026-07-18 11:36:41.366 +05:30 [INF] HTTP OPTIONS /api/dashboard/doctor responded 204 in 0.1483 ms
+2026-07-18 11:36:41.383 +05:30 [INF] Fetching dashboard summary for Doctor 20
+2026-07-18 11:36:41.423 +05:30 [INF] Doctor dashboard generated successfully for Doctor 20. Today's appointments: 0
+2026-07-18 11:36:41.427 +05:30 [INF] HTTP GET /api/dashboard/doctor responded 200 in 54.9682 ms
+2026-07-18 11:36:44.099 +05:30 [INF] HTTP OPTIONS /api/Appointment/doctor responded 204 in 0.2368 ms
+2026-07-18 11:36:44.124 +05:30 [INF] Fetching appointments for Doctor 20
+2026-07-18 11:36:44.144 +05:30 [INF] HTTP GET /api/Appointment/doctor responded 200 in 33.7347 ms
+2026-07-18 11:36:48.016 +05:30 [INF] HTTP OPTIONS /api/Appointment/28/confirm responded 204 in 0.1623 ms
+2026-07-18 11:36:48.063 +05:30 [INF] Confirming appointment 28
+2026-07-18 11:36:48.314 +05:30 [INF] Appointment 28 confirmed successfully
+2026-07-18 11:36:48.317 +05:30 [INF] HTTP PUT /api/Appointment/28/confirm responded 200 in 294.0761 ms
+2026-07-18 11:36:48.323 +05:30 [INF] Fetching appointments for Doctor 20
+2026-07-18 11:36:48.326 +05:30 [INF] HTTP GET /api/Appointment/doctor responded 200 in 4.1603 ms
+2026-07-18 11:36:49.613 +05:30 [INF] HTTP OPTIONS /api/Appointment/30/confirm responded 204 in 0.1791 ms
+2026-07-18 11:36:49.619 +05:30 [INF] Confirming appointment 30
+2026-07-18 11:36:49.626 +05:30 [INF] Appointment 30 confirmed successfully
+2026-07-18 11:36:49.629 +05:30 [INF] HTTP PUT /api/Appointment/30/confirm responded 200 in 10.8010 ms
+2026-07-18 11:36:49.636 +05:30 [INF] HTTP OPTIONS /api/Appointment/doctor responded 204 in 0.0789 ms
+2026-07-18 11:36:49.643 +05:30 [INF] Fetching appointments for Doctor 20
+2026-07-18 11:36:49.645 +05:30 [INF] HTTP GET /api/Appointment/doctor responded 200 in 3.6637 ms
+2026-07-18 11:36:52.184 +05:30 [INF] HTTP OPTIONS /api/Appointment/29/confirm responded 204 in 0.2044 ms
+2026-07-18 11:36:52.197 +05:30 [INF] Confirming appointment 29
+2026-07-18 11:36:52.206 +05:30 [INF] Appointment 29 confirmed successfully
+2026-07-18 11:36:52.210 +05:30 [INF] HTTP PUT /api/Appointment/29/confirm responded 200 in 15.9145 ms
+2026-07-18 11:36:52.220 +05:30 [INF] Fetching appointments for Doctor 20
+2026-07-18 11:36:52.225 +05:30 [INF] HTTP GET /api/Appointment/doctor responded 200 in 6.2519 ms
+2026-07-18 11:36:54.818 +05:30 [INF] HTTP OPTIONS /api/dashboard/doctor responded 204 in 0.1211 ms
+2026-07-18 11:36:54.827 +05:30 [INF] Fetching dashboard summary for Doctor 20
+2026-07-18 11:36:54.836 +05:30 [INF] Doctor dashboard generated successfully for Doctor 20. Today's appointments: 1
+2026-07-18 11:36:54.839 +05:30 [INF] HTTP GET /api/dashboard/doctor responded 200 in 13.2312 ms
+2026-07-18 11:36:57.501 +05:30 [INF] HTTP OPTIONS /api/Appointment/doctor responded 204 in 0.1168 ms
+2026-07-18 11:36:57.508 +05:30 [INF] Fetching appointments for Doctor 20
+2026-07-18 11:36:57.512 +05:30 [INF] HTTP GET /api/Appointment/doctor responded 200 in 5.3412 ms
+2026-07-18 11:37:17.771 +05:30 [INF] HTTP OPTIONS /api/HealthRecord responded 204 in 0.3229 ms
+2026-07-18 11:37:17.797 +05:30 [INF] Creating health record for Appointment 28 by Doctor 20
+2026-07-18 11:37:17.887 +05:30 [INF] Appointment 28 marked as Completed
+2026-07-18 11:37:17.998 +05:30 [INF] Health record created successfully
+2026-07-18 11:37:18.004 +05:30 [INF] HTTP POST /api/HealthRecord responded 200 in 221.7711 ms
+2026-07-18 11:37:19.536 +05:30 [INF] HTTP OPTIONS /api/Appointment/doctor responded 204 in 0.1178 ms
+2026-07-18 11:37:19.543 +05:30 [INF] Fetching appointments for Doctor 20
+2026-07-18 11:37:19.548 +05:30 [INF] HTTP GET /api/Appointment/doctor responded 200 in 6.5106 ms
+2026-07-18 11:37:24.198 +05:30 [INF] HTTP OPTIONS /api/dashboard/doctor responded 204 in 0.1530 ms
+2026-07-18 11:37:24.206 +05:30 [INF] Fetching dashboard summary for Doctor 20
+2026-07-18 11:37:24.213 +05:30 [INF] Doctor dashboard generated successfully for Doctor 20. Today's appointments: 0
+2026-07-18 11:37:24.215 +05:30 [INF] HTTP GET /api/dashboard/doctor responded 200 in 10.9294 ms
+2026-07-18 11:37:26.792 +05:30 [INF] HTTP OPTIONS /api/doctor/profile responded 204 in 0.0798 ms
+2026-07-18 11:37:26.811 +05:30 [INF] Fetching doctor profile for Doctor 20
+2026-07-18 11:37:26.832 +05:30 [INF] Doctor profile fetched successfully for Doctor 20
+2026-07-18 11:37:26.841 +05:30 [INF] HTTP GET /api/doctor/profile responded 200 in 43.3930 ms
+2026-07-18 11:37:54.793 +05:30 [INF] HTTP OPTIONS /api/auth/login responded 204 in 0.1029 ms
+2026-07-18 11:37:54.949 +05:30 [INF] Generating JWT token for User a86c0aba-c48b-403a-b542-c2c31ad7c0fc
+2026-07-18 11:37:54.952 +05:30 [INF] JWT token generated successfully for User a86c0aba-c48b-403a-b542-c2c31ad7c0fc
+2026-07-18 11:37:54.955 +05:30 [INF] HTTP POST /api/auth/login responded 200 in 153.8163 ms
+2026-07-18 11:37:54.968 +05:30 [INF] HTTP OPTIONS /api/dashboard/patient responded 204 in 0.0674 ms
+2026-07-18 11:37:54.981 +05:30 [INF] Fetching dashboard summary for Patient 15
+2026-07-18 11:37:54.992 +05:30 [INF] Patient dashboard generated successfully for Patient 15
+2026-07-18 11:37:54.994 +05:30 [INF] HTTP GET /api/dashboard/patient responded 200 in 17.5385 ms
+2026-07-18 11:37:57.693 +05:30 [INF] HTTP OPTIONS /api/HealthRecord/patient responded 204 in 0.0904 ms
+2026-07-18 11:37:57.703 +05:30 [INF] Fetching health records for Patient 15
+2026-07-18 11:37:57.707 +05:30 [INF] 1 health records found for Patient 15
+2026-07-18 11:37:57.710 +05:30 [INF] HTTP GET /api/HealthRecord/patient responded 200 in 9.9109 ms
+2026-07-18 11:37:59.714 +05:30 [INF] HTTP OPTIONS /api/Appointment/patient responded 204 in 0.0801 ms
+2026-07-18 11:37:59.721 +05:30 [INF] Fetching appointments for Patient 15
+2026-07-18 11:37:59.725 +05:30 [INF] HTTP GET /api/Appointment/patient responded 200 in 5.1724 ms
+2026-07-18 11:39:00.115 +05:30 [INF] HTTP OPTIONS /api/auth/login responded 204 in 0.0888 ms
+2026-07-18 11:39:00.238 +05:30 [INF] Generating JWT token for User 8c29040f-434b-4ab7-8091-423887b017eb
+2026-07-18 11:39:00.241 +05:30 [INF] JWT token generated successfully for User 8c29040f-434b-4ab7-8091-423887b017eb
+2026-07-18 11:39:00.243 +05:30 [INF] HTTP POST /api/auth/login responded 200 in 121.6333 ms
+2026-07-18 11:39:00.253 +05:30 [INF] HTTP OPTIONS /api/dashboard/patient responded 204 in 0.0714 ms
+2026-07-18 11:39:00.263 +05:30 [INF] Fetching dashboard summary for Patient 12
+2026-07-18 11:39:00.280 +05:30 [INF] Patient dashboard generated successfully for Patient 12
+2026-07-18 11:39:00.281 +05:30 [INF] HTTP GET /api/dashboard/patient responded 200 in 19.9707 ms
+2026-07-18 11:39:03.966 +05:30 [INF] HTTP OPTIONS /api/Appointment/patient responded 204 in 0.1916 ms
+2026-07-18 11:39:03.977 +05:30 [INF] Fetching appointments for Patient 12
+2026-07-18 11:39:03.981 +05:30 [INF] HTTP GET /api/Appointment/patient responded 200 in 5.2062 ms
+2026-07-18 11:39:14.646 +05:30 [INF] HTTP OPTIONS /api/HealthRecord/patient responded 204 in 0.1531 ms
+2026-07-18 11:39:14.655 +05:30 [INF] Fetching health records for Patient 12
+2026-07-18 11:39:14.658 +05:30 [INF] 2 health records found for Patient 12
+2026-07-18 11:39:14.663 +05:30 [INF] HTTP GET /api/HealthRecord/patient responded 200 in 9.7874 ms
+2026-07-18 11:39:25.863 +05:30 [INF] HTTP OPTIONS /api/dashboard/patient responded 204 in 0.1845 ms
+2026-07-18 11:39:25.872 +05:30 [INF] Fetching dashboard summary for Patient 12
+2026-07-18 11:39:25.884 +05:30 [INF] Patient dashboard generated successfully for Patient 12
+2026-07-18 11:39:25.888 +05:30 [INF] HTTP GET /api/dashboard/patient responded 200 in 16.1304 ms
+2026-07-18 11:39:28.015 +05:30 [INF] HTTP OPTIONS /api/patient/profile responded 204 in 0.6821 ms
+2026-07-18 11:39:28.032 +05:30 [INF] Fetching patient profile for Patient 12
+2026-07-18 11:39:28.045 +05:30 [INF] Patient profile fetched successfully for Patient 12
+2026-07-18 11:39:28.048 +05:30 [INF] HTTP GET /api/patient/profile responded 200 in 28.6339 ms
+2026-07-18 13:55:08.548 +05:30 [INF] Configured endpoint AppointmentBooked, Consumer: HealthCare.Api.Messaging.AppointmentBookedConsumer
+2026-07-18 13:55:09.760 +05:30 [INF] Bus started: "rabbitmq://localhost/"
+2026-07-18 14:15:18.774 +05:30 [INF] HTTP OPTIONS /api/auth/login responded 204 in 18.0254 ms
+2026-07-18 14:15:19.063 +05:30 [WRN] You do not have a valid license key for the Lucky Penny software AutoMapper. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.
+2026-07-18 14:15:22.112 +05:30 [INF] Generating JWT token for User b9effe45-f711-4d74-a495-ec4a1add3e10
+2026-07-18 14:15:22.283 +05:30 [INF] JWT token generated successfully for User b9effe45-f711-4d74-a495-ec4a1add3e10
+2026-07-18 14:15:22.451 +05:30 [INF] HTTP POST /api/auth/login responded 200 in 3644.0653 ms
+2026-07-18 14:15:22.932 +05:30 [INF] HTTP OPTIONS /api/dashboard/patient responded 204 in 0.9818 ms
+2026-07-18 14:15:23.150 +05:30 [INF] Fetching dashboard summary for Patient 5
+2026-07-18 14:15:23.333 +05:30 [INF] Patient dashboard generated successfully for Patient 5
+2026-07-18 14:15:23.342 +05:30 [INF] HTTP GET /api/dashboard/patient responded 200 in 401.3398 ms
+2026-07-18 14:15:26.190 +05:30 [INF] HTTP OPTIONS /api/patient/profile responded 204 in 0.1855 ms
+2026-07-18 14:15:26.240 +05:30 [INF] Fetching patient profile for Patient 5
+2026-07-18 14:15:26.278 +05:30 [INF] Patient profile fetched successfully for Patient 5
+2026-07-18 14:15:26.308 +05:30 [INF] HTTP GET /api/patient/profile responded 200 in 112.6435 ms
+2026-07-18 14:15:31.489 +05:30 [INF] HTTP OPTIONS /api/patient/profile responded 204 in 0.7676 ms
+2026-07-18 14:15:31.529 +05:30 [INF] Updating patient 5
+2026-07-18 14:15:31.923 +05:30 [INF] Patient 5 updated successfully
+2026-07-18 14:15:31.928 +05:30 [INF] HTTP PUT /api/patient/profile responded 200 in 432.2479 ms
+2026-07-18 14:15:33.570 +05:30 [INF] Fetching patient profile for Patient 5
+2026-07-18 14:15:33.577 +05:30 [INF] Patient profile fetched successfully for Patient 5
+2026-07-18 14:15:33.579 +05:30 [INF] HTTP GET /api/patient/profile responded 200 in 22.8403 ms

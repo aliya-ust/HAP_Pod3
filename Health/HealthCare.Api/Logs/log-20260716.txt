@@ -1,0 +1,180 @@
+2026-07-16 09:24:20.529 +05:30 [INF] Configured endpoint AppointmentBooked, Consumer: HealthCare.Api.Messaging.AppointmentBookedConsumer
+2026-07-16 09:24:22.792 +05:30 [INF] Bus started: "rabbitmq://localhost/"
+2026-07-16 09:24:33.866 +05:30 [INF] HTTP OPTIONS /api/auth/login responded 204 in 34.2968 ms
+2026-07-16 09:24:34.309 +05:30 [WRN] You do not have a valid license key for the Lucky Penny software AutoMapper. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.
+2026-07-16 09:24:35.409 +05:30 [INF] Generating JWT token for User b9effe45-f711-4d74-a495-ec4a1add3e10
+2026-07-16 09:24:35.562 +05:30 [INF] JWT token generated successfully for User b9effe45-f711-4d74-a495-ec4a1add3e10
+2026-07-16 09:24:35.705 +05:30 [INF] HTTP POST /api/auth/login responded 200 in 1794.5638 ms
+2026-07-16 09:24:36.097 +05:30 [INF] HTTP OPTIONS /api/dashboard/patient responded 204 in 1.7048 ms
+2026-07-16 09:24:36.317 +05:30 [INF] Fetching dashboard summary for Patient 5
+2026-07-16 09:24:36.542 +05:30 [INF] Patient dashboard generated successfully for Patient 5
+2026-07-16 09:24:36.555 +05:30 [INF] HTTP GET /api/dashboard/patient responded 200 in 449.5534 ms
+2026-07-16 09:24:46.900 +05:30 [INF] HTTP OPTIONS /api/Appointment/patient responded 204 in 0.4016 ms
+2026-07-16 09:24:46.967 +05:30 [INF] Fetching appointments for Patient 5
+2026-07-16 09:24:47.115 +05:30 [INF] HTTP GET /api/Appointment/patient responded 200 in 199.4907 ms
+2026-07-16 09:24:47.488 +05:30 [INF] HTTP OPTIONS /api/dashboard/patient responded 204 in 0.1623 ms
+2026-07-16 09:24:47.508 +05:30 [INF] Fetching dashboard summary for Patient 5
+2026-07-16 09:24:47.541 +05:30 [INF] Patient dashboard generated successfully for Patient 5
+2026-07-16 09:24:47.546 +05:30 [INF] HTTP GET /api/dashboard/patient responded 200 in 47.4302 ms
+2026-07-16 09:24:48.025 +05:30 [INF] HTTP OPTIONS /api/patient/profile responded 204 in 0.1614 ms
+2026-07-16 09:24:48.068 +05:30 [INF] Fetching patient profile for Patient 5
+2026-07-16 09:24:48.114 +05:30 [INF] Patient profile fetched successfully for Patient 5
+2026-07-16 09:24:48.123 +05:30 [INF] HTTP GET /api/patient/profile responded 200 in 88.6862 ms
+2026-07-16 09:51:10.252 +05:30 [INF] HTTP OPTIONS /api/auth/login responded 204 in 0.6621 ms
+2026-07-16 09:51:13.400 +05:30 [INF] Generating JWT token for User b9effe45-f711-4d74-a495-ec4a1add3e10
+2026-07-16 09:51:13.405 +05:30 [INF] JWT token generated successfully for User b9effe45-f711-4d74-a495-ec4a1add3e10
+2026-07-16 09:51:13.411 +05:30 [INF] HTTP POST /api/auth/login responded 200 in 3133.6000 ms
+2026-07-16 09:51:13.442 +05:30 [INF] HTTP OPTIONS /api/dashboard/patient responded 204 in 0.4744 ms
+2026-07-16 09:51:13.467 +05:30 [INF] Fetching dashboard summary for Patient 5
+2026-07-16 09:51:13.516 +05:30 [INF] Patient dashboard generated successfully for Patient 5
+2026-07-16 09:51:13.523 +05:30 [INF] HTTP GET /api/dashboard/patient responded 200 in 66.3159 ms
+2026-07-16 09:51:15.112 +05:30 [INF] HTTP OPTIONS /api/patient/profile responded 204 in 0.1381 ms
+2026-07-16 09:51:15.130 +05:30 [INF] Fetching patient profile for Patient 5
+2026-07-16 09:51:15.151 +05:30 [INF] Patient profile fetched successfully for Patient 5
+2026-07-16 09:51:15.155 +05:30 [INF] HTTP GET /api/patient/profile responded 200 in 28.3292 ms
+2026-07-16 09:51:17.014 +05:30 [INF] HTTP OPTIONS /api/Appointment/patient responded 204 in 0.6313 ms
+2026-07-16 09:51:17.058 +05:30 [INF] Fetching appointments for Patient 5
+2026-07-16 09:51:17.087 +05:30 [INF] HTTP GET /api/Appointment/patient responded 200 in 51.9760 ms
+2026-07-16 09:51:20.745 +05:30 [INF] HTTP OPTIONS /api/dashboard/patient responded 204 in 0.2243 ms
+2026-07-16 09:51:20.764 +05:30 [INF] Fetching dashboard summary for Patient 5
+2026-07-16 09:51:20.776 +05:30 [INF] Patient dashboard generated successfully for Patient 5
+2026-07-16 09:51:20.779 +05:30 [INF] HTTP GET /api/dashboard/patient responded 200 in 15.4675 ms
+2026-07-16 09:53:20.644 +05:30 [INF] HTTP OPTIONS /api/auth/login responded 204 in 0.2687 ms
+2026-07-16 09:53:20.919 +05:30 [INF] Generating JWT token for User ab4f145e-c021-4d1c-8504-8766b4b339ae
+2026-07-16 09:53:20.924 +05:30 [INF] JWT token generated successfully for User ab4f145e-c021-4d1c-8504-8766b4b339ae
+2026-07-16 09:53:20.928 +05:30 [INF] HTTP POST /api/auth/login responded 200 in 268.8583 ms
+2026-07-16 09:53:27.426 +05:30 [INF] HTTP OPTIONS /api/dashboard responded 204 in 0.1581 ms
+2026-07-16 09:53:27.482 +05:30 [INF] Fetching admin dashboard summary.
+2026-07-16 09:53:27.667 +05:30 [INF] Dashboard summary generated successfully. Doctors: 14, Patients: 8, Appointments: 31
+2026-07-16 09:53:27.689 +05:30 [INF] HTTP GET /api/dashboard responded 200 in 235.3487 ms
+2026-07-16 09:53:30.363 +05:30 [INF] HTTP OPTIONS /api/admin/doctoradmin responded 204 in 0.1504 ms
+2026-07-16 09:53:30.505 +05:30 [INF] Fetching doctors. Page: 1, PageSize: 10
+2026-07-16 09:53:30.627 +05:30 [INF] 14 doctors fetched successfully
+2026-07-16 09:53:30.682 +05:30 [INF] HTTP GET /api/admin/doctoradmin responded 200 in 269.4797 ms
+2026-07-16 09:54:00.717 +05:30 [INF] HTTP OPTIONS /api/auth/register/doctor responded 204 in 0.2087 ms
+2026-07-16 09:54:02.342 +05:30 [INF] Cache removed for GeneralMedicine on "2026-07-16"
+2026-07-16 09:54:02.347 +05:30 [INF] Cache removed for GeneralMedicine on "2026-07-17"
+2026-07-16 09:54:02.350 +05:30 [INF] Cache removed for GeneralMedicine on "2026-07-18"
+2026-07-16 09:54:02.354 +05:30 [INF] Cache removed for GeneralMedicine on "2026-07-19"
+2026-07-16 09:54:02.358 +05:30 [INF] Cache removed for GeneralMedicine on "2026-07-20"
+2026-07-16 09:54:02.362 +05:30 [INF] Cache removed for GeneralMedicine on "2026-07-21"
+2026-07-16 09:54:02.365 +05:30 [INF] Cache removed for GeneralMedicine on "2026-07-22"
+2026-07-16 09:54:02.368 +05:30 [INF] Cache removed for GeneralMedicine on "2026-07-23"
+2026-07-16 09:54:02.371 +05:30 [INF] Cache removed for GeneralMedicine on "2026-07-24"
+2026-07-16 09:54:02.374 +05:30 [INF] Cache removed for GeneralMedicine on "2026-07-25"
+2026-07-16 09:54:02.377 +05:30 [INF] Cache removed for GeneralMedicine on "2026-07-26"
+2026-07-16 09:54:02.380 +05:30 [INF] Cache removed for GeneralMedicine on "2026-07-27"
+2026-07-16 09:54:02.383 +05:30 [INF] Cache removed for GeneralMedicine on "2026-07-28"
+2026-07-16 09:54:02.386 +05:30 [INF] Cache removed for GeneralMedicine on "2026-07-29"
+2026-07-16 09:54:02.390 +05:30 [INF] Cache removed for GeneralMedicine on "2026-07-30"
+2026-07-16 09:54:02.393 +05:30 [INF] Cache removed for GeneralMedicine on "2026-07-31"
+2026-07-16 09:54:02.396 +05:30 [INF] Cache removed for GeneralMedicine on "2026-08-01"
+2026-07-16 09:54:02.399 +05:30 [INF] Cache removed for GeneralMedicine on "2026-08-02"
+2026-07-16 09:54:02.402 +05:30 [INF] Cache removed for GeneralMedicine on "2026-08-03"
+2026-07-16 09:54:02.406 +05:30 [INF] Cache removed for GeneralMedicine on "2026-08-04"
+2026-07-16 09:54:02.409 +05:30 [INF] Cache removed for GeneralMedicine on "2026-08-05"
+2026-07-16 09:54:02.412 +05:30 [INF] Cache removed for GeneralMedicine on "2026-08-06"
+2026-07-16 09:54:02.415 +05:30 [INF] Cache removed for GeneralMedicine on "2026-08-07"
+2026-07-16 09:54:02.418 +05:30 [INF] Cache removed for GeneralMedicine on "2026-08-08"
+2026-07-16 09:54:02.421 +05:30 [INF] Cache removed for GeneralMedicine on "2026-08-09"
+2026-07-16 09:54:02.424 +05:30 [INF] Cache removed for GeneralMedicine on "2026-08-10"
+2026-07-16 09:54:02.427 +05:30 [INF] Cache removed for GeneralMedicine on "2026-08-11"
+2026-07-16 09:54:02.430 +05:30 [INF] Cache removed for GeneralMedicine on "2026-08-12"
+2026-07-16 09:54:02.433 +05:30 [INF] Cache removed for GeneralMedicine on "2026-08-13"
+2026-07-16 09:54:02.436 +05:30 [INF] Cache removed for GeneralMedicine on "2026-08-14"
+2026-07-16 09:54:02.439 +05:30 [INF] Availability cache refreshed for specialization GeneralMedicine
+2026-07-16 09:54:02.445 +05:30 [INF] HTTP POST /api/auth/register/doctor responded 200 in 1717.7858 ms
+2026-07-16 09:54:03.978 +05:30 [INF] HTTP OPTIONS /api/admin/doctoradmin responded 204 in 0.1375 ms
+2026-07-16 09:54:04.022 +05:30 [INF] Fetching doctors. Page: 1, PageSize: 10
+2026-07-16 09:54:04.035 +05:30 [INF] 15 doctors fetched successfully
+2026-07-16 09:54:04.040 +05:30 [INF] HTTP GET /api/admin/doctoradmin responded 200 in 21.8596 ms
+2026-07-16 15:08:14.402 +05:30 [INF] Configured endpoint AppointmentBooked, Consumer: HealthCare.Api.Messaging.AppointmentBookedConsumer
+2026-07-16 15:08:15.672 +05:30 [INF] Bus started: "rabbitmq://localhost/"
+2026-07-16 17:52:09.862 +05:30 [INF] HTTP OPTIONS /api/auth/login responded 204 in 52.4352 ms
+2026-07-16 17:52:10.420 +05:30 [WRN] You do not have a valid license key for the Lucky Penny software AutoMapper. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.
+2026-07-16 17:52:14.155 +05:30 [INF] Generating JWT token for User 8c29040f-434b-4ab7-8091-423887b017eb
+2026-07-16 17:52:14.276 +05:30 [INF] JWT token generated successfully for User 8c29040f-434b-4ab7-8091-423887b017eb
+2026-07-16 17:52:14.410 +05:30 [INF] HTTP POST /api/auth/login responded 200 in 4458.4880 ms
+2026-07-16 17:52:15.111 +05:30 [INF] HTTP OPTIONS /api/dashboard/patient responded 204 in 1.1648 ms
+2026-07-16 17:52:15.354 +05:30 [INF] Fetching dashboard summary for Patient 12
+2026-07-16 17:52:15.620 +05:30 [INF] Patient dashboard generated successfully for Patient 12
+2026-07-16 17:52:15.632 +05:30 [INF] HTTP GET /api/dashboard/patient responded 200 in 511.8917 ms
+2026-07-16 17:52:22.960 +05:30 [INF] HTTP OPTIONS /api/Doctor/available responded 204 in 0.1192 ms
+2026-07-16 17:52:23.490 +05:30 [INF] Cache miss for Specialisation ENT on "2026-07-30". Loading from database.
+2026-07-16 17:52:23.856 +05:30 [INF] Doctor availability cached.
+2026-07-16 17:52:23.859 +05:30 [INF] 1 doctor(s) loaded from database and cached for Specialisation ENT on "2026-07-30"
+2026-07-16 17:52:23.867 +05:30 [INF] HTTP GET /api/Doctor/available responded 200 in 895.1687 ms
+2026-07-16 17:52:26.578 +05:30 [INF] HTTP OPTIONS /api/Appointment/available-slots responded 204 in 0.1452 ms
+2026-07-16 17:52:26.720 +05:30 [INF] Fetching available slots for Doctor 25 on "2026-07-30"
+2026-07-16 17:52:26.726 +05:30 [INF] Checking available slots for Doctor 25 on "2026-07-30"
+2026-07-16 17:52:26.763 +05:30 [INF] 3 slots available for Doctor 25
+2026-07-16 17:52:26.768 +05:30 [INF] Doctor 25 has 3 available slots on "2026-07-30"
+2026-07-16 17:52:26.774 +05:30 [INF] HTTP GET /api/Appointment/available-slots responded 200 in 184.1615 ms
+2026-07-16 17:52:30.877 +05:30 [INF] HTTP OPTIONS /api/Appointment responded 204 in 0.1503 ms
+2026-07-16 17:52:30.955 +05:30 [INF] Booking appointment for Patient 12 with Doctor 25 on "2026-07-30" at 03:00 PM
+2026-07-16 17:52:30.964 +05:30 [INF] Validating availability for Doctor 25 on "2026-07-30"
+2026-07-16 17:52:31.096 +05:30 [INF] Doctor 25 is available on "2026-07-30"
+2026-07-16 17:52:31.103 +05:30 [INF] Checking availability of Doctor 25 for slot 03:00 PM on "2026-07-30"
+2026-07-16 17:52:31.130 +05:30 [INF] Time slot 03:00 PM is available for Doctor 25
+2026-07-16 17:52:32.065 +05:30 [INF] Appointment booked and event published. AppointmentId 34
+2026-07-16 17:52:32.074 +05:30 [INF] HTTP POST /api/Appointment responded 200 in 1188.2942 ms
+2026-07-16 17:52:32.139 +05:30 [INF] Received AppointmentBookedEvent for AppointmentId: 34, DoctorId: 25
+2026-07-16 17:52:32.202 +05:30 [INF] Notification created successfully for DoctorId: 25 for AppointmentId: 34
+2026-07-16 17:52:58.662 +05:30 [INF] HTTP OPTIONS /api/auth/login responded 204 in 0.1787 ms
+2026-07-16 17:52:58.893 +05:30 [INF] Generating JWT token for User b9effe45-f711-4d74-a495-ec4a1add3e10
+2026-07-16 17:52:58.897 +05:30 [INF] JWT token generated successfully for User b9effe45-f711-4d74-a495-ec4a1add3e10
+2026-07-16 17:52:58.900 +05:30 [INF] HTTP POST /api/auth/login responded 200 in 228.5887 ms
+2026-07-16 17:52:58.913 +05:30 [INF] HTTP OPTIONS /api/dashboard/patient responded 204 in 0.0811 ms
+2026-07-16 17:52:58.925 +05:30 [INF] Fetching dashboard summary for Patient 5
+2026-07-16 17:52:58.937 +05:30 [INF] Patient dashboard generated successfully for Patient 5
+2026-07-16 17:52:58.941 +05:30 [INF] HTTP GET /api/dashboard/patient responded 200 in 18.8446 ms
+2026-07-16 17:53:04.957 +05:30 [INF] HTTP OPTIONS /api/Doctor/available responded 204 in 0.4233 ms
+2026-07-16 17:53:05.029 +05:30 [INF] Doctor availability served from cache.
+2026-07-16 17:53:05.036 +05:30 [INF] Cache hit for Specialisation ENT on "2026-07-30"
+2026-07-16 17:53:05.041 +05:30 [INF] HTTP GET /api/Doctor/available responded 200 in 76.9098 ms
+2026-07-16 17:53:06.492 +05:30 [INF] HTTP OPTIONS /api/Appointment/available-slots responded 204 in 0.2713 ms
+2026-07-16 17:53:06.516 +05:30 [INF] Fetching available slots for Doctor 25 on "2026-07-30"
+2026-07-16 17:53:06.518 +05:30 [INF] Checking available slots for Doctor 25 on "2026-07-30"
+2026-07-16 17:53:06.526 +05:30 [INF] 2 slots available for Doctor 25
+2026-07-16 17:53:06.529 +05:30 [INF] Doctor 25 has 2 available slots on "2026-07-30"
+2026-07-16 17:53:06.532 +05:30 [INF] HTTP GET /api/Appointment/available-slots responded 200 in 33.0727 ms
+2026-07-16 17:53:09.340 +05:30 [INF] HTTP OPTIONS /api/Appointment responded 204 in 0.3260 ms
+2026-07-16 17:53:09.351 +05:30 [INF] Booking appointment for Patient 5 with Doctor 25 on "2026-07-30" at 02:00 PM
+2026-07-16 17:53:09.355 +05:30 [INF] Validating availability for Doctor 25 on "2026-07-30"
+2026-07-16 17:53:09.363 +05:30 [INF] Doctor 25 is available on "2026-07-30"
+2026-07-16 17:53:09.366 +05:30 [INF] Checking availability of Doctor 25 for slot 02:00 PM on "2026-07-30"
+2026-07-16 17:53:09.372 +05:30 [INF] Time slot 02:00 PM is available for Doctor 25
+2026-07-16 17:53:09.399 +05:30 [INF] Received AppointmentBookedEvent for AppointmentId: 35, DoctorId: 25
+2026-07-16 17:53:09.404 +05:30 [INF] Appointment booked and event published. AppointmentId 35
+2026-07-16 17:53:09.408 +05:30 [INF] Notification created successfully for DoctorId: 25 for AppointmentId: 35
+2026-07-16 17:53:09.408 +05:30 [INF] HTTP POST /api/Appointment responded 200 in 59.8780 ms
+2026-07-16 17:56:55.313 +05:30 [INF] HTTP OPTIONS /api/Doctor/available responded 204 in 0.2429 ms
+2026-07-16 17:56:55.336 +05:30 [INF] Doctor availability served from cache.
+2026-07-16 17:56:55.339 +05:30 [INF] Cache hit for Specialisation ENT on "2026-07-30"
+2026-07-16 17:56:55.343 +05:30 [INF] HTTP GET /api/Doctor/available responded 200 in 17.5382 ms
+2026-07-16 17:56:56.413 +05:30 [INF] HTTP OPTIONS /api/Appointment/available-slots responded 204 in 0.1348 ms
+2026-07-16 17:56:56.424 +05:30 [INF] Fetching available slots for Doctor 25 on "2026-07-30"
+2026-07-16 17:56:56.427 +05:30 [INF] Checking available slots for Doctor 25 on "2026-07-30"
+2026-07-16 17:56:56.432 +05:30 [INF] 1 slots available for Doctor 25
+2026-07-16 17:56:56.435 +05:30 [INF] Doctor 25 has 1 available slots on "2026-07-30"
+2026-07-16 17:56:56.440 +05:30 [INF] HTTP GET /api/Appointment/available-slots responded 200 in 18.7636 ms
+2026-07-16 17:57:00.245 +05:30 [INF] HTTP OPTIONS /api/Appointment responded 204 in 0.1325 ms
+2026-07-16 17:57:00.258 +05:30 [INF] Booking appointment for Patient 5 with Doctor 25 on "2026-07-30" at 04:00 PM
+2026-07-16 17:57:00.262 +05:30 [INF] Validating availability for Doctor 25 on "2026-07-30"
+2026-07-16 17:57:00.269 +05:30 [INF] Doctor 25 is available on "2026-07-30"
+2026-07-16 17:57:00.273 +05:30 [INF] Checking availability of Doctor 25 for slot 04:00 PM on "2026-07-30"
+2026-07-16 17:57:00.278 +05:30 [INF] Time slot 04:00 PM is available for Doctor 25
+2026-07-16 17:57:00.364 +05:30 [INF] Received AppointmentBookedEvent for AppointmentId: 36, DoctorId: 25
+2026-07-16 17:57:00.370 +05:30 [INF] Appointment booked and event published. AppointmentId 36
+2026-07-16 17:57:00.373 +05:30 [INF] Notification created successfully for DoctorId: 25 for AppointmentId: 36
+2026-07-16 17:57:00.374 +05:30 [INF] HTTP POST /api/Appointment responded 200 in 119.4798 ms
+2026-07-16 17:57:05.556 +05:30 [INF] HTTP OPTIONS /api/Doctor/available responded 204 in 0.1347 ms
+2026-07-16 17:57:05.568 +05:30 [INF] Doctor availability served from cache.
+2026-07-16 17:57:05.569 +05:30 [INF] Cache hit for Specialisation ENT on "2026-07-30"
+2026-07-16 17:57:05.571 +05:30 [INF] HTTP GET /api/Doctor/available responded 200 in 5.3957 ms
+2026-07-16 17:57:06.864 +05:30 [INF] HTTP OPTIONS /api/Appointment/available-slots responded 204 in 0.1319 ms
+2026-07-16 17:57:06.928 +05:30 [INF] Fetching available slots for Doctor 25 on "2026-07-30"
+2026-07-16 17:57:06.933 +05:30 [INF] Checking available slots for Doctor 25 on "2026-07-30"
+2026-07-16 17:57:06.940 +05:30 [INF] 0 slots available for Doctor 25
+2026-07-16 17:57:06.942 +05:30 [INF] Doctor 25 has 0 available slots on "2026-07-30"
+2026-07-16 17:57:06.946 +05:30 [INF] HTTP GET /api/Appointment/available-slots responded 200 in 72.6506 ms
