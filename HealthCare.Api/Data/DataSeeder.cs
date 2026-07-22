@@ -93,60 +93,70 @@ namespace HealthCare.Api.Data
         private static async Task SeedDoctorUser(HealthCareDbContext context, UserManager<User> userManager)
         {
             var doctorUser = await userManager.FindByEmailAsync("doctor@test.com");
-            if (doctorUser != null) return;
 
-            doctorUser = new User
+            if (doctorUser == null)
             {
-                UserName = "doctor@test.com",
-                Email = "doctor@test.com",
-                EmailConfirmed = true,
-            };
-            var result = await userManager.CreateAsync(doctorUser, "Doctor@123");
-            if (!result.Succeeded)
-                throw new InvalidOperationException("Doctor user creation failed: " +
-                    string.Join(", ", result.Errors.Select(e => e.Description)));
+                doctorUser = new User
+                {
+                    UserName = "doctor@test.com",
+                    Email = "doctor@test.com",
+                    EmailConfirmed = true,
+                };
+                var result = await userManager.CreateAsync(doctorUser, "Doctor@123");
+                if (!result.Succeeded)
+                    throw new InvalidOperationException("Doctor user creation failed: " +
+                        string.Join(", ", result.Errors.Select(e => e.Description)));
 
-            await userManager.AddToRoleAsync(doctorUser, "Doctor");
+                await userManager.AddToRoleAsync(doctorUser, "Doctor");
+            }
 
-            context.Doctors.Add(new Doctor
+            if (!await context.Doctors.AnyAsync(d => d.UserId == doctorUser.Id))
             {
-                FullName = "Dr. Anil Mehta",
-                Specialisation = "Cardiology",
-                YearsOfExperience = 12,
-                ConsultationFee = 800,
-                IsActive = true,
-                CreatedDate = DateTimeOffset.UtcNow,
-                UserId = doctorUser.Id,
-            });
+                context.Doctors.Add(new Doctor
+                {
+                    FullName = "Dr. Anil Mehta",
+                    Specialisation = "Cardiology",
+                    YearsOfExperience = 12,
+                    ConsultationFee = 800,
+                    IsActive = true,
+                    CreatedDate = DateTimeOffset.UtcNow,
+                    UserId = doctorUser.Id,
+                });
+            }
         }
 
         private static async Task SeedPatientUser(HealthCareDbContext context, UserManager<User> userManager)
         {
             var patientUser = await userManager.FindByEmailAsync("patient@test.com");
-            if (patientUser != null) return;
 
-            patientUser = new User
+            if (patientUser == null)
             {
-                UserName = "patient@test.com",
-                Email = "patient@test.com",
-                EmailConfirmed = true,
-            };
-            var result = await userManager.CreateAsync(patientUser, "Patient@123");
-            if (!result.Succeeded)
-                throw new InvalidOperationException("Patient user creation failed: " +
-                    string.Join(", ", result.Errors.Select(e => e.Description)));
+                patientUser = new User
+                {
+                    UserName = "patient@test.com",
+                    Email = "patient@test.com",
+                    EmailConfirmed = true,
+                };
+                var result = await userManager.CreateAsync(patientUser, "Patient@123");
+                if (!result.Succeeded)
+                    throw new InvalidOperationException("Patient user creation failed: " +
+                        string.Join(", ", result.Errors.Select(e => e.Description)));
 
-            await userManager.AddToRoleAsync(patientUser, "Patient");
+                await userManager.AddToRoleAsync(patientUser, "Patient");
+            }
 
-            context.Patients.Add(new Patient
+            if (!await context.Patients.AnyAsync(p => p.UserId == patientUser.Id))
             {
-                FullName = "Arjun Raj",
-                DateOfBirth = new DateOnly(1990, 5, 12),
-                Gender = "Male",
-                PhoneNumber = "9876543210",
-                CreatedDate = DateTimeOffset.UtcNow,
-                UserId = patientUser.Id,
-            });
+                context.Patients.Add(new Patient
+                {
+                    FullName = "Arjun Raj",
+                    DateOfBirth = new DateOnly(1990, 5, 12),
+                    Gender = "Male",
+                    PhoneNumber = "9876543210",
+                    CreatedDate = DateTimeOffset.UtcNow,
+                    UserId = patientUser.Id,
+                });
+            }
         }
     }
 }
