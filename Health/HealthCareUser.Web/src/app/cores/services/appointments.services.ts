@@ -8,7 +8,7 @@ import { Appointment, DoctorDropdownDto, CreateAppointmentDto } from '../models/
 })
 export class AppointmentService {
 
-  private readonly apiUrl = 'https://localhost:7171/api/Appointment';
+  private readonly apiUrl = '/api/Appointment';
 
   date: string = '';
   specialization: string = '';
@@ -55,7 +55,7 @@ export class AppointmentService {
       .set('specialisation', specialization);
 
     return this.http.get<DoctorDropdownDto[]>(
-      `https://localhost:7171/api/Doctor/available`, 
+      `/api/Doctor/available`, 
       { params }
     );
   }
@@ -63,12 +63,12 @@ export class AppointmentService {
 
   // Get health records of a patient
   getHealthRecordsByPatient(patientId: number): Observable<any[]> {
-    return this.http.get<any[]>(`https://localhost:7171/api/HealthRecord/patient/${patientId}`);
+    return this.http.get<any[]>(`api/HealthRecord/patient/${patientId}`);
   }
 
   // Create new health record
   createHealthRecord(dto: any): Observable<any> {
-    return this.http.post(`https://localhost:7171/api/HealthRecord`, dto);
+    return this.http.post(`api/HealthRecord`, dto);
   }
 
 

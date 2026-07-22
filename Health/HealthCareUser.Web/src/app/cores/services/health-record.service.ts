@@ -8,7 +8,7 @@ import { HealthRecord } from '../models/HealthRecord';
 })
 export class HealthRecordService {
 
-  private readonly apiUrl = 'https://localhost:7171/api/HealthRecord';
+  private readonly apiUrl = '/api/HealthRecord';
 
   constructor(private readonly http: HttpClient) { }
 

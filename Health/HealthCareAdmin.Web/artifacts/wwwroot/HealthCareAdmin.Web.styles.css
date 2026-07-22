@@ -1,0 +1,111 @@
+/* /Layout/MainLayout.razor.rz.scp.css */
+.page[b-uyhd2m9zjk] {
+    display: flex;
+    min-height: 100vh;
+    width: 100%;
+}
+
+.main-content[b-uyhd2m9zjk] {
+    flex: 1;
+    min-width: 0;
+    min-height: 100vh;
+    padding: 30px;
+    background-color: #f4f7fc;
+    box-sizing: border-box;
+}
+/* /Layout/NavMenu.razor.rz.scp.css */
+
+.sidebar-container[b-eut4802gy5] {
+    width: 260px;
+    min-height: 100vh;
+    background: linear-gradient(180deg, #001f54, #003c8f, #0d6efd);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    transition: width 0.3s ease;
+}
+
+    .sidebar-container.collapsed[b-eut4802gy5] {
+        width: 70px;
+    }
+
+.top-bar[b-eut4802gy5] {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+}
+
+.logo[b-eut4802gy5] {
+    color: white;
+    margin-left: 10px;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.menu-btn[b-eut4802gy5] {
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 28px;
+    cursor: pointer;
+}
+
+.nav-item[b-eut4802gy5] {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 15px 14px;
+    margin: 10px 12px;
+    border-radius: 12px;
+    color: white !important;
+    font-weight: bold;
+    font-size: 16px;
+    text-decoration: none !important;
+}
+
+    .nav-item:hover[b-eut4802gy5] {
+        background: rgba(255, 255, 255, 0.15);
+    }
+
+    .nav-item.active[b-eut4802gy5] {
+        background: rgba(255, 255, 255, 0.25);
+    }
+
+.nav-icon[b-eut4802gy5] {
+    width: 28px !important;
+    height: 28px !important;
+    display: inline-block;
+    object-fit: contain;
+    margin-left: -2px;
+}
+
+.logout-item[b-eut4802gy5] {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 15px 14px;
+    margin: 10px 12px;
+    border-radius: 12px;
+    color: white !important;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+    text-decoration: none !important;
+}
+
+    .logout-item:hover[b-eut4802gy5] {
+        background: rgba(255, 255, 255, 0.15);
+    }
+
+    .logout-item:active[b-eut4802gy5] {
+        background: rgba(255, 255, 255, 0.25);
+    }
+
+.sidebar-container.collapsed .logo[b-eut4802gy5] {
+    display: none;
+}
+
+.sidebar-container.collapsed .nav-item span[b-eut4802gy5],
+.sidebar-container.collapsed .logout-item span[b-eut4802gy5] {
+    display: none;
+}

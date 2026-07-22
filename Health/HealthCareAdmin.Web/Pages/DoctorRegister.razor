@@ -61,7 +61,7 @@
 
     </div>
 
-    <!-- ✅ Time Slots -->
+    <!-- Time Slots -->
     <div class="timeslot-section">
         <h4>Select Available Time Slots</h4>
 
@@ -83,7 +83,7 @@
         <button type="submit" class="btn-success">Save</button>
 
         <button type="button" class="btn-secondary"
-                @onclick="@(() => Nav.NavigateTo("/doctors"))">
+                @onclick="@(() => Nav.NavigateTo("/blazor/doctors"))">
             Cancel
         </button>
     </div>
@@ -151,8 +151,8 @@
             return;
         }
 
-        await JS.InvokeVoidAsync("alert", "Doctor registered successfully ✅");
-        Nav.NavigateTo("/doctors");
+        await JS.InvokeVoidAsync("alert", "Doctor registered successfully");
+        Nav.NavigateTo("/blazor/doctors");
 
     }
 }

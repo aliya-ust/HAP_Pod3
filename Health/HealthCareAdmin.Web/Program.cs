@@ -15,7 +15,7 @@ var apiBaseUrl = builder.Configuration["ApiSettings:BaseUrl"]
 builder.Services.AddScoped(sp =>
     new HttpClient
     {
-        BaseAddress = new Uri(apiBaseUrl)
+        BaseAddress = new Uri(builder.HostEnvironment.BaseAddress)
     });
 
 builder.Services.AddScoped<PatientService>();
@@ -28,7 +28,7 @@ builder.Services.AddTransient<AuthMessageHandler>();
 
 builder.Services.AddHttpClient("ApiClient", client =>
 {
-    client.BaseAddress = new Uri(apiBaseUrl);
+    client.BaseAddress = new Uri("http://healthcareapi-dev.eba-jmpubdnp.ap-south-1.elasticbeanstalk.com/");
 })
 .AddHttpMessageHandler<AuthMessageHandler>();
 

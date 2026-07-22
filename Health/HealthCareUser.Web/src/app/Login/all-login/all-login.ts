@@ -37,7 +37,7 @@ export class AllLoginComponent {
 
         if (response.role === 'Admin') {
           globalThis.location.href =
-            `https://localhost:7260/login?token=${encodeURIComponent(response.accessToken)}`;
+            `http://healthcareapi-dev.eba-jmpubdnp.ap-south-1.elasticbeanstalk.com/blazor/login?token=${encodeURIComponent(response.accessToken)}`;
         }
         else {
 

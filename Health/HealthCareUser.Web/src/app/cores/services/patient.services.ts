@@ -9,7 +9,7 @@ import { PatientProfile } from '../models/PatientProfile';
 })
 export class PatientService {
 
-  private readonly apiUrl = 'https://localhost:7171/api';
+  private readonly apiUrl = '/api';
 
   constructor(private readonly http: HttpClient) { }
 

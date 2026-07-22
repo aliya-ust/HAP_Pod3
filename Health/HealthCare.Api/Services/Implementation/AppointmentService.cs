@@ -25,15 +25,13 @@ namespace HealthCare.Api.Services.Implementations
         private readonly IMapper _mapper;
         private readonly ILogger<AppointmentService> _logger;
         private readonly IPublishEndpoint _publishEndpoint;
-        private readonly IDoctorAvailabilityCacheService _doctorCache;
         public AppointmentService(
             IAppointmentRepository repository,
             IDoctorService doctorService,
             HealthCareDbContext context,
             IMapper mapper,
             ILogger<AppointmentService> logger,
-            IPublishEndpoint publishEndpoint,
-            IDoctorAvailabilityCacheService doctorCache)
+            IPublishEndpoint publishEndpoint)
         {
             _repository = repository;
             _doctorService = doctorService;
@@ -41,7 +39,6 @@ namespace HealthCare.Api.Services.Implementations
             _mapper = mapper;
             _logger = logger;
             _publishEndpoint = publishEndpoint;
-            _doctorCache = doctorCache;
         }
 
         public async Task<AppointmentListDto?> GetByIdAsync(int id)
@@ -610,8 +607,6 @@ namespace HealthCare.Api.Services.Implementations
             var appointment = await _repository.GetByIdAsync(appointmentId);
 
             var doctor = await _context.Doctors.FirstAsync(d => d.DoctorId == appointment!.DoctorId);
-
-            await _doctorCache.RefreshAsync(doctor.Specialisation,appointment!.ScheduledDate);
 
             if (_logger.IsEnabled(LogLevel.Information))
             {

@@ -8,7 +8,7 @@ import { CreateLeave, CreateLeaveResult } from '../models/doctor-leave';
 })
 export class DoctorLeaveService {
 
-  private readonly apiUrl = 'https://localhost:7171/api/Doctor';
+  private readonly apiUrl = '/api/Doctor';
 
   constructor(private readonly http: HttpClient) { }
 

@@ -18,7 +18,6 @@ namespace HealthCare.Api.Services.Implementations
         private readonly HealthCareDbContext _context;
         private readonly IMapper _mapper;
         private readonly ILogger<DoctorService> _logger;
-        private readonly IDoctorAvailabilityCacheService _doctorCache;
 
         private const string NotFoundExceptionMessage = "Doctor not found.";
         private const string DoctorNotFoundLogMessage = "Doctor {DoctorId} not found.";
@@ -28,15 +27,13 @@ namespace HealthCare.Api.Services.Implementations
             HealthCareDbContext context,
             IMapper mapper,
             IAppointmentRepository appointmentRepository,
-            ILogger<DoctorService> logger,
-            IDoctorAvailabilityCacheService doctorCache)
+            ILogger<DoctorService> logger)
         {
             _repository = repository;
             _context = context;
             _mapper = mapper;
             _appointmentRepository = appointmentRepository;
             _logger = logger;
-            _doctorCache = doctorCache;
         }
 
         public async Task UpdateAsync(
@@ -105,10 +102,6 @@ namespace HealthCare.Api.Services.Implementations
 
             await _repository.UpdateAsync(doctor);
             await _context.SaveChangesAsync();
-
-            await _doctorCache.RefreshSpecializationAsync(
-                doctor.Specialisation);
-
 
             if (_logger.IsEnabled(LogLevel.Information))
             {
@@ -432,7 +425,7 @@ namespace HealthCare.Api.Services.Implementations
                 }
             }
 
-            await SaveLeavesAndRefreshCacheAsync(
+            await SaveLeavesAsync(
                 id,
                 leavesToCreate);
 
@@ -495,7 +488,7 @@ namespace HealthCare.Api.Services.Implementations
             return true;
         }
 
-        private async Task SaveLeavesAndRefreshCacheAsync(
+        private async Task SaveLeavesAsync(
                        int doctorId,
                        List<CreateLeaveDto> leavesToCreate)
         {
@@ -514,24 +507,6 @@ namespace HealthCare.Api.Services.Implementations
                 .FirstOrDefaultAsync(
                     d => d.DoctorId == doctorId);
 
-            if (doctor != null)
-            {
-                foreach (var leaveDate in leavesToCreate.Select(leave => leave.LeaveDate))
-                {
-                    await _doctorCache.RefreshAsync(
-                        doctor.Specialisation,
-                        leaveDate);
-
-                    if (_logger.IsEnabled(LogLevel.Information))
-                    {
-                        _logger.LogInformation(
-                            "Doctor availability cache refreshed for {Specialisation} on {LeaveDate}",
-                            doctor.Specialisation,
-                            leaveDate);
-                    }
-                }
-            }
-
             if (_logger.IsEnabled(LogLevel.Information))
             {
                 _logger.LogInformation(
@@ -547,56 +522,16 @@ namespace HealthCare.Api.Services.Implementations
     DateOnly date)
         { 
 
-            var cachedDoctors =
-                await _doctorCache.GetAsync(
-                    specialisation,
-                    date);
-
-
-
-            if (cachedDoctors != null)
-            {
-                if (_logger.IsEnabled(LogLevel.Information))
-                {
-                    _logger.LogInformation(
-                        "Cache hit for Specialisation {Specialisation} on {Date}",
-                        specialisation,
-                        date);
-                }
-
-                return cachedDoctors;
-            }
-
-
-
-            if (_logger.IsEnabled(LogLevel.Information))
-            {
-                _logger.LogInformation(
-                    "Cache miss for Specialisation {Specialisation} on {Date}. Loading from database.",
-                    specialisation,
-                    date);
-            }
-
-
-
             var doctors =
                 await _repository.AvailableDoctors(
                     specialisation,
                     date);
 
 
-
-            await _doctorCache.SetAsync(
-                specialisation,
-                date,
-                doctors);
-
-
-
             if (_logger.IsEnabled(LogLevel.Information))
             {
                 _logger.LogInformation(
-                    "{DoctorCount} doctor(s) loaded from database and cached for Specialisation {Specialisation} on {Date}",
+                    "{DoctorCount} doctor(s) loaded from database for Specialisation {Specialisation} on {Date}",
                     doctors.Count,
                     specialisation,
                     date);

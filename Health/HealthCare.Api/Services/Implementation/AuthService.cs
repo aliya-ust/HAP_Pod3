@@ -19,7 +19,6 @@ namespace HealthCare.Api.Services.Implementation
         private readonly IDoctorRepository _doctorRepository;
         private readonly IJwtService _jwtService;
         private readonly HealthCareDbContext _context;
-        private readonly IDoctorAvailabilityCacheService _doctorCache;
 
         public AuthService(
             UserManager<User> userManager,
@@ -27,8 +26,7 @@ namespace HealthCare.Api.Services.Implementation
             IPatientRepository patientRepository,
             IDoctorRepository doctorRepository,
             IJwtService jwtService,
-            HealthCareDbContext context,
-            IDoctorAvailabilityCacheService doctorCache)
+            HealthCareDbContext context)
         {
             _userManager = userManager;
             _mapper = mapper;
@@ -36,7 +34,6 @@ namespace HealthCare.Api.Services.Implementation
             _doctorRepository = doctorRepository;
             _jwtService = jwtService;
             _context = context;
-            _doctorCache = doctorCache;
         }
 
         private async Task<User> CreateUserWithRoleAsync(
@@ -138,10 +135,6 @@ namespace HealthCare.Api.Services.Implementation
 
 
             await _context.SaveChangesAsync();
-
-
-            await _doctorCache.RefreshSpecializationAsync(
-                doctor.Specialisation);
         }
 
         public async Task<AuthResponseDto> LoginAsync(LoginDto dto)

@@ -4,7 +4,6 @@ using HealthCare.Api.Mappings;
 using HealthCare.Api.Messaging;
 using HealthCare.Api.Middleware;
 using HealthCare.Api.Models;
-using HealthCare.Api.Options;
 using HealthCare.Api.Repositories.Implementation;
 using HealthCare.Api.Repositories.Implementations;
 using HealthCare.Api.Repositories.Interfaces;
@@ -23,6 +22,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
 using MassTransit;
+using Microsoft.AspNetCore.StaticFiles;
 
 
 Log.Logger = new LoggerConfiguration()
@@ -71,7 +71,7 @@ builder.Services.AddControllers()
     {
         options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
     });
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<HealthCareDbContext>(options =>
@@ -119,14 +119,6 @@ builder.Services.AddScoped<IAppointmentService, AppointmentService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
-builder.Services.AddScoped<IDoctorAvailabilityCacheService,DoctorAvailabilityCacheService>();
-builder.Services.Configure<GarnetOptions>(builder.Configuration.GetSection("Garnet"));
-builder.Services.AddStackExchangeRedisCache(options =>
-{
-    var garnetOptions = builder.Configuration.GetSection("Garnet").Get<GarnetOptions>() ?? new GarnetOptions();
-    options.Configuration = garnetOptions.ConnectionString;
-    options.InstanceName = garnetOptions.InstanceName;
-});
 
 builder.Services.AddAutoMapper(cfg =>
 {
@@ -154,10 +146,10 @@ builder.Services.AddMassTransit(x =>
 
     x.UsingRabbitMq((context, cfg) =>
     {
-        cfg.Host("localhost", "/", h =>
+        cfg.Host("172.31.5.80", "/", h =>
         {
-            h.Username("guest");
-            h.Password("guest");
+            h.Username("aliya");
+            h.Password("@B12ee34L567");
         });
 
         cfg.ConfigureEndpoints(context);
@@ -186,9 +178,38 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+var contentTypeProvider = new FileExtensionContentTypeProvider();
+contentTypeProvider.Mappings[".dat"] = "application/octet-stream";
+contentTypeProvider.Mappings[".wasm"] = "application/wasm";
+app.UseStaticFiles(new StaticFileOptions { ContentTypeProvider = contentTypeProvider });
 app.UseCors("AllowClients");
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+app.MapGet("/angular", async context =>
+{
+    await context.Response.SendFileAsync(Path.Combine(app.Environment.WebRootPath, "angular", "index.html"));
+});
+
+app.MapGet("/angular/{*path:nonfile}", async context =>
+{
+    await context.Response.SendFileAsync(Path.Combine(app.Environment.WebRootPath, "angular", "index.html"));
+});
+
+app.MapGet("/blazor", async context =>
+{
+    await context.Response.SendFileAsync(Path.Combine(app.Environment.WebRootPath, "blazor", "index.html"));
+});
+
+app.MapGet("/blazor/{*path:nonfile}", async context =>
+{
+    await context.Response.SendFileAsync(Path.Combine(app.Environment.WebRootPath, "blazor", "index.html"));
+});
+
+Console.WriteLine("URLS:");
+foreach (var url in app.Urls)
+{
+    Console.WriteLine(url);
+}
 
 await app.RunAsync();

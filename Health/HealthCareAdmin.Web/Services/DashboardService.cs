@@ -6,14 +6,18 @@ namespace HealthCareAdmin.Web.Services;
 
 public class DashboardService
 {
+
     private readonly HttpClient _http;
     private readonly TokenProvider _tokenProvider;
 
-    public DashboardService(HttpClient http, TokenProvider tokenProvider)
+    public DashboardService(
+        IHttpClientFactory factory,
+        TokenProvider tokenProvider)
     {
-        _http = http;
+        _http = factory.CreateClient("ApiClient");
         _tokenProvider = tokenProvider;
     }
+
 
     public async Task<DashboardSummaryDto?> GetSummaryAsync()
     {

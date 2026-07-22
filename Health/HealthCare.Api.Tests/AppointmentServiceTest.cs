@@ -27,7 +27,7 @@ public class AppointmentServiceTests
     private readonly AppointmentService _service;
     private readonly Mock<ILogger<AppointmentService>> _loggerMock;
     private readonly Mock<IPublishEndpoint> _publishEndpointMock;
-    private readonly Mock<IDoctorAvailabilityCacheService> _doctorCacheMock;
+
 
     public AppointmentServiceTests()
     {
@@ -43,7 +43,7 @@ public class AppointmentServiceTests
 
         _loggerMock = new Mock<ILogger<AppointmentService>>();
         _publishEndpointMock = new Mock<IPublishEndpoint>();
-        _doctorCacheMock = new Mock<IDoctorAvailabilityCacheService>();
+
 
         _loggerMock.Setup(x =>
                 x.IsEnabled(It.IsAny<LogLevel>()))
@@ -55,8 +55,7 @@ public class AppointmentServiceTests
             _context,
             _mapperMock.Object,
             _loggerMock.Object,
-            _publishEndpointMock.Object,
-            _doctorCacheMock.Object);
+            _publishEndpointMock.Object);
     }
 
     [Fact]
@@ -287,9 +286,6 @@ public class AppointmentServiceTests
             x.CancelAppointment(5),
             Times.Once);
 
-        _doctorCacheMock.Verify(x =>
-            x.RefreshAsync("Cardiology", date),
-            Times.Once);
     }
 
     [Fact]

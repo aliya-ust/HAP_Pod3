@@ -21,7 +21,6 @@ namespace HealthCare.Tests.Services
         private readonly HealthCareDbContext _context;
         private readonly DoctorService _service;
         private readonly Mock<ILogger<DoctorService>> _logger = new();
-        private readonly Mock<IDoctorAvailabilityCacheService> _doctorCache = new();
 
         public DoctorServiceTests()
         {
@@ -40,8 +39,7 @@ namespace HealthCare.Tests.Services
                 _context,
                 _mapper.Object,
                 _appointmentRepo.Object,
-                _logger.Object,
-                _doctorCache.Object);
+                _logger.Object);
         }
 
         [Fact]
@@ -89,10 +87,6 @@ namespace HealthCare.Tests.Services
 
             _doctorRepo.Verify(x =>
                 x.UpdateAsync(doctor),
-                Times.Once);
-
-            _doctorCache.Verify(x =>
-                x.RefreshSpecializationAsync("Cardiology"),
                 Times.Once);
         }
 
@@ -185,10 +179,6 @@ namespace HealthCare.Tests.Services
 
             var date = DateOnly.FromDateTime(DateTime.Today);
 
-            _doctorCache.Setup(x =>
-                x.GetAsync("Cardiology", date))
-                .ReturnsAsync((List<DoctorListDto>)null!);
-
             _doctorRepo.Setup(x =>
                 x.AvailableDoctors("Cardiology", date))
                 .ReturnsAsync(doctors);
@@ -197,9 +187,6 @@ namespace HealthCare.Tests.Services
 
             Assert.Single(result);
 
-            _doctorCache.Verify(x =>
-                x.SetAsync("Cardiology", date, doctors),
-                Times.Once);
         }
 
         [Fact]
@@ -419,9 +406,6 @@ namespace HealthCare.Tests.Services
                 x.CreateLeaves(1, It.IsAny<List<CreateLeaveDto>>()),
                 Times.Once);
 
-            _doctorCache.Verify(x =>
-                x.RefreshAsync("Cardiology", date),
-                Times.Once);
         }
 
         [Fact]
@@ -472,9 +456,6 @@ namespace HealthCare.Tests.Services
                 x.CancelAppointmentsByDoctorDate(It.IsAny<int>(), It.IsAny<DateOnly>()),
                 Times.Never);
 
-            _doctorCache.Verify(x =>
-                x.RefreshAsync("Cardiology", date),
-                Times.Once);
         }
 
         [Fact]
@@ -519,10 +500,6 @@ namespace HealthCare.Tests.Services
         };
 
             var date = DateOnly.FromDateTime(DateTime.Today);
-
-            _doctorCache.Setup(x =>
-                x.GetAsync("Cardiology", date))
-                .ReturnsAsync(doctors);
 
             var result = await _service.AvailableDoctors("Cardiology", date);
 

@@ -24,7 +24,6 @@ namespace HealthCare.Tests.Services
         private readonly Mock<IJwtService> _jwtService;
         private readonly HealthCareDbContext _context;
         private readonly AuthService _service;
-        private readonly Mock<IDoctorAvailabilityCacheService> _doctorCacheMock;
 
         public AuthServiceTests()
         {
@@ -52,16 +51,13 @@ namespace HealthCare.Tests.Services
 
             _context = new HealthCareDbContext(options);
 
-            _doctorCacheMock = new Mock<IDoctorAvailabilityCacheService>();
-
             _service = new AuthService(
                 _userManager.Object,
                 _mapper.Object,
                 _patientRepo.Object,
                 _doctorRepo.Object,
                 _jwtService.Object,
-                _context,
-                _doctorCacheMock.Object);
+                _context);
         }
 
         [Fact]
@@ -126,10 +122,6 @@ namespace HealthCare.Tests.Services
 
             _doctorRepo.Verify(x =>
                 x.CreateSlots(doctor.DoctorId, dto.TimeSlots),
-                Times.Once);
-
-            _doctorCacheMock.Verify(x =>
-                x.RefreshSpecializationAsync("Cardiology"),
                 Times.Once);
         }
 
@@ -376,7 +368,6 @@ namespace HealthCare.Tests.Services
 
             _doctorRepo.Verify(x => x.AddAsync(It.IsAny<Doctor>()), Times.Never);
             _doctorRepo.Verify(x => x.CreateSlots(It.IsAny<int>(), It.IsAny<List<string>>()), Times.Never);
-            _doctorCacheMock.Verify(x => x.RefreshSpecializationAsync(It.IsAny<string>()), Times.Never);
         }
 
         [Fact]

@@ -10,7 +10,7 @@ import { DoctorDashboard } from '../models/DoctorDashboard';
 })
 export class DashboardService {
 
-  private readonly apiUrl = 'https://localhost:7171/api/dashboard';
+  private readonly apiUrl = '/api/dashboard';
 
   constructor(private readonly http: HttpClient) { }
 
