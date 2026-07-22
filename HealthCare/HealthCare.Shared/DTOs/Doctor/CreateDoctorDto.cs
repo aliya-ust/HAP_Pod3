@@ -21,13 +21,16 @@ namespace HealthCare.Api.DTOs.Doctor
         [Required]
         public string Password { get; set; } = null!;
 
-        [Required]
-        [Range(0, 60)]
-        public int YearsOfExperience { get; set; }
 
-        [Required]
-        [Range(0.01, 5000, ErrorMessage = "Consultation fee cannot exceed 5000.")]
-        public decimal ConsultationFee { get; set; }
+        [Required(ErrorMessage = "Years Of Experience is required.")]
+        [Range(0, 60, ErrorMessage = "Years Of Experience must be between 0 and 60.")]
+        public int? YearsOfExperience { get; set; }
+
+
+        [Required(ErrorMessage = "Consultation Fee is required.")]
+        [Range(typeof(decimal), "0.01", "5000",
+     ErrorMessage = "Consultation Fee must be between 0.01 and 5000.")]
+        public decimal? ConsultationFee { get; set; }
 
         [Required]
         public List<string> TimeSlots { get; set; } = new();

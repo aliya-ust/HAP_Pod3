@@ -106,7 +106,8 @@ builder.Services.AddMassTransit(x =>
     x.UsingRabbitMq((context, cfg) =>
     {
 
-        cfg.Host(rabbitmqConfig["HostName"], rabbitmqConfig["VirtualHost"], h => 
+        cfg.Host(rabbitmqConfig["HostName"], 
+            rabbitmqConfig["VirtualHost"], h => 
         {
             h.Username(rabbitmqConfig["UserName"]!);
             h.Password(rabbitmqConfig["Password"]!);

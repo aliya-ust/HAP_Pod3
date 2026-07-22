@@ -1,0 +1,260 @@
+2026-07-21 10:40:06.945 +05:30 [INF] Configured endpoint appointment.events.queue, Consumer: HealthCare.Api.Messaging.AppointmentBookedConsumer
+2026-07-21 10:40:09.423 +05:30 [INF] Now listening on: https://localhost:7234
+2026-07-21 10:40:09.432 +05:30 [INF] Now listening on: http://localhost:5225
+2026-07-21 10:40:09.546 +05:30 [INF] Application started. Press Ctrl+C to shut down.
+2026-07-21 10:40:09.562 +05:30 [INF] Hosting environment: Development
+2026-07-21 10:40:09.571 +05:30 [INF] Content root path: C:\Users\310508\source\repos\UST-Live-01\HealthCare\HealthCare.Api
+2026-07-21 10:40:10.000 +05:30 [INF] Bus started: "rabbitmq://localhost/"
+2026-07-21 10:43:12.806 +05:30 [INF] HTTP OPTIONS /api/auth/login responded 204 in 77.4700 ms
+2026-07-21 10:43:13.310 +05:30 [WRN] You do not have a valid license key for the Lucky Penny software AutoMapper. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.
+2026-07-21 10:43:14.358 +05:30 [INF] HTTP POST /api/auth/login responded 200 in 1510.0688 ms
+2026-07-21 10:43:21.224 +05:30 [INF] HTTP OPTIONS /api/admin/doctors responded 204 in 2.0907 ms
+2026-07-21 10:43:21.911 +05:30 [INF] HTTP GET /api/admin/doctors responded 200 in 676.8489 ms
+2026-07-21 10:43:21.977 +05:30 [INF] HTTP OPTIONS /api/admin/doctors responded 204 in 0.2895 ms
+2026-07-21 10:43:22.058 +05:30 [INF] HTTP GET /api/admin/doctors responded 200 in 73.1362 ms
+2026-07-21 10:43:22.072 +05:30 [INF] HTTP OPTIONS /api/admin/patients responded 204 in 0.1737 ms
+2026-07-21 10:43:22.157 +05:30 [WRN] The query uses a row limiting operator ('Skip'/'Take') without an 'OrderBy' operator. This may lead to unpredictable results. If the 'Distinct' operator is used after 'OrderBy', then make sure to use the 'OrderBy' operator after 'Distinct' as the ordering would otherwise get erased.
+2026-07-21 10:43:22.160 +05:30 [WRN] The query uses a row limiting operator ('Skip'/'Take') without an 'OrderBy' operator. This may lead to unpredictable results. If the 'Distinct' operator is used after 'OrderBy', then make sure to use the 'OrderBy' operator after 'Distinct' as the ordering would otherwise get erased.
+2026-07-21 10:43:22.273 +05:30 [INF] HTTP GET /api/admin/patients responded 200 in 195.8597 ms
+2026-07-21 10:43:22.305 +05:30 [INF] HTTP OPTIONS /api/admin/appointments/dashboard-summary responded 204 in 0.2261 ms
+2026-07-21 10:43:22.513 +05:30 [WRN] The query uses the 'First'/'FirstOrDefault' operator without 'OrderBy' and filter operators. This may lead to unpredictable results.
+2026-07-21 10:43:22.607 +05:30 [INF] Dashboard appointment summary fetched successfully.
+2026-07-21 10:43:22.614 +05:30 [INF] HTTP GET /api/admin/appointments/dashboard-summary responded 200 in 299.2528 ms
+2026-07-21 10:43:26.210 +05:30 [INF] HTTP OPTIONS /api/admin/patients responded 204 in 0.2376 ms
+2026-07-21 10:43:26.244 +05:30 [INF] HTTP GET /api/admin/patients responded 200 in 24.5350 ms
+2026-07-21 10:45:10.083 +05:30 [INF] Usage Telemetry: {"id":"90810000-e56a-1944-434a-08dee6e65480","created":"2026-07-21T10:40:06.7750823\u002B05:30","host":{"framework_version":"10.0.10","mass_transit_version":"8.5.10.0","operating_system_version":"Microsoft Windows NT 10.0.26200.0","time_zone_info":"(UTC\u002B05:30) Chennai, Kolkata, Mumbai, New Delhi","commit_hash":"62ab339afa3bac2e9b3fe1769d0d35d7e44778e9"},"bus":[{"created":"2026-07-21T10:40:06.7822760\u002B05:30","configured":"2026-07-21T10:40:08.6426013\u002B05:30","started":"2026-07-21T10:40:09.9917617\u002B05:30","name":"IBus","endpoints":[{"name":"appointment.events.queue","type":"RabbitMQ","prefetch_count":16,"consumer_count":1,"message_count":1},{"name":"_bus_","type":"RabbitMQ","prefetch_count":16}]}]}
+2026-07-21 11:16:06.924 +05:30 [INF] HTTP OPTIONS /api/auth/login responded 204 in 0.8216 ms
+2026-07-21 11:16:10.281 +05:30 [INF] HTTP POST /api/auth/login responded 200 in 3332.9335 ms
+2026-07-21 11:16:15.671 +05:30 [INF] HTTP OPTIONS /api/admin/doctors responded 204 in 0.9825 ms
+2026-07-21 11:16:15.749 +05:30 [INF] HTTP GET /api/admin/doctors responded 200 in 66.2108 ms
+2026-07-21 11:16:15.837 +05:30 [INF] HTTP OPTIONS /api/admin/doctors responded 204 in 0.3401 ms
+2026-07-21 11:16:15.877 +05:30 [INF] HTTP GET /api/admin/doctors responded 200 in 27.2083 ms
+2026-07-21 11:16:15.897 +05:30 [INF] HTTP OPTIONS /api/admin/patients responded 204 in 0.1562 ms
+2026-07-21 11:16:15.937 +05:30 [INF] HTTP GET /api/admin/patients responded 200 in 31.1923 ms
+2026-07-21 11:16:15.984 +05:30 [INF] HTTP OPTIONS /api/admin/appointments/dashboard-summary responded 204 in 0.1502 ms
+2026-07-21 11:16:16.051 +05:30 [INF] Dashboard appointment summary fetched successfully.
+2026-07-21 11:16:16.054 +05:30 [INF] HTTP GET /api/admin/appointments/dashboard-summary responded 200 in 60.5498 ms
+2026-07-21 11:16:31.015 +05:30 [INF] HTTP OPTIONS /api/admin/doctors responded 204 in 0.3631 ms
+2026-07-21 11:16:31.056 +05:30 [INF] HTTP GET /api/admin/doctors responded 200 in 28.4667 ms
+2026-07-21 11:22:14.225 +05:30 [INF] HTTP OPTIONS /api/auth/register/doctor responded 204 in 0.6388 ms
+2026-07-21 11:22:14.433 +05:30 [ERR] Exception occurred while processing POST /api/auth/register/doctor
+System.InvalidOperationException: Email already in use
+   at HealthCare.Api.Services.Implementations.AuthService.CreateUserWithRoleAsync(String email, String password, String role) in C:\Users\310508\source\repos\UST-Live-01\HealthCare\HealthCare.Api\Services\Implementations\AuthService.cs:line 49
+   at HealthCare.Api.Services.Implementations.AuthService.RegisterDoctorAsync(CreateDoctorDto dto) in C:\Users\310508\source\repos\UST-Live-01\HealthCare\HealthCare.Api\Services\Implementations\AuthService.cs:line 83
+   at HealthCare.Api.Controllers.AuthController.RegisterDoctor(CreateDoctorDto dto) in C:\Users\310508\source\repos\UST-Live-01\HealthCare\HealthCare.Api\Controllers\AuthController.cs:line 36
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddlewareImpl.<Invoke>g__Awaited|10_0(ExceptionHandlerMiddlewareImpl middleware, HttpContext context, Task task)
+2026-07-21 11:22:14.534 +05:30 [INF] HTTP POST /api/auth/register/doctor responded 400 in 296.0028 ms
+2026-07-21 11:22:22.929 +05:30 [INF] HTTP OPTIONS /api/auth/register/doctor responded 204 in 0.1983 ms
+2026-07-21 11:22:24.267 +05:30 [INF] HTTP POST /api/auth/register/doctor responded 200 in 1328.9535 ms
+2026-07-21 11:22:24.306 +05:30 [INF] HTTP OPTIONS /api/admin/doctors responded 204 in 0.4400 ms
+2026-07-21 11:22:24.337 +05:30 [INF] HTTP GET /api/admin/doctors responded 200 in 12.4442 ms
+2026-07-21 11:22:45.045 +05:30 [INF] HTTP OPTIONS /api/admin/doctors responded 204 in 0.2758 ms
+2026-07-21 11:22:45.085 +05:30 [INF] HTTP GET /api/admin/doctors responded 200 in 30.8883 ms
+2026-07-21 11:22:50.033 +05:30 [INF] HTTP OPTIONS /api/admin/doctors/8 responded 204 in 25.2022 ms
+2026-07-21 11:22:50.184 +05:30 [INF] HTTP DELETE /api/admin/doctors/8 responded 200 in 139.3588 ms
+2026-07-21 11:22:50.200 +05:30 [INF] HTTP OPTIONS /api/admin/doctors responded 204 in 0.0700 ms
+2026-07-21 11:22:50.216 +05:30 [INF] HTTP GET /api/admin/doctors responded 200 in 8.7263 ms
+2026-07-21 11:22:58.513 +05:30 [INF] HTTP OPTIONS /api/admin/doctors responded 204 in 0.1991 ms
+2026-07-21 11:22:58.528 +05:30 [INF] HTTP GET /api/admin/doctors responded 200 in 7.4388 ms
+2026-07-21 12:14:11.162 +05:30 [INF] Configured endpoint appointment.events.queue, Consumer: HealthCare.Api.Messaging.AppointmentBookedConsumer
+2026-07-21 12:14:14.417 +05:30 [INF] Now listening on: https://localhost:7234
+2026-07-21 12:14:14.426 +05:30 [INF] Now listening on: http://localhost:5225
+2026-07-21 12:14:14.722 +05:30 [INF] Application started. Press Ctrl+C to shut down.
+2026-07-21 12:14:14.726 +05:30 [INF] Hosting environment: Development
+2026-07-21 12:14:14.731 +05:30 [INF] Content root path: C:\Users\310508\source\repos\UST-Live-01\HealthCare\HealthCare.Api
+2026-07-21 12:14:16.199 +05:30 [INF] Bus started: "rabbitmq://localhost/"
+2026-07-21 12:17:55.450 +05:30 [INF] HTTP OPTIONS /api/auth/login responded 204 in 102.4217 ms
+2026-07-21 12:17:56.027 +05:30 [WRN] You do not have a valid license key for the Lucky Penny software AutoMapper. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.
+2026-07-21 12:17:57.086 +05:30 [INF] HTTP POST /api/auth/login responded 200 in 1581.4550 ms
+2026-07-21 12:18:04.151 +05:30 [INF] HTTP OPTIONS /api/admin/doctors responded 204 in 2.3075 ms
+2026-07-21 12:18:05.363 +05:30 [INF] HTTP GET /api/admin/doctors responded 200 in 1197.3936 ms
+2026-07-21 12:18:05.422 +05:30 [INF] HTTP OPTIONS /api/admin/doctors responded 204 in 0.2727 ms
+2026-07-21 12:18:06.003 +05:30 [INF] HTTP GET /api/admin/doctors responded 200 in 415.7175 ms
+2026-07-21 12:18:06.018 +05:30 [INF] HTTP OPTIONS /api/admin/patients responded 204 in 0.1765 ms
+2026-07-21 12:18:06.279 +05:30 [WRN] The query uses a row limiting operator ('Skip'/'Take') without an 'OrderBy' operator. This may lead to unpredictable results. If the 'Distinct' operator is used after 'OrderBy', then make sure to use the 'OrderBy' operator after 'Distinct' as the ordering would otherwise get erased.
+2026-07-21 12:18:06.283 +05:30 [WRN] The query uses a row limiting operator ('Skip'/'Take') without an 'OrderBy' operator. This may lead to unpredictable results. If the 'Distinct' operator is used after 'OrderBy', then make sure to use the 'OrderBy' operator after 'Distinct' as the ordering would otherwise get erased.
+2026-07-21 12:18:06.428 +05:30 [INF] HTTP GET /api/admin/patients responded 200 in 334.0709 ms
+2026-07-21 12:18:06.465 +05:30 [INF] HTTP OPTIONS /api/admin/appointments/dashboard-summary responded 204 in 0.2707 ms
+2026-07-21 12:18:06.717 +05:30 [WRN] The query uses the 'First'/'FirstOrDefault' operator without 'OrderBy' and filter operators. This may lead to unpredictable results.
+2026-07-21 12:18:06.851 +05:30 [INF] Dashboard appointment summary fetched successfully.
+2026-07-21 12:18:06.864 +05:30 [INF] HTTP GET /api/admin/appointments/dashboard-summary responded 200 in 386.3706 ms
+2026-07-21 12:18:08.727 +05:30 [INF] HTTP OPTIONS /api/admin/patients responded 204 in 0.3515 ms
+2026-07-21 12:18:08.766 +05:30 [INF] HTTP GET /api/admin/patients responded 200 in 27.4862 ms
+2026-07-21 12:18:11.954 +05:30 [INF] HTTP OPTIONS /api/admin/patients responded 204 in 0.3152 ms
+2026-07-21 12:18:11.996 +05:30 [WRN] The query uses a row limiting operator ('Skip'/'Take') without an 'OrderBy' operator. This may lead to unpredictable results. If the 'Distinct' operator is used after 'OrderBy', then make sure to use the 'OrderBy' operator after 'Distinct' as the ordering would otherwise get erased.
+2026-07-21 12:18:12.000 +05:30 [WRN] The query uses a row limiting operator ('Skip'/'Take') without an 'OrderBy' operator. This may lead to unpredictable results. If the 'Distinct' operator is used after 'OrderBy', then make sure to use the 'OrderBy' operator after 'Distinct' as the ordering would otherwise get erased.
+2026-07-21 12:18:12.034 +05:30 [INF] HTTP GET /api/admin/patients responded 200 in 65.9687 ms
+2026-07-21 12:18:18.920 +05:30 [INF] HTTP OPTIONS /api/admin/doctors responded 204 in 0.3013 ms
+2026-07-21 12:18:19.070 +05:30 [INF] HTTP GET /api/admin/doctors responded 200 in 73.8393 ms
+2026-07-21 12:18:27.192 +05:30 [INF] HTTP OPTIONS /api/admin/doctors responded 204 in 0.6235 ms
+2026-07-21 12:18:27.242 +05:30 [INF] HTTP GET /api/admin/doctors responded 200 in 35.7410 ms
+2026-07-21 12:18:30.135 +05:30 [INF] HTTP OPTIONS /api/admin/doctors responded 204 in 0.1866 ms
+2026-07-21 12:18:30.163 +05:30 [INF] HTTP GET /api/admin/doctors responded 200 in 15.2522 ms
+2026-07-21 12:19:16.263 +05:30 [INF] Usage Telemetry: {"id":"94520000-e56a-1944-106c-08dee6f378b8","created":"2026-07-21T12:14:10.9962047\u002B05:30","host":{"framework_version":"10.0.10","mass_transit_version":"8.5.10.0","operating_system_version":"Microsoft Windows NT 10.0.26200.0","time_zone_info":"(UTC\u002B05:30) Chennai, Kolkata, Mumbai, New Delhi","commit_hash":"62ab339afa3bac2e9b3fe1769d0d35d7e44778e9"},"bus":[{"created":"2026-07-21T12:14:11.0040980\u002B05:30","configured":"2026-07-21T12:14:13.3618012\u002B05:30","started":"2026-07-21T12:14:16.1909025\u002B05:30","name":"IBus","endpoints":[{"name":"appointment.events.queue","type":"RabbitMQ","prefetch_count":16,"consumer_count":1,"message_count":1},{"name":"_bus_","type":"RabbitMQ","prefetch_count":16}]}]}
+2026-07-21 12:27:30.162 +05:30 [INF] HTTP OPTIONS /api/admin/appointments/report responded 204 in 0.3825 ms
+2026-07-21 12:27:31.210 +05:30 [INF] Appointment report fetched. FromDate: "2026-07-15", ToDate: "2026-07-21", Count: 3
+2026-07-21 12:27:31.241 +05:30 [INF] HTTP GET /api/admin/appointments/report responded 200 in 1064.5763 ms
+2026-07-21 12:27:49.084 +05:30 [INF] HTTP OPTIONS /api/admin/doctors responded 204 in 0.2482 ms
+2026-07-21 12:27:49.129 +05:30 [INF] HTTP GET /api/admin/doctors responded 200 in 23.0226 ms
+2026-07-21 12:40:05.650 +05:30 [INF] Configured endpoint appointment.events.queue, Consumer: HealthCare.Api.Messaging.AppointmentBookedConsumer
+2026-07-21 12:40:08.271 +05:30 [INF] Bus started: "rabbitmq://localhost/"
+2026-07-21 12:40:08.285 +05:30 [INF] Now listening on: https://localhost:7234
+2026-07-21 12:40:08.293 +05:30 [INF] Now listening on: http://localhost:5225
+2026-07-21 12:40:08.399 +05:30 [INF] Application started. Press Ctrl+C to shut down.
+2026-07-21 12:40:08.402 +05:30 [INF] Hosting environment: Development
+2026-07-21 12:40:08.406 +05:30 [INF] Content root path: C:\Users\310508\source\repos\UST-Live-01\HealthCare\HealthCare.Api
+2026-07-21 12:40:46.855 +05:30 [INF] HTTP OPTIONS /api/auth/login responded 204 in 68.1735 ms
+2026-07-21 12:40:47.229 +05:30 [WRN] You do not have a valid license key for the Lucky Penny software AutoMapper. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.
+2026-07-21 12:40:48.202 +05:30 [INF] HTTP POST /api/auth/login responded 200 in 1307.2094 ms
+2026-07-21 12:40:56.174 +05:30 [INF] HTTP OPTIONS /api/admin/doctors responded 204 in 1.4517 ms
+2026-07-21 12:40:56.879 +05:30 [INF] HTTP GET /api/admin/doctors responded 200 in 691.0830 ms
+2026-07-21 12:40:56.941 +05:30 [INF] HTTP OPTIONS /api/admin/doctors responded 204 in 0.2576 ms
+2026-07-21 12:40:57.035 +05:30 [INF] HTTP GET /api/admin/doctors responded 200 in 83.2456 ms
+2026-07-21 12:40:57.049 +05:30 [INF] HTTP OPTIONS /api/admin/patients responded 204 in 0.1919 ms
+2026-07-21 12:40:57.136 +05:30 [WRN] The query uses a row limiting operator ('Skip'/'Take') without an 'OrderBy' operator. This may lead to unpredictable results. If the 'Distinct' operator is used after 'OrderBy', then make sure to use the 'OrderBy' operator after 'Distinct' as the ordering would otherwise get erased.
+2026-07-21 12:40:57.140 +05:30 [WRN] The query uses a row limiting operator ('Skip'/'Take') without an 'OrderBy' operator. This may lead to unpredictable results. If the 'Distinct' operator is used after 'OrderBy', then make sure to use the 'OrderBy' operator after 'Distinct' as the ordering would otherwise get erased.
+2026-07-21 12:40:57.250 +05:30 [INF] HTTP GET /api/admin/patients responded 200 in 190.8331 ms
+2026-07-21 12:40:57.292 +05:30 [INF] HTTP OPTIONS /api/admin/appointments/dashboard-summary responded 204 in 0.1913 ms
+2026-07-21 12:40:57.530 +05:30 [WRN] The query uses the 'First'/'FirstOrDefault' operator without 'OrderBy' and filter operators. This may lead to unpredictable results.
+2026-07-21 12:40:57.603 +05:30 [INF] Dashboard appointment summary fetched successfully.
+2026-07-21 12:40:57.611 +05:30 [INF] HTTP GET /api/admin/appointments/dashboard-summary responded 200 in 308.0065 ms
+2026-07-21 12:41:19.943 +05:30 [INF] HTTP OPTIONS /api/admin/doctors responded 204 in 0.3567 ms
+2026-07-21 12:41:20.009 +05:30 [INF] HTTP GET /api/admin/doctors responded 200 in 34.3135 ms
+2026-07-21 12:45:08.325 +05:30 [INF] Usage Telemetry: {"id":"78810000-e56a-1944-6c4e-08dee6f71743","created":"2026-07-21T12:40:05.4797032\u002B05:30","host":{"framework_version":"10.0.10","mass_transit_version":"8.5.10.0","operating_system_version":"Microsoft Windows NT 10.0.26200.0","time_zone_info":"(UTC\u002B05:30) Chennai, Kolkata, Mumbai, New Delhi","commit_hash":"62ab339afa3bac2e9b3fe1769d0d35d7e44778e9"},"bus":[{"created":"2026-07-21T12:40:05.4846906\u002B05:30","configured":"2026-07-21T12:40:07.4595498\u002B05:30","started":"2026-07-21T12:40:08.2660525\u002B05:30","name":"IBus","endpoints":[{"name":"appointment.events.queue","type":"RabbitMQ","prefetch_count":16,"consumer_count":1,"message_count":1},{"name":"_bus_","type":"RabbitMQ","prefetch_count":16}]}]}
+2026-07-21 14:56:43.846 +05:30 [INF] HTTP OPTIONS /api/auth/login responded 204 in 9.1257 ms
+2026-07-21 14:56:48.868 +05:30 [ERR] Exception occurred while processing POST /api/auth/login
+System.UnauthorizedAccessException: Invalid email or password
+   at HealthCare.Api.Services.Implementations.AuthService.LoginAsync(LoginDto dto) in C:\Users\310508\source\repos\UST-Live-01\HealthCare\HealthCare.Api\Services\Implementations\AuthService.cs:line 103
+   at HealthCare.Api.Controllers.AuthController.Login(LoginDto dto) in C:\Users\310508\source\repos\UST-Live-01\HealthCare\HealthCare.Api\Controllers\AuthController.cs:line 43
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddlewareImpl.<Invoke>g__Awaited|10_0(ExceptionHandlerMiddlewareImpl middleware, HttpContext context, Task task)
+2026-07-21 14:56:48.961 +05:30 [INF] HTTP POST /api/auth/login responded 401 in 5078.3511 ms
+2026-07-21 14:57:20.079 +05:30 [INF] HTTP OPTIONS /api/auth/login responded 204 in 0.7441 ms
+2026-07-21 14:57:20.373 +05:30 [INF] HTTP POST /api/auth/login responded 200 in 286.1926 ms
+2026-07-21 14:57:20.420 +05:30 [INF] HTTP OPTIONS /api/appointments/patient/upcoming responded 204 in 0.9007 ms
+2026-07-21 14:57:20.423 +05:30 [INF] HTTP OPTIONS /api/records/my-records responded 204 in 0.3037 ms
+2026-07-21 14:57:20.508 +05:30 [INF] HTTP GET /api/records/my-records responded 200 in 79.2526 ms
+2026-07-21 14:57:20.561 +05:30 [INF] Appointments fetched by patient. PatientId: 15, Count: 5
+2026-07-21 14:57:20.576 +05:30 [INF] HTTP GET /api/appointments/patient/upcoming responded 200 in 149.9794 ms
+2026-07-21 14:57:45.323 +05:30 [INF] HTTP GET /api/patients/profile responded 401 in 19.5207 ms
+2026-07-21 14:58:30.244 +05:30 [INF] HTTP OPTIONS /api/auth/login responded 204 in 0.2271 ms
+2026-07-21 14:58:30.391 +05:30 [INF] HTTP POST /api/auth/login responded 200 in 135.7790 ms
+2026-07-21 14:58:30.419 +05:30 [INF] HTTP OPTIONS /api/appointments/patient/upcoming responded 204 in 2.0097 ms
+2026-07-21 14:58:30.419 +05:30 [INF] HTTP OPTIONS /api/records/my-records responded 204 in 2.0112 ms
+2026-07-21 14:58:30.442 +05:30 [INF] HTTP GET /api/records/my-records responded 200 in 11.0315 ms
+2026-07-21 14:58:30.460 +05:30 [INF] Appointments fetched by patient. PatientId: 15, Count: 5
+2026-07-21 14:58:30.462 +05:30 [INF] HTTP GET /api/appointments/patient/upcoming responded 200 in 32.9936 ms
+2026-07-21 14:58:43.132 +05:30 [INF] HTTP OPTIONS /api/patients/profile responded 204 in 1.0518 ms
+2026-07-21 14:58:43.194 +05:30 [INF] HTTP GET /api/patients/profile responded 200 in 56.2432 ms
+2026-07-21 14:58:54.763 +05:30 [INF] HTTP OPTIONS /api/appointments/patient/upcoming responded 204 in 0.2823 ms
+2026-07-21 14:58:54.776 +05:30 [INF] Appointments fetched by patient. PatientId: 15, Count: 5
+2026-07-21 14:58:54.777 +05:30 [INF] HTTP GET /api/appointments/patient/upcoming responded 200 in 4.1710 ms
+2026-07-21 14:58:56.413 +05:30 [INF] HTTP OPTIONS /api/records/my-records responded 204 in 0.4928 ms
+2026-07-21 14:58:56.426 +05:30 [INF] HTTP GET /api/records/my-records responded 200 in 6.8603 ms
+2026-07-21 14:59:36.187 +05:30 [INF] HTTP GET /api/appointments/patient/upcoming responded 401 in 2.0322 ms
+2026-07-21 14:59:40.334 +05:30 [INF] HTTP GET /api/appointments/patient/upcoming responded 401 in 0.5892 ms
+2026-07-21 14:59:41.270 +05:30 [INF] HTTP GET /api/records/my-records responded 401 in 0.3665 ms
+2026-07-21 14:59:43.583 +05:30 [INF] HTTP GET /api/appointments/patient/upcoming responded 401 in 0.9124 ms
+2026-07-21 14:59:46.152 +05:30 [INF] HTTP GET /api/appointments/patient/upcoming responded 401 in 0.4377 ms
+2026-07-21 14:59:47.463 +05:30 [INF] HTTP GET /api/patients/profile responded 401 in 0.5898 ms
+2026-07-21 14:59:49.925 +05:30 [INF] HTTP GET /api/appointments/patient/upcoming responded 401 in 0.3959 ms
+2026-07-21 14:59:56.432 +05:30 [INF] HTTP GET /api/patients/profile responded 401 in 1.1799 ms
+2026-07-21 14:59:58.752 +05:30 [INF] HTTP GET /api/appointments/patient/upcoming responded 401 in 0.3834 ms
+2026-07-21 15:00:05.164 +05:30 [INF] HTTP GET /api/doctors/available responded 401 in 1.0961 ms
+2026-07-21 15:00:11.388 +05:30 [INF] HTTP GET /api/patients/profile responded 401 in 0.7462 ms
+2026-07-21 15:00:26.371 +05:30 [INF] HTTP GET /api/records/my-records responded 401 in 0.4827 ms
+2026-07-21 15:00:40.362 +05:30 [INF] HTTP GET /api/appointments/patient/upcoming responded 401 in 0.4605 ms
+2026-07-21 15:01:44.864 +05:30 [INF] HTTP GET /api/patients/profile responded 401 in 2.8602 ms
+2026-07-21 23:37:16.545 +05:30 [INF] Configured endpoint appointment.events.queue, Consumer: HealthCare.Api.Messaging.AppointmentBookedConsumer
+2026-07-21 23:37:19.312 +05:30 [INF] Now listening on: https://localhost:7234
+2026-07-21 23:37:19.315 +05:30 [INF] Now listening on: http://localhost:5225
+2026-07-21 23:37:19.374 +05:30 [INF] Application started. Press Ctrl+C to shut down.
+2026-07-21 23:37:19.376 +05:30 [INF] Hosting environment: Development
+2026-07-21 23:37:19.377 +05:30 [INF] Content root path: C:\Users\310508\source\repos\UST-Live-01\HealthCare\HealthCare.Api
+2026-07-21 23:37:19.526 +05:30 [INF] Bus started: "rabbitmq://localhost/"
+2026-07-21 23:37:43.359 +05:30 [INF] HTTP OPTIONS /api/auth/login responded 204 in 124.5259 ms
+2026-07-21 23:37:43.616 +05:30 [WRN] You do not have a valid license key for the Lucky Penny software AutoMapper. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.
+2026-07-21 23:37:44.236 +05:30 [INF] HTTP POST /api/auth/login responded 200 in 846.0761 ms
+2026-07-21 23:37:49.119 +05:30 [INF] HTTP OPTIONS /api/admin/doctors responded 204 in 1.2211 ms
+2026-07-21 23:37:49.461 +05:30 [INF] HTTP GET /api/admin/doctors responded 200 in 336.2826 ms
+2026-07-21 23:37:49.526 +05:30 [INF] HTTP OPTIONS /api/admin/doctors responded 204 in 0.1764 ms
+2026-07-21 23:37:49.587 +05:30 [INF] HTTP GET /api/admin/doctors responded 200 in 54.5798 ms
+2026-07-21 23:37:49.601 +05:30 [INF] HTTP OPTIONS /api/admin/patients responded 204 in 0.1548 ms
+2026-07-21 23:37:49.638 +05:30 [WRN] The query uses a row limiting operator ('Skip'/'Take') without an 'OrderBy' operator. This may lead to unpredictable results. If the 'Distinct' operator is used after 'OrderBy', then make sure to use the 'OrderBy' operator after 'Distinct' as the ordering would otherwise get erased.
+2026-07-21 23:37:49.640 +05:30 [WRN] The query uses a row limiting operator ('Skip'/'Take') without an 'OrderBy' operator. This may lead to unpredictable results. If the 'Distinct' operator is used after 'OrderBy', then make sure to use the 'OrderBy' operator after 'Distinct' as the ordering would otherwise get erased.
+2026-07-21 23:37:49.702 +05:30 [INF] HTTP GET /api/admin/patients responded 200 in 96.5097 ms
+2026-07-21 23:37:49.726 +05:30 [INF] HTTP OPTIONS /api/admin/appointments/dashboard-summary responded 204 in 0.1958 ms
+2026-07-21 23:37:49.817 +05:30 [WRN] The query uses the 'First'/'FirstOrDefault' operator without 'OrderBy' and filter operators. This may lead to unpredictable results.
+2026-07-21 23:37:49.867 +05:30 [INF] Dashboard appointment summary fetched successfully.
+2026-07-21 23:37:49.871 +05:30 [INF] HTTP GET /api/admin/appointments/dashboard-summary responded 200 in 139.3221 ms
+2026-07-21 23:37:55.791 +05:30 [INF] HTTP OPTIONS /api/admin/patients responded 204 in 0.2874 ms
+2026-07-21 23:37:55.806 +05:30 [INF] HTTP GET /api/admin/patients responded 200 in 9.5042 ms
+2026-07-21 23:37:57.348 +05:30 [INF] HTTP OPTIONS /api/admin/doctors responded 204 in 0.1995 ms
+2026-07-21 23:37:57.377 +05:30 [INF] HTTP GET /api/admin/doctors responded 200 in 16.6832 ms
+2026-07-21 23:37:58.852 +05:30 [INF] HTTP OPTIONS /api/admin/appointments/report responded 204 in 0.2336 ms
+2026-07-21 23:37:59.074 +05:30 [INF] Appointment report fetched. FromDate: "2026-07-15", ToDate: "2026-07-21", Count: 3
+2026-07-21 23:37:59.092 +05:30 [INF] HTTP GET /api/admin/appointments/report responded 200 in 234.3734 ms
+2026-07-21 23:39:49.924 +05:30 [INF] HTTP GET /api/admin/patients responded 401 in 5.2938 ms
+2026-07-21 23:39:54.714 +05:30 [INF] HTTP GET /api/admin/patients responded 401 in 0.8258 ms
+2026-07-21 23:39:57.365 +05:30 [INF] HTTP GET /api/admin/doctors responded 401 in 0.3809 ms
+2026-07-21 23:40:00.130 +05:30 [INF] HTTP GET /api/admin/appointments/report responded 401 in 0.5582 ms
+2026-07-21 23:41:03.733 +05:30 [INF] HTTP OPTIONS /api/auth/login responded 204 in 0.1447 ms
+2026-07-21 23:41:03.909 +05:30 [INF] HTTP POST /api/auth/login responded 200 in 169.3469 ms
+2026-07-21 23:41:03.939 +05:30 [INF] HTTP OPTIONS /api/appointments/patient/upcoming responded 204 in 0.1517 ms
+2026-07-21 23:41:03.940 +05:30 [INF] HTTP OPTIONS /api/records/my-records responded 204 in 0.1111 ms
+2026-07-21 23:41:04.002 +05:30 [INF] HTTP GET /api/records/my-records responded 200 in 52.1198 ms
+2026-07-21 23:41:04.284 +05:30 [INF] Appointments fetched by patient. PatientId: 15, Count: 5
+2026-07-21 23:41:04.288 +05:30 [INF] HTTP GET /api/appointments/patient/upcoming responded 200 in 339.9345 ms
+2026-07-21 23:41:06.260 +05:30 [INF] HTTP OPTIONS /api/patients/profile responded 204 in 0.2103 ms
+2026-07-21 23:41:06.314 +05:30 [INF] HTTP GET /api/patients/profile responded 200 in 38.7573 ms
+2026-07-21 23:42:19.573 +05:30 [INF] Usage Telemetry: {"id":"c4770000-e56a-1944-7768-08dee752e5e6","created":"2026-07-21T23:37:16.3615589\u002B05:30","host":{"framework_version":"10.0.10","mass_transit_version":"8.5.10.0","operating_system_version":"Microsoft Windows NT 10.0.26200.0","time_zone_info":"(UTC\u002B05:30) Chennai, Kolkata, Mumbai, New Delhi","commit_hash":"62ab339afa3bac2e9b3fe1769d0d35d7e44778e9"},"bus":[{"created":"2026-07-21T23:37:16.3704623\u002B05:30","configured":"2026-07-21T23:37:18.4450232\u002B05:30","started":"2026-07-21T23:37:19.5238892\u002B05:30","name":"IBus","endpoints":[{"name":"appointment.events.queue","type":"RabbitMQ","prefetch_count":16,"consumer_count":1,"message_count":1},{"name":"_bus_","type":"RabbitMQ","prefetch_count":16}]}]}
+2026-07-21 23:42:49.581 +05:30 [INF] HTTP OPTIONS /api/auth/login responded 204 in 0.2685 ms
+2026-07-21 23:42:49.687 +05:30 [INF] HTTP POST /api/auth/login responded 200 in 99.9948 ms
+2026-07-21 23:42:49.700 +05:30 [INF] HTTP OPTIONS /api/records/my-records responded 204 in 0.3200 ms
+2026-07-21 23:42:49.700 +05:30 [INF] HTTP OPTIONS /api/appointments/patient/upcoming responded 204 in 0.6359 ms
+2026-07-21 23:42:49.718 +05:30 [INF] HTTP GET /api/records/my-records responded 200 in 8.2242 ms
+2026-07-21 23:42:49.718 +05:30 [INF] Appointments fetched by patient. PatientId: 15, Count: 5
+2026-07-21 23:42:49.722 +05:30 [INF] HTTP GET /api/appointments/patient/upcoming responded 200 in 7.4884 ms
+2026-07-21 23:43:01.844 +05:30 [INF] HTTP OPTIONS /api/doctors/available responded 204 in 0.3817 ms
+2026-07-21 23:43:02.356 +05:30 [INF] Cache MISS for key: doctors:available:neurologist:2026-07-23
+2026-07-21 23:43:02.570 +05:30 [INF] Cache SET for key: doctors:available:neurologist:2026-07-23 with 5 minutes TTL
+2026-07-21 23:43:02.573 +05:30 [INF] HTTP GET /api/doctors/available responded 200 in 721.5351 ms
+2026-07-21 23:43:09.830 +05:30 [INF] HTTP OPTIONS /api/doctors/available responded 204 in 0.5732 ms
+2026-07-21 23:43:09.841 +05:30 [INF] Cache MISS for key: doctors:available:cardiologist:2026-07-23
+2026-07-21 23:43:09.848 +05:30 [INF] Cache SET for key: doctors:available:cardiologist:2026-07-23 with 5 minutes TTL
+2026-07-21 23:43:09.850 +05:30 [INF] HTTP GET /api/doctors/available responded 200 in 14.7735 ms
+2026-07-21 23:43:13.500 +05:30 [INF] HTTP OPTIONS /api/appointments/available-slots responded 204 in 0.0758 ms
+2026-07-21 23:43:13.531 +05:30 [INF] Available time slots fetched. DoctorId: 3, Date: "2026-07-23", AvailableCount: 2
+2026-07-21 23:43:13.534 +05:30 [INF] HTTP GET /api/appointments/available-slots responded 200 in 28.6991 ms
+2026-07-21 23:43:17.998 +05:30 [INF] HTTP OPTIONS /api/appointments/book responded 204 in 0.0988 ms
+2026-07-21 23:43:18.321 +05:30 [INF] Doctor availability cache invalidated. DoctorId: 3, Date: "2026-07-23"
+2026-07-21 23:43:18.323 +05:30 [INF] Appointment booked successfully. AppointmentId: 1028, PatientId: 15, DoctorId: 3, ScheduledDate: "2026-07-23", TimeSlot: 9.00 AM
+2026-07-21 23:43:18.569 +05:30 [INF] AppointmentBookedEvent published successfully. AppointmentId: 1028, DoctorId: 3
+2026-07-21 23:43:18.573 +05:30 [INF] HTTP POST /api/appointments/book responded 200 in 568.0641 ms
+2026-07-21 23:43:18.616 +05:30 [INF] Received AppointmentBookedEvent. AppointmentId=1028
+2026-07-21 23:43:18.658 +05:30 [INF] Notification created for DoctorId 3 from AppointmentId 1028

@@ -64,8 +64,8 @@
                 <InputNumber class="form-control"
                              min="0"
                              max="60"
-                             placeholder="Enter experience"
-                             @bind-Value="YearsOfExperienceValue" />
+                             @bind-Value="doctorModel.YearsOfExperience" />
+
                 <ValidationMessage For="@(() => doctorModel.YearsOfExperience)" />
             </div>
 
@@ -76,7 +76,8 @@
                              max="5000"
                              step="0.01"
                              placeholder="Enter consultation fee"
-                             @bind-Value="ConsultationFeeValue" />
+                             @bind-Value="doctorModel.ConsultationFee" />
+
                 <ValidationMessage For="@(() => doctorModel.ConsultationFee)" />
             </div>
 
@@ -213,32 +214,7 @@
     "ENT",
     "Dentist"
 };
-    private int YearsOfExperienceValue
-    {
-        get => doctorModel.YearsOfExperience;
-        set
-        {
-            if (value < 0)
-                doctorModel.YearsOfExperience = 0;
-            else if (value > 60)
-                doctorModel.YearsOfExperience = 60;
-            else
-                doctorModel.YearsOfExperience = value;
-        }
-    }
+   
 
-    private decimal ConsultationFeeValue
-    {
-        get => doctorModel.ConsultationFee;
-        set
-        {
-            if (value < 0.01m)
-                doctorModel.ConsultationFee = 0.01m;
-            else if (value > 5000m)
-                doctorModel.ConsultationFee = 5000m;
-            else
-                doctorModel.ConsultationFee = value;
-        }
-    }
 
 }

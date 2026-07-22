@@ -10,6 +10,7 @@ using HealthCare.Api.Services.Interfaces;
 using HealthCare.Shared.DTOs.Appointment;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Distributed;
 using Moq;
 
 namespace HealthCare.Api.Tests;
@@ -20,6 +21,7 @@ public class AppointmentServiceTests
     private readonly Mock<IDoctorService> _doctorServiceMock;
     private readonly Mock<IMapper> _mapperMock;
     private readonly Mock<IPublishEndpoint> _publishEndpointMock;
+    private readonly Mock<IDistributedCache> _cacheMock;
 
     private readonly HealthCareDbContext _context;
     private readonly AppointmentService _service;
@@ -30,6 +32,7 @@ public class AppointmentServiceTests
         _doctorServiceMock = new Mock<IDoctorService>();
         _mapperMock = new Mock<IMapper>();
         _publishEndpointMock = new Mock<IPublishEndpoint>();
+        _cacheMock = new Mock<IDistributedCache>();
 
         var options = new DbContextOptionsBuilder<HealthCareDbContext>()
             .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
@@ -45,7 +48,8 @@ public class AppointmentServiceTests
             _doctorServiceMock.Object,
             _context,
             _mapperMock.Object,
-            _publishEndpointMock.Object
+            _publishEndpointMock.Object,
+            _cacheMock.Object
         );
     }
 

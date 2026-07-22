@@ -1,6 +1,6 @@
 ﻿using HealthCare.Api.DTOs.Appointment;
 using HealthCare.Shared.DTOs.Appointment;
-using HealthCare.Admin.Services;
+
 using System.Net.Http.Json;
 
 namespace HealthCare.Admin.Services
@@ -8,17 +8,14 @@ namespace HealthCare.Admin.Services
     public class AppointmentService
     {
         private readonly HttpClient _httpClient;
-        private readonly AuthHeaderService _authHeaderService;
 
-        public AppointmentService(HttpClient httpClient, AuthHeaderService authHeaderService)
+        public AppointmentService(HttpClient httpClient)
         {
             _httpClient = httpClient;
-            _authHeaderService = authHeaderService;
         }
 
         public async Task<List<AppointmentReportDto>> GetAppointmentReport(DateTime startDate, DateTime endDate)
         {
-            await _authHeaderService.AddAuthorizationHeaderAsync(_httpClient);
 
             string url =
                 $"api/admin/appointments/report?FromDate={startDate:yyyy-MM-dd}&ToDate={endDate:yyyy-MM-dd}";
@@ -38,7 +35,6 @@ namespace HealthCare.Admin.Services
 
         public async Task<AppointmentSummaryDto> GetAppointmentSummaryAsync()
         {
-            await _authHeaderService.AddAuthorizationHeaderAsync(_httpClient);
 
             var response = await _httpClient.GetAsync("api/admin/appointments/summary");
 
@@ -55,7 +51,6 @@ namespace HealthCare.Admin.Services
 
         public async Task<AppointmentSummaryDto> GetDashboardAppointmentSummaryAsync()
         {
-            await _authHeaderService.AddAuthorizationHeaderAsync(_httpClient);
 
             var response = await _httpClient.GetAsync("api/admin/appointments/dashboard-summary");
 

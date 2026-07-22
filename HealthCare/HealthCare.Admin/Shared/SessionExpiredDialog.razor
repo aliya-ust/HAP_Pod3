@@ -7,7 +7,7 @@
 @inject NavigationManager NavigationManager
 @inject IJSRuntime JSRuntime
 
-@if (showSessionExpiredDialog)
+@if (showDialog)
 {
     <div class="session-expired-backdrop">
         <div class="session-expired-dialog"
@@ -47,26 +47,14 @@
     </div>
 }
 
-<Router AppAssembly="@typeof(App).Assembly"
-        NotFoundPage="typeof(Pages.NotFound)">
-
-    <Found Context="routeData">
-        <RouteView RouteData="@routeData"
-                   DefaultLayout="@typeof(MainLayout)" />
-
-        <FocusOnNavigate RouteData="@routeData"
-                         Selector="h1" />
-    </Found>
-</Router>
-
 @code {
-    private bool showSessionExpiredDialog;
+    private bool showDialog;
     private bool isRedirecting;
 
     protected override void OnInitialized()
     {
         Console.WriteLine(
-            "App subscribed to session-expiration event.");
+            "SessionExpiredDialog subscribed to expiration event.");
 
         SessionExpirationService.SessionExpired +=
             HandleSessionExpiredAsync;
@@ -75,11 +63,11 @@
     private Task HandleSessionExpiredAsync()
     {
         Console.WriteLine(
-            "App received session-expiration event.");
+            "SessionExpiredDialog received expiration event.");
 
         return InvokeAsync(() =>
         {
-            showSessionExpiredDialog = true;
+            showDialog = true;
             StateHasChanged();
         });
     }
@@ -93,30 +81,22 @@
 
         isRedirecting = true;
 
-        try
-        {
-            await JSRuntime.InvokeVoidAsync(
-                "localStorage.removeItem",
-                "accesstoken");
+        await JSRuntime.InvokeVoidAsync(
+            "localStorage.removeItem",
+            "accesstoken");
 
-            await JSRuntime.InvokeVoidAsync(
-                "localStorage.removeItem",
-                "role");
+        await JSRuntime.InvokeVoidAsync(
+            "localStorage.removeItem",
+            "role");
 
-            SessionExpirationService.Reset();
+        SessionExpirationService.Reset();
 
-            showSessionExpiredDialog = false;
+        showDialog = false;
 
-            NavigationManager.NavigateTo(
-                "http://localhost:59971/login",
-                forceLoad: true,
-                replace: true);
-        }
-        catch
-        {
-            isRedirecting = false;
-            throw;
-        }
+        NavigationManager.NavigateTo(
+            "http://localhost:59971/login",
+            forceLoad: true,
+            replace: true);
     }
 
     public void Dispose()

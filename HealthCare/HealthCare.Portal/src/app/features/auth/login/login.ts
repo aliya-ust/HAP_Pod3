@@ -25,6 +25,7 @@ export class LoginComponent {
   loginForm: FormGroup;
   errorMessage = '';
   isLoading = false;
+  showPassword = false;
 
   constructor(
     private fb: FormBuilder,
@@ -42,6 +43,10 @@ export class LoginComponent {
 
     if (this.loginForm.invalid) {
       this.loginForm.markAllAsTouched();
+      return;
+    }
+
+    if (this.isLoading) {
       return;
     }
 
@@ -87,15 +92,24 @@ export class LoginComponent {
     });
   }
 
+  togglePasswordVisibility(): void {
+    this.showPassword = !this.showPassword;
+  }
+
   private redirectToBlazorAdmin(accessToken: string): void {
     const redirectUrl =
-      `${environment.blazorAdminUrl}/auth-callback?token=${encodeURIComponent(accessToken)}&role=Admin`;
+      `${environment.blazorAdminUrl}/auth-callback` +
+      `?token=${encodeURIComponent(accessToken)}` +
+      `&role=Admin`;
 
     window.location.href = redirectUrl;
   }
 
   isInvalid(controlName: string): boolean {
     const control = this.loginForm.get(controlName);
-    return !!control && control.invalid && (control.dirty || control.touched);
+
+    return !!control &&
+      control.invalid &&
+      (control.dirty || control.touched);
   }
 }

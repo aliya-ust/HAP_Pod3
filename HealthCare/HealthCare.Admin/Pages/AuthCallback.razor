@@ -1,14 +1,24 @@
 ﻿@page "/auth-callback"
+
+@using HealthCare.Admin.Services
+@using Microsoft.JSInterop
+
 @inject IJSRuntime JS
 @inject NavigationManager Navigation
+@inject SessionExpirationService SessionExpirationService
 
 <p>Redirecting...</p>
 
 @code {
+    private const string AngularLoginUrl =
+        "http://localhost:59971/login";
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (!firstRender)
+        {
             return;
+        }
 
         var currentUrl = Navigation.Uri;
         var uri = new Uri(currentUrl);
@@ -16,35 +26,65 @@
         var token = GetQueryParameter(uri.Query, "token");
         var role = GetQueryParameter(uri.Query, "role");
 
-        if (!string.IsNullOrWhiteSpace(token))
+        if (string.IsNullOrWhiteSpace(token))
         {
-            await JS.InvokeVoidAsync("localStorage.setItem", "accesstoken", token);
+            Navigation.NavigateTo(
+                AngularLoginUrl,
+                forceLoad: true,
+                replace: true);
+
+            return;
         }
+
+        await JS.InvokeVoidAsync(
+            "localStorage.setItem",
+            "accesstoken",
+            token);
 
         if (!string.IsNullOrWhiteSpace(role))
         {
-            await JS.InvokeVoidAsync("localStorage.setItem", "role", role);
+            await JS.InvokeVoidAsync(
+                "localStorage.setItem",
+                "role",
+                role);
         }
 
-        Navigation.NavigateTo("/Home", true);
+        // Reset session-expiration handling for the new login.
+        SessionExpirationService.Reset();
+
+        Navigation.NavigateTo(
+            "/Home",
+            forceLoad: true,
+            replace: true);
     }
 
-    private string GetQueryParameter(string queryString, string key)
+    private static string GetQueryParameter(
+        string queryString,
+        string key)
     {
         if (string.IsNullOrWhiteSpace(queryString))
+        {
             return string.Empty;
+        }
 
         if (queryString.StartsWith("?"))
-            queryString = queryString.Substring(1);
+        {
+            queryString = queryString[1..];
+        }
 
-        var pairs = queryString.Split('&', StringSplitOptions.RemoveEmptyEntries);
+        var pairs = queryString.Split(
+            '&',
+            StringSplitOptions.RemoveEmptyEntries);
 
         foreach (var pair in pairs)
         {
             var parts = pair.Split('=', 2);
 
             if (parts.Length == 2 &&
-                string.Equals(parts[0], key, StringComparison.OrdinalIgnoreCase))
+                string.Equals(
+                    parts[0],
+                    key,
+                    StringComparison.OrdinalIgnoreCase))
             {
                 return Uri.UnescapeDataString(parts[1]);
             }
@@ -52,4 +92,4 @@
 
         return string.Empty;
     }
-} 
+}

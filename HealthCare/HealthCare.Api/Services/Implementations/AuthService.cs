@@ -94,29 +94,7 @@ namespace HealthCare.Api.Services.Implementations
 
             await _context.SaveChangesAsync();
 
-            // Invalidate available doctor caches
-            await InvalidateDoctorAvailabilityCache(dto.Specialisation);
-
-
-        }
-        private async Task InvalidateDoctorAvailabilityCache(string specialisation)
-        {
-            var safeSpecialisation = specialisation
-                .Trim()
-                .ToLower()
-                .Replace(" ", "-");
-
-            for (int i = 0; i < 30; i++)
-            {
-                var date = DateOnly.FromDateTime(DateTime.Today.AddDays(i));
-
-                var cacheKey =
-                    $"doctors:available:{safeSpecialisation}:{date:yyyy-MM-dd}";
-
-                await _cache.RemoveAsync(cacheKey);
-            }
-        }
-
+             }
         public async Task<AuthResponseDto> LoginAsync(LoginDto dto)
         {
             // Find user

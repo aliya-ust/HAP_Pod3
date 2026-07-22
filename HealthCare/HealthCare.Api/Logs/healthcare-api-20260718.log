@@ -1,0 +1,32 @@
+2026-07-18 13:58:07.315 +05:30 [INF] Configured endpoint appointment.events.queue, Consumer: HealthCare.Api.Messaging.AppointmentBookedConsumer
+2026-07-18 13:58:10.044 +05:30 [INF] Now listening on: https://localhost:7234
+2026-07-18 13:58:10.143 +05:30 [INF] Now listening on: http://localhost:5225
+2026-07-18 13:58:10.247 +05:30 [INF] Application started. Press Ctrl+C to shut down.
+2026-07-18 13:58:10.308 +05:30 [INF] Hosting environment: Development
+2026-07-18 13:58:10.336 +05:30 [INF] Content root path: C:\Users\310508\source\repos\UST-Live-01\HealthCare\HealthCare.Api
+2026-07-18 13:58:10.650 +05:30 [INF] Bus started: "rabbitmq://localhost/"
+2026-07-18 14:03:10.724 +05:30 [INF] Usage Telemetry: {"id":"6c760000-e56a-1944-0d77-08dee4a67e8c","created":"2026-07-18T13:58:07.2002406\u002B05:30","host":{"framework_version":"10.0.10","mass_transit_version":"8.5.10.0","operating_system_version":"Microsoft Windows NT 10.0.26200.0","time_zone_info":"(UTC\u002B05:30) Chennai, Kolkata, Mumbai, New Delhi","commit_hash":"62ab339afa3bac2e9b3fe1769d0d35d7e44778e9"},"bus":[{"created":"2026-07-18T13:58:07.2177254\u002B05:30","configured":"2026-07-18T13:58:09.2062906\u002B05:30","started":"2026-07-18T13:58:10.6449913\u002B05:30","name":"IBus","endpoints":[{"name":"appointment.events.queue","type":"RabbitMQ","prefetch_count":16,"consumer_count":1,"message_count":1},{"name":"_bus_","type":"RabbitMQ","prefetch_count":16}]}]}
+2026-07-18 22:15:31.094 +05:30 [INF] Retrying "00:00:05.7277448": ReceiveTransport faulted: guest@localhost:5672/
+MassTransit.RabbitMqConnectionException: ReceiveTransport faulted: guest@localhost:5672/
+ ---> RabbitMQ.Client.Exceptions.OperationInterruptedException: The AMQP operation was interrupted: AMQP close-reason, initiated by Peer, code=491, text='Connection is already closed: AMQP close-reason, initiated by Library, code=541, text='Unable to read data from the transport connection: An existing connection was forcibly closed by the remote host..', classId=0, methodId=0, exception=System.IO.IOException: Unable to read data from the transport connection: An existing connection was forcibly closed by the remote host..
+ ---> System.Net.Sockets.SocketException (10054): An existing connection was forcibly closed by the remote host.
+   --- End of inner exception stack trace ---
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.System.Threading.Tasks.Sources.IValueTaskSource<System.Int32>.GetResult(Int16 token)
+   at System.IO.Pipelines.StreamPipeReader.<ReadInternalAsync>g__Core|39_0(StreamPipeReader reader, Nullable`1 minimumSize, CancellationTokenSource tokenSource, CancellationToken cancellationToken)
+   at RabbitMQ.Client.Impl.InboundFrame.ReadFromPipeAsync(PipeReader reader, UInt32 maxInboundMessageBodySize, InboundFrame frame, CancellationToken mainLoopCancellationToken)
+   at RabbitMQ.Client.Framing.Connection.ReceiveLoopAsync(CancellationToken mainLoopCancellationToken)
+   at RabbitMQ.Client.Framing.Connection.MainLoop()', classId=0, methodId=0
+   at MassTransit.RabbitMqTransport.ConnectionContextFactory.CreateSharedConnection(Task`1 contextTask, CancellationToken cancellationToken) in /_/src/Transports/MassTransit.RabbitMqTransport/RabbitMqTransport/ConnectionContextFactory.cs:line 79
+   at MassTransit.Agents.PipeContextSupervisor`1.Send(IPipe`1 pipe, CancellationToken cancellationToken) in /_/src/MassTransit/Agents/PipeContextSupervisor.cs:line 51
+   at MassTransit.Agents.PipeContextSupervisor`1.Send(IPipe`1 pipe, CancellationToken cancellationToken) in /_/src/MassTransit/Agents/PipeContextSupervisor.cs:line 61
+   at MassTransit.Agents.PipeContextSupervisor`1.Send(IPipe`1 pipe, CancellationToken cancellationToken) in /_/src/MassTransit/Agents/PipeContextSupervisor.cs:line 67
+   at MassTransit.SupervisorExtensions.<>c__DisplayClass5_0`2.<<CreateAgent>g__HandleSupervisorTask|0>d.MoveNext() in /_/src/MassTransit/SupervisorExtensions.cs:line 139
+--- End of stack trace from previous location ---
+   at MassTransit.RabbitMqTransport.ChannelContextFactory.CreateSharedChannel(Task`1 contextTask, CancellationToken cancellationToken) in /_/src/Transports/MassTransit.RabbitMqTransport/RabbitMqTransport/ChannelContextFactory.cs:line 79
+   at MassTransit.Agents.PipeContextSupervisor`1.Send(IPipe`1 pipe, CancellationToken cancellationToken) in /_/src/MassTransit/Agents/PipeContextSupervisor.cs:line 51
+   at MassTransit.Agents.PipeContextSupervisor`1.Send(IPipe`1 pipe, CancellationToken cancellationToken) in /_/src/MassTransit/Agents/PipeContextSupervisor.cs:line 61
+   at MassTransit.Agents.PipeContextSupervisor`1.Send(IPipe`1 pipe, CancellationToken cancellationToken) in /_/src/MassTransit/Agents/PipeContextSupervisor.cs:line 67
+   at MassTransit.Transports.ReceiveTransport`1.ReceiveTransportAgent.RunTransport() in /_/src/MassTransit/Transports/ReceiveTransport.cs:line 203
+   --- End of inner exception stack trace ---
+   at MassTransit.Transports.ReceiveTransport`1.ReceiveTransportAgent.RunTransport() in /_/src/MassTransit/Transports/ReceiveTransport.cs:line 216
+   at MassTransit.Transports.ReceiveTransport`1.ReceiveTransportAgent.Run() in /_/src/MassTransit/Transports/ReceiveTransport.cs:line 145

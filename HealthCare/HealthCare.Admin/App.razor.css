@@ -1,0 +1,109 @@
+.session-expired-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 2147483647;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(15, 8, 25, 0.62);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+}
+
+.session-expired-dialog {
+    width: 100%;
+    max-width: 420px;
+    padding: 32px;
+    border: 1px solid rgba(142, 45, 226, 0.2);
+    border-radius: 20px;
+    background: #ffffff;
+    box-shadow: 0 24px 70px rgba(35, 12, 58, 0.35);
+    text-align: center;
+    animation: dialog-enter 180ms ease-out;
+}
+
+.session-expired-icon {
+    width: 64px;
+    height: 64px;
+    display: grid;
+    place-items: center;
+    margin: 0 auto 20px;
+    border-radius: 50%;
+    color: #ffffff;
+    background: linear-gradient( 135deg, #6a11cb, #8e2de2 );
+    box-shadow: 0 12px 28px rgba(106, 17, 203, 0.28);
+}
+
+    .session-expired-icon i {
+        font-size: 28px;
+    }
+
+.session-expired-dialog h2 {
+    margin: 0;
+    color: #2d1b3d;
+    font-size: 24px;
+    font-weight: 750;
+}
+
+.session-expired-dialog p {
+    margin: 12px 0 25px;
+    color: #6b7280;
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+.session-expired-button {
+    min-width: 120px;
+    min-height: 45px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    border: 0;
+    border-radius: 11px;
+    color: #ffffff;
+    background: linear-gradient( 135deg, #6a11cb, #8e2de2 );
+    box-shadow: 0 10px 22px rgba(106, 17, 203, 0.24);
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 150ms ease, box-shadow 150ms ease;
+}
+
+    .session-expired-button:hover:not(:disabled) {
+        transform: translateY(-1px);
+        box-shadow: 0 14px 28px rgba(106, 17, 203, 0.32);
+    }
+
+    .session-expired-button:disabled {
+        cursor: not-allowed;
+        opacity: 0.75;
+    }
+
+.session-expired-spinner {
+    width: 17px;
+    height: 17px;
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    border-top-color: #ffffff;
+    border-radius: 50%;
+    animation: spinner-rotate 700ms linear infinite;
+}
+
+@keyframes dialog-enter {
+    from {
+        opacity: 0;
+        transform: translateY(8px) scale(0.97);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes spinner-rotate {
+    to {
+        transform: rotate(360deg);
+    }
+}

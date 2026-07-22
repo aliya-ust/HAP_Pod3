@@ -1,0 +1,202 @@
+2026-07-20 09:05:57.865 +05:30 [INF] Retrying "00:00:07.5056276": ReceiveTransport faulted: guest@localhost:5672/
+MassTransit.RabbitMqConnectionException: ReceiveTransport faulted: guest@localhost:5672/
+ ---> RabbitMQ.Client.Exceptions.OperationInterruptedException: The AMQP operation was interrupted: AMQP close-reason, initiated by Peer, code=491, text='Connection is already closed: AMQP close-reason, initiated by Library, code=541, text='Unable to read data from the transport connection: An existing connection was forcibly closed by the remote host..', classId=0, methodId=0, exception=System.IO.IOException: Unable to read data from the transport connection: An existing connection was forcibly closed by the remote host..
+ ---> System.Net.Sockets.SocketException (10054): An existing connection was forcibly closed by the remote host.
+   --- End of inner exception stack trace ---
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.System.Threading.Tasks.Sources.IValueTaskSource<System.Int32>.GetResult(Int16 token)
+   at System.IO.Pipelines.StreamPipeReader.<ReadInternalAsync>g__Core|39_0(StreamPipeReader reader, Nullable`1 minimumSize, CancellationTokenSource tokenSource, CancellationToken cancellationToken)
+   at RabbitMQ.Client.Impl.InboundFrame.ReadFromPipeAsync(PipeReader reader, UInt32 maxInboundMessageBodySize, InboundFrame frame, CancellationToken mainLoopCancellationToken)
+   at RabbitMQ.Client.Framing.Connection.ReceiveLoopAsync(CancellationToken mainLoopCancellationToken)
+   at RabbitMQ.Client.Framing.Connection.MainLoop()', classId=0, methodId=0
+   at MassTransit.RabbitMqTransport.ConnectionContextFactory.CreateSharedConnection(Task`1 contextTask, CancellationToken cancellationToken) in /_/src/Transports/MassTransit.RabbitMqTransport/RabbitMqTransport/ConnectionContextFactory.cs:line 79
+   at MassTransit.Agents.PipeContextSupervisor`1.Send(IPipe`1 pipe, CancellationToken cancellationToken) in /_/src/MassTransit/Agents/PipeContextSupervisor.cs:line 51
+   at MassTransit.Agents.PipeContextSupervisor`1.Send(IPipe`1 pipe, CancellationToken cancellationToken) in /_/src/MassTransit/Agents/PipeContextSupervisor.cs:line 61
+   at MassTransit.Agents.PipeContextSupervisor`1.Send(IPipe`1 pipe, CancellationToken cancellationToken) in /_/src/MassTransit/Agents/PipeContextSupervisor.cs:line 67
+   at MassTransit.SupervisorExtensions.<>c__DisplayClass5_0`2.<<CreateAgent>g__HandleSupervisorTask|0>d.MoveNext() in /_/src/MassTransit/SupervisorExtensions.cs:line 139
+--- End of stack trace from previous location ---
+   at MassTransit.RabbitMqTransport.ChannelContextFactory.CreateSharedChannel(Task`1 contextTask, CancellationToken cancellationToken) in /_/src/Transports/MassTransit.RabbitMqTransport/RabbitMqTransport/ChannelContextFactory.cs:line 79
+   at MassTransit.Agents.PipeContextSupervisor`1.Send(IPipe`1 pipe, CancellationToken cancellationToken) in /_/src/MassTransit/Agents/PipeContextSupervisor.cs:line 51
+   at MassTransit.Agents.PipeContextSupervisor`1.Send(IPipe`1 pipe, CancellationToken cancellationToken) in /_/src/MassTransit/Agents/PipeContextSupervisor.cs:line 61
+   at MassTransit.Agents.PipeContextSupervisor`1.Send(IPipe`1 pipe, CancellationToken cancellationToken) in /_/src/MassTransit/Agents/PipeContextSupervisor.cs:line 67
+   at MassTransit.Transports.ReceiveTransport`1.ReceiveTransportAgent.RunTransport() in /_/src/MassTransit/Transports/ReceiveTransport.cs:line 203
+   --- End of inner exception stack trace ---
+   at MassTransit.Transports.ReceiveTransport`1.ReceiveTransportAgent.RunTransport() in /_/src/MassTransit/Transports/ReceiveTransport.cs:line 216
+   at MassTransit.Transports.ReceiveTransport`1.ReceiveTransportAgent.Run() in /_/src/MassTransit/Transports/ReceiveTransport.cs:line 145
+2026-07-20 09:27:34.740 +05:30 [INF] HTTP OPTIONS /api/auth/login responded 204 in 125.5227 ms
+2026-07-20 09:27:35.102 +05:30 [WRN] You do not have a valid license key for the Lucky Penny software AutoMapper. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.
+2026-07-20 09:27:36.044 +05:30 [ERR] Exception occurred while processing POST /api/auth/login
+System.UnauthorizedAccessException: Invalid email or password
+   at HealthCare.Api.Services.Implementations.AuthService.LoginAsync(LoginDto dto) in C:\Users\310508\source\repos\UST-Live-01\HealthCare\HealthCare.Api\Services\Implementations\AuthService.cs:line 125
+   at HealthCare.Api.Controllers.AuthController.Login(LoginDto dto) in C:\Users\310508\source\repos\UST-Live-01\HealthCare\HealthCare.Api\Controllers\AuthController.cs:line 43
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddlewareImpl.<Invoke>g__Awaited|10_0(ExceptionHandlerMiddlewareImpl middleware, HttpContext context, Task task)
+2026-07-20 09:27:36.084 +05:30 [INF] HTTP POST /api/auth/login responded 401 in 1297.5822 ms
+2026-07-20 09:27:41.080 +05:30 [INF] HTTP OPTIONS /api/auth/login responded 204 in 1.3819 ms
+2026-07-20 09:27:41.151 +05:30 [ERR] Exception occurred while processing POST /api/auth/login
+System.UnauthorizedAccessException: Invalid email or password
+   at HealthCare.Api.Services.Implementations.AuthService.LoginAsync(LoginDto dto) in C:\Users\310508\source\repos\UST-Live-01\HealthCare\HealthCare.Api\Services\Implementations\AuthService.cs:line 125
+   at HealthCare.Api.Controllers.AuthController.Login(LoginDto dto) in C:\Users\310508\source\repos\UST-Live-01\HealthCare\HealthCare.Api\Controllers\AuthController.cs:line 43
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddlewareImpl.<Invoke>g__Awaited|10_0(ExceptionHandlerMiddlewareImpl middleware, HttpContext context, Task task)
+2026-07-20 09:27:41.165 +05:30 [INF] HTTP POST /api/auth/login responded 401 in 79.8985 ms
+2026-07-20 09:27:54.564 +05:30 [INF] HTTP OPTIONS /api/auth/login responded 204 in 0.1534 ms
+2026-07-20 09:27:55.022 +05:30 [INF] HTTP POST /api/auth/login responded 200 in 451.9486 ms
+2026-07-20 09:27:55.116 +05:30 [INF] HTTP OPTIONS /api/records/my-records responded 204 in 0.0896 ms
+2026-07-20 09:27:55.116 +05:30 [INF] HTTP OPTIONS /api/appointments/patient/upcoming responded 204 in 0.1581 ms
+2026-07-20 09:27:55.325 +05:30 [INF] HTTP GET /api/records/my-records responded 200 in 203.5429 ms
+2026-07-20 09:27:55.521 +05:30 [INF] Appointments fetched by patient. PatientId: 15, Count: 6
+2026-07-20 09:27:55.531 +05:30 [INF] HTTP GET /api/appointments/patient/upcoming responded 200 in 406.9686 ms
+2026-07-20 09:28:10.046 +05:30 [INF] HTTP OPTIONS /api/doctors/available responded 204 in 0.2755 ms
+2026-07-20 09:28:10.456 +05:30 [INF] Cache MISS for key: doctors:available:cardiologist:2026-07-21
+2026-07-20 09:28:10.645 +05:30 [INF] Cache SET for key: doctors:available:cardiologist:2026-07-21 with 5 minutes TTL
+2026-07-20 09:28:10.649 +05:30 [INF] HTTP GET /api/doctors/available responded 200 in 596.7785 ms
+2026-07-20 09:28:12.208 +05:30 [INF] HTTP OPTIONS /api/appointments/available-slots responded 204 in 0.1294 ms
+2026-07-20 09:28:12.253 +05:30 [INF] Available time slots fetched. DoctorId: 3, Date: "2026-07-21", AvailableCount: 2
+2026-07-20 09:28:12.256 +05:30 [INF] HTTP GET /api/appointments/available-slots responded 200 in 40.8223 ms
+2026-07-20 09:37:23.233 +05:30 [INF] HTTP OPTIONS /api/auth/login responded 204 in 0.4844 ms
+2026-07-20 09:37:23.584 +05:30 [ERR] Exception occurred while processing POST /api/auth/login
+System.UnauthorizedAccessException: Invalid email or password
+   at HealthCare.Api.Services.Implementations.AuthService.LoginAsync(LoginDto dto) in C:\Users\310508\source\repos\UST-Live-01\HealthCare\HealthCare.Api\Services\Implementations\AuthService.cs:line 125
+   at HealthCare.Api.Controllers.AuthController.Login(LoginDto dto) in C:\Users\310508\source\repos\UST-Live-01\HealthCare\HealthCare.Api\Controllers\AuthController.cs:line 43
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddlewareImpl.<Invoke>g__Awaited|10_0(ExceptionHandlerMiddlewareImpl middleware, HttpContext context, Task task)
+2026-07-20 09:37:23.594 +05:30 [INF] HTTP POST /api/auth/login responded 401 in 354.2166 ms
+2026-07-20 09:37:57.301 +05:30 [INF] HTTP OPTIONS /api/auth/login responded 204 in 0.2248 ms
+2026-07-20 09:37:57.333 +05:30 [ERR] Exception occurred while processing POST /api/auth/login
+System.UnauthorizedAccessException: Invalid email or password
+   at HealthCare.Api.Services.Implementations.AuthService.LoginAsync(LoginDto dto) in C:\Users\310508\source\repos\UST-Live-01\HealthCare\HealthCare.Api\Services\Implementations\AuthService.cs:line 125
+   at HealthCare.Api.Controllers.AuthController.Login(LoginDto dto) in C:\Users\310508\source\repos\UST-Live-01\HealthCare\HealthCare.Api\Controllers\AuthController.cs:line 43
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddlewareImpl.<Invoke>g__Awaited|10_0(ExceptionHandlerMiddlewareImpl middleware, HttpContext context, Task task)
+2026-07-20 09:37:57.353 +05:30 [INF] HTTP POST /api/auth/login responded 401 in 45.5917 ms
+2026-07-20 09:38:07.604 +05:30 [INF] HTTP OPTIONS /api/auth/login responded 204 in 0.2147 ms
+2026-07-20 09:38:07.615 +05:30 [ERR] Exception occurred while processing POST /api/auth/login
+System.UnauthorizedAccessException: Invalid email or password
+   at HealthCare.Api.Services.Implementations.AuthService.LoginAsync(LoginDto dto) in C:\Users\310508\source\repos\UST-Live-01\HealthCare\HealthCare.Api\Services\Implementations\AuthService.cs:line 125
+   at HealthCare.Api.Controllers.AuthController.Login(LoginDto dto) in C:\Users\310508\source\repos\UST-Live-01\HealthCare\HealthCare.Api\Controllers\AuthController.cs:line 43
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddlewareImpl.<Invoke>g__Awaited|10_0(ExceptionHandlerMiddlewareImpl middleware, HttpContext context, Task task)
+2026-07-20 09:38:07.623 +05:30 [INF] HTTP POST /api/auth/login responded 401 in 13.3627 ms
+2026-07-20 11:21:17.820 +05:30 [INF] HTTP OPTIONS /api/auth/login responded 204 in 7.7127 ms
+2026-07-20 11:21:18.522 +05:30 [ERR] Exception occurred while processing POST /api/auth/login
+System.UnauthorizedAccessException: Invalid email or password
+   at HealthCare.Api.Services.Implementations.AuthService.LoginAsync(LoginDto dto) in C:\Users\310508\source\repos\UST-Live-01\HealthCare\HealthCare.Api\Services\Implementations\AuthService.cs:line 129
+   at HealthCare.Api.Controllers.AuthController.Login(LoginDto dto) in C:\Users\310508\source\repos\UST-Live-01\HealthCare\HealthCare.Api\Controllers\AuthController.cs:line 43
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddlewareImpl.<Invoke>g__Awaited|10_0(ExceptionHandlerMiddlewareImpl middleware, HttpContext context, Task task)
+2026-07-20 11:21:18.532 +05:30 [INF] HTTP POST /api/auth/login responded 401 in 691.0685 ms
+2026-07-20 11:21:45.744 +05:30 [INF] HTTP OPTIONS /api/auth/login responded 204 in 0.1931 ms
+2026-07-20 11:21:45.896 +05:30 [INF] HTTP POST /api/auth/login responded 200 in 146.5103 ms
+2026-07-20 11:21:45.931 +05:30 [INF] HTTP OPTIONS /api/records/my-records responded 204 in 0.1904 ms
+2026-07-20 11:21:45.931 +05:30 [INF] HTTP OPTIONS /api/appointments/patient/upcoming responded 204 in 0.1904 ms
+2026-07-20 11:21:45.973 +05:30 [INF] HTTP GET /api/records/my-records responded 200 in 34.4649 ms
+2026-07-20 11:21:46.133 +05:30 [INF] Appointments fetched by patient. PatientId: 15, Count: 6
+2026-07-20 11:21:46.136 +05:30 [INF] HTTP GET /api/appointments/patient/upcoming responded 200 in 196.8753 ms
+2026-07-20 11:21:48.163 +05:30 [INF] HTTP OPTIONS /api/patients/profile responded 204 in 6.0478 ms
+2026-07-20 11:21:48.269 +05:30 [INF] HTTP GET /api/patients/profile responded 200 in 100.2741 ms
+2026-07-20 11:21:57.875 +05:30 [INF] HTTP OPTIONS /api/doctors/available responded 204 in 0.7259 ms
+2026-07-20 11:21:57.957 +05:30 [INF] Cache MISS for key: doctors:available:cardiologist:2026-07-21
+2026-07-20 11:21:57.999 +05:30 [INF] Cache SET for key: doctors:available:cardiologist:2026-07-21 with 5 minutes TTL
+2026-07-20 11:21:58.001 +05:30 [INF] HTTP GET /api/doctors/available responded 200 in 105.3992 ms
+2026-07-20 11:21:59.865 +05:30 [INF] HTTP OPTIONS /api/appointments/available-slots responded 204 in 0.2095 ms
+2026-07-20 11:21:59.886 +05:30 [INF] Available time slots fetched. DoctorId: 3, Date: "2026-07-21", AvailableCount: 2
+2026-07-20 11:21:59.888 +05:30 [INF] HTTP GET /api/appointments/available-slots responded 200 in 17.3400 ms
+2026-07-20 11:44:08.972 +05:30 [INF] HTTP OPTIONS /api/doctors/available responded 204 in 1.3545 ms
+2026-07-20 11:44:09.010 +05:30 [INF] HTTP GET /api/doctors/available responded 401 in 30.3978 ms
+2026-07-20 11:44:30.983 +05:30 [INF] HTTP OPTIONS /api/records/my-records responded 204 in 0.0326 ms
+2026-07-20 11:44:30.983 +05:30 [INF] HTTP OPTIONS /api/appointments/patient/upcoming responded 204 in 0.1617 ms
+2026-07-20 11:44:30.997 +05:30 [INF] HTTP GET /api/records/my-records responded 401 in 1.6780 ms
+2026-07-20 11:44:30.999 +05:30 [INF] HTTP GET /api/appointments/patient/upcoming responded 401 in 0.8193 ms
+2026-07-20 11:44:35.030 +05:30 [INF] HTTP OPTIONS /api/patients/profile responded 204 in 0.0980 ms
+2026-07-20 11:44:35.036 +05:30 [INF] HTTP GET /api/patients/profile responded 401 in 0.9624 ms
+2026-07-20 14:25:48.400 +05:30 [INF] HTTP OPTIONS /api/auth/login responded 204 in 4.4271 ms
+2026-07-20 14:25:49.446 +05:30 [INF] HTTP POST /api/auth/login responded 200 in 1013.7548 ms
+2026-07-20 14:25:49.859 +05:30 [INF] HTTP OPTIONS /api/doctors/dashboard-summary responded 204 in 0.1017 ms
+2026-07-20 14:25:50.018 +05:30 [INF] HTTP GET /api/doctors/dashboard-summary responded 200 in 152.4138 ms
+2026-07-20 14:25:52.387 +05:30 [INF] HTTP OPTIONS /api/doctors/profile responded 204 in 0.2931 ms
+2026-07-20 14:25:52.448 +05:30 [INF] HTTP GET /api/doctors/profile responded 200 in 53.0561 ms
+2026-07-20 14:26:32.673 +05:30 [INF] HTTP OPTIONS /api/doctors/leaves responded 204 in 0.1309 ms
+2026-07-20 14:26:33.064 +05:30 [INF] HTTP POST /api/doctors/leaves responded 200 in 383.8576 ms
+2026-07-20 14:30:21.577 +05:30 [INF] HTTP OPTIONS /api/auth/login responded 204 in 0.1775 ms
+2026-07-20 14:30:21.915 +05:30 [INF] HTTP POST /api/auth/login responded 200 in 330.3879 ms
+2026-07-20 14:30:21.929 +05:30 [INF] HTTP OPTIONS /api/appointments/patient/upcoming responded 204 in 0.1178 ms
+2026-07-20 14:30:21.931 +05:30 [INF] HTTP OPTIONS /api/records/my-records responded 204 in 0.1023 ms
+2026-07-20 14:30:21.952 +05:30 [INF] Appointments fetched by patient. PatientId: 15, Count: 6
+2026-07-20 14:30:21.955 +05:30 [INF] HTTP GET /api/appointments/patient/upcoming responded 200 in 21.2859 ms
+2026-07-20 14:30:22.264 +05:30 [INF] HTTP GET /api/records/my-records responded 200 in 328.5945 ms
+2026-07-20 14:30:32.169 +05:30 [INF] HTTP OPTIONS /api/doctors/available responded 204 in 0.0948 ms
+2026-07-20 14:30:32.199 +05:30 [INF] Cache MISS for key: doctors:available:orthopedic:2026-07-21
+2026-07-20 14:30:32.225 +05:30 [INF] Cache SET for key: doctors:available:orthopedic:2026-07-21 with 5 minutes TTL
+2026-07-20 14:30:32.226 +05:30 [INF] HTTP GET /api/doctors/available responded 200 in 51.4495 ms

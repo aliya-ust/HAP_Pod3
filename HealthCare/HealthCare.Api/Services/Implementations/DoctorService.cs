@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using Serilog;
 using System.Text.Json;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+
 
 namespace HealthCare.Api.Services.Implementations
 {
@@ -163,6 +163,7 @@ namespace HealthCare.Api.Services.Implementations
 
             await _repository.UpdateAsync(doctor);
             await _context.SaveChangesAsync();
+            await InvalidateDoctorCache(doctor.Specialisation);
         }
 
         public async Task DeleteAsync(int id)
@@ -198,6 +199,8 @@ namespace HealthCare.Api.Services.Implementations
         {
             await _repository.CreateSlots(id, timeslots);
             await _context.SaveChangesAsync();
+            await InvalidateDoctorCache(id);
+ 
         }
 
 
@@ -256,6 +259,9 @@ namespace HealthCare.Api.Services.Implementations
             {
                 await _repository.CreateLeaves(id, leavesToCreate);
                 await _context.SaveChangesAsync();
+
+                await InvalidateDoctorCache(id);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
+
             }
 
             return result;
@@ -311,7 +317,49 @@ namespace HealthCare.Api.Services.Implementations
             return $"doctors:available:{safeSpecialisation}:{date:yyyy-MM-dd}";
         }
 
-       
+        private async Task InvalidateDoctorCache(string specialisation)
+        {
+            if (string.IsNullOrWhiteSpace(specialisation))
+                return;
+
+            var safeSpecialisation = specialisation
+                .Trim()
+                .ToLower()
+                .Replace(" ", "-");
+
+            for (int i = 0; i < 30; i++)
+            {
+                var date = DateOnly.FromDateTime(DateTime.Today.AddDays(i));
+
+                var cacheKey = $"doctors:available:{safeSpecialisation}:{date:yyyy-MM-dd}";
+
+                await _cache.RemoveAsync(cacheKey);
+            }
+
+            Log.Information(
+                "Doctor availability cache invalidated for Specialisation: {Specialisation}",
+                specialisation
+            );
+        }
+
+        private async Task InvalidateDoctorCache(int doctorId)
+        {
+            var doctor = await _repository.GetByIdAsync(doctorId);
+
+            if (doctor is null)
+            {
+                Log.Warning(
+                    "Doctor cache invalidation skipped. Doctor not found. DoctorId: {DoctorId}",
+                    doctorId
+                );
+
+                return;
+            }
+
+            await InvalidateDoctorCache(doctor.Specialisation);
+        }
+
+
         public async Task<DoctorSummaryDto> GetSummaryAsync()
         {
             return await _repository.GetSummaryAsync();
