@@ -119,19 +119,19 @@ builder.Services.AddScoped<IHealthRecordService, HealthRecordService>();
 builder.Services.AddHostedService<HeartbeatService>();
 builder.Services.AddHostedService<NotificationCleanupService>();
 
-// Cache (Redis)
+// Cache (Redis / Garnet)
 var redisConnection = builder.Configuration.GetValue<string>("Redis:ConnectionString");
-if (builder.Environment.IsDevelopment())
+if (!string.IsNullOrEmpty(redisConnection))
+{
+    builder.Services.AddStackExchangeRedisCache(options =>
+        options.Configuration = redisConnection);
+}
+else
 {
     builder.Services.AddSingleton<GarnetHostedService>();
     builder.Services.AddHostedService(sp => sp.GetRequiredService<GarnetHostedService>());
     builder.Services.AddStackExchangeRedisCache(options =>
-        options.Configuration = redisConnection ?? "localhost:3278");
-}
-else if (!string.IsNullOrEmpty(redisConnection))
-{
-    builder.Services.AddStackExchangeRedisCache(options =>
-        options.Configuration = redisConnection);
+        options.Configuration = "localhost:3278");
 }
 
 // MassTransit + RabbitMQ
