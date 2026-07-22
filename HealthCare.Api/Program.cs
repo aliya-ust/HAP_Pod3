@@ -35,9 +35,10 @@ builder.Services.AddCors(p =>
 {
     p.AddPolicy("CorsPolicy", cfg =>
     {
-        cfg.WithOrigins("https://localhost:7166", "http://localhost:4200")
-
-        .AllowAnyHeader().AllowAnyMethod();
+        var origins = builder.Configuration.GetValue<string>("Cors:AllowedOrigins")
+            ?? "https://localhost:7166,http://localhost:4200";
+        cfg.WithOrigins(origins.Split(',', StringSplitOptions.TrimEntries))
+           .AllowAnyHeader().AllowAnyMethod();
     });
 });
 
@@ -46,7 +47,9 @@ builder.Services.AddControllers();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
 builder.Services.AddDbContext<HealthCareDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("HealthCareDbConnection"))
+    options.UseSqlServer(
+        builder.Configuration.GetConnectionString("Default")
+        ?? builder.Configuration.GetConnectionString("HealthCareDbConnection"))
 );
 
 builder.Services.AddIdentity<User, IdentityRole>(options =>
@@ -116,29 +119,41 @@ builder.Services.AddScoped<IHealthRecordService, HealthRecordService>();
 builder.Services.AddHostedService<HeartbeatService>();
 builder.Services.AddHostedService<NotificationCleanupService>();
 
-// Garnet (embedded cache)
-builder.Services.AddSingleton<GarnetHostedService>();
-builder.Services.AddHostedService(sp => sp.GetRequiredService<GarnetHostedService>());
-builder.Services.AddStackExchangeRedisCache(options =>
-    options.Configuration = "localhost:3278");
+// Cache (Redis)
+var redisConnection = builder.Configuration.GetValue<string>("Redis:ConnectionString");
+if (builder.Environment.IsDevelopment())
+{
+    builder.Services.AddSingleton<GarnetHostedService>();
+    builder.Services.AddHostedService(sp => sp.GetRequiredService<GarnetHostedService>());
+    builder.Services.AddStackExchangeRedisCache(options =>
+        options.Configuration = redisConnection ?? "localhost:3278");
+}
+else if (!string.IsNullOrEmpty(redisConnection))
+{
+    builder.Services.AddStackExchangeRedisCache(options =>
+        options.Configuration = redisConnection);
+}
 
 // MassTransit + RabbitMQ
-builder.Services.AddMassTransit(x =>
+var rabbitHost = builder.Configuration.GetValue<string>("RabbitMq:Host");
+if (!string.IsNullOrEmpty(rabbitHost))
 {
-    x.AddConsumer<AppointmentBookedConsumer>();
-
-    x.UsingRabbitMq((context, cfg) =>
+    builder.Services.AddMassTransit(x =>
     {
-        var rabbit = builder.Configuration.GetSection("RabbitMQ");
-        cfg.Host(rabbit["Host"], h =>
-        {
-            h.Username(rabbit["Username"]!);
-            h.Password(rabbit["Password"]!);
-        });
+        x.AddConsumer<AppointmentBookedConsumer>();
 
-        cfg.ConfigureEndpoints(context);
+        x.UsingRabbitMq((context, cfg) =>
+        {
+            cfg.Host(rabbitHost, h =>
+            {
+                h.Username(builder.Configuration.GetValue<string>("RabbitMq:Username") ?? "guest");
+                h.Password(builder.Configuration.GetValue<string>("RabbitMq:Password") ?? "guest");
+            });
+
+            cfg.ConfigureEndpoints(context);
+        });
     });
-});
+}
 
 builder.Services.AddEndpointsApiExplorer();
 
@@ -171,15 +186,21 @@ builder.Host.UseSerilog((context, config) =>
 {
     config.MinimumLevel.Information()
           .WriteTo.Console()
-          .WriteTo.File("logs/healthcare-.log", rollingInterval: RollingInterval.Day)
-          .WriteTo.Elasticsearch(new ElasticsearchSinkOptions(new Uri(context.Configuration["Elasticsearch:Uri"]!))
-          {
-              IndexFormat = "healthcare-logs-{0:yyyy.MM.dd}",
-              AutoRegisterTemplate = true,
-              NumberOfShards = 1,
-              NumberOfReplicas = 0
-          })
-          .Enrich.FromLogContext();
+          .WriteTo.File("logs/healthcare-.log", rollingInterval: RollingInterval.Day);
+
+    if (context.HostingEnvironment.IsDevelopment())
+    {
+        config.WriteTo.Elasticsearch(new ElasticsearchSinkOptions(
+            new Uri(context.Configuration["Elasticsearch:Uri"] ?? "http://localhost:9200"))
+        {
+            IndexFormat = "healthcare-logs-{0:yyyy.MM.dd}",
+            AutoRegisterTemplate = true,
+            NumberOfShards = 1,
+            NumberOfReplicas = 0
+        });
+    }
+
+    config.Enrich.FromLogContext();
 });
 
 var app = builder.Build();
@@ -198,7 +219,10 @@ using (var scope = app.Services.CreateScope())
 
     await RoleSeeder.SeedRolesAsync(roleManager);
     await UserSeeder.SeedAdminAsync(userManager, roleManager, config);
-    await DataSeeder.SeedTestDataAsync(services);
+    if (app.Environment.IsDevelopment())
+    {
+        await DataSeeder.SeedTestDataAsync(services);
+    }
 }
 
 // Configure the HTTP request pipeline.
@@ -208,12 +232,17 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+if (app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
 app.UseRouting();
 app.UseCors("CorsPolicy");
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapGet("/health", () => Results.Ok("Healthy"));
 
 await app.RunAsync();

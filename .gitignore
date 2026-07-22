@@ -8,6 +8,9 @@ TestResults/
 
 appsettings.Development.json
 
+.env
+.env.local
+
 # Elasticsearch + Kibana binaries (too large for source control)
 /tools/elasticsearch/
 /tools/kibana/

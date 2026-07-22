@@ -1,0 +1,60 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - Feature/Sprint5_Pod3_RijoBijuAbraham
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+      - run: dotnet restore
+      - run: dotnet build --no-restore
+      - run: dotnet test --no-build
+
+  deploy-api:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            cd /home/ubuntu/app
+            git fetch origin
+            git reset --hard origin/${{ github.ref_name }}
+            echo "SA_PASSWORD=${{ secrets.SA_PASSWORD }}" > .env
+            echo "JWT_KEY=${{ secrets.JWT_KEY }}" >> .env
+            echo "JWT_ISSUER=${{ secrets.JWT_ISSUER }}" >> .env
+            echo "JWT_AUDIENCE=${{ secrets.JWT_AUDIENCE }}" >> .env
+            docker compose up --build -d api
+
+  deploy-angular:
+    needs: test
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: HealthCare.Portal
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: npm ci
+      - run: npx ng build --configuration production
+      - name: Sync to S3
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ap-southeast-2
+        run: |
+          aws s3 sync ./dist/HealthCare.Portal/browser/ s3://${{ secrets.S3_BUCKET_ANGULAR }} --delete

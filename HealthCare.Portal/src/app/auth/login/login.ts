@@ -4,6 +4,7 @@ import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { ToastService } from '../../core/services/toast.service';
 import { TokenService } from '../../core/services/token.service';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-login',
@@ -43,7 +44,7 @@ export class Login {
     const role = this.tokenService.getRole();
     if (role === 'Admin') {
       const token = this.tokenService.getToken();
-      globalThis.location.href = `https://localhost:7166/auth-callback?token=${token}`;
+      globalThis.location.href = `${environment.adminUrl}/auth-callback?token=${token}`;
     } else if (role === 'Patient' || role === 'Doctor') {
       this.router.navigate(['/dashboard']);
     } else {

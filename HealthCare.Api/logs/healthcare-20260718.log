@@ -1,0 +1,782 @@
+2026-07-18 13:42:14.885 +05:30 [INF] User profile is available. Using 'C:\Users\310466\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-07-18 13:42:17.390 +05:30 [INF] Executed DbCommand (22ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2026-07-18 13:42:17.457 +05:30 [INF] Executed DbCommand (51ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+
+IF EXISTS
+    (SELECT *
+     FROM [sys].[objects] o
+     WHERE [o].[type] = 'U'
+     AND [o].[is_ms_shipped] = 0
+     AND [o].[object_id] NOT IN (SELECT [ep].[major_id]
+        FROM [sys].[extended_properties] AS [ep]
+        WHERE [ep].[minor_id] = 0
+            AND [ep].[class] = 1
+            AND [ep].[name] = N'microsoft_database_tools_support'
+    )
+)
+SELECT 1 ELSE SELECT 0
+2026-07-18 13:42:17.734 +05:30 [INF] Executed DbCommand (17ms) [Parameters=[@normalizedName='?' (Size = 256)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [a].[Id], [a].[ConcurrencyStamp], [a].[Name], [a].[NormalizedName]
+FROM [AspNetRoles] AS [a]
+WHERE [a].[NormalizedName] = @normalizedName
+2026-07-18 13:42:17.780 +05:30 [INF] Executed DbCommand (1ms) [Parameters=[@normalizedName='?' (Size = 256)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [a].[Id], [a].[ConcurrencyStamp], [a].[Name], [a].[NormalizedName]
+FROM [AspNetRoles] AS [a]
+WHERE [a].[NormalizedName] = @normalizedName
+2026-07-18 13:42:17.784 +05:30 [INF] Executed DbCommand (0ms) [Parameters=[@normalizedName='?' (Size = 256)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [a].[Id], [a].[ConcurrencyStamp], [a].[Name], [a].[NormalizedName]
+FROM [AspNetRoles] AS [a]
+WHERE [a].[NormalizedName] = @normalizedName
+2026-07-18 13:42:17.798 +05:30 [INF] Executed DbCommand (3ms) [Parameters=[@normalizedEmail='?' (Size = 256)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(2) [a].[Id], [a].[AccessFailedCount], [a].[ConcurrencyStamp], [a].[Email], [a].[EmailConfirmed], [a].[LockoutEnabled], [a].[LockoutEnd], [a].[NormalizedEmail], [a].[NormalizedUserName], [a].[PasswordHash], [a].[PhoneNumber], [a].[PhoneNumberConfirmed], [a].[SecurityStamp], [a].[TwoFactorEnabled], [a].[UserName]
+FROM [AspNetUsers] AS [a]
+WHERE [a].[NormalizedEmail] = @normalizedEmail
+2026-07-18 13:42:17.839 +05:30 [INF] Executed DbCommand (1ms) [Parameters=[@normalizedEmail='?' (Size = 256)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(2) [a].[Id], [a].[AccessFailedCount], [a].[ConcurrencyStamp], [a].[Email], [a].[EmailConfirmed], [a].[LockoutEnabled], [a].[LockoutEnd], [a].[NormalizedEmail], [a].[NormalizedUserName], [a].[PasswordHash], [a].[PhoneNumber], [a].[PhoneNumberConfirmed], [a].[SecurityStamp], [a].[TwoFactorEnabled], [a].[UserName]
+FROM [AspNetUsers] AS [a]
+WHERE [a].[NormalizedEmail] = @normalizedEmail
+2026-07-18 13:42:17.845 +05:30 [INF] Executed DbCommand (1ms) [Parameters=[@normalizedEmail='?' (Size = 256)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(2) [a].[Id], [a].[AccessFailedCount], [a].[ConcurrencyStamp], [a].[Email], [a].[EmailConfirmed], [a].[LockoutEnabled], [a].[LockoutEnd], [a].[NormalizedEmail], [a].[NormalizedUserName], [a].[PasswordHash], [a].[PhoneNumber], [a].[PhoneNumberConfirmed], [a].[SecurityStamp], [a].[TwoFactorEnabled], [a].[UserName]
+FROM [AspNetUsers] AS [a]
+WHERE [a].[NormalizedEmail] = @normalizedEmail
+2026-07-18 13:42:17.884 +05:30 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Appointments] AS [a]) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2026-07-18 13:42:18.160 +05:30 [INF] Configured endpoint AppointmentBooked, Consumer: HealthCare.Api.Consumers.AppointmentBookedConsumer
+2026-07-18 13:42:18.261 +05:30 [INF] NotificationCleanupService started.
+2026-07-18 13:42:18.572 +05:30 [INF] Embedded Garnet server started on port 3278
+2026-07-18 13:42:18.716 +05:30 [INF] Now listening on: https://localhost:7223
+2026-07-18 13:42:18.717 +05:30 [INF] Now listening on: http://localhost:5090
+2026-07-18 13:42:18.744 +05:30 [INF] Application started. Press Ctrl+C to shut down.
+2026-07-18 13:42:18.745 +05:30 [INF] Hosting environment: Development
+2026-07-18 13:42:18.746 +05:30 [INF] Content root path: C:\Users\310466\Desktop\HealthCare\HealthCare.Api
+2026-07-18 13:42:18.951 +05:30 [INF] Bus started: "rabbitmq://localhost/"
+2026-07-18 13:42:52.882 +05:30 [INF] Request starting HTTP/2 OPTIONS https://localhost:7223/api/auth/login - null null
+2026-07-18 13:42:52.962 +05:30 [INF] CORS policy execution successful.
+2026-07-18 13:42:52.967 +05:30 [INF] HTTP OPTIONS /api/auth/login responded 204 in 65.2934 ms
+2026-07-18 13:42:52.976 +05:30 [INF] Request finished HTTP/2 OPTIONS https://localhost:7223/api/auth/login - 204 null null 97.6835ms
+2026-07-18 13:42:52.979 +05:30 [INF] Request starting HTTP/2 POST https://localhost:7223/api/auth/login - application/json 54
+2026-07-18 13:42:52.987 +05:30 [INF] CORS policy execution successful.
+2026-07-18 13:42:53.009 +05:30 [INF] Executing endpoint 'HealthCare.Api.Controllers.AuthController.Login (HealthCare.Api)'
+2026-07-18 13:42:53.044 +05:30 [INF] Route matched with {action = "Login", controller = "Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(HealthCare.Shared.DTOs.Auth.LoginDto) on controller HealthCare.Api.Controllers.AuthController (HealthCare.Api).
+2026-07-18 13:42:53.159 +05:30 [WRN] You do not have a valid license key for the Lucky Penny software AutoMapper. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.
+2026-07-18 13:42:53.341 +05:30 [INF] Executed DbCommand (4ms) [Parameters=[@normalizedEmail='?' (Size = 256)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(2) [a].[Id], [a].[AccessFailedCount], [a].[ConcurrencyStamp], [a].[Email], [a].[EmailConfirmed], [a].[LockoutEnabled], [a].[LockoutEnd], [a].[NormalizedEmail], [a].[NormalizedUserName], [a].[PasswordHash], [a].[PhoneNumber], [a].[PhoneNumberConfirmed], [a].[SecurityStamp], [a].[TwoFactorEnabled], [a].[UserName]
+FROM [AspNetUsers] AS [a]
+WHERE [a].[NormalizedEmail] = @normalizedEmail
+2026-07-18 13:42:53.546 +05:30 [INF] Executed DbCommand (5ms) [Parameters=[@userId='?' (Size = 450)], CommandType='"Text"', CommandTimeout='30']
+SELECT [a0].[Name]
+FROM [AspNetUserRoles] AS [a]
+INNER JOIN [AspNetRoles] AS [a0] ON [a].[RoleId] = [a0].[Id]
+WHERE [a].[UserId] = @userId
+2026-07-18 13:42:53.575 +05:30 [INF] Executed DbCommand (4ms) [Parameters=[@userId='?' (Size = 450)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [p].[PatientId], [p].[CreatedDate], [p].[DateOfBirth], [p].[FullName], [p].[Gender], [p].[InsuranceId], [p].[IsActive], [p].[PhoneNumber], [p].[UserId]
+FROM [Patients] AS [p]
+WHERE [p].[UserId] = @userId
+2026-07-18 13:42:53.652 +05:30 [INF] Executed DbCommand (1ms) [Parameters=[@userId='?' (Size = 450)], CommandType='"Text"', CommandTimeout='30']
+SELECT [a0].[Name]
+FROM [AspNetUserRoles] AS [a]
+INNER JOIN [AspNetRoles] AS [a0] ON [a].[RoleId] = [a0].[Id]
+WHERE [a].[UserId] = @userId
+2026-07-18 13:42:53.700 +05:30 [INF] Executing OkObjectResult, writing value of type 'HealthCare.Shared.ApiResponse`1[[HealthCare.Shared.DTOs.Auth.AuthResponseDto, HealthCare.Shared, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-07-18 13:42:53.725 +05:30 [INF] Executed action HealthCare.Api.Controllers.AuthController.Login (HealthCare.Api) in 671.975ms
+2026-07-18 13:42:53.727 +05:30 [INF] Executed endpoint 'HealthCare.Api.Controllers.AuthController.Login (HealthCare.Api)'
+2026-07-18 13:42:53.731 +05:30 [INF] HTTP POST /api/auth/login responded 200 in 747.4463 ms
+2026-07-18 13:42:53.743 +05:30 [INF] Request finished HTTP/2 POST https://localhost:7223/api/auth/login - 200 null application/json; charset=utf-8 763.7871ms
+2026-07-18 13:42:53.804 +05:30 [INF] Request starting HTTP/2 OPTIONS https://localhost:7223/api/records/my-records - null null
+2026-07-18 13:42:53.804 +05:30 [INF] Request starting HTTP/2 OPTIONS https://localhost:7223/api/appointments/patient/upcoming - null null
+2026-07-18 13:42:53.808 +05:30 [INF] CORS policy execution successful.
+2026-07-18 13:42:53.809 +05:30 [INF] CORS policy execution successful.
+2026-07-18 13:42:53.810 +05:30 [INF] HTTP OPTIONS /api/records/my-records responded 204 in 2.6352 ms
+2026-07-18 13:42:53.811 +05:30 [INF] HTTP OPTIONS /api/appointments/patient/upcoming responded 204 in 1.6044 ms
+2026-07-18 13:42:53.812 +05:30 [INF] Request finished HTTP/2 OPTIONS https://localhost:7223/api/records/my-records - 204 null null 8.5056ms
+2026-07-18 13:42:53.815 +05:30 [INF] Request finished HTTP/2 OPTIONS https://localhost:7223/api/appointments/patient/upcoming - 204 null null 10.6635ms
+2026-07-18 13:42:53.816 +05:30 [INF] Request starting HTTP/2 GET https://localhost:7223/api/records/my-records - null null
+2026-07-18 13:42:53.817 +05:30 [INF] Request starting HTTP/2 GET https://localhost:7223/api/appointments/patient/upcoming - null null
+2026-07-18 13:42:53.828 +05:30 [INF] CORS policy execution successful.
+2026-07-18 13:42:53.829 +05:30 [INF] CORS policy execution successful.
+2026-07-18 13:42:53.909 +05:30 [INF] Executing endpoint 'HealthCare.Api.Controllers.HealthRecordController.GetHealthRecordByPatient (HealthCare.Api)'
+2026-07-18 13:42:53.909 +05:30 [INF] Executing endpoint 'HealthCare.Api.Controllers.AppointmentController.GetAppointmentByPatient (HealthCare.Api)'
+2026-07-18 13:42:53.924 +05:30 [INF] Route matched with {action = "GetHealthRecordByPatient", controller = "HealthRecord"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetHealthRecordByPatient() on controller HealthCare.Api.Controllers.HealthRecordController (HealthCare.Api).
+2026-07-18 13:42:53.924 +05:30 [INF] Route matched with {action = "GetAppointmentByPatient", controller = "Appointment"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetAppointmentByPatient() on controller HealthCare.Api.Controllers.AppointmentController (HealthCare.Api).
+2026-07-18 13:42:54.011 +05:30 [INF] Executed DbCommand (19ms) [Parameters=[@id='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT [h].[RecordId], [p].[FullName] AS [PatientName], [d].[FullName] AS [DoctorName], [h].[VisitDate], [h].[Diagnosis], [h].[Prescription], [h].[Notes]
+FROM [HealthRecords] AS [h]
+INNER JOIN [Patients] AS [p] ON [h].[PatientId] = [p].[PatientId]
+INNER JOIN [Doctors] AS [d] ON [h].[DoctorId] = [d].[DoctorId]
+WHERE [h].[PatientId] = @id
+ORDER BY [h].[VisitDate] DESC
+2026-07-18 13:42:54.018 +05:30 [INF] Executing OkObjectResult, writing value of type 'HealthCare.Shared.ApiResponse`1[[System.Collections.Generic.List`1[[HealthCare.Shared.DTOs.HealthRecord.HealthRecordListDto, HealthCare.Shared, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-07-18 13:42:54.033 +05:30 [INF] Executed action HealthCare.Api.Controllers.HealthRecordController.GetHealthRecordByPatient (HealthCare.Api) in 106.4687ms
+2026-07-18 13:42:54.035 +05:30 [INF] Executed endpoint 'HealthCare.Api.Controllers.HealthRecordController.GetHealthRecordByPatient (HealthCare.Api)'
+2026-07-18 13:42:54.036 +05:30 [INF] HTTP GET /api/records/my-records responded 200 in 211.0656 ms
+2026-07-18 13:42:54.038 +05:30 [INF] Request finished HTTP/2 GET https://localhost:7223/api/records/my-records - 200 null application/json; charset=utf-8 221.647ms
+2026-07-18 13:42:54.251 +05:30 [INF] Executed DbCommand (8ms) [Parameters=[@id='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT [a].[AppointmentId], [a].[PatientId], [p].[FullName] AS [PatientName], [d].[FullName] AS [DoctorName], [a].[ScheduledDate], [a].[TimeSlot], [a].[Status]
+FROM [Appointments] AS [a]
+INNER JOIN [Patients] AS [p] ON [a].[PatientId] = [p].[PatientId]
+INNER JOIN [Doctors] AS [d] ON [a].[DoctorId] = [d].[DoctorId]
+WHERE [a].[PatientId] = @id AND [a].[ScheduledDate] >= CAST(CONVERT(date, GETDATE()) AS date)
+2026-07-18 13:42:54.256 +05:30 [INF] Executing OkObjectResult, writing value of type 'HealthCare.Shared.ApiResponse`1[[System.Collections.Generic.List`1[[HealthCare.Shared.DTOs.Appointment.AppointmentListDto, HealthCare.Shared, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-07-18 13:42:54.260 +05:30 [INF] Executed action HealthCare.Api.Controllers.AppointmentController.GetAppointmentByPatient (HealthCare.Api) in 331.8032ms
+2026-07-18 13:42:54.262 +05:30 [INF] Executed endpoint 'HealthCare.Api.Controllers.AppointmentController.GetAppointmentByPatient (HealthCare.Api)'
+2026-07-18 13:42:54.263 +05:30 [INF] HTTP GET /api/appointments/patient/upcoming responded 200 in 435.9575 ms
+2026-07-18 13:42:54.265 +05:30 [INF] Request finished HTTP/2 GET https://localhost:7223/api/appointments/patient/upcoming - 200 null application/json; charset=utf-8 447.1502ms
+2026-07-18 13:54:17.294 +05:30 [INF] Request starting HTTP/2 OPTIONS https://localhost:7223/api/auth/login - null null
+2026-07-18 13:54:17.297 +05:30 [INF] CORS policy execution successful.
+2026-07-18 13:54:17.298 +05:30 [INF] HTTP OPTIONS /api/auth/login responded 204 in 1.0992 ms
+2026-07-18 13:54:17.300 +05:30 [INF] Request finished HTTP/2 OPTIONS https://localhost:7223/api/auth/login - 204 null null 5.9601ms
+2026-07-18 13:54:17.303 +05:30 [INF] Request starting HTTP/2 POST https://localhost:7223/api/auth/login - application/json 54
+2026-07-18 13:54:17.306 +05:30 [INF] CORS policy execution successful.
+2026-07-18 13:54:17.307 +05:30 [INF] Executing endpoint 'HealthCare.Api.Controllers.AuthController.Login (HealthCare.Api)'
+2026-07-18 13:54:17.308 +05:30 [INF] Route matched with {action = "Login", controller = "Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(HealthCare.Shared.DTOs.Auth.LoginDto) on controller HealthCare.Api.Controllers.AuthController (HealthCare.Api).
+2026-07-18 13:54:18.736 +05:30 [INF] Executed DbCommand (13ms) [Parameters=[@normalizedEmail='?' (Size = 256)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(2) [a].[Id], [a].[AccessFailedCount], [a].[ConcurrencyStamp], [a].[Email], [a].[EmailConfirmed], [a].[LockoutEnabled], [a].[LockoutEnd], [a].[NormalizedEmail], [a].[NormalizedUserName], [a].[PasswordHash], [a].[PhoneNumber], [a].[PhoneNumberConfirmed], [a].[SecurityStamp], [a].[TwoFactorEnabled], [a].[UserName]
+FROM [AspNetUsers] AS [a]
+WHERE [a].[NormalizedEmail] = @normalizedEmail
+2026-07-18 13:54:18.825 +05:30 [INF] Executed DbCommand (4ms) [Parameters=[@userId='?' (Size = 450)], CommandType='"Text"', CommandTimeout='30']
+SELECT [a0].[Name]
+FROM [AspNetUserRoles] AS [a]
+INNER JOIN [AspNetRoles] AS [a0] ON [a].[RoleId] = [a0].[Id]
+WHERE [a].[UserId] = @userId
+2026-07-18 13:54:18.833 +05:30 [INF] Executed DbCommand (3ms) [Parameters=[@userId='?' (Size = 450)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [p].[PatientId], [p].[CreatedDate], [p].[DateOfBirth], [p].[FullName], [p].[Gender], [p].[InsuranceId], [p].[IsActive], [p].[PhoneNumber], [p].[UserId]
+FROM [Patients] AS [p]
+WHERE [p].[UserId] = @userId
+2026-07-18 13:54:18.838 +05:30 [INF] Executed DbCommand (1ms) [Parameters=[@userId='?' (Size = 450)], CommandType='"Text"', CommandTimeout='30']
+SELECT [a0].[Name]
+FROM [AspNetUserRoles] AS [a]
+INNER JOIN [AspNetRoles] AS [a0] ON [a].[RoleId] = [a0].[Id]
+WHERE [a].[UserId] = @userId
+2026-07-18 13:54:18.840 +05:30 [INF] Executing OkObjectResult, writing value of type 'HealthCare.Shared.ApiResponse`1[[HealthCare.Shared.DTOs.Auth.AuthResponseDto, HealthCare.Shared, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-07-18 13:54:18.842 +05:30 [INF] Executed action HealthCare.Api.Controllers.AuthController.Login (HealthCare.Api) in 1532.2074ms
+2026-07-18 13:54:18.843 +05:30 [INF] Executed endpoint 'HealthCare.Api.Controllers.AuthController.Login (HealthCare.Api)'
+2026-07-18 13:54:18.844 +05:30 [INF] HTTP POST /api/auth/login responded 200 in 1538.4178 ms
+2026-07-18 13:54:18.845 +05:30 [INF] Request finished HTTP/2 POST https://localhost:7223/api/auth/login - 200 null application/json; charset=utf-8 1543.0087ms
+2026-07-18 13:54:18.860 +05:30 [INF] Request starting HTTP/2 OPTIONS https://localhost:7223/api/appointments/patient/upcoming - null null
+2026-07-18 13:54:18.860 +05:30 [INF] Request starting HTTP/2 OPTIONS https://localhost:7223/api/records/my-records - null null
+2026-07-18 13:54:18.863 +05:30 [INF] CORS policy execution successful.
+2026-07-18 13:54:18.866 +05:30 [INF] CORS policy execution successful.
+2026-07-18 13:54:18.866 +05:30 [INF] HTTP OPTIONS /api/appointments/patient/upcoming responded 204 in 3.6303 ms
+2026-07-18 13:54:18.867 +05:30 [INF] HTTP OPTIONS /api/records/my-records responded 204 in 1.3955 ms
+2026-07-18 13:54:18.869 +05:30 [INF] Request finished HTTP/2 OPTIONS https://localhost:7223/api/appointments/patient/upcoming - 204 null null 8.8729ms
+2026-07-18 13:54:18.870 +05:30 [INF] Request finished HTTP/2 OPTIONS https://localhost:7223/api/records/my-records - 204 null null 10.5395ms
+2026-07-18 13:54:18.872 +05:30 [INF] Request starting HTTP/2 GET https://localhost:7223/api/appointments/patient/upcoming - null null
+2026-07-18 13:54:18.873 +05:30 [INF] Request starting HTTP/2 GET https://localhost:7223/api/records/my-records - null null
+2026-07-18 13:54:18.878 +05:30 [INF] CORS policy execution successful.
+2026-07-18 13:54:18.879 +05:30 [INF] CORS policy execution successful.
+2026-07-18 13:54:18.885 +05:30 [INF] Executing endpoint 'HealthCare.Api.Controllers.AppointmentController.GetAppointmentByPatient (HealthCare.Api)'
+2026-07-18 13:54:18.885 +05:30 [INF] Executing endpoint 'HealthCare.Api.Controllers.HealthRecordController.GetHealthRecordByPatient (HealthCare.Api)'
+2026-07-18 13:54:18.886 +05:30 [INF] Route matched with {action = "GetAppointmentByPatient", controller = "Appointment"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetAppointmentByPatient() on controller HealthCare.Api.Controllers.AppointmentController (HealthCare.Api).
+2026-07-18 13:54:18.887 +05:30 [INF] Route matched with {action = "GetHealthRecordByPatient", controller = "HealthRecord"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetHealthRecordByPatient() on controller HealthCare.Api.Controllers.HealthRecordController (HealthCare.Api).
+2026-07-18 13:54:18.898 +05:30 [INF] Executed DbCommand (6ms) [Parameters=[@id='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT [a].[AppointmentId], [a].[PatientId], [p].[FullName] AS [PatientName], [d].[FullName] AS [DoctorName], [a].[ScheduledDate], [a].[TimeSlot], [a].[Status]
+FROM [Appointments] AS [a]
+INNER JOIN [Patients] AS [p] ON [a].[PatientId] = [p].[PatientId]
+INNER JOIN [Doctors] AS [d] ON [a].[DoctorId] = [d].[DoctorId]
+WHERE [a].[PatientId] = @id AND [a].[ScheduledDate] >= CAST(CONVERT(date, GETDATE()) AS date)
+2026-07-18 13:54:18.900 +05:30 [INF] Executing OkObjectResult, writing value of type 'HealthCare.Shared.ApiResponse`1[[System.Collections.Generic.List`1[[HealthCare.Shared.DTOs.Appointment.AppointmentListDto, HealthCare.Shared, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-07-18 13:54:18.902 +05:30 [INF] Executed action HealthCare.Api.Controllers.AppointmentController.GetAppointmentByPatient (HealthCare.Api) in 13.1157ms
+2026-07-18 13:54:18.903 +05:30 [INF] Executed endpoint 'HealthCare.Api.Controllers.AppointmentController.GetAppointmentByPatient (HealthCare.Api)'
+2026-07-18 13:54:18.904 +05:30 [INF] HTTP GET /api/appointments/patient/upcoming responded 200 in 25.9454 ms
+2026-07-18 13:54:18.905 +05:30 [INF] Request finished HTTP/2 GET https://localhost:7223/api/appointments/patient/upcoming - 200 null application/json; charset=utf-8 33.0248ms
+2026-07-18 13:54:19.016 +05:30 [INF] Executed DbCommand (6ms) [Parameters=[@id='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT [h].[RecordId], [p].[FullName] AS [PatientName], [d].[FullName] AS [DoctorName], [h].[VisitDate], [h].[Diagnosis], [h].[Prescription], [h].[Notes]
+FROM [HealthRecords] AS [h]
+INNER JOIN [Patients] AS [p] ON [h].[PatientId] = [p].[PatientId]
+INNER JOIN [Doctors] AS [d] ON [h].[DoctorId] = [d].[DoctorId]
+WHERE [h].[PatientId] = @id
+ORDER BY [h].[VisitDate] DESC
+2026-07-18 13:54:19.020 +05:30 [INF] Executing OkObjectResult, writing value of type 'HealthCare.Shared.ApiResponse`1[[System.Collections.Generic.List`1[[HealthCare.Shared.DTOs.HealthRecord.HealthRecordListDto, HealthCare.Shared, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-07-18 13:54:19.021 +05:30 [INF] Executed action HealthCare.Api.Controllers.HealthRecordController.GetHealthRecordByPatient (HealthCare.Api) in 131.5834ms
+2026-07-18 13:54:19.023 +05:30 [INF] Executed endpoint 'HealthCare.Api.Controllers.HealthRecordController.GetHealthRecordByPatient (HealthCare.Api)'
+2026-07-18 13:54:19.024 +05:30 [INF] HTTP GET /api/records/my-records responded 200 in 144.9428 ms
+2026-07-18 13:54:19.026 +05:30 [INF] Request finished HTTP/2 GET https://localhost:7223/api/records/my-records - 200 null application/json; charset=utf-8 152.88ms
+2026-07-18 13:57:55.279 +05:30 [INF] User profile is available. Using 'C:\Users\310466\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-07-18 13:57:59.247 +05:30 [INF] Executed DbCommand (88ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2026-07-18 13:57:59.444 +05:30 [INF] Executed DbCommand (160ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+
+IF EXISTS
+    (SELECT *
+     FROM [sys].[objects] o
+     WHERE [o].[type] = 'U'
+     AND [o].[is_ms_shipped] = 0
+     AND [o].[object_id] NOT IN (SELECT [ep].[major_id]
+        FROM [sys].[extended_properties] AS [ep]
+        WHERE [ep].[minor_id] = 0
+            AND [ep].[class] = 1
+            AND [ep].[name] = N'microsoft_database_tools_support'
+    )
+)
+SELECT 1 ELSE SELECT 0
+2026-07-18 13:57:59.999 +05:30 [INF] Executed DbCommand (35ms) [Parameters=[@normalizedName='?' (Size = 256)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [a].[Id], [a].[ConcurrencyStamp], [a].[Name], [a].[NormalizedName]
+FROM [AspNetRoles] AS [a]
+WHERE [a].[NormalizedName] = @normalizedName
+2026-07-18 13:58:00.102 +05:30 [INF] Executed DbCommand (1ms) [Parameters=[@normalizedName='?' (Size = 256)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [a].[Id], [a].[ConcurrencyStamp], [a].[Name], [a].[NormalizedName]
+FROM [AspNetRoles] AS [a]
+WHERE [a].[NormalizedName] = @normalizedName
+2026-07-18 13:58:00.110 +05:30 [INF] Executed DbCommand (1ms) [Parameters=[@normalizedName='?' (Size = 256)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [a].[Id], [a].[ConcurrencyStamp], [a].[Name], [a].[NormalizedName]
+FROM [AspNetRoles] AS [a]
+WHERE [a].[NormalizedName] = @normalizedName
+2026-07-18 13:58:00.137 +05:30 [INF] Executed DbCommand (7ms) [Parameters=[@normalizedEmail='?' (Size = 256)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(2) [a].[Id], [a].[AccessFailedCount], [a].[ConcurrencyStamp], [a].[Email], [a].[EmailConfirmed], [a].[LockoutEnabled], [a].[LockoutEnd], [a].[NormalizedEmail], [a].[NormalizedUserName], [a].[PasswordHash], [a].[PhoneNumber], [a].[PhoneNumberConfirmed], [a].[SecurityStamp], [a].[TwoFactorEnabled], [a].[UserName]
+FROM [AspNetUsers] AS [a]
+WHERE [a].[NormalizedEmail] = @normalizedEmail
+2026-07-18 13:58:00.226 +05:30 [INF] Executed DbCommand (1ms) [Parameters=[@normalizedEmail='?' (Size = 256)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(2) [a].[Id], [a].[AccessFailedCount], [a].[ConcurrencyStamp], [a].[Email], [a].[EmailConfirmed], [a].[LockoutEnabled], [a].[LockoutEnd], [a].[NormalizedEmail], [a].[NormalizedUserName], [a].[PasswordHash], [a].[PhoneNumber], [a].[PhoneNumberConfirmed], [a].[SecurityStamp], [a].[TwoFactorEnabled], [a].[UserName]
+FROM [AspNetUsers] AS [a]
+WHERE [a].[NormalizedEmail] = @normalizedEmail
+2026-07-18 13:58:00.235 +05:30 [INF] Executed DbCommand (1ms) [Parameters=[@normalizedEmail='?' (Size = 256)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(2) [a].[Id], [a].[AccessFailedCount], [a].[ConcurrencyStamp], [a].[Email], [a].[EmailConfirmed], [a].[LockoutEnabled], [a].[LockoutEnd], [a].[NormalizedEmail], [a].[NormalizedUserName], [a].[PasswordHash], [a].[PhoneNumber], [a].[PhoneNumberConfirmed], [a].[SecurityStamp], [a].[TwoFactorEnabled], [a].[UserName]
+FROM [AspNetUsers] AS [a]
+WHERE [a].[NormalizedEmail] = @normalizedEmail
+2026-07-18 13:58:00.318 +05:30 [INF] Executed DbCommand (5ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Appointments] AS [a]) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2026-07-18 13:58:01.108 +05:30 [INF] Configured endpoint AppointmentBooked, Consumer: HealthCare.Api.Consumers.AppointmentBookedConsumer
+2026-07-18 13:58:01.334 +05:30 [INF] NotificationCleanupService started.
+2026-07-18 13:58:02.034 +05:30 [INF] Embedded Garnet server started on port 3278
+2026-07-18 13:58:02.362 +05:30 [INF] Now listening on: https://localhost:7223
+2026-07-18 13:58:02.365 +05:30 [INF] Now listening on: http://localhost:5090
+2026-07-18 13:58:02.394 +05:30 [INF] Bus started: "rabbitmq://localhost/"
+2026-07-18 13:58:02.431 +05:30 [INF] Application started. Press Ctrl+C to shut down.
+2026-07-18 13:58:02.434 +05:30 [INF] Hosting environment: Development
+2026-07-18 13:58:02.437 +05:30 [INF] Content root path: C:\Users\310466\Desktop\HealthCare\HealthCare.Api
+2026-07-18 14:03:34.873 +05:30 [INF] Request starting HTTP/2 OPTIONS https://localhost:7223/api/auth/login - null null
+2026-07-18 14:03:34.978 +05:30 [INF] CORS policy execution successful.
+2026-07-18 14:03:34.993 +05:30 [INF] HTTP OPTIONS /api/auth/login responded 204 in 89.3001 ms
+2026-07-18 14:03:35.004 +05:30 [INF] Request finished HTTP/2 OPTIONS https://localhost:7223/api/auth/login - 204 null null 135.3098ms
+2026-07-18 14:03:35.011 +05:30 [INF] Request starting HTTP/2 POST https://localhost:7223/api/auth/login - application/json 54
+2026-07-18 14:03:35.027 +05:30 [INF] CORS policy execution successful.
+2026-07-18 14:03:35.056 +05:30 [INF] Executing endpoint 'HealthCare.Api.Controllers.AuthController.Login (HealthCare.Api)'
+2026-07-18 14:03:35.104 +05:30 [INF] Route matched with {action = "Login", controller = "Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(HealthCare.Shared.DTOs.Auth.LoginDto) on controller HealthCare.Api.Controllers.AuthController (HealthCare.Api).
+2026-07-18 14:03:35.345 +05:30 [WRN] You do not have a valid license key for the Lucky Penny software AutoMapper. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.
+2026-07-18 14:03:35.660 +05:30 [INF] Executed DbCommand (8ms) [Parameters=[@normalizedEmail='?' (Size = 256)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(2) [a].[Id], [a].[AccessFailedCount], [a].[ConcurrencyStamp], [a].[Email], [a].[EmailConfirmed], [a].[LockoutEnabled], [a].[LockoutEnd], [a].[NormalizedEmail], [a].[NormalizedUserName], [a].[PasswordHash], [a].[PhoneNumber], [a].[PhoneNumberConfirmed], [a].[SecurityStamp], [a].[TwoFactorEnabled], [a].[UserName]
+FROM [AspNetUsers] AS [a]
+WHERE [a].[NormalizedEmail] = @normalizedEmail
+2026-07-18 14:03:35.999 +05:30 [INF] Executed DbCommand (5ms) [Parameters=[@userId='?' (Size = 450)], CommandType='"Text"', CommandTimeout='30']
+SELECT [a0].[Name]
+FROM [AspNetUserRoles] AS [a]
+INNER JOIN [AspNetRoles] AS [a0] ON [a].[RoleId] = [a0].[Id]
+WHERE [a].[UserId] = @userId
+2026-07-18 14:03:36.035 +05:30 [INF] Executed DbCommand (6ms) [Parameters=[@userId='?' (Size = 450)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [p].[PatientId], [p].[CreatedDate], [p].[DateOfBirth], [p].[FullName], [p].[Gender], [p].[InsuranceId], [p].[IsActive], [p].[PhoneNumber], [p].[UserId]
+FROM [Patients] AS [p]
+WHERE [p].[UserId] = @userId
+2026-07-18 14:03:36.149 +05:30 [INF] Executed DbCommand (2ms) [Parameters=[@userId='?' (Size = 450)], CommandType='"Text"', CommandTimeout='30']
+SELECT [a0].[Name]
+FROM [AspNetUserRoles] AS [a]
+INNER JOIN [AspNetRoles] AS [a0] ON [a].[RoleId] = [a0].[Id]
+WHERE [a].[UserId] = @userId
+2026-07-18 14:03:36.244 +05:30 [INF] Executing OkObjectResult, writing value of type 'HealthCare.Shared.ApiResponse`1[[HealthCare.Shared.DTOs.Auth.AuthResponseDto, HealthCare.Shared, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-07-18 14:03:36.285 +05:30 [INF] Executed action HealthCare.Api.Controllers.AuthController.Login (HealthCare.Api) in 1165.4567ms
+2026-07-18 14:03:36.289 +05:30 [INF] Executed endpoint 'HealthCare.Api.Controllers.AuthController.Login (HealthCare.Api)'
+2026-07-18 14:03:36.294 +05:30 [INF] HTTP POST /api/auth/login responded 200 in 1273.7196 ms
+2026-07-18 14:03:36.305 +05:30 [INF] Request finished HTTP/2 POST https://localhost:7223/api/auth/login - 200 null application/json; charset=utf-8 1293.6697ms
+2026-07-18 14:03:36.328 +05:30 [INF] Request starting HTTP/2 OPTIONS https://localhost:7223/api/appointments/patient/upcoming - null null
+2026-07-18 14:03:36.328 +05:30 [INF] Request starting HTTP/2 OPTIONS https://localhost:7223/api/records/my-records - null null
+2026-07-18 14:03:36.349 +05:30 [INF] CORS policy execution successful.
+2026-07-18 14:03:36.375 +05:30 [INF] CORS policy execution successful.
+2026-07-18 14:03:36.377 +05:30 [INF] HTTP OPTIONS /api/appointments/patient/upcoming responded 204 in 31.8203 ms
+2026-07-18 14:03:36.377 +05:30 [INF] HTTP OPTIONS /api/records/my-records responded 204 in 2.9620 ms
+2026-07-18 14:03:36.386 +05:30 [INF] Request finished HTTP/2 OPTIONS https://localhost:7223/api/appointments/patient/upcoming - 204 null null 58.0761ms
+2026-07-18 14:03:36.391 +05:30 [INF] Request starting HTTP/2 GET https://localhost:7223/api/appointments/patient/upcoming - null null
+2026-07-18 14:03:36.394 +05:30 [INF] Request finished HTTP/2 OPTIONS https://localhost:7223/api/records/my-records - 204 null null 65.712ms
+2026-07-18 14:03:36.400 +05:30 [INF] Request starting HTTP/2 GET https://localhost:7223/api/records/my-records - null null
+2026-07-18 14:03:36.409 +05:30 [INF] CORS policy execution successful.
+2026-07-18 14:03:36.423 +05:30 [INF] CORS policy execution successful.
+2026-07-18 14:03:36.577 +05:30 [INF] Executing endpoint 'HealthCare.Api.Controllers.HealthRecordController.GetHealthRecordByPatient (HealthCare.Api)'
+2026-07-18 14:03:36.577 +05:30 [INF] Executing endpoint 'HealthCare.Api.Controllers.AppointmentController.GetAppointmentByPatient (HealthCare.Api)'
+2026-07-18 14:03:36.595 +05:30 [INF] Route matched with {action = "GetHealthRecordByPatient", controller = "HealthRecord"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetHealthRecordByPatient() on controller HealthCare.Api.Controllers.HealthRecordController (HealthCare.Api).
+2026-07-18 14:03:36.595 +05:30 [INF] Route matched with {action = "GetAppointmentByPatient", controller = "Appointment"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetAppointmentByPatient() on controller HealthCare.Api.Controllers.AppointmentController (HealthCare.Api).
+2026-07-18 14:03:36.744 +05:30 [INF] Executed DbCommand (18ms) [Parameters=[@id='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT [h].[RecordId], [p].[FullName] AS [PatientName], [d].[FullName] AS [DoctorName], [h].[VisitDate], [h].[Diagnosis], [h].[Prescription], [h].[Notes]
+FROM [HealthRecords] AS [h]
+INNER JOIN [Patients] AS [p] ON [h].[PatientId] = [p].[PatientId]
+INNER JOIN [Doctors] AS [d] ON [h].[DoctorId] = [d].[DoctorId]
+WHERE [h].[PatientId] = @id
+ORDER BY [h].[VisitDate] DESC
+2026-07-18 14:03:36.756 +05:30 [INF] Executing OkObjectResult, writing value of type 'HealthCare.Shared.ApiResponse`1[[System.Collections.Generic.List`1[[HealthCare.Shared.DTOs.HealthRecord.HealthRecordListDto, HealthCare.Shared, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-07-18 14:03:36.780 +05:30 [INF] Executed action HealthCare.Api.Controllers.HealthRecordController.GetHealthRecordByPatient (HealthCare.Api) in 178.0921ms
+2026-07-18 14:03:36.783 +05:30 [INF] Executed endpoint 'HealthCare.Api.Controllers.HealthRecordController.GetHealthRecordByPatient (HealthCare.Api)'
+2026-07-18 14:03:36.786 +05:30 [INF] HTTP GET /api/records/my-records responded 200 in 365.5650 ms
+2026-07-18 14:03:36.792 +05:30 [INF] Request finished HTTP/2 GET https://localhost:7223/api/records/my-records - 200 null application/json; charset=utf-8 391.8754ms
+2026-07-18 14:03:37.185 +05:30 [INF] Executed DbCommand (15ms) [Parameters=[@id='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT [a].[AppointmentId], [a].[PatientId], [p].[FullName] AS [PatientName], [d].[FullName] AS [DoctorName], [a].[ScheduledDate], [a].[TimeSlot], [a].[Status]
+FROM [Appointments] AS [a]
+INNER JOIN [Patients] AS [p] ON [a].[PatientId] = [p].[PatientId]
+INNER JOIN [Doctors] AS [d] ON [a].[DoctorId] = [d].[DoctorId]
+WHERE [a].[PatientId] = @id AND [a].[ScheduledDate] >= CAST(CONVERT(date, GETDATE()) AS date)
+2026-07-18 14:03:37.191 +05:30 [INF] Executing OkObjectResult, writing value of type 'HealthCare.Shared.ApiResponse`1[[System.Collections.Generic.List`1[[HealthCare.Shared.DTOs.Appointment.AppointmentListDto, HealthCare.Shared, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-07-18 14:03:37.202 +05:30 [INF] Executed action HealthCare.Api.Controllers.AppointmentController.GetAppointmentByPatient (HealthCare.Api) in 593.2413ms
+2026-07-18 14:03:37.205 +05:30 [INF] Executed endpoint 'HealthCare.Api.Controllers.AppointmentController.GetAppointmentByPatient (HealthCare.Api)'
+2026-07-18 14:03:37.207 +05:30 [INF] HTTP GET /api/appointments/patient/upcoming responded 200 in 801.2717 ms
+2026-07-18 14:03:37.211 +05:30 [INF] Request finished HTTP/2 GET https://localhost:7223/api/appointments/patient/upcoming - 200 null application/json; charset=utf-8 820.1792ms
+2026-07-18 14:03:51.034 +05:30 [INF] Request starting HTTP/2 OPTIONS https://localhost:7223/api/auth/login - null null
+2026-07-18 14:03:51.037 +05:30 [INF] CORS policy execution successful.
+2026-07-18 14:03:51.038 +05:30 [INF] HTTP OPTIONS /api/auth/login responded 204 in 1.5089 ms
+2026-07-18 14:03:51.040 +05:30 [INF] Request finished HTTP/2 OPTIONS https://localhost:7223/api/auth/login - 204 null null 6.5699ms
+2026-07-18 14:03:51.045 +05:30 [INF] Request starting HTTP/2 POST https://localhost:7223/api/auth/login - application/json 55
+2026-07-18 14:03:51.047 +05:30 [INF] CORS policy execution successful.
+2026-07-18 14:03:51.048 +05:30 [INF] Executing endpoint 'HealthCare.Api.Controllers.AuthController.Login (HealthCare.Api)'
+2026-07-18 14:03:51.050 +05:30 [INF] Route matched with {action = "Login", controller = "Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(HealthCare.Shared.DTOs.Auth.LoginDto) on controller HealthCare.Api.Controllers.AuthController (HealthCare.Api).
+2026-07-18 14:03:51.056 +05:30 [INF] Executed DbCommand (1ms) [Parameters=[@normalizedEmail='?' (Size = 256)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(2) [a].[Id], [a].[AccessFailedCount], [a].[ConcurrencyStamp], [a].[Email], [a].[EmailConfirmed], [a].[LockoutEnabled], [a].[LockoutEnd], [a].[NormalizedEmail], [a].[NormalizedUserName], [a].[PasswordHash], [a].[PhoneNumber], [a].[PhoneNumberConfirmed], [a].[SecurityStamp], [a].[TwoFactorEnabled], [a].[UserName]
+FROM [AspNetUsers] AS [a]
+WHERE [a].[NormalizedEmail] = @normalizedEmail
+2026-07-18 14:03:51.167 +05:30 [INF] Executed DbCommand (2ms) [Parameters=[@userId='?' (Size = 450)], CommandType='"Text"', CommandTimeout='30']
+SELECT [a0].[Name]
+FROM [AspNetUserRoles] AS [a]
+INNER JOIN [AspNetRoles] AS [a0] ON [a].[RoleId] = [a0].[Id]
+WHERE [a].[UserId] = @userId
+2026-07-18 14:03:51.170 +05:30 [INF] Executed DbCommand (0ms) [Parameters=[@userId='?' (Size = 450)], CommandType='"Text"', CommandTimeout='30']
+SELECT [a0].[Name]
+FROM [AspNetUserRoles] AS [a]
+INNER JOIN [AspNetRoles] AS [a0] ON [a].[RoleId] = [a0].[Id]
+WHERE [a].[UserId] = @userId
+2026-07-18 14:03:51.173 +05:30 [INF] Executing OkObjectResult, writing value of type 'HealthCare.Shared.ApiResponse`1[[HealthCare.Shared.DTOs.Auth.AuthResponseDto, HealthCare.Shared, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-07-18 14:03:51.175 +05:30 [INF] Executed action HealthCare.Api.Controllers.AuthController.Login (HealthCare.Api) in 123.1131ms
+2026-07-18 14:03:51.177 +05:30 [INF] Executed endpoint 'HealthCare.Api.Controllers.AuthController.Login (HealthCare.Api)'
+2026-07-18 14:03:51.179 +05:30 [INF] HTTP POST /api/auth/login responded 200 in 131.5709 ms
+2026-07-18 14:03:51.181 +05:30 [INF] Request finished HTTP/2 POST https://localhost:7223/api/auth/login - 200 null application/json; charset=utf-8 135.7846ms
+2026-07-18 14:03:58.691 +05:30 [INF] Request starting HTTP/2 OPTIONS https://localhost:7223/api/admin/doctors/summary - null null
+2026-07-18 14:03:58.691 +05:30 [INF] Request starting HTTP/2 OPTIONS https://localhost:7223/api/admin/patients/summary - null null
+2026-07-18 14:03:58.721 +05:30 [INF] Request starting HTTP/2 OPTIONS https://localhost:7223/api/admin/appointments/summary - null null
+2026-07-18 14:03:58.727 +05:30 [INF] CORS policy execution successful.
+2026-07-18 14:03:58.733 +05:30 [INF] CORS policy execution successful.
+2026-07-18 14:03:58.748 +05:30 [INF] HTTP OPTIONS /api/admin/patients/summary responded 204 in 15.1242 ms
+2026-07-18 14:03:58.745 +05:30 [INF] CORS policy execution successful.
+2026-07-18 14:03:58.741 +05:30 [INF] HTTP OPTIONS /api/admin/doctors/summary responded 204 in 15.1998 ms
+2026-07-18 14:03:58.771 +05:30 [INF] Request finished HTTP/2 OPTIONS https://localhost:7223/api/admin/patients/summary - 204 null null 79.4326ms
+2026-07-18 14:03:58.773 +05:30 [INF] HTTP OPTIONS /api/admin/appointments/summary responded 204 in 34.3622 ms
+2026-07-18 14:03:58.778 +05:30 [INF] Request starting HTTP/2 GET https://localhost:7223/api/admin/patients/summary - null null
+2026-07-18 14:03:58.795 +05:30 [INF] Request finished HTTP/2 OPTIONS https://localhost:7223/api/admin/doctors/summary - 204 null null 104.0983ms
+2026-07-18 14:03:58.806 +05:30 [INF] Request starting HTTP/2 GET https://localhost:7223/api/admin/doctors/summary - null null
+2026-07-18 14:03:58.807 +05:30 [INF] Request finished HTTP/2 OPTIONS https://localhost:7223/api/admin/appointments/summary - 204 null null 86.2269ms
+2026-07-18 14:03:58.812 +05:30 [INF] Request starting HTTP/2 GET https://localhost:7223/api/admin/appointments/summary - null null
+2026-07-18 14:03:58.841 +05:30 [INF] CORS policy execution successful.
+2026-07-18 14:03:58.854 +05:30 [INF] CORS policy execution successful.
+2026-07-18 14:03:58.879 +05:30 [INF] CORS policy execution successful.
+2026-07-18 14:03:58.888 +05:30 [INF] Executing endpoint 'HealthCare.Api.Controllers.PatientAdminController.GetSummary (HealthCare.Api)'
+2026-07-18 14:03:58.888 +05:30 [INF] Executing endpoint 'HealthCare.Api.Controllers.DoctorAdminController.GetSummary (HealthCare.Api)'
+2026-07-18 14:03:58.908 +05:30 [INF] Executing endpoint 'HealthCare.Api.Controllers.AppointmentAdminController.GetSummary (HealthCare.Api)'
+2026-07-18 14:03:58.948 +05:30 [INF] Route matched with {action = "GetSummary", controller = "DoctorAdmin"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetSummary() on controller HealthCare.Api.Controllers.DoctorAdminController (HealthCare.Api).
+2026-07-18 14:03:58.957 +05:30 [INF] Route matched with {action = "GetSummary", controller = "PatientAdmin"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetSummary() on controller HealthCare.Api.Controllers.PatientAdminController (HealthCare.Api).
+2026-07-18 14:03:59.005 +05:30 [INF] Route matched with {action = "GetSummary", controller = "AppointmentAdmin"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetSummary() on controller HealthCare.Api.Controllers.AppointmentAdminController (HealthCare.Api).
+2026-07-18 14:03:59.142 +05:30 [WRN] The query uses the 'First'/'FirstOrDefault' operator without 'OrderBy' and filter operators. This may lead to unpredictable results.
+2026-07-18 14:03:59.144 +05:30 [WRN] The query uses the 'First'/'FirstOrDefault' operator without 'OrderBy' and filter operators. This may lead to unpredictable results.
+2026-07-18 14:03:59.154 +05:30 [WRN] The query uses the 'First'/'FirstOrDefault' operator without 'OrderBy' and filter operators. This may lead to unpredictable results.
+2026-07-18 14:03:59.191 +05:30 [INF] Executed DbCommand (20ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) COUNT(*) AS [TotalDoctors], COUNT(CASE
+    WHEN [d0].[IsActive] = CAST(1 AS bit) THEN 1
+END) AS [ActiveDoctors], COUNT(CASE
+    WHEN [d0].[IsActive] = CAST(0 AS bit) THEN 1
+END) AS [InactiveDoctors]
+FROM (
+    SELECT [d].[IsActive], 1 AS [Key]
+    FROM [Doctors] AS [d]
+) AS [d0]
+GROUP BY [d0].[Key]
+2026-07-18 14:03:59.191 +05:30 [INF] Executed DbCommand (20ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) COUNT(*) AS [TotalPatients], COUNT(CASE
+    WHEN [p0].[IsActive] = CAST(1 AS bit) THEN 1
+END) AS [ActivePatients]
+FROM (
+    SELECT [p].[IsActive], 1 AS [Key]
+    FROM [Patients] AS [p]
+) AS [p0]
+GROUP BY [p0].[Key]
+2026-07-18 14:03:59.206 +05:30 [INF] Executing OkObjectResult, writing value of type 'HealthCare.Shared.ApiResponse`1[[HealthCare.Shared.DTOs.Doctor.DoctorSummaryDto, HealthCare.Shared, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-07-18 14:03:59.211 +05:30 [INF] Executing OkObjectResult, writing value of type 'HealthCare.Shared.ApiResponse`1[[HealthCare.Shared.DTOs.Patient.PatientSummaryDto, HealthCare.Shared, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-07-18 14:03:59.217 +05:30 [INF] Executed action HealthCare.Api.Controllers.DoctorAdminController.GetSummary (HealthCare.Api) in 245.4687ms
+2026-07-18 14:03:59.221 +05:30 [INF] Executed action HealthCare.Api.Controllers.PatientAdminController.GetSummary (HealthCare.Api) in 204.7379ms
+2026-07-18 14:03:59.232 +05:30 [INF] Executed endpoint 'HealthCare.Api.Controllers.DoctorAdminController.GetSummary (HealthCare.Api)'
+2026-07-18 14:03:59.238 +05:30 [INF] Executed endpoint 'HealthCare.Api.Controllers.PatientAdminController.GetSummary (HealthCare.Api)'
+2026-07-18 14:03:59.240 +05:30 [INF] HTTP GET /api/admin/doctors/summary responded 200 in 386.7656 ms
+2026-07-18 14:03:59.242 +05:30 [INF] HTTP GET /api/admin/patients/summary responded 200 in 402.0415 ms
+2026-07-18 14:03:59.246 +05:30 [INF] Request finished HTTP/2 GET https://localhost:7223/api/admin/doctors/summary - 200 null application/json; charset=utf-8 439.5589ms
+2026-07-18 14:03:59.255 +05:30 [INF] Request finished HTTP/2 GET https://localhost:7223/api/admin/patients/summary - 200 null application/json; charset=utf-8 476.7145ms
+2026-07-18 14:03:59.755 +05:30 [INF] Executed DbCommand (32ms) [Parameters=[@fromDate='?' (DbType = Date), @toDate='?' (DbType = Date)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) COUNT(CASE
+    WHEN [a0].[Status] = N'Pending' THEN 1
+END) AS [PendingCount], COUNT(CASE
+    WHEN [a0].[Status] = N'Confirmed' THEN 1
+END) AS [ConfirmedCount], COUNT(CASE
+    WHEN [a0].[Status] = N'Cancelled' THEN 1
+END) AS [CancelledCount], COUNT(CASE
+    WHEN [a0].[Status] = N'Completed' THEN 1
+END) AS [CompletedCount], (
+    SELECT COALESCE(SUM([d].[ConsultationFee]), 0.0)
+    FROM (
+        SELECT [a2].[DoctorId], [a2].[Status], 1 AS [Key]
+        FROM [Appointments] AS [a2]
+        WHERE [a2].[ScheduledDate] >= @fromDate AND [a2].[ScheduledDate] <= @toDate
+    ) AS [a1]
+    INNER JOIN [Doctors] AS [d] ON [a1].[DoctorId] = [d].[DoctorId]
+    WHERE [a0].[Key] = [a1].[Key] AND [a1].[Status] = N'Completed') AS [TotalRevenue]
+FROM (
+    SELECT [a].[Status], 1 AS [Key]
+    FROM [Appointments] AS [a]
+    WHERE [a].[ScheduledDate] >= @fromDate AND [a].[ScheduledDate] <= @toDate
+) AS [a0]
+GROUP BY [a0].[Key]
+2026-07-18 14:03:59.763 +05:30 [INF] Executing OkObjectResult, writing value of type 'HealthCare.Shared.ApiResponse`1[[HealthCare.Shared.DTOs.Appointment.AppointmentSummaryDto, HealthCare.Shared, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-07-18 14:03:59.788 +05:30 [INF] Executed action HealthCare.Api.Controllers.AppointmentAdminController.GetSummary (HealthCare.Api) in 736.3225ms
+2026-07-18 14:03:59.791 +05:30 [INF] Executed endpoint 'HealthCare.Api.Controllers.AppointmentAdminController.GetSummary (HealthCare.Api)'
+2026-07-18 14:03:59.793 +05:30 [INF] HTTP GET /api/admin/appointments/summary responded 200 in 917.5562 ms
+2026-07-18 14:03:59.798 +05:30 [INF] Request finished HTTP/2 GET https://localhost:7223/api/admin/appointments/summary - 200 null application/json; charset=utf-8 986.5589ms
+2026-07-18 14:04:03.313 +05:30 [INF] Request starting HTTP/2 OPTIONS https://localhost:7223/api/admin/doctors?SortBy=experience&IsDescending=False&PageNumber=1&PageSize=10 - null null
+2026-07-18 14:04:03.319 +05:30 [INF] CORS policy execution successful.
+2026-07-18 14:04:03.322 +05:30 [INF] HTTP OPTIONS /api/admin/doctors responded 204 in 2.6448 ms
+2026-07-18 14:04:03.326 +05:30 [INF] Request finished HTTP/2 OPTIONS https://localhost:7223/api/admin/doctors?SortBy=experience&IsDescending=False&PageNumber=1&PageSize=10 - 204 null null 12.7456ms
+2026-07-18 14:04:03.328 +05:30 [INF] Request starting HTTP/2 GET https://localhost:7223/api/admin/doctors?SortBy=experience&IsDescending=False&PageNumber=1&PageSize=10 - null null
+2026-07-18 14:04:03.347 +05:30 [INF] CORS policy execution successful.
+2026-07-18 14:04:03.350 +05:30 [INF] Executing endpoint 'HealthCare.Api.Controllers.DoctorAdminController.GetAllDoctor (HealthCare.Api)'
+2026-07-18 14:04:03.374 +05:30 [INF] Route matched with {action = "GetAllDoctor", controller = "DoctorAdmin"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetAllDoctor(HealthCare.Shared.DTOs.Doctor.DoctorFilter) on controller HealthCare.Api.Controllers.DoctorAdminController (HealthCare.Api).
+2026-07-18 14:04:03.566 +05:30 [INF] Executed DbCommand (17ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*)
+FROM [Doctors] AS [d]
+2026-07-18 14:04:03.627 +05:30 [INF] Executed DbCommand (22ms) [Parameters=[@p='?' (DbType = Int32), @p1='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT [d].[DoctorId], [d].[ConsultationFee], [d].[CreatedDate], [d].[FullName], [d].[IsActive], [d].[Specialisation], [d].[UserId], [d].[YearsOfExperience]
+FROM [Doctors] AS [d]
+ORDER BY [d].[YearsOfExperience]
+OFFSET @p ROWS FETCH NEXT @p1 ROWS ONLY
+2026-07-18 14:04:03.726 +05:30 [INF] Executing OkObjectResult, writing value of type 'HealthCare.Shared.ApiResponse`1[[HealthCare.Shared.DTOs.PagedResult`1[[HealthCare.Shared.DTOs.Doctor.DoctorListDto, HealthCare.Shared, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], HealthCare.Shared, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-07-18 14:04:03.741 +05:30 [INF] Executed action HealthCare.Api.Controllers.DoctorAdminController.GetAllDoctor (HealthCare.Api) in 362.4763ms
+2026-07-18 14:04:03.756 +05:30 [INF] Executed endpoint 'HealthCare.Api.Controllers.DoctorAdminController.GetAllDoctor (HealthCare.Api)'
+2026-07-18 14:04:03.759 +05:30 [INF] HTTP GET /api/admin/doctors responded 200 in 413.2769 ms
+2026-07-18 14:04:03.765 +05:30 [INF] Request finished HTTP/2 GET https://localhost:7223/api/admin/doctors?SortBy=experience&IsDescending=False&PageNumber=1&PageSize=10 - 200 null application/json; charset=utf-8 435.7496ms
+2026-07-18 14:04:15.690 +05:30 [INF] Request starting HTTP/2 OPTIONS https://localhost:7223/api/auth/login - null null
+2026-07-18 14:04:15.696 +05:30 [INF] CORS policy execution successful.
+2026-07-18 14:04:15.697 +05:30 [INF] HTTP OPTIONS /api/auth/login responded 204 in 1.3084 ms
+2026-07-18 14:04:15.699 +05:30 [INF] Request finished HTTP/2 OPTIONS https://localhost:7223/api/auth/login - 204 null null 9.7371ms
+2026-07-18 14:04:15.703 +05:30 [INF] Request starting HTTP/2 POST https://localhost:7223/api/auth/login - application/json 54
+2026-07-18 14:04:15.706 +05:30 [INF] CORS policy execution successful.
+2026-07-18 14:04:15.708 +05:30 [INF] Executing endpoint 'HealthCare.Api.Controllers.AuthController.Login (HealthCare.Api)'
+2026-07-18 14:04:15.709 +05:30 [INF] Route matched with {action = "Login", controller = "Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(HealthCare.Shared.DTOs.Auth.LoginDto) on controller HealthCare.Api.Controllers.AuthController (HealthCare.Api).
+2026-07-18 14:04:15.722 +05:30 [INF] Executed DbCommand (2ms) [Parameters=[@normalizedEmail='?' (Size = 256)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(2) [a].[Id], [a].[AccessFailedCount], [a].[ConcurrencyStamp], [a].[Email], [a].[EmailConfirmed], [a].[LockoutEnabled], [a].[LockoutEnd], [a].[NormalizedEmail], [a].[NormalizedUserName], [a].[PasswordHash], [a].[PhoneNumber], [a].[PhoneNumberConfirmed], [a].[SecurityStamp], [a].[TwoFactorEnabled], [a].[UserName]
+FROM [AspNetUsers] AS [a]
+WHERE [a].[NormalizedEmail] = @normalizedEmail
+2026-07-18 14:04:15.869 +05:30 [INF] Executed DbCommand (1ms) [Parameters=[@userId='?' (Size = 450)], CommandType='"Text"', CommandTimeout='30']
+SELECT [a0].[Name]
+FROM [AspNetUserRoles] AS [a]
+INNER JOIN [AspNetRoles] AS [a0] ON [a].[RoleId] = [a0].[Id]
+WHERE [a].[UserId] = @userId
+2026-07-18 14:04:15.874 +05:30 [INF] Executed DbCommand (1ms) [Parameters=[@userId='?' (Size = 450)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [p].[PatientId], [p].[CreatedDate], [p].[DateOfBirth], [p].[FullName], [p].[Gender], [p].[InsuranceId], [p].[IsActive], [p].[PhoneNumber], [p].[UserId]
+FROM [Patients] AS [p]
+WHERE [p].[UserId] = @userId
+2026-07-18 14:04:15.887 +05:30 [INF] Executed DbCommand (3ms) [Parameters=[@userId='?' (Size = 450)], CommandType='"Text"', CommandTimeout='30']
+SELECT [a0].[Name]
+FROM [AspNetUserRoles] AS [a]
+INNER JOIN [AspNetRoles] AS [a0] ON [a].[RoleId] = [a0].[Id]
+WHERE [a].[UserId] = @userId
+2026-07-18 14:04:15.892 +05:30 [INF] Executing OkObjectResult, writing value of type 'HealthCare.Shared.ApiResponse`1[[HealthCare.Shared.DTOs.Auth.AuthResponseDto, HealthCare.Shared, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-07-18 14:04:15.894 +05:30 [INF] Executed action HealthCare.Api.Controllers.AuthController.Login (HealthCare.Api) in 182.6699ms
+2026-07-18 14:04:15.896 +05:30 [INF] Executed endpoint 'HealthCare.Api.Controllers.AuthController.Login (HealthCare.Api)'
+2026-07-18 14:04:15.898 +05:30 [INF] HTTP POST /api/auth/login responded 200 in 191.6732 ms
+2026-07-18 14:04:15.902 +05:30 [INF] Request finished HTTP/2 POST https://localhost:7223/api/auth/login - 200 null application/json; charset=utf-8 199.263ms
+2026-07-18 14:04:15.977 +05:30 [INF] Request starting HTTP/2 OPTIONS https://localhost:7223/api/appointments/patient/upcoming - null null
+2026-07-18 14:04:15.977 +05:30 [INF] Request starting HTTP/2 OPTIONS https://localhost:7223/api/records/my-records - null null
+2026-07-18 14:04:15.981 +05:30 [INF] CORS policy execution successful.
+2026-07-18 14:04:15.985 +05:30 [INF] CORS policy execution successful.
+2026-07-18 14:04:15.991 +05:30 [INF] HTTP OPTIONS /api/appointments/patient/upcoming responded 204 in 10.7196 ms
+2026-07-18 14:04:15.997 +05:30 [INF] HTTP OPTIONS /api/records/my-records responded 204 in 11.8809 ms
+2026-07-18 14:04:16.001 +05:30 [INF] Request finished HTTP/2 OPTIONS https://localhost:7223/api/appointments/patient/upcoming - 204 null null 23.954ms
+2026-07-18 14:04:16.004 +05:30 [INF] Request finished HTTP/2 OPTIONS https://localhost:7223/api/records/my-records - 204 null null 26.6372ms
+2026-07-18 14:04:16.004 +05:30 [INF] Request starting HTTP/2 GET https://localhost:7223/api/appointments/patient/upcoming - null null
+2026-07-18 14:04:16.006 +05:30 [INF] Request starting HTTP/2 GET https://localhost:7223/api/records/my-records - null null
+2026-07-18 14:04:16.016 +05:30 [INF] CORS policy execution successful.
+2026-07-18 14:04:16.023 +05:30 [INF] CORS policy execution successful.
+2026-07-18 14:04:16.027 +05:30 [INF] Executing endpoint 'HealthCare.Api.Controllers.AppointmentController.GetAppointmentByPatient (HealthCare.Api)'
+2026-07-18 14:04:16.029 +05:30 [INF] Executing endpoint 'HealthCare.Api.Controllers.HealthRecordController.GetHealthRecordByPatient (HealthCare.Api)'
+2026-07-18 14:04:16.035 +05:30 [INF] Route matched with {action = "GetAppointmentByPatient", controller = "Appointment"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetAppointmentByPatient() on controller HealthCare.Api.Controllers.AppointmentController (HealthCare.Api).
+2026-07-18 14:04:16.036 +05:30 [INF] Route matched with {action = "GetHealthRecordByPatient", controller = "HealthRecord"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetHealthRecordByPatient() on controller HealthCare.Api.Controllers.HealthRecordController (HealthCare.Api).
+2026-07-18 14:04:16.047 +05:30 [INF] Executed DbCommand (4ms) [Parameters=[@id='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT [h].[RecordId], [p].[FullName] AS [PatientName], [d].[FullName] AS [DoctorName], [h].[VisitDate], [h].[Diagnosis], [h].[Prescription], [h].[Notes]
+FROM [HealthRecords] AS [h]
+INNER JOIN [Patients] AS [p] ON [h].[PatientId] = [p].[PatientId]
+INNER JOIN [Doctors] AS [d] ON [h].[DoctorId] = [d].[DoctorId]
+WHERE [h].[PatientId] = @id
+ORDER BY [h].[VisitDate] DESC
+2026-07-18 14:04:16.072 +05:30 [INF] Executed DbCommand (2ms) [Parameters=[@id='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT [a].[AppointmentId], [a].[PatientId], [p].[FullName] AS [PatientName], [d].[FullName] AS [DoctorName], [a].[ScheduledDate], [a].[TimeSlot], [a].[Status]
+FROM [Appointments] AS [a]
+INNER JOIN [Patients] AS [p] ON [a].[PatientId] = [p].[PatientId]
+INNER JOIN [Doctors] AS [d] ON [a].[DoctorId] = [d].[DoctorId]
+WHERE [a].[PatientId] = @id AND [a].[ScheduledDate] >= CAST(CONVERT(date, GETDATE()) AS date)
+2026-07-18 14:04:16.080 +05:30 [INF] Executing OkObjectResult, writing value of type 'HealthCare.Shared.ApiResponse`1[[System.Collections.Generic.List`1[[HealthCare.Shared.DTOs.Appointment.AppointmentListDto, HealthCare.Shared, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-07-18 14:04:16.074 +05:30 [INF] Executing OkObjectResult, writing value of type 'HealthCare.Shared.ApiResponse`1[[System.Collections.Generic.List`1[[HealthCare.Shared.DTOs.HealthRecord.HealthRecordListDto, HealthCare.Shared, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-07-18 14:04:16.084 +05:30 [INF] Executed action HealthCare.Api.Controllers.AppointmentController.GetAppointmentByPatient (HealthCare.Api) in 45.4805ms
+2026-07-18 14:04:16.094 +05:30 [INF] Executed endpoint 'HealthCare.Api.Controllers.AppointmentController.GetAppointmentByPatient (HealthCare.Api)'
+2026-07-18 14:04:16.092 +05:30 [INF] Executed action HealthCare.Api.Controllers.HealthRecordController.GetHealthRecordByPatient (HealthCare.Api) in 51.479ms
+2026-07-18 14:04:16.107 +05:30 [INF] HTTP GET /api/appointments/patient/upcoming responded 200 in 91.6592 ms
+2026-07-18 14:04:16.146 +05:30 [INF] Request finished HTTP/2 GET https://localhost:7223/api/appointments/patient/upcoming - 200 null application/json; charset=utf-8 142.2898ms
+2026-07-18 14:04:16.141 +05:30 [INF] Executed endpoint 'HealthCare.Api.Controllers.HealthRecordController.GetHealthRecordByPatient (HealthCare.Api)'
+2026-07-18 14:04:16.172 +05:30 [INF] HTTP GET /api/records/my-records responded 200 in 149.5341 ms
+2026-07-18 14:04:16.175 +05:30 [INF] Request finished HTTP/2 GET https://localhost:7223/api/records/my-records - 200 null application/json; charset=utf-8 169.6548ms
+2026-07-18 14:04:23.203 +05:30 [INF] Request starting HTTP/2 OPTIONS https://localhost:7223/api/doctors/available?specialisation=Cardiology&date=2026-07-30 - null null
+2026-07-18 14:04:23.215 +05:30 [INF] CORS policy execution successful.
+2026-07-18 14:04:23.217 +05:30 [INF] HTTP OPTIONS /api/doctors/available responded 204 in 2.5868 ms
+2026-07-18 14:04:23.221 +05:30 [INF] Request finished HTTP/2 OPTIONS https://localhost:7223/api/doctors/available?specialisation=Cardiology&date=2026-07-30 - 204 null null 17.5408ms
+2026-07-18 14:04:23.238 +05:30 [INF] Request starting HTTP/2 GET https://localhost:7223/api/doctors/available?specialisation=Cardiology&date=2026-07-30 - null null
+2026-07-18 14:04:23.256 +05:30 [INF] CORS policy execution successful.
+2026-07-18 14:04:23.261 +05:30 [INF] Executing endpoint 'HealthCare.Api.Controllers.DoctorController.GetAvailableDoctors (HealthCare.Api)'
+2026-07-18 14:04:23.291 +05:30 [INF] Route matched with {action = "GetAvailableDoctors", controller = "Doctor"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetAvailableDoctors(System.String, System.DateOnly) on controller HealthCare.Api.Controllers.DoctorController (HealthCare.Api).
+2026-07-18 14:04:24.047 +05:30 [INF] Cache miss for available_doctors:Cardiology:2026-07-30:v0. Querying database.
+2026-07-18 14:04:24.183 +05:30 [INF] Executed DbCommand (61ms) [Parameters=[@specialisation='?' (Size = 50), @date='?' (DbType = Date)], CommandType='"Text"', CommandTimeout='30']
+SELECT [d].[DoctorId], [d].[FullName], [d].[Specialisation], [d].[YearsOfExperience], [d].[ConsultationFee], [d].[IsActive]
+FROM [Doctors] AS [d]
+WHERE [d].[Specialisation] = @specialisation AND [d].[IsActive] = CAST(1 AS bit) AND NOT EXISTS (
+    SELECT 1
+    FROM [DoctorLeaves] AS [d0]
+    WHERE [d].[DoctorId] = [d0].[DoctorId] AND [d0].[LeaveDate] = @date) AND EXISTS (
+    SELECT 1
+    FROM (
+        SELECT [a].[TimeSlot]
+        FROM [AvailableSlots] AS [a]
+        WHERE [d].[DoctorId] = [a].[DoctorId]
+        EXCEPT
+        SELECT [a0].[TimeSlot]
+        FROM [Appointments] AS [a0]
+        WHERE [d].[DoctorId] = [a0].[DoctorId] AND [a0].[ScheduledDate] = @date AND [a0].[Status] <> N'Cancelled'
+    ) AS [e])
+2026-07-18 14:04:24.281 +05:30 [INF] Executing OkObjectResult, writing value of type 'HealthCare.Shared.ApiResponse`1[[System.Collections.Generic.List`1[[HealthCare.Shared.DTOs.Doctor.DoctorListDto, HealthCare.Shared, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-07-18 14:04:24.286 +05:30 [INF] Executed action HealthCare.Api.Controllers.DoctorController.GetAvailableDoctors (HealthCare.Api) in 990.0998ms
+2026-07-18 14:04:24.288 +05:30 [INF] Executed endpoint 'HealthCare.Api.Controllers.DoctorController.GetAvailableDoctors (HealthCare.Api)'
+2026-07-18 14:04:24.289 +05:30 [INF] HTTP GET /api/doctors/available responded 200 in 1034.8477 ms
+2026-07-18 14:04:24.292 +05:30 [INF] Request finished HTTP/2 GET https://localhost:7223/api/doctors/available?specialisation=Cardiology&date=2026-07-30 - 200 null application/json; charset=utf-8 1053.9576ms
+2026-07-18 14:04:26.556 +05:30 [INF] Request starting HTTP/2 OPTIONS https://localhost:7223/api/appointments/available-slots?doctorId=3&date=2026-07-30 - null null
+2026-07-18 14:04:26.564 +05:30 [INF] CORS policy execution successful.
+2026-07-18 14:04:26.567 +05:30 [INF] HTTP OPTIONS /api/appointments/available-slots responded 204 in 3.0546 ms
+2026-07-18 14:04:26.573 +05:30 [INF] Request finished HTTP/2 OPTIONS https://localhost:7223/api/appointments/available-slots?doctorId=3&date=2026-07-30 - 204 null null 16.5512ms
+2026-07-18 14:04:26.582 +05:30 [INF] Request starting HTTP/2 GET https://localhost:7223/api/appointments/available-slots?doctorId=3&date=2026-07-30 - null null
+2026-07-18 14:04:26.592 +05:30 [INF] CORS policy execution successful.
+2026-07-18 14:04:26.597 +05:30 [INF] Executing endpoint 'HealthCare.Api.Controllers.AppointmentController.GetAvailableSlots (HealthCare.Api)'
+2026-07-18 14:04:26.620 +05:30 [INF] Route matched with {action = "GetAvailableSlots", controller = "Appointment"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetAvailableSlots(System.DateOnly, Int32) on controller HealthCare.Api.Controllers.AppointmentController (HealthCare.Api).
+2026-07-18 14:04:26.638 +05:30 [INF] Executed DbCommand (3ms) [Parameters=[@doctorId='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT [a].[TimeSlot]
+FROM [AvailableSlots] AS [a]
+WHERE [a].[DoctorId] = @doctorId
+2026-07-18 14:04:26.661 +05:30 [INF] Executed DbCommand (7ms) [Parameters=[@date='?' (DbType = Date), @doctorId='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT [a].[TimeSlot]
+FROM [Appointments] AS [a]
+WHERE [a].[ScheduledDate] = @date AND [a].[DoctorId] = @doctorId AND [a].[Status] <> N'Cancelled'
+2026-07-18 14:04:26.667 +05:30 [INF] Executing OkObjectResult, writing value of type 'HealthCare.Shared.ApiResponse`1[[System.Collections.Generic.List`1[[System.String, System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]], System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-07-18 14:04:26.672 +05:30 [INF] Executed action HealthCare.Api.Controllers.AppointmentController.GetAvailableSlots (HealthCare.Api) in 48.4642ms
+2026-07-18 14:04:26.675 +05:30 [INF] Executed endpoint 'HealthCare.Api.Controllers.AppointmentController.GetAvailableSlots (HealthCare.Api)'
+2026-07-18 14:04:26.682 +05:30 [INF] HTTP GET /api/appointments/available-slots responded 200 in 89.4368 ms
+2026-07-18 14:04:26.688 +05:30 [INF] Request finished HTTP/2 GET https://localhost:7223/api/appointments/available-slots?doctorId=3&date=2026-07-30 - 200 null application/json; charset=utf-8 106.1207ms
+2026-07-18 14:04:30.419 +05:30 [INF] Request starting HTTP/2 OPTIONS https://localhost:7223/api/doctors/available?specialisation=Cardiology&date=2026-07-31 - null null
+2026-07-18 14:04:30.423 +05:30 [INF] CORS policy execution successful.
+2026-07-18 14:04:30.424 +05:30 [INF] HTTP OPTIONS /api/doctors/available responded 204 in 1.4297 ms
+2026-07-18 14:04:30.426 +05:30 [INF] Request finished HTTP/2 OPTIONS https://localhost:7223/api/doctors/available?specialisation=Cardiology&date=2026-07-31 - 204 null null 7.3938ms
+2026-07-18 14:04:30.429 +05:30 [INF] Request starting HTTP/2 GET https://localhost:7223/api/doctors/available?specialisation=Cardiology&date=2026-07-31 - null null
+2026-07-18 14:04:30.435 +05:30 [INF] CORS policy execution successful.
+2026-07-18 14:04:30.437 +05:30 [INF] Executing endpoint 'HealthCare.Api.Controllers.DoctorController.GetAvailableDoctors (HealthCare.Api)'
+2026-07-18 14:04:30.438 +05:30 [INF] Route matched with {action = "GetAvailableDoctors", controller = "Doctor"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetAvailableDoctors(System.String, System.DateOnly) on controller HealthCare.Api.Controllers.DoctorController (HealthCare.Api).
+2026-07-18 14:04:30.444 +05:30 [INF] Cache miss for available_doctors:Cardiology:2026-07-31:v0. Querying database.
+2026-07-18 14:04:30.450 +05:30 [INF] Executed DbCommand (4ms) [Parameters=[@specialisation='?' (Size = 50), @date='?' (DbType = Date)], CommandType='"Text"', CommandTimeout='30']
+SELECT [d].[DoctorId], [d].[FullName], [d].[Specialisation], [d].[YearsOfExperience], [d].[ConsultationFee], [d].[IsActive]
+FROM [Doctors] AS [d]
+WHERE [d].[Specialisation] = @specialisation AND [d].[IsActive] = CAST(1 AS bit) AND NOT EXISTS (
+    SELECT 1
+    FROM [DoctorLeaves] AS [d0]
+    WHERE [d].[DoctorId] = [d0].[DoctorId] AND [d0].[LeaveDate] = @date) AND EXISTS (
+    SELECT 1
+    FROM (
+        SELECT [a].[TimeSlot]
+        FROM [AvailableSlots] AS [a]
+        WHERE [d].[DoctorId] = [a].[DoctorId]
+        EXCEPT
+        SELECT [a0].[TimeSlot]
+        FROM [Appointments] AS [a0]
+        WHERE [d].[DoctorId] = [a0].[DoctorId] AND [a0].[ScheduledDate] = @date AND [a0].[Status] <> N'Cancelled'
+    ) AS [e])
+2026-07-18 14:04:30.454 +05:30 [INF] Executing OkObjectResult, writing value of type 'HealthCare.Shared.ApiResponse`1[[System.Collections.Generic.List`1[[HealthCare.Shared.DTOs.Doctor.DoctorListDto, HealthCare.Shared, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-07-18 14:04:30.456 +05:30 [INF] Executed action HealthCare.Api.Controllers.DoctorController.GetAvailableDoctors (HealthCare.Api) in 15.2935ms
+2026-07-18 14:04:30.458 +05:30 [INF] Executed endpoint 'HealthCare.Api.Controllers.DoctorController.GetAvailableDoctors (HealthCare.Api)'
+2026-07-18 14:04:30.460 +05:30 [INF] HTTP GET /api/doctors/available responded 200 in 25.4914 ms
+2026-07-18 14:04:30.463 +05:30 [INF] Request finished HTTP/2 GET https://localhost:7223/api/doctors/available?specialisation=Cardiology&date=2026-07-31 - 200 null application/json; charset=utf-8 33.2948ms
+2026-07-18 14:04:34.417 +05:30 [INF] Request starting HTTP/2 OPTIONS https://localhost:7223/api/doctors/available?specialisation=Cardiology&date=2026-08-05 - null null
+2026-07-18 14:04:34.422 +05:30 [INF] CORS policy execution successful.
+2026-07-18 14:04:34.423 +05:30 [INF] HTTP OPTIONS /api/doctors/available responded 204 in 1.2994 ms
+2026-07-18 14:04:34.426 +05:30 [INF] Request finished HTTP/2 OPTIONS https://localhost:7223/api/doctors/available?specialisation=Cardiology&date=2026-08-05 - 204 null null 9.0238ms
+2026-07-18 14:04:34.429 +05:30 [INF] Request starting HTTP/2 GET https://localhost:7223/api/doctors/available?specialisation=Cardiology&date=2026-08-05 - null null
+2026-07-18 14:04:34.435 +05:30 [INF] CORS policy execution successful.
+2026-07-18 14:04:34.438 +05:30 [INF] Executing endpoint 'HealthCare.Api.Controllers.DoctorController.GetAvailableDoctors (HealthCare.Api)'
+2026-07-18 14:04:34.440 +05:30 [INF] Route matched with {action = "GetAvailableDoctors", controller = "Doctor"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetAvailableDoctors(System.String, System.DateOnly) on controller HealthCare.Api.Controllers.DoctorController (HealthCare.Api).
+2026-07-18 14:04:34.446 +05:30 [INF] Cache miss for available_doctors:Cardiology:2026-08-05:v0. Querying database.
+2026-07-18 14:04:34.451 +05:30 [INF] Executed DbCommand (1ms) [Parameters=[@specialisation='?' (Size = 50), @date='?' (DbType = Date)], CommandType='"Text"', CommandTimeout='30']
+SELECT [d].[DoctorId], [d].[FullName], [d].[Specialisation], [d].[YearsOfExperience], [d].[ConsultationFee], [d].[IsActive]
+FROM [Doctors] AS [d]
+WHERE [d].[Specialisation] = @specialisation AND [d].[IsActive] = CAST(1 AS bit) AND NOT EXISTS (
+    SELECT 1
+    FROM [DoctorLeaves] AS [d0]
+    WHERE [d].[DoctorId] = [d0].[DoctorId] AND [d0].[LeaveDate] = @date) AND EXISTS (
+    SELECT 1
+    FROM (
+        SELECT [a].[TimeSlot]
+        FROM [AvailableSlots] AS [a]
+        WHERE [d].[DoctorId] = [a].[DoctorId]
+        EXCEPT
+        SELECT [a0].[TimeSlot]
+        FROM [Appointments] AS [a0]
+        WHERE [d].[DoctorId] = [a0].[DoctorId] AND [a0].[ScheduledDate] = @date AND [a0].[Status] <> N'Cancelled'
+    ) AS [e])
+2026-07-18 14:04:34.454 +05:30 [INF] Executing OkObjectResult, writing value of type 'HealthCare.Shared.ApiResponse`1[[System.Collections.Generic.List`1[[HealthCare.Shared.DTOs.Doctor.DoctorListDto, HealthCare.Shared, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-07-18 14:04:34.456 +05:30 [INF] Executed action HealthCare.Api.Controllers.DoctorController.GetAvailableDoctors (HealthCare.Api) in 13.7745ms
+2026-07-18 14:04:34.458 +05:30 [INF] Executed endpoint 'HealthCare.Api.Controllers.DoctorController.GetAvailableDoctors (HealthCare.Api)'
+2026-07-18 14:04:34.462 +05:30 [INF] HTTP GET /api/doctors/available responded 200 in 26.6562 ms
+2026-07-18 14:04:34.466 +05:30 [INF] Request finished HTTP/2 GET https://localhost:7223/api/doctors/available?specialisation=Cardiology&date=2026-08-05 - 200 null application/json; charset=utf-8 37.0178ms
+2026-07-18 14:04:35.335 +05:30 [INF] Request starting HTTP/2 OPTIONS https://localhost:7223/api/appointments/available-slots?doctorId=3&date=2026-08-05 - null null
+2026-07-18 14:04:35.353 +05:30 [INF] CORS policy execution successful.
+2026-07-18 14:04:35.355 +05:30 [INF] HTTP OPTIONS /api/appointments/available-slots responded 204 in 2.8090 ms
+2026-07-18 14:04:35.385 +05:30 [INF] Request finished HTTP/2 OPTIONS https://localhost:7223/api/appointments/available-slots?doctorId=3&date=2026-08-05 - 204 null null 49.9744ms
+2026-07-18 14:04:35.387 +05:30 [INF] Request starting HTTP/2 GET https://localhost:7223/api/appointments/available-slots?doctorId=3&date=2026-08-05 - null null
+2026-07-18 14:04:35.396 +05:30 [INF] CORS policy execution successful.
+2026-07-18 14:04:35.400 +05:30 [INF] Executing endpoint 'HealthCare.Api.Controllers.AppointmentController.GetAvailableSlots (HealthCare.Api)'
+2026-07-18 14:04:35.401 +05:30 [INF] Route matched with {action = "GetAvailableSlots", controller = "Appointment"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetAvailableSlots(System.DateOnly, Int32) on controller HealthCare.Api.Controllers.AppointmentController (HealthCare.Api).
+2026-07-18 14:04:35.412 +05:30 [INF] Executed DbCommand (3ms) [Parameters=[@doctorId='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT [a].[TimeSlot]
+FROM [AvailableSlots] AS [a]
+WHERE [a].[DoctorId] = @doctorId
+2026-07-18 14:04:35.425 +05:30 [INF] Executed DbCommand (2ms) [Parameters=[@date='?' (DbType = Date), @doctorId='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT [a].[TimeSlot]
+FROM [Appointments] AS [a]
+WHERE [a].[ScheduledDate] = @date AND [a].[DoctorId] = @doctorId AND [a].[Status] <> N'Cancelled'
+2026-07-18 14:04:35.429 +05:30 [INF] Executing OkObjectResult, writing value of type 'HealthCare.Shared.ApiResponse`1[[System.Collections.Generic.List`1[[System.String, System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]], System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-07-18 14:04:35.432 +05:30 [INF] Executed action HealthCare.Api.Controllers.AppointmentController.GetAvailableSlots (HealthCare.Api) in 26.8126ms
+2026-07-18 14:04:35.434 +05:30 [INF] Executed endpoint 'HealthCare.Api.Controllers.AppointmentController.GetAvailableSlots (HealthCare.Api)'
+2026-07-18 14:04:35.436 +05:30 [INF] HTTP GET /api/appointments/available-slots responded 200 in 39.9199 ms
+2026-07-18 14:04:35.440 +05:30 [INF] Request finished HTTP/2 GET https://localhost:7223/api/appointments/available-slots?doctorId=3&date=2026-08-05 - 200 null application/json; charset=utf-8 52.891ms
+2026-07-18 14:04:37.159 +05:30 [INF] Request starting HTTP/2 OPTIONS https://localhost:7223/api/appointments/book - null null
+2026-07-18 14:04:37.163 +05:30 [INF] CORS policy execution successful.
+2026-07-18 14:04:37.164 +05:30 [INF] HTTP OPTIONS /api/appointments/book responded 204 in 1.5500 ms
+2026-07-18 14:04:37.167 +05:30 [INF] Request finished HTTP/2 OPTIONS https://localhost:7223/api/appointments/book - 204 null null 8.7086ms
+2026-07-18 14:04:37.169 +05:30 [INF] Request starting HTTP/2 POST https://localhost:7223/api/appointments/book - application/json 62
+2026-07-18 14:04:37.175 +05:30 [INF] CORS policy execution successful.
+2026-07-18 14:04:37.177 +05:30 [INF] Executing endpoint 'HealthCare.Api.Controllers.AppointmentController.BookAppointment (HealthCare.Api)'
+2026-07-18 14:04:37.190 +05:30 [INF] Route matched with {action = "BookAppointment", controller = "Appointment"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] BookAppointment(HealthCare.Shared.DTOs.Appointment.CreateAppointmentDto) on controller HealthCare.Api.Controllers.AppointmentController (HealthCare.Api).
+2026-07-18 14:04:37.221 +05:30 [INF] Executed DbCommand (8ms) [Parameters=[@date='?' (DbType = Date), @doctorId='?' (DbType = Int32), @timeSlot='?' (Size = 20)], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Appointments] AS [a]
+        WHERE [a].[ScheduledDate] = @date AND [a].[DoctorId] = @doctorId AND [a].[TimeSlot] = @timeSlot AND [a].[Status] <> N'Cancelled') THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2026-07-18 14:04:37.474 +05:30 [INF] Executed DbCommand (34ms) [Parameters=[@p0='?' (Size = 500), @p1='?' (DbType = DateTimeOffset), @p2='?' (DbType = Int32), @p3='?' (DbType = Int32), @p4='?' (DbType = Date), @p5='?' (Size = 20), @p6='?' (Size = 20)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+INSERT INTO [Appointments] ([CancellationReason], [CreatedDate], [DoctorId], [PatientId], [ScheduledDate], [Status], [TimeSlot])
+OUTPUT INSERTED.[AppointmentId]
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6);
+2026-07-18 14:04:37.546 +05:30 [INF] Executed DbCommand (3ms) [Parameters=[@p='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [d].[DoctorId], [d].[ConsultationFee], [d].[CreatedDate], [d].[FullName], [d].[IsActive], [d].[Specialisation], [d].[UserId], [d].[YearsOfExperience]
+FROM [Doctors] AS [d]
+WHERE [d].[DoctorId] = @p
+2026-07-18 14:04:37.571 +05:30 [INF] Invalidated cache for Cardiology (v1)
+2026-07-18 14:04:37.587 +05:30 [INF] Executed DbCommand (3ms) [Parameters=[@p='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [p].[PatientId], [p].[CreatedDate], [p].[DateOfBirth], [p].[FullName], [p].[Gender], [p].[InsuranceId], [p].[IsActive], [p].[PhoneNumber], [p].[UserId]
+FROM [Patients] AS [p]
+WHERE [p].[PatientId] = @p
+2026-07-18 14:04:37.829 +05:30 [INF] Appointment 50 booked by Patient 3 with Doctor 3 on "2026-08-05" at 11:00
+2026-07-18 14:04:37.837 +05:30 [INF] Executing OkObjectResult, writing value of type 'HealthCare.Shared.ApiResponse'.
+2026-07-18 14:04:37.843 +05:30 [INF] Executed action HealthCare.Api.Controllers.AppointmentController.BookAppointment (HealthCare.Api) in 650.0874ms
+2026-07-18 14:04:37.845 +05:30 [INF] Executed endpoint 'HealthCare.Api.Controllers.AppointmentController.BookAppointment (HealthCare.Api)'
+2026-07-18 14:04:37.848 +05:30 [INF] HTTP POST /api/appointments/book responded 200 in 672.6003 ms
+2026-07-18 14:04:37.851 +05:30 [INF] Request finished HTTP/2 POST https://localhost:7223/api/appointments/book - 200 null application/json; charset=utf-8 681.3281ms
+2026-07-18 14:04:37.893 +05:30 [INF] Processing AppointmentBooked: 50 for Doctor 3
+2026-07-18 14:04:37.997 +05:30 [INF] Executed DbCommand (11ms) [Parameters=[@p0='?' (DbType = DateTime2), @p1='?' (DbType = Boolean), @p2='?' (Size = 500), @p3='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+INSERT INTO [Notifications] ([CreatedAt], [IsRead], [Message], [UserId])
+OUTPUT INSERTED.[NotificationId]
+VALUES (@p0, @p1, @p2, @p3);
+2026-07-18 14:04:38.005 +05:30 [INF] Notification created for Appointment 50
+2026-07-18 14:10:56.292 +05:30 [INF] Request starting HTTP/2 OPTIONS https://localhost:7223/api/doctors/available?specialisation=Cardiology&date=2026-08-05 - null null
+2026-07-18 14:10:56.296 +05:30 [INF] CORS policy execution successful.
+2026-07-18 14:10:56.297 +05:30 [INF] HTTP OPTIONS /api/doctors/available responded 204 in 1.4034 ms
+2026-07-18 14:10:56.300 +05:30 [INF] Request finished HTTP/2 OPTIONS https://localhost:7223/api/doctors/available?specialisation=Cardiology&date=2026-08-05 - 204 null null 7.4827ms
+2026-07-18 14:10:56.302 +05:30 [INF] Request starting HTTP/2 GET https://localhost:7223/api/doctors/available?specialisation=Cardiology&date=2026-08-05 - null null
+2026-07-18 14:10:56.306 +05:30 [INF] CORS policy execution successful.
+2026-07-18 14:10:56.309 +05:30 [INF] Executing endpoint 'HealthCare.Api.Controllers.DoctorController.GetAvailableDoctors (HealthCare.Api)'
+2026-07-18 14:10:56.311 +05:30 [INF] Route matched with {action = "GetAvailableDoctors", controller = "Doctor"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetAvailableDoctors(System.String, System.DateOnly) on controller HealthCare.Api.Controllers.DoctorController (HealthCare.Api).
+2026-07-18 14:10:56.331 +05:30 [INF] Cache miss for available_doctors:Cardiology:2026-08-05:v1. Querying database.
+2026-07-18 14:10:56.769 +05:30 [INF] Executed DbCommand (41ms) [Parameters=[@specialisation='?' (Size = 50), @date='?' (DbType = Date)], CommandType='"Text"', CommandTimeout='30']
+SELECT [d].[DoctorId], [d].[FullName], [d].[Specialisation], [d].[YearsOfExperience], [d].[ConsultationFee], [d].[IsActive]
+FROM [Doctors] AS [d]
+WHERE [d].[Specialisation] = @specialisation AND [d].[IsActive] = CAST(1 AS bit) AND NOT EXISTS (
+    SELECT 1
+    FROM [DoctorLeaves] AS [d0]
+    WHERE [d].[DoctorId] = [d0].[DoctorId] AND [d0].[LeaveDate] = @date) AND EXISTS (
+    SELECT 1
+    FROM (
+        SELECT [a].[TimeSlot]
+        FROM [AvailableSlots] AS [a]
+        WHERE [d].[DoctorId] = [a].[DoctorId]
+        EXCEPT
+        SELECT [a0].[TimeSlot]
+        FROM [Appointments] AS [a0]
+        WHERE [d].[DoctorId] = [a0].[DoctorId] AND [a0].[ScheduledDate] = @date AND [a0].[Status] <> N'Cancelled'
+    ) AS [e])
+2026-07-18 14:10:56.774 +05:30 [INF] Executing OkObjectResult, writing value of type 'HealthCare.Shared.ApiResponse`1[[System.Collections.Generic.List`1[[HealthCare.Shared.DTOs.Doctor.DoctorListDto, HealthCare.Shared, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-07-18 14:10:56.777 +05:30 [INF] Executed action HealthCare.Api.Controllers.DoctorController.GetAvailableDoctors (HealthCare.Api) in 462.7121ms
+2026-07-18 14:10:56.779 +05:30 [INF] Executed endpoint 'HealthCare.Api.Controllers.DoctorController.GetAvailableDoctors (HealthCare.Api)'
+2026-07-18 14:10:56.780 +05:30 [INF] HTTP GET /api/doctors/available responded 200 in 474.0737 ms
+2026-07-18 14:10:56.782 +05:30 [INF] Request finished HTTP/2 GET https://localhost:7223/api/doctors/available?specialisation=Cardiology&date=2026-08-05 - 200 null application/json; charset=utf-8 480.6424ms
+2026-07-18 14:10:57.581 +05:30 [INF] Request starting HTTP/2 GET https://localhost:7223/api/doctors/available?specialisation=Cardiology&date=2026-08-05 - null null
+2026-07-18 14:10:57.587 +05:30 [INF] CORS policy execution successful.
+2026-07-18 14:10:57.589 +05:30 [INF] Executing endpoint 'HealthCare.Api.Controllers.DoctorController.GetAvailableDoctors (HealthCare.Api)'
+2026-07-18 14:10:57.591 +05:30 [INF] Route matched with {action = "GetAvailableDoctors", controller = "Doctor"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetAvailableDoctors(System.String, System.DateOnly) on controller HealthCare.Api.Controllers.DoctorController (HealthCare.Api).
+2026-07-18 14:10:57.597 +05:30 [INF] Cache hit for available_doctors:Cardiology:2026-08-05:v1
+2026-07-18 14:10:57.615 +05:30 [INF] Executing OkObjectResult, writing value of type 'HealthCare.Shared.ApiResponse`1[[System.Collections.Generic.List`1[[HealthCare.Shared.DTOs.Doctor.DoctorListDto, HealthCare.Shared, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-07-18 14:10:57.618 +05:30 [INF] Executed action HealthCare.Api.Controllers.DoctorController.GetAvailableDoctors (HealthCare.Api) in 23.4031ms
+2026-07-18 14:10:57.622 +05:30 [INF] Executed endpoint 'HealthCare.Api.Controllers.DoctorController.GetAvailableDoctors (HealthCare.Api)'
+2026-07-18 14:10:57.623 +05:30 [INF] HTTP GET /api/doctors/available responded 200 in 36.8639 ms
+2026-07-18 14:10:57.626 +05:30 [INF] Request finished HTTP/2 GET https://localhost:7223/api/doctors/available?specialisation=Cardiology&date=2026-08-05 - 200 null application/json; charset=utf-8 45.8357ms
+2026-07-18 14:10:58.413 +05:30 [INF] Request starting HTTP/2 GET https://localhost:7223/api/doctors/available?specialisation=Cardiology&date=2026-08-05 - null null
+2026-07-18 14:10:58.418 +05:30 [INF] CORS policy execution successful.
+2026-07-18 14:10:58.426 +05:30 [INF] Executing endpoint 'HealthCare.Api.Controllers.DoctorController.GetAvailableDoctors (HealthCare.Api)'
+2026-07-18 14:10:58.433 +05:30 [INF] Route matched with {action = "GetAvailableDoctors", controller = "Doctor"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetAvailableDoctors(System.String, System.DateOnly) on controller HealthCare.Api.Controllers.DoctorController (HealthCare.Api).
+2026-07-18 14:10:58.439 +05:30 [INF] Cache hit for available_doctors:Cardiology:2026-08-05:v1
+2026-07-18 14:10:58.444 +05:30 [INF] Executing OkObjectResult, writing value of type 'HealthCare.Shared.ApiResponse`1[[System.Collections.Generic.List`1[[HealthCare.Shared.DTOs.Doctor.DoctorListDto, HealthCare.Shared, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-07-18 14:10:58.447 +05:30 [INF] Executed action HealthCare.Api.Controllers.DoctorController.GetAvailableDoctors (HealthCare.Api) in 10.7601ms
+2026-07-18 14:10:58.449 +05:30 [INF] Executed endpoint 'HealthCare.Api.Controllers.DoctorController.GetAvailableDoctors (HealthCare.Api)'
+2026-07-18 14:10:58.452 +05:30 [INF] HTTP GET /api/doctors/available responded 200 in 34.2485 ms
+2026-07-18 14:10:58.457 +05:30 [INF] Request finished HTTP/2 GET https://localhost:7223/api/doctors/available?specialisation=Cardiology&date=2026-08-05 - 200 null application/json; charset=utf-8 44.2913ms
+2026-07-18 14:58:02.771 +05:30 [INF] Executed DbCommand (13ms) [Parameters=[@cutoff='?' (DbType = DateTime2)], CommandType='"Text"', CommandTimeout='30']
+DELETE FROM [n]
+FROM [Notifications] AS [n]
+WHERE [n].[CreatedAt] < @cutoff
+2026-07-18 16:46:43.201 +05:30 [WRN] Connection Failed: "rabbitmq://localhost/"
+RabbitMQ.Client.Exceptions.BrokerUnreachableException: None of the specified endpoints were reachable
+ ---> System.TimeoutException: The operation has timed out.
+   at RabbitMQ.Util.BlockingCell`1.WaitForValue(TimeSpan timeout)
+   at RabbitMQ.Client.Impl.SimpleBlockingRpcContinuation.GetReply(TimeSpan timeout)
+   at RabbitMQ.Client.Impl.ModelBase.ConnectionOpen(String virtualHost, String capabilities, Boolean insist)
+   at RabbitMQ.Client.Framing.Impl.Connection.Open(Boolean insist)
+   at RabbitMQ.Client.Framing.Impl.Connection..ctor(IConnectionFactory factory, Boolean insist, IFrameHandler frameHandler, String clientProvidedName)
+   at RabbitMQ.Client.Framing.Impl.Connection..ctor(IConnectionFactory factory, Boolean insist, IFrameHandler frameHandler, ArrayPool`1 memoryPool, String clientProvidedName)
+   at RabbitMQ.Client.Framing.Impl.ProtocolBase.CreateConnection(IConnectionFactory factory, Boolean insist, IFrameHandler frameHandler, ArrayPool`1 memoryPool, String clientProvidedName)
+   at RabbitMQ.Client.ConnectionFactory.CreateConnection(IEndpointResolver endpointResolver, String clientProvidedName)
+   --- End of inner exception stack trace ---
+   at RabbitMQ.Client.ConnectionFactory.CreateConnection(IEndpointResolver endpointResolver, String clientProvidedName)
+   at RabbitMQ.Client.ConnectionFactory.CreateConnection(IList`1 hostnames, String clientProvidedName)
+   at MassTransit.RabbitMqTransport.ConnectionContextFactory.CreateConnection(ISupervisor supervisor) in /_/src/Transports/MassTransit.RabbitMqTransport/RabbitMqTransport/ConnectionContextFactory.cs:line 85
