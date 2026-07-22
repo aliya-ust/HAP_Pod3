@@ -13,12 +13,14 @@ namespace HealthCare.Api.Data
             var context = scope.ServiceProvider.GetRequiredService<HealthCareDbContext>();
             var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
 
-            // Always seed users regardless of existing data
             await SeedDoctorUser(context, userManager);
             await SeedPatientUser(context, userManager);
             await context.SaveChangesAsync();
 
-            // Only seed appointments if none exist
+            var doctor = await context.Doctors.FirstOrDefaultAsync(d => d.FullName == "Dr. Anil Mehta");
+            var patient = await context.Patients.FirstOrDefaultAsync(p => p.FullName == "Arjun Raj");
+            if (doctor == null || patient == null) return;
+
             var tomorrow = DateOnly.FromDateTime(DateTime.Today.AddDays(1));
             var dayAfter = DateOnly.FromDateTime(DateTime.Today.AddDays(2));
             var nextWeek = DateOnly.FromDateTime(DateTime.Today.AddDays(7));
@@ -28,8 +30,8 @@ namespace HealthCare.Api.Data
                 context.Appointments.AddRange(
                     new Appointment
                     {
-                        PatientId = 3,
-                        DoctorId = 3,
+                        PatientId = patient.PatientId,
+                        DoctorId = doctor.DoctorId,
                         ScheduledDate = tomorrow,
                         TimeSlot = "09:00",
                         Status = AppointmentStatus.Pending,
@@ -37,8 +39,8 @@ namespace HealthCare.Api.Data
                     },
                     new Appointment
                     {
-                        PatientId = 3,
-                        DoctorId = 3,
+                        PatientId = patient.PatientId,
+                        DoctorId = doctor.DoctorId,
                         ScheduledDate = tomorrow,
                         TimeSlot = "10:00",
                         Status = AppointmentStatus.Completed,
@@ -46,8 +48,8 @@ namespace HealthCare.Api.Data
                     },
                     new Appointment
                     {
-                        PatientId = 3,
-                        DoctorId = 3,
+                        PatientId = patient.PatientId,
+                        DoctorId = doctor.DoctorId,
                         ScheduledDate = dayAfter,
                         TimeSlot = "11:00",
                         Status = AppointmentStatus.Pending,
@@ -55,8 +57,8 @@ namespace HealthCare.Api.Data
                     },
                     new Appointment
                     {
-                        PatientId = 3,
-                        DoctorId = 3,
+                        PatientId = patient.PatientId,
+                        DoctorId = doctor.DoctorId,
                         ScheduledDate = nextWeek,
                         TimeSlot = "11:00",
                         Status = AppointmentStatus.Confirmed,
@@ -66,7 +68,6 @@ namespace HealthCare.Api.Data
 
                 await context.SaveChangesAsync();
 
-                // Seed a health record for the confirmed appointment
                 var confirmedAppt = await context.Appointments
                     .FirstAsync(a => a.ScheduledDate == tomorrow && a.TimeSlot == "10:00");
 
@@ -75,8 +76,8 @@ namespace HealthCare.Api.Data
                     context.HealthRecords.Add(new HealthRecord
                     {
                         AppointmentId = confirmedAppt.AppointmentId,
-                        PatientId = 3,
-                        DoctorId = 3,
+                        PatientId = patient.PatientId,
+                        DoctorId = doctor.DoctorId,
                         VisitDate = tomorrow,
                         Diagnosis = "Regular checkup - mild hypertension",
                         Prescription = "Prescribed lifestyle changes and follow-up in 3 months",
@@ -107,11 +108,16 @@ namespace HealthCare.Api.Data
 
             await userManager.AddToRoleAsync(doctorUser, "Doctor");
 
-            var doctor = await context.Doctors.FindAsync(3);
-            if (doctor != null)
+            context.Doctors.Add(new Doctor
             {
-                doctor.UserId = doctorUser.Id;
-            }
+                FullName = "Dr. Anil Mehta",
+                Specialisation = "Cardiology",
+                YearsOfExperience = 12,
+                ConsultationFee = 800,
+                IsActive = true,
+                CreatedDate = DateTimeOffset.UtcNow,
+                UserId = doctorUser.Id,
+            });
         }
 
         private static async Task SeedPatientUser(HealthCareDbContext context, UserManager<User> userManager)
@@ -132,11 +138,15 @@ namespace HealthCare.Api.Data
 
             await userManager.AddToRoleAsync(patientUser, "Patient");
 
-            var patient = await context.Patients.FindAsync(3);
-            if (patient != null)
+            context.Patients.Add(new Patient
             {
-                patient.UserId = patientUser.Id;
-            }
+                FullName = "Arjun Raj",
+                DateOfBirth = new DateOnly(1990, 5, 12),
+                Gender = "Male",
+                PhoneNumber = "9876543210",
+                CreatedDate = DateTimeOffset.UtcNow,
+                UserId = patientUser.Id,
+            });
         }
     }
 }
