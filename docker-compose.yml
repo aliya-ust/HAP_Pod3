@@ -45,6 +45,8 @@ services:
       - RabbitMq__Username=guest
       - RabbitMq__Password=guest
       - Cors__AllowedOrigins=http://healthcare-s3-181486424621-ap-southeast-2-an.s3-website-ap-southeast-2.amazonaws.com
+      - SeedData__AdminEmail=${SEED_ADMIN_EMAIL:-admin@healthcare.com}
+      - SeedData__AdminPassword=${SEED_ADMIN_PASSWORD:-Admin@123}
     depends_on:
       sqlserver:
         condition: service_healthy
