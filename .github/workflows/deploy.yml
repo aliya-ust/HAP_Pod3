@@ -36,7 +36,7 @@ jobs:
             echo "JWT_KEY=${{ secrets.JWT_KEY }}" >> .env
             echo "JWT_ISSUER=${{ secrets.JWT_ISSUER }}" >> .env
             echo "JWT_AUDIENCE=${{ secrets.JWT_AUDIENCE }}" >> .env
-            docker compose up --build -d api
+            docker compose up --build -d
 
   deploy-angular:
     needs: test

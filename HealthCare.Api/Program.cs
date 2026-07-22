@@ -219,10 +219,7 @@ using (var scope = app.Services.CreateScope())
 
     await RoleSeeder.SeedRolesAsync(roleManager);
     await UserSeeder.SeedAdminAsync(userManager, roleManager, config);
-    if (app.Environment.IsDevelopment())
-    {
-        await DataSeeder.SeedTestDataAsync(services);
-    }
+    await DataSeeder.SeedTestDataAsync(services);
 }
 
 // Configure the HTTP request pipeline.
