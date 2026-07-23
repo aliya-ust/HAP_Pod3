@@ -7,13 +7,15 @@ RUN dotnet publish HealthCare.Api/HealthCare.Api.csproj -c Release -o /app/api/p
 
 RUN dotnet restore HealthCare.Admin/HealthCare.Admin.csproj
 RUN dotnet publish HealthCare.Admin/HealthCare.Admin.csproj -c Release -o /app/admin/publish --no-restore
+RUN sed -i 's|<base href="/" />|<base href="/admin/" />|g' /app/admin/publish/wwwroot/index.html
 
-FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS api
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS final
 WORKDIR /app
-EXPOSE 8080
-COPY --from=build /app/api/publish .
-ENTRYPOINT ["dotnet", "HealthCare.Api.dll"]
+EXPOSE 80
 
-FROM nginx:alpine AS proxy
-COPY --from=build /app/admin/publish/wwwroot /usr/share/nginx/html
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=build /app/api/publish .
+COPY HealthCare.Portal/dist/HealthCare.Portal/browser /app/wwwroot
+COPY --from=build /app/admin/publish/wwwroot /app/wwwroot/admin
+
+ENV ASPNETCORE_URLS=http://+:80
+ENTRYPOINT ["dotnet", "HealthCare.Api.dll"]

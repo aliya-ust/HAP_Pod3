@@ -8,7 +8,6 @@ obj/
 node_modules/
 HealthCare.Portal/node_modules/
 HealthCare.Portal/.angular/
-HealthCare.Portal/dist/
 tools/
 TestResults/
 .sonarqube/

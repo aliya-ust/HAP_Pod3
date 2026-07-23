@@ -21,6 +21,7 @@ using AutoMapper;
 using Microsoft.Extensions.Caching.Distributed;
 using System.Security.Claims;
 using System.Text;
+using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -238,8 +239,35 @@ app.UseCors("CorsPolicy");
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.UseDefaultFiles();
+app.UseStaticFiles();
+
+app.Map("/admin", admin =>
+{
+    var adminFileProvider = new PhysicalFileProvider(
+        Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "admin"));
+    admin.UseDefaultFiles(new DefaultFilesOptions
+    {
+        FileProvider = adminFileProvider,
+        RequestPath = ""
+    });
+    admin.UseStaticFiles(new StaticFileOptions
+    {
+        FileProvider = adminFileProvider,
+        RequestPath = ""
+    });
+    admin.Run(async context =>
+    {
+        context.Response.ContentType = "text/html";
+        await context.Response.SendFileAsync(
+            Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "admin", "index.html"));
+    });
+});
+
 app.MapControllers();
 
 app.MapGet("/health", () => Results.Ok("Healthy"));
+
+app.MapFallbackToFile("index.html");
 
 await app.RunAsync();

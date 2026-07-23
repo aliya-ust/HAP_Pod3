@@ -1,5 +1,6 @@
 ﻿@inject TokenService TokenService
 @inject NavigationManager NavigationManager
+@inject IConfiguration Configuration
 
 <div class="layout-wrapper">
 
@@ -58,6 +59,6 @@
     private async Task Logout()
     {
         await TokenService.RemoveToken();
-        NavigationManager.NavigateTo("http://localhost:4200/logout");
+        NavigationManager.NavigateTo(Configuration["LoginUrl"]!);
     }
 }

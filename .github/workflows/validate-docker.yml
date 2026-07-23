@@ -1,0 +1,29 @@
+name: Validate Docker Build
+
+on:
+  push:
+    branches: [Feature/Sprint5_Pod3_RijoBijuAbraham]
+  pull_request:
+    branches: [Feature/Sprint5_Pod3_RijoBijuAbraham]
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Build Angular
+        working-directory: HealthCare.Portal
+        run: |
+          npm ci
+          npx ng build --configuration production
+
+      - name: Build Docker image
+        run: docker build -t healthcare-test .
