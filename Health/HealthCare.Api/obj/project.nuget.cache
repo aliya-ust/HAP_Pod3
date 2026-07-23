@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "As9fU2nFTSo=",
+  "dgSpecHash": "BQRzNioJbx4=",
   "success": true,
   "projectFilePath": "C:\\Users\\310057\\Desktop\\Project\\Sprint3\\Health\\Health\\HealthCare.Api\\HealthCare.Api.csproj",
   "expectedPackageFiles": [
@@ -83,10 +83,7 @@
     "C:\\Users\\310057\\.nuget\\packages\\system.identitymodel.tokens.jwt\\8.19.1\\system.identitymodel.tokens.jwt.8.19.1.nupkg.sha512",
     "C:\\Users\\310057\\.nuget\\packages\\system.memory.data\\8.0.1\\system.memory.data.8.0.1.nupkg.sha512",
     "C:\\Users\\310057\\.nuget\\packages\\system.security.cryptography.pkcs\\9.0.4\\system.security.cryptography.pkcs.9.0.4.nupkg.sha512",
-    "C:\\Users\\310057\\.nuget\\packages\\system.security.cryptography.protecteddata\\9.0.4\\system.security.cryptography.protecteddata.9.0.4.nupkg.sha512",
-    "C:\\Users\\310057\\.nuget\\packages\\microsoft.netcore.app.runtime.linux-x64\\10.0.7\\microsoft.netcore.app.runtime.linux-x64.10.0.7.nupkg.sha512",
-    "C:\\Users\\310057\\.nuget\\packages\\microsoft.aspnetcore.app.runtime.linux-x64\\10.0.7\\microsoft.aspnetcore.app.runtime.linux-x64.10.0.7.nupkg.sha512",
-    "C:\\Users\\310057\\.nuget\\packages\\microsoft.netcore.app.host.linux-x64\\10.0.7\\microsoft.netcore.app.host.linux-x64.10.0.7.nupkg.sha512"
+    "C:\\Users\\310057\\.nuget\\packages\\system.security.cryptography.protecteddata\\9.0.4\\system.security.cryptography.protecteddata.9.0.4.nupkg.sha512"
   ],
   "logs": []
 }

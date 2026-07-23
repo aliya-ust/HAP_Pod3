@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 import { HealthRecord } from '../models/HealthRecord';
 
 @Injectable({
@@ -8,13 +9,13 @@ import { HealthRecord } from '../models/HealthRecord';
 })
 export class HealthRecordService {
 
-  private readonly apiUrl = '/api/HealthRecord';
+  private readonly baseUrl = `${environment.apiUrl}`;
 
   constructor(private readonly http: HttpClient) { }
 
   getPatientHealthRecords(): Observable<HealthRecord[]> {
     return this.http.get<HealthRecord[]>(
-      `${this.apiUrl}/patient`
+      `${this.baseUrl}/HealthRecord/patient`
     );
   }
 

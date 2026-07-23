@@ -2,13 +2,15 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 import { Appointment, DoctorDropdownDto, CreateAppointmentDto } from '../models/Appointment';
+import { environment } from '../../environments/environment';
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class AppointmentService {
 
-  private readonly apiUrl = '/api/Appointment';
+  private readonly baseUrl = `${environment.apiUrl}`;
 
   date: string = '';
   specialization: string = '';
@@ -25,7 +27,7 @@ export class AppointmentService {
 
   // PATIENT APPOINTMENTS
   getPatientAppointments(): Observable<Appointment[]> {
-    return this.http.get<Appointment[]>(`${this.apiUrl}/patient`)
+    return this.http.get<Appointment[]>(`${this.baseUrl}/Appointment/patient`)
       .pipe(
         tap(data => this.patientAppointments = data)
       );
@@ -33,18 +35,18 @@ export class AppointmentService {
 
   // DOCTOR APPOINTMENTS
   getDoctorAppointments(): Observable<Appointment[]> {
-    return this.http.get<Appointment[]>(`${this.apiUrl}/doctor`)
+    return this.http.get<Appointment[]>(`${this.baseUrl}/Appointment/doctor`)
       .pipe(
         tap(data => this.doctorAppointments = data)
       );
   }
 
   confirmAppointment(id: number): Observable<any> {
-    return this.http.put(`${this.apiUrl}/${id}/confirm`, {});
+    return this.http.put(`${this.baseUrl}/${id}/Appointment/confirm`, {});
   }
 
   cancelAppointment(id: number): Observable<any> {
-    return this.http.put(`${this.apiUrl}/${id}/cancel`, {});
+    return this.http.put(`${this.baseUrl}/${id}/Appointment/cancel`, {});
   }
 
   //  BOOKING FLOW
@@ -78,13 +80,13 @@ export class AppointmentService {
       .set('doctorId', doctorId)
       .set('date', date);
 
-    return this.http.get<string[]>(`${this.apiUrl}/available-slots`, { params })
+    return this.http.get<string[]>(`${this.baseUrl}/Appointment/available-slots`, { params })
       .pipe(
         tap(res => this.timeSlots = res) // cache
       );
   }
 
   bookAppointment(dto: CreateAppointmentDto): Observable<any> {
-    return this.http.post(`${this.apiUrl}`, dto);
+    return this.http.post(`${this.baseUrl}`, dto);
   }
 }

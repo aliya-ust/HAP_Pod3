@@ -132,7 +132,7 @@ builder.Services.AddCors(options =>
         policy
             .WithOrigins(
                 "https://localhost:7260", // Blazor
-                "http://localhost:49642"   // Angular
+                "http://localhost:49642" // Angular
             )
             .AllowAnyHeader()
             .AllowAnyMethod();
