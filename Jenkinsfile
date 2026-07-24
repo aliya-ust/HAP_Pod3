@@ -29,7 +29,7 @@ pipeline {
             steps {
                 dir('HealthCare.Portal') {
                     bat 'npm ci'
-                    bat 'ng build --configuration production'
+                    bat '.\\node_modules\\.bin\\ng.cmd build --configuration production'
                 }
                 bat 'dotnet publish HealthCare.Api -c Release -o publish/api --no-build'
                 bat 'dotnet publish HealthCare.Admin -c Release -o publish/admin --no-build'
@@ -117,7 +117,7 @@ option_settings:
                             aws elasticbeanstalk create-environment ^
                               --application-name %APP_NAME% ^
                               --environment-name %ENV_NAME% ^
-                              --template-name HealthCare-template ^
+                              --template-name HealthCare-env ^
                               --version-label v%BUILD_NUMBER% ^
                               --region %REGION%
                         """
