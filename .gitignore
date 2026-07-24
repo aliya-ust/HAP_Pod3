@@ -63,3 +63,5 @@ Thumbs.db
 wwwroot
 .ebextensions
 publish
+
+deploy.zip
