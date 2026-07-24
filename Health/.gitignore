@@ -20,3 +20,4 @@ TestResults
 node_modules/
 artifacts
 Logs
+wwwroot
