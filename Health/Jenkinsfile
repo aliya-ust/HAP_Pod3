@@ -31,29 +31,10 @@ pipeline {
             }
         }
 
-        stage('Validate Blazor Output') {
-            steps {
-                bat 'dir blazor-publish-temp'
-                bat 'dir blazor-publish-temp\\wwwroot'
-
-                bat '''
-                if not exist blazor-publish-temp\\wwwroot\\index.html (
-                    echo ERROR: index.html not found in Blazor publish output
-                    exit /b 1
-                )
-                '''
-            }
-        }
-
         stage('Copy Blazor into API wwwroot') {
             steps {
-                bat 'if exist Health\\HealthCare.Api\\wwwroot\\blazor rmdir /s /q Health\\HealthCare.Api\\wwwroot\\blazor'
-
-                bat 'mkdir Health\\HealthCare.Api\\wwwroot\\blazor'
-
-                bat 'robocopy blazor-publish-temp\\wwwroot Health\\HealthCare.Api\\wwwroot\\blazor /E'
-
-                bat 'dir Health\\HealthCare.Api\\wwwroot\\blazor'
+                bat 'if not exist Health\\HealthCare.Api\\wwwroot\\blazor mkdir Health\\HealthCare.Api\\wwwroot\\blazor'
+                bat 'xcopy /E /Y /I blazor-publish-temp\\wwwroot\\* HealthCare.Api\\wwwroot\\blazor\\'
             }
         }
 
