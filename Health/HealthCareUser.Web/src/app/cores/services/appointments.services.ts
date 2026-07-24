@@ -42,11 +42,11 @@ export class AppointmentService {
   }
 
   confirmAppointment(id: number): Observable<any> {
-    return this.http.put(`${this.baseUrl}/${id}/Appointment/confirm`, {});
+    return this.http.put(`${this.baseUrl}/Appointment/${id}/confirm`, {});
   }
 
   cancelAppointment(id: number): Observable<any> {
-    return this.http.put(`${this.baseUrl}/${id}/Appointment/cancel`, {});
+    return this.http.put(`${this.baseUrl}/Appointment/${id}/cancel`, {});
   }
 
   //  BOOKING FLOW
@@ -65,12 +65,12 @@ export class AppointmentService {
 
   // Get health records of a patient
   getHealthRecordsByPatient(patientId: number): Observable<any[]> {
-    return this.http.get<any[]>(`api/HealthRecord/patient/${patientId}`);
+    return this.http.get<any[]>(`/api/HealthRecord/patient/${patientId}`);
   }
 
   // Create new health record
   createHealthRecord(dto: any): Observable<any> {
-    return this.http.post(`api/HealthRecord`, dto);
+    return this.http.post(`/api/HealthRecord`, dto);
   }
 
 
@@ -87,6 +87,6 @@ export class AppointmentService {
   }
 
   bookAppointment(dto: CreateAppointmentDto): Observable<any> {
-    return this.http.post(`${this.baseUrl}`, dto);
+    return this.http.post(`${this.baseUrl}/Appointment`, dto);
   }
 }
