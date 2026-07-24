@@ -25,5 +25,19 @@ jobs:
           npm ci
           npx ng build --configuration production
 
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Publish API
+        run: dotnet publish HealthCare.Api/HealthCare.Api.csproj -c Release -o publish/api
+
+      - name: Publish Blazor Admin
+        run: dotnet publish HealthCare.Admin/HealthCare.Admin.csproj -c Release -o publish/admin
+
+      - name: Update Blazor base href
+        run: sed -i 's|<base href="/" />|<base href="/admin/" />|g' publish/admin/wwwroot/index.html
+
       - name: Build Docker image
         run: docker build -t healthcare-test .
