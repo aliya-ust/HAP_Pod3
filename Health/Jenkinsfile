@@ -31,12 +31,12 @@ pipeline {
             }
         }
 
-        stage('Copy Blazor into API wwwroot') {
-            steps {
-                bat 'if not exist Health\\HealthCare.Api\\wwwroot\\blazor mkdir Health\\HealthCare.Api\\wwwroot\\blazor'
-                bat 'xcopy /E /Y /I blazor-publish-temp\\wwwroot\\* HealthCare.Api\\wwwroot\\blazor\\'
-            }
-        }
+    stage('Copy Blazor into API wwwroot') {
+    steps {
+        bat 'if not exist Health\\HealthCare.Api\\wwwroot\\blazor mkdir Health\\HealthCare.Api\\wwwroot\\blazor'
+        bat 'xcopy /E /Y /I blazor-publish-temp\\wwwroot\\* Health\\HealthCare.Api\\wwwroot\\blazor\\'
+    }
+}
 
         stage('Publish API') {
             steps {
