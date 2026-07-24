@@ -18,11 +18,11 @@ pipeline {
         }
 
         stage('Build') {
-            steps { bat 'dotnet build --no-restore' }
+            steps { bat 'dotnet build --no-restore -c Release' }
         }
 
         stage('Test') {
-            steps { bat 'dotnet test --no-build' }
+            steps { bat 'dotnet test --no-build -c Release' }
         }
 
         stage('Build Angular + Publish .NET') {
