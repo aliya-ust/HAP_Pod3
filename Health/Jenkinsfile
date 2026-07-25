@@ -59,15 +59,24 @@ pipeline {
         stage('Copy Blazor into API wwwroot') {
             steps {
                 bat '''
-                if not exist Health\\HealthCare.Api\\wwwroot\\blazor mkdir Health\\HealthCare.Api\\wwwroot\\blazor
+                REM Remove old deployed Blazor files
+                if exist Health\\HealthCare.Api\\wwwroot\\blazor (
+                    rmdir /S /Q Health\\HealthCare.Api\\wwwroot\\blazor
+                )
 
-                REM Copy from artifacts\\wwwroot if it exists
+                mkdir Health\\HealthCare.Api\\wwwroot\\blazor
+
+                REM Copy only the web assets
                 if exist Health\\HealthCareAdmin.Web\\artifacts\\wwwroot\\index.html (
                     echo Copying from artifacts\\wwwroot...
                     xcopy /E /Y /I Health\\HealthCareAdmin.Web\\artifacts\\wwwroot\\* Health\\HealthCare.Api\\wwwroot\\blazor\\
                 ) else (
-                    echo Copying from artifacts...
-                    xcopy /E /Y /I Health\\HealthCareAdmin.Web\\artifacts\\* Health\\HealthCare.Api\\wwwroot\\blazor\\
+                    echo ERROR: index.html not found in publish output.
+                    dir Health\\HealthCareAdmin.Web\\artifacts
+                    if exist Health\\HealthCareAdmin.Web\\artifacts\\wwwroot (
+                        dir Health\\HealthCareAdmin.Web\\artifacts\\wwwroot
+                    )
+                    exit /b 1
                 )
 
                 echo.
