@@ -41,15 +41,39 @@ pipeline {
 
         stage('Verify Blazor Publish') {
             steps {
-                bat 'dir Health\\HealthCareAdmin.Web\\artifacts'
-                bat 'dir Health\\HealthCareAdmin.Web\\artifacts\\wwwroot'
+                bat '''
+                echo ===== artifacts =====
+                dir Health\\HealthCareAdmin.Web\\artifacts
+
+                echo.
+                echo ===== artifacts\\wwwroot =====
+                if exist Health\\HealthCareAdmin.Web\\artifacts\\wwwroot (
+                    dir Health\\HealthCareAdmin.Web\\artifacts\\wwwroot
+                ) else (
+                    echo wwwroot folder not found
+                )
+                '''
             }
         }
 
         stage('Copy Blazor into API wwwroot') {
             steps {
-                bat 'if not exist Health\\HealthCare.Api\\wwwroot\\blazor mkdir Health\\HealthCare.Api\\wwwroot\\blazor'
-                bat 'xcopy /E /Y /I Health\\HealthCareAdmin.Web\\artifacts\\wwwroot\\* Health\\HealthCare.Api\\wwwroot\\blazor\\'
+                bat '''
+                if not exist Health\\HealthCare.Api\\wwwroot\\blazor mkdir Health\\HealthCare.Api\\wwwroot\\blazor
+
+                REM Copy from artifacts\\wwwroot if it exists
+                if exist Health\\HealthCareAdmin.Web\\artifacts\\wwwroot\\index.html (
+                    echo Copying from artifacts\\wwwroot...
+                    xcopy /E /Y /I Health\\HealthCareAdmin.Web\\artifacts\\wwwroot\\* Health\\HealthCare.Api\\wwwroot\\blazor\\
+                ) else (
+                    echo Copying from artifacts...
+                    xcopy /E /Y /I Health\\HealthCareAdmin.Web\\artifacts\\* Health\\HealthCare.Api\\wwwroot\\blazor\\
+                )
+
+                echo.
+                echo ===== Final Blazor Files =====
+                dir Health\\HealthCare.Api\\wwwroot\\blazor
+                '''
             }
         }
 
