@@ -70,7 +70,13 @@ export class AppointmentService {
 
   // Create new health record
   createHealthRecord(dto: any): Observable<any> {
-    return this.http.post(`${this.baseUrl}/HealthRecord`, dto);
+
+    const url = `${this.baseUrl}/HealthRecord`;
+
+    console.log('Health Record URL =', url);
+    console.log('DTO =', dto);
+
+    return this.http.post(url, dto);
   }
 
 
