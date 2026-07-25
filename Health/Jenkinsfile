@@ -16,6 +16,16 @@ pipeline {
             }
         }
 
+        stage('Clean previous build artifacts') {
+            steps {
+                bat 'if exist blazor-publish-temp rmdir /S /Q blazor-publish-temp'
+                bat 'if exist publish rmdir /S /Q publish'
+                bat 'if exist deploy-package.zip del /F /Q deploy-package.zip'
+
+                bat 'if exist Health\\HealthCare.Api\\wwwroot\\blazor rmdir /S /Q Health\\HealthCare.Api\\wwwroot\\blazor'
+            }
+        }
+
         stage('Build Angular') {
             steps {
                 dir('Health/HealthCareUser.Web') {
@@ -28,15 +38,19 @@ pipeline {
         stage('Publish Blazor') {
             steps {
                 bat 'dotnet publish Health\\HealthCareAdmin.Web\\HealthCareAdmin.Web.csproj -c Release -o blazor-publish-temp'
+
+                bat 'if not exist blazor-publish-temp\\wwwroot\\index.html (echo ERROR: index.html missing from Blazor publish output & exit /b 1)'
             }
         }
 
-    stage('Copy Blazor into API wwwroot') {
-    steps {
-        bat 'if not exist Health\\HealthCare.Api\\wwwroot\\blazor mkdir Health\\HealthCare.Api\\wwwroot\\blazor'
-        bat 'xcopy /E /Y /I blazor-publish-temp\\wwwroot\\* Health\\HealthCare.Api\\wwwroot\\blazor\\'
-    }
-}
+        stage('Copy Blazor into API wwwroot') {
+            steps {
+                bat 'if not exist Health\\HealthCare.Api\\wwwroot\\blazor mkdir Health\\HealthCare.Api\\wwwroot\\blazor'
+                bat 'xcopy /E /Y /I blazor-publish-temp\\wwwroot\\* Health\\HealthCare.Api\\wwwroot\\blazor\\'
+
+                bat 'if not exist Health\\HealthCare.Api\\wwwroot\\blazor\\index.html (echo ERROR: index.html missing after xcopy & exit /b 1)'
+            }
+        }
 
         stage('Publish API') {
             steps {
@@ -47,6 +61,8 @@ pipeline {
         stage('Verify Package Contents') {
             steps {
                 bat 'dir publish\\wwwroot\\blazor'
+
+                bat 'if not exist publish\\wwwroot\\blazor\\index.html (echo ERROR: index.html missing from final publish output & exit /b 1)'
             }
         }
 
