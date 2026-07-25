@@ -65,12 +65,12 @@ export class AppointmentService {
 
   // Get health records of a patient
   getHealthRecordsByPatient(patientId: number): Observable<any[]> {
-    return this.http.get<any[]>(`/api/HealthRecord/patient/${patientId}`);
+    return this.http.get<any[]>(`${this.baseUrl}/HealthRecord/patient/${patientId}`);
   }
 
   // Create new health record
   createHealthRecord(dto: any): Observable<any> {
-    return this.http.post(`/api/HealthRecord`, dto);
+    return this.http.post(`${this.baseUrl}/HealthRecord`, dto);
   }
 
 
