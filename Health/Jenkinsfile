@@ -1,27 +1,22 @@
+
 pipeline {
     agent any
-
+ 
     environment {
         AWS_REGION = 'ap-south-1'
         EB_APPLICATION_NAME = 'HealthCareApi'
         EB_ENVIRONMENT_NAME = 'HealthCareApi-dev'
         S3_BUCKET = 'health-bucket-748999353112-ap-south-1-an'
     }
-
+ 
     stages {
-
+ 
         stage('Checkout') {
             steps {
                 checkout scm
             }
         }
-
-        stage('Check .NET SDK') {
-            steps {
-                bat 'dotnet --info'
-            }
-        }
-
+ 
         stage('Build Angular') {
             steps {
                 dir('Health\\HealthCareUser.Web') {
@@ -30,79 +25,26 @@ pipeline {
                 }
             }
         }
-
+ 
         stage('Publish Blazor') {
             steps {
-                dir('Health\\HealthCareAdmin.Web') {
-                    bat '''
-                    dotnet clean
-                    dotnet publish HealthCareAdmin.Web.csproj -c Release -o artifacts
-                    '''
-                }
+                bat 'dotnet publish Health\\HealthCareAdmin.Web\\HealthCareAdmin.Web.csproj -c Release -o blazor-publish-temp'
             }
         }
-
-        stage('Inspect Blazor Publish') {
-            steps {
-                bat '''
-                echo ===== Source wwwroot =====
-                dir Health\\HealthCareAdmin.Web\\wwwroot
-
-                echo.
-                echo ===== Publish folder =====
-                dir Health\\HealthCareAdmin.Web\\artifacts
-
-                echo.
-                echo ===== Publish wwwroot =====
-                dir /s Health\\HealthCareAdmin.Web\\artifacts\\wwwroot
-
-                echo.
-                echo ===== Search for index.html =====
-                dir /s Health\\HealthCareAdmin.Web\\index.html
-                '''
-            }
-        }
-
+ 
         stage('Copy Blazor into API wwwroot') {
             steps {
-                bat '''
-                if exist Health\\HealthCare.Api\\wwwroot\\blazor (
-                    rmdir /S /Q Health\\HealthCare.Api\\wwwroot\\blazor
-                )
-
-                mkdir Health\\HealthCare.Api\\wwwroot\\blazor
-
-                if exist Health\\HealthCareAdmin.Web\\artifacts\\wwwroot\\index.html (
-                    echo Copying from artifacts\\wwwroot...
-                    xcopy /E /Y /I Health\\HealthCareAdmin.Web\\artifacts\\wwwroot\\* Health\\HealthCare.Api\\wwwroot\\blazor\\
-                ) else if exist Health\\HealthCareAdmin.Web\\artifacts\\index.html (
-                    echo Copying from artifacts...
-                    xcopy /E /Y /I Health\\HealthCareAdmin.Web\\artifacts\\* Health\\HealthCare.Api\\wwwroot\\blazor\\
-                ) else (
-                    echo.
-                    echo ===== index.html NOT FOUND =====
-                    echo.
-                    echo Contents of source wwwroot:
-                    dir Health\\HealthCareAdmin.Web\\wwwroot
-                    echo.
-                    echo Contents of publish folder:
-                    dir /s Health\\HealthCareAdmin.Web\\artifacts
-                    exit /b 1
-                )
-
-                echo.
-                echo ===== Final Blazor Files =====
-                dir /s Health\\HealthCare.Api\\wwwroot\\blazor
-                '''
+                bat 'if not exist Health\\HealthCare.Api\\wwwroot\\blazor mkdir Health\\HealthCare.Api\\wwwroot\\blazor'
+                bat 'xcopy /E /Y /I blazor-publish-temp\\wwwroot\\* Health\\HealthCare.Api\\wwwroot\\blazor\\'
             }
         }
-
+ 
         stage('Publish API') {
             steps {
                 bat 'dotnet publish Health\\HealthCare.Api\\HealthCare.Api.csproj -c Release -o publish'
             }
         }
-
+ 
         stage('Zip published output') {
             steps {
                 dir('publish') {
@@ -110,18 +52,18 @@ pipeline {
                 }
             }
         }
-
+ 
         stage('Upload to S3 and Deploy to EB') {
             steps {
                 withCredentials([
                     [$class: 'AmazonWebServicesCredentialsBinding',
-                    credentialsId: 'deploy-id']
+                    credentialsId: 'aws-deploy-creds']
                 ]) {
-
+ 
                     bat "aws s3 cp deploy-package.zip s3://%S3_BUCKET%/deploy-package-%BUILD_NUMBER%.zip --region %AWS_REGION%"
-
+ 
                     bat "aws elasticbeanstalk create-application-version --application-name %EB_APPLICATION_NAME% --version-label v-%BUILD_NUMBER% --source-bundle S3Bucket=%S3_BUCKET%,S3Key=deploy-package-%BUILD_NUMBER%.zip --region %AWS_REGION%"
-
+ 
                     bat "aws elasticbeanstalk update-environment --environment-name %EB_ENVIRONMENT_NAME% --version-label v-%BUILD_NUMBER% --region %AWS_REGION%"
                 }
             }

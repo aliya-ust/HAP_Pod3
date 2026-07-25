@@ -20,4 +20,5 @@ TestResults
 node_modules/
 artifacts
 Logs
-wwwroot
+
+Health/HealthCare.Api/wwwroot/
