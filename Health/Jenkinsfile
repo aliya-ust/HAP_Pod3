@@ -34,24 +34,31 @@ pipeline {
         stage('Publish Blazor') {
             steps {
                 dir('Health\\HealthCareAdmin.Web') {
-                    bat 'dotnet publish HealthCareAdmin.Web.csproj -c Release -o artifacts'
+                    bat '''
+                    dotnet clean
+                    dotnet publish HealthCareAdmin.Web.csproj -c Release -o artifacts
+                    '''
                 }
             }
         }
 
-        stage('Verify Blazor Publish') {
+        stage('Inspect Blazor Publish') {
             steps {
                 bat '''
-                echo ===== artifacts =====
+                echo ===== Source wwwroot =====
+                dir Health\\HealthCareAdmin.Web\\wwwroot
+
+                echo.
+                echo ===== Publish folder =====
                 dir Health\\HealthCareAdmin.Web\\artifacts
 
                 echo.
-                echo ===== artifacts\\wwwroot =====
-                if exist Health\\HealthCareAdmin.Web\\artifacts\\wwwroot (
-                    dir Health\\HealthCareAdmin.Web\\artifacts\\wwwroot
-                ) else (
-                    echo wwwroot folder not found
-                )
+                echo ===== Publish wwwroot =====
+                dir /s Health\\HealthCareAdmin.Web\\artifacts\\wwwroot
+
+                echo.
+                echo ===== Search for index.html =====
+                dir /s Health\\HealthCareAdmin.Web\\index.html
                 '''
             }
         }
@@ -59,29 +66,33 @@ pipeline {
         stage('Copy Blazor into API wwwroot') {
             steps {
                 bat '''
-                REM Remove old deployed Blazor files
                 if exist Health\\HealthCare.Api\\wwwroot\\blazor (
                     rmdir /S /Q Health\\HealthCare.Api\\wwwroot\\blazor
                 )
 
                 mkdir Health\\HealthCare.Api\\wwwroot\\blazor
 
-                REM Copy only the web assets
                 if exist Health\\HealthCareAdmin.Web\\artifacts\\wwwroot\\index.html (
                     echo Copying from artifacts\\wwwroot...
                     xcopy /E /Y /I Health\\HealthCareAdmin.Web\\artifacts\\wwwroot\\* Health\\HealthCare.Api\\wwwroot\\blazor\\
+                ) else if exist Health\\HealthCareAdmin.Web\\artifacts\\index.html (
+                    echo Copying from artifacts...
+                    xcopy /E /Y /I Health\\HealthCareAdmin.Web\\artifacts\\* Health\\HealthCare.Api\\wwwroot\\blazor\\
                 ) else (
-                    echo ERROR: index.html not found in publish output.
-                    dir Health\\HealthCareAdmin.Web\\artifacts
-                    if exist Health\\HealthCareAdmin.Web\\artifacts\\wwwroot (
-                        dir Health\\HealthCareAdmin.Web\\artifacts\\wwwroot
-                    )
+                    echo.
+                    echo ===== index.html NOT FOUND =====
+                    echo.
+                    echo Contents of source wwwroot:
+                    dir Health\\HealthCareAdmin.Web\\wwwroot
+                    echo.
+                    echo Contents of publish folder:
+                    dir /s Health\\HealthCareAdmin.Web\\artifacts
                     exit /b 1
                 )
 
                 echo.
                 echo ===== Final Blazor Files =====
-                dir Health\\HealthCare.Api\\wwwroot\\blazor
+                dir /s Health\\HealthCare.Api\\wwwroot\\blazor
                 '''
             }
         }
