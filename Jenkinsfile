@@ -97,7 +97,7 @@ option_settings:
                         script: """
                             aws elasticbeanstalk describe-environments ^
                               --application-name %APP_NAME% ^
-                              --query "Environments[?Status!='Terminated'].EnvironmentName" ^
+                              --query "Environments[?Status=='Ready'].EnvironmentName" ^
                               --output text --region %REGION% --no-verify-ssl
                         """,
                         returnStdout: true
