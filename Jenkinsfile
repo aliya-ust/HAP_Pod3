@@ -74,7 +74,7 @@ option_settings:
 
         stage('Upload to S3') {
             steps {
-                bat "aws s3 cp deploy.zip s3://%BUCKET%/deploy-%BUILD_NUMBER%.zip --region %REGION%"
+                bat "aws s3 cp deploy.zip s3://%BUCKET%/deploy-%BUILD_NUMBER%.zip --region %REGION% --no-verify-ssl"
             }
         }
 
