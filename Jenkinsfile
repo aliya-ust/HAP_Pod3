@@ -93,26 +93,17 @@ option_settings:
         stage('Deploy or Create Environment') {
             steps {
                 script {
-                    def envExists = bat(
+                    def exitCode = bat(
                         script: """
-                            aws elasticbeanstalk describe-environments ^
-                              --application-name %APP_NAME% ^
-                              --query "Environments[?Status=='Ready'].EnvironmentName" ^
-                              --output text --region %REGION% --no-verify-ssl
-                        """,
-                        returnStdout: true
-                    ).trim()
-
-                    if (envExists) {
-                        echo "Environment exists — updating..."
-                        bat """
                             aws elasticbeanstalk update-environment ^
                               --environment-name %ENV_NAME% ^
                               --version-label v%BUILD_NUMBER% ^
                               --region %REGION% --no-verify-ssl
-                        """
-                    } else {
-                        echo "No environment — creating from template..."
+                        """,
+                        returnStatus: true
+                    )
+                    if (exitCode != 0) {
+                        echo "Update failed (env may not exist) — creating from template..."
                         bat """
                             aws elasticbeanstalk create-environment ^
                               --application-name %APP_NAME% ^
