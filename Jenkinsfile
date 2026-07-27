@@ -142,7 +142,7 @@ option_settings:
             echo "Deployed v${BUILD_NUMBER} to ${ENV_NAME}"
         }
         failure {
-            echo "Build failed — check Jenkins console"
+            echo "Build failed — check Jenkins console output"
         }
     }
 }
