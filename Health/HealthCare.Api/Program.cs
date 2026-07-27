@@ -146,11 +146,14 @@ builder.Services.AddMassTransit(x =>
 
     x.UsingRabbitMq((context, cfg) =>
     {
-        cfg.Host("172.31.5.80", "/", h =>
-        {
-            h.Username("aliya");
-            h.Password("@B12ee34L567");
-        });
+        cfg.Host(
+            builder.Configuration["RabbitMq:Host"]!,
+            builder.Configuration["RabbitMq:VirtualHost"] ?? "/",
+            h =>
+            {
+                h.Username(builder.Configuration["RabbitMq:Username"]!);
+                h.Password(builder.Configuration["RabbitMq:Password"]!);
+            });
 
         cfg.ConfigureEndpoints(context);
     });
@@ -191,25 +194,37 @@ app.MapGet("/", context =>
     context.Response.Redirect("/angular");
     return Task.CompletedTask;
 });
+
+const string IndexFile = "index.html";
+
 app.MapGet("/angular", async context =>
 {
-    await context.Response.SendFileAsync(Path.Combine(app.Environment.WebRootPath, "angular", "index.html"));
+    await context.Response.SendFileAsync(
+        Path.Combine(app.Environment.WebRootPath!, "angular", IndexFile));
 });
 
-app.MapGet("/angular/{*path:nonfile}", async context =>
+app.MapGet("/angular/{*path:nonfile}", async (HttpContext context, string? path) =>
 {
-    await context.Response.SendFileAsync(Path.Combine(app.Environment.WebRootPath, "angular", "index.html"));
+    _ = path;
+
+    await context.Response.SendFileAsync(
+        Path.Combine(app.Environment.WebRootPath!, "angular", IndexFile));
 });
 
 app.MapGet("/blazor", async context =>
 {
-    await context.Response.SendFileAsync(Path.Combine(app.Environment.WebRootPath, "blazor", "index.html"));
+    await context.Response.SendFileAsync(
+        Path.Combine(app.Environment.WebRootPath!, "blazor", IndexFile));
 });
 
-app.MapGet("/blazor/{*path:nonfile}", async context =>
+app.MapGet("/blazor/{*path:nonfile}", async (HttpContext context, string? path) =>
 {
-    await context.Response.SendFileAsync(Path.Combine(app.Environment.WebRootPath, "blazor", "index.html"));
+    _ = path;
+
+    await context.Response.SendFileAsync(
+        Path.Combine(app.Environment.WebRootPath!, "blazor", IndexFile));
 });
+
 
 Console.WriteLine("URLS:");
 foreach (var url in app.Urls)

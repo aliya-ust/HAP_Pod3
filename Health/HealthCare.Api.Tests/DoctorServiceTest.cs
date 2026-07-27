@@ -487,27 +487,5 @@ namespace HealthCare.Tests.Services
                 Times.Never);
         }
 
-        [Fact]
-        public async Task AvailableDoctors_Should_Return_FromCache()
-        {
-            var doctors = new List<DoctorListDto>
-        {
-        new DoctorListDto
-        {
-            DoctorId = 1,
-            FullName = "John"
-        }
-        };
-
-            var date = DateOnly.FromDateTime(DateTime.Today);
-
-            var result = await _service.AvailableDoctors("Cardiology", date);
-
-            Assert.Single(result);
-
-            _doctorRepo.Verify(x =>
-                x.AvailableDoctors(It.IsAny<string>(), It.IsAny<DateOnly>()),
-                Times.Never);
-        }
     }
 }

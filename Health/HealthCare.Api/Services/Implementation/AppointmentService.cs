@@ -604,10 +604,6 @@ namespace HealthCare.Api.Services.Implementations
 
             await _repository.CancelAppointment(appointmentId);
 
-            var appointment = await _repository.GetByIdAsync(appointmentId);
-
-            var doctor = await _context.Doctors.FirstAsync(d => d.DoctorId == appointment!.DoctorId);
-
             if (_logger.IsEnabled(LogLevel.Information))
             {
                 _logger.LogInformation(

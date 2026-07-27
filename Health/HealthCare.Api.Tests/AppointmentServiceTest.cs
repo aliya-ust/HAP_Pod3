@@ -12,8 +12,8 @@ using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
-using Moq;
 using System.Linq.Expressions;
+using Moq;
 using Xunit;
 
 namespace HealthCare.Api.Tests;

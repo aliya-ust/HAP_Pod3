@@ -503,10 +503,6 @@ namespace HealthCare.Api.Services.Implementations
 
             await _context.SaveChangesAsync();
 
-            var doctor = await _context.Doctors
-                .FirstOrDefaultAsync(
-                    d => d.DoctorId == doctorId);
-
             if (_logger.IsEnabled(LogLevel.Information))
             {
                 _logger.LogInformation(
