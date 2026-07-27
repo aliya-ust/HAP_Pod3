@@ -85,7 +85,7 @@ option_settings:
                       --application-name %APP_NAME% ^
                       --version-label v%BUILD_NUMBER% ^
                       --source-bundle S3Bucket="%BUCKET%",S3Key="deploy-%BUILD_NUMBER%.zip" ^
-                      --region %REGION%
+                      --region %REGION% --no-verify-ssl
                 """
             }
         }
@@ -98,7 +98,7 @@ option_settings:
                             aws elasticbeanstalk describe-environments ^
                               --application-name %APP_NAME% ^
                               --query "Environments[?Status!='Terminated'].EnvironmentName" ^
-                              --output text --region %REGION%
+                              --output text --region %REGION% --no-verify-ssl
                         """,
                         returnStdout: true
                     ).trim()
@@ -109,7 +109,7 @@ option_settings:
                             aws elasticbeanstalk update-environment ^
                               --environment-name %ENV_NAME% ^
                               --version-label v%BUILD_NUMBER% ^
-                              --region %REGION%
+                              --region %REGION% --no-verify-ssl
                         """
                     } else {
                         echo "No environment — creating from template..."
@@ -119,7 +119,7 @@ option_settings:
                               --environment-name %ENV_NAME% ^
                               --template-name HealthCare-env ^
                               --version-label v%BUILD_NUMBER% ^
-                              --region %REGION%
+                              --region %REGION% --no-verify-ssl
                         """
                     }
                 }
@@ -131,7 +131,7 @@ option_settings:
                 bat """
                     aws elasticbeanstalk wait environment-updated ^
                       --environment-name %ENV_NAME% ^
-                      --region %REGION%
+                      --region %REGION% --no-verify-ssl
                 """
             }
         }
