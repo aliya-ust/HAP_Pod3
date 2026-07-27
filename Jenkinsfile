@@ -64,7 +64,7 @@ option_settings:
         stage('Create deploy.zip') {
             steps {
                 bat '''
-                    7z a deploy.zip ^
+                    "C:\\Program Files\\7-Zip\\7z.exe" a deploy.zip ^
                       Dockerfile .dockerignore .ebextensions publish ^
                       HealthCare.Portal\\dist\\HealthCare.Portal\\browser ^
                       -xr!docker-compose.yml -xr!*.user -xr!*.Development.json
