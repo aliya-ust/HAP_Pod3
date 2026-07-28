@@ -6,12 +6,14 @@
 
     <!-- Date Section -->
     <div class="form-group">
-      <label for="leaveDate"><i class="bi bi-calendar-date"></i> Select Leave Date</label>
+      <label for="leaveDate">
+        <i class="bi bi-calendar-date"></i> Select Leave Date
+      </label>
 
       <div class="date-row">
-        <input
-               id="leaveDate"
+        <input id="leaveDate"
                type="date"
+               [min]="today"
                [ngModel]="selectedDate()"
                (ngModelChange)="selectedDate.set($event)">
 
