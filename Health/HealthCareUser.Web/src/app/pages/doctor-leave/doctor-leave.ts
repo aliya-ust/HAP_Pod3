@@ -22,6 +22,8 @@ export class DoctorLeaveComponent {
   successMessage = signal('');
   errorMessage = signal('');
 
+  today = new Date().toISOString().split('T')[0];
+
   constructor(private readonly leaveService: DoctorLeaveService) { }
 
   addLeaveDate(): void {
