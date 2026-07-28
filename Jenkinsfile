@@ -3,9 +3,6 @@ pipeline {
 
     environment {
         AWS_CRED   = credentials('aws-healthcare')
-        DB_HOST    = credentials('db-host')
-        DB_PASS    = credentials('db-password')
-        JWT_KEY    = credentials('jwt-secret')
         APP_NAME   = 'HealthCare'
         ENV_NAME   = 'HealthCare-env'
         BUCKET     = 'elasticbeanstalk-ap-southeast-2-181486424621'
@@ -38,26 +35,6 @@ pipeline {
                     '<base href="/"', '<base href="/admin/"' |
                     Set-Content publish/admin/wwwroot/index.html
                 '''
-            }
-        }
-
-        stage('Write .ebextensions') {
-            steps {
-                writeFile file: '.ebextensions/01-environment.config', text: """
-option_settings:
-  aws:elasticbeanstalk:application:environment:
-    ASPNETCORE_ENVIRONMENT: "Production"
-    ConnectionStrings__Default: "Server=${DB_HOST},1433;Database=HealthCareDb;User Id=sa;Password=${DB_PASS};TrustServerCertificate=True"
-    RabbitMq__Host: "${DB_HOST}"
-    RabbitMq__Username: "guest"
-    RabbitMq__Password: "guest"
-    Jwt__Key: "${JWT_KEY}"
-    Jwt__Issuer: "HealthCare"
-    Jwt__Audience: "HealthCare"
-    Jwt__AccessTokenExpirationMinutes: "15"
-    SeedData__AdminEmail: "admin@healthcare.com"
-    SeedData__AdminPassword: "Admin@123"
-"""
             }
         }
 
