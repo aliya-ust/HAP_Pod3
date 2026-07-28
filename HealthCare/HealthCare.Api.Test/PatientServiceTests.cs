@@ -4,7 +4,7 @@ using HealthCare.Shared.DTOs;
 using HealthCare.Shared.DTOs.Patient;
 using HealthCare.Api.Models;
 using HealthCare.Api.Repositories.Interfaces;
-using HealthCare.Api.Services.Impl;
+using HealthCare.Api.Services.Implementations;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 using System.Linq.Expressions;

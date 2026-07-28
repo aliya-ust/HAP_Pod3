@@ -271,19 +271,19 @@ pC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\Comp
 qq( 1ssB K(
 ss uu ww %yy. 5
 ss. /ss3 4
-ww yy7 @Ú
-jC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\Components\Layout\NavMenu.razor
-.. &&- 3
-22 33 
- $22 #
- 00 
- 33 ð
+ww yy7 @ð
 vC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\Components\Patient\DeletePatientModal.razor
 '' # 
 ))% -// 
 ++% .44 
 -- 0 65 ;
-22 $5 Bo
+22 $5 BÚ
+jC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\Components\Layout\NavMenu.razor
+.. &&- 3
+22 33 
+ $22 #
+ 00 
+ 33 o
 mC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\Components\Layout\MainLayout.razorp
 nC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\Components\Layout\EmptyLayout.razor¦
 tC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\Components\Doctor\UpdateDoctorModal.razorJ
@@ -417,25 +417,7 @@ pC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\Comp
 LL "(() 4
 RR ZZ# )
 
-^^ ®
-nC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\Components\Doctor\DoctorTable.razor2
- ! "4 5) *! "x
-  # # #!! ### $&&8 >''" (00> D44+ 166F L<<@ FF
-VV & $ +% ,! (ff ss 
-YY( .ii 
-\\ &nn 
-__( 6vv  
-bb !HH +
-dd !003 =
-dd& .ff? G
-ff hh ii% +
-ff, -ff1 2
-ll #<<3 ?
-ll( 0nn# +
-qq )663 E
-qq. 6ss? G
-ss uu vv- 3
-ss, -ss1 2î
+^^ î
 tC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\Components\Doctor\DeleteDoctorModal.razor
 )) # 
 **% ---) 1
@@ -512,7 +494,25 @@ yC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\Comp
 –– .
 ¦¦ .
 ¶¶  2
-ÆÆ  2V
+ÆÆ  2®
+nC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\Components\Doctor\DoctorTable.razor2
+ ! "4 5) *! "x
+  # # #!! ### $&&8 >''" (00> D44+ 166F L<<@ FF
+VV & $ +% ,! (ff ss 
+YY( .ii 
+\\ &nn 
+__( 6vv  
+bb !HH +
+dd !003 =
+dd& .ff? G
+ff hh ii% +
+ff, -ff1 2
+ll #<<3 ?
+ll( 0nn# +
+qq )663 E
+qq. 6ss? G
+ss uu vv- 3
+ss, -ss1 2V
 TC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\App.razorî
 jC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\Services\PatientAdminService.cs
 

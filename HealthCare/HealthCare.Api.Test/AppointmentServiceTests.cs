@@ -58,14 +58,17 @@ namespace HealthCare.Api.Tests
         [Fact]
         public async Task GetByIdAsync_ShouldReturnAppointment()
         {
+            //Arrange
             var appointment = new Appointment();
             var dto = new AppointmentListDto();
 
             _repoMock.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(appointment);
             _mapperMock.Setup(m => m.Map<AppointmentListDto>(appointment)).Returns(dto);
 
+            //Act
             var result = await _service.GetByIdAsync(1);
 
+            //Assert
             Assert.NotNull(result);
         }
 

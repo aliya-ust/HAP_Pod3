@@ -3,7 +3,6 @@ using HealthCare.Api.Mapping;
 using HealthCare.Api.Middleware;
 using HealthCare.Api.Repositories.Implementations;
 using HealthCare.Api.Repositories.Interfaces;
-using HealthCare.Api.Services.Impl;
 using HealthCare.Api.Services.Implementations;
 using HealthCare.Api.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -121,11 +120,14 @@ builder.Services.AddMassTransit(x =>
                     builder.Configuration["RabbitMq:Password"]!);
             });
 
+
         cfg.ReceiveEndpoint(
             builder.Configuration["RabbitMq:HealthCareQueue"]!,
             e =>
             {
-                //attach consumer to the queue
+                e.UseMessageRetry(r =>
+                    r.Interval(3, TimeSpan.FromSeconds(5)));
+
                 e.ConfigureConsumer<
                     AppointmentBookedConsumer>(
                         context);

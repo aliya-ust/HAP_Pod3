@@ -2789,7 +2789,99 @@ HealthCare
 ;. /
 }0 1
 } 
-} Ð
+} º
+
+nC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\Appointment\AppointmentReportDto.cs
+	namespace 	
+
+HealthCare
+ 
+. 
+Shared 
+. 
+DTOs  
+.  !
+Appointment! ,
+{ 
+public 
+
+class  
+AppointmentReportDto %
+{ 
+public 
+DateOnly 
+Date 
+{ 
+get "
+;" #
+set$ '
+;' (
+}) *
+public 
+int 
+PendingCount 
+{  !
+get" %
+;% &
+set' *
+;* +
+}, -
+public 
+int 
+ConfirmedCount !
+{" #
+get$ '
+;' (
+set) ,
+;, -
+}. /
+public 
+int 
+CancelledCount !
+{" #
+get$ '
+;' (
+set) ,
+;, -
+}. /
+public		 
+int		 
+CompletedCount		 !
+{		" #
+get		$ '
+;		' (
+set		) ,
+;		, -
+}		. /
+public
+
+ 
+decimal
+
+ 
+Revenue
+
+ 
+{
+
+  
+get
+
+! $
+;
+
+$ %
+set
+
+& )
+;
+
+) *
+}
+
++ ,
+} 
+} Ð
 lC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\Appointment\AppointmentListDto.cs
 	namespace 	
 
@@ -2913,98 +3005,6 @@ DoctorName  
 null- 1
 !1 2
 ;2 3
-} 
-} º
-
-nC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\Appointment\AppointmentReportDto.cs
-	namespace 	
-
-HealthCare
- 
-. 
-Shared 
-. 
-DTOs  
-.  !
-Appointment! ,
-{ 
-public 
-
-class  
-AppointmentReportDto %
-{ 
-public 
-DateOnly 
-Date 
-{ 
-get "
-;" #
-set$ '
-;' (
-}) *
-public 
-int 
-PendingCount 
-{  !
-get" %
-;% &
-set' *
-;* +
-}, -
-public 
-int 
-ConfirmedCount !
-{" #
-get$ '
-;' (
-set) ,
-;, -
-}. /
-public 
-int 
-CancelledCount !
-{" #
-get$ '
-;' (
-set) ,
-;, -
-}. /
-public		 
-int		 
-CompletedCount		 !
-{		" #
-get		$ '
-;		' (
-set		) ,
-;		, -
-}		. /
-public
-
- 
-decimal
-
- 
-Revenue
-
- 
-{
-
-  
-get
-
-! $
-;
-
-$ %
-set
-
-& )
-;
-
-) *
-}
-
-+ ,
 } 
 } Œ
 kC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.Shared\DTOs\Appointment\AppointmentFilter.cs

@@ -22,12 +22,12 @@ tC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\Comp
 vC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\Components\Doctor\RegisterDoctorModal.razor# 8%r∏ ')*+,.658ABDKRT[_ijmnpruÇÖÜáâäãåçèêëíìïñóòôõúùü†¢£•¶ß©´¨≠ÆØ∞≤≥∂∏π∫ªºæø¿¬ƒ≈∆» ÀÃÕœ–—“‘’◊⁄›ﬁﬂ‡„‰ÂÊÁxÇO ')+.58ABKRT[_imnpuëíùü†¢ß©´≠Æ≤ªºæø∆» ÃÕ“‘◊⁄›ÂÊ—
 pC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\Components\Doctor\DoctorToolbar.razor 8r=
 	"(01346789:<=>@ABCDEFGIJLMOPRSTUVWXZ[^_`abcefx
-Ç>@BFIOPTUVWZ`abceƒ
-nC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\Components\Doctor\DoctorTable.razor 8r1!#&'046<BCDEHKUVXY[\^_abdefhijlmnoqrsuvwxÇ!#&'046<Hfhinsuví
+Ç>@BFIOPTUVWZ`abceí
 tC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\Components\Doctor\DeleteDoctorModal.razor 8
 r	%)*+-.xÇ-.ˆ
 yC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\Components\Appointment\AppointmentReport.razor  
-8jîr¢ 89:<=>?@ABCEFGLMNOPVbchlmvxz|}ÅÇÖÜáàâãåçéèíìîñóòôöúùü†°¢§¶ß®©™¨≠∞±≤≥¥∂∑∏π∫ºΩæ¿¡¬√ƒ∆«»… ÃÕŒxÇG8<>?@ABCEFLhmxzáàçéîñóòú°¢§¶ß®¨≤¥∂∑∏º¬ƒ∆«»Ãd
+8jîr¢ 89:<=>?@ABCEFGLMNOPVbchlmvxz|}ÅÇÖÜáàâãåçéèíìîñóòôöúùü†°¢§¶ß®©™¨≠∞±≤≥¥∂∑∏π∫ºΩæ¿¡¬√ƒ∆«»… ÃÕŒxÇG8<>?@ABCEFLhmxzáàçéîñóòú°¢§¶ß®¨≤¥∂∑∏º¬ƒ∆«»Ãƒ
+nC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\Components\Doctor\DoctorTable.razor 8r1!#&'046<BCDEHKUVXY[\^_abdefhijlmnoqrsuvwxÇ!#&'046<Hfhinsuvd
 TC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\App.razor8rÇø
 jC:\Users\310055\source\repos\UST-Live-01\HealthCare\HealthCare.AdminBlazor\Services\PatientAdminService.cs 8
 r0	

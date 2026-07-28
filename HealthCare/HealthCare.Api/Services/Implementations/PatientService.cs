@@ -8,7 +8,7 @@ using HealthCare.Api.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
-namespace HealthCare.Api.Services.Impl
+namespace HealthCare.Api.Services.Implementations
 {
     public class PatientService : IPatientService
     {
