@@ -225,11 +225,4 @@ app.MapGet("/blazor/{*path:nonfile}", async (HttpContext context, string? path) 
         Path.Combine(app.Environment.WebRootPath!, "blazor", IndexFile));
 });
 
-
-Console.WriteLine("URLS:");
-foreach (var url in app.Urls)
-{
-    Console.WriteLine(url);
-}
-
 await app.RunAsync();
